@@ -16,6 +16,22 @@ DEFAULT_MODELS = {
 
 OUT = Path("overnight-reports")
 
+def validated_proposal(payload):
+    """Accept only nonempty text; HTTP 200 alone is not a successful review."""
+    if not isinstance(payload, dict):
+        raise ValueError("Invalid OpenRouter response")
+    choices = payload.get("choices")
+    if not isinstance(choices, list) or not choices or not isinstance(choices[0], dict):
+        raise ValueError("Missing OpenRouter choices")
+    message = choices[0].get("message")
+    if not isinstance(message, dict):
+        raise ValueError("Missing OpenRouter message")
+    content = message.get("content")
+    if not isinstance(content, str) or not content.strip():
+        raise ValueError("Empty OpenRouter proposal")
+    return content.strip()[:6000]
+
+
 def main():
     OUT.mkdir(exist_ok=True)
     key = os.getenv("OPENROUTER_API_KEY", "").strip()
@@ -45,8 +61,8 @@ def main():
             try:
                 with urlopen(request, timeout=35) as response:
                     data = json.loads(response.read(100000))
-                answer = data["choices"][0]["message"]["content"]
-                results["agents"][agent] = {"status": "ok", "proposal": str(answer)[:6000]}
+                answer = validated_proposal(data)
+                results["agents"][agent] = {"status": "ok", "proposal": answer}
             except HTTPError as exc:
                 # Record only the status code; never expose response bodies or credentials.
                 results["agents"][agent] = {"status": "failed", "error_type": "HTTPError", "http_status": exc.code, "model": model}
