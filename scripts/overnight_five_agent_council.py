@@ -10,7 +10,7 @@ DEFAULT_MODELS = {
     "GPT": "openai/gpt-4.1-mini",
     "CLAUDE": "anthropic/claude-sonnet-4.5",
     "GEMINI": "google/gemini-2.5-flash",
-    "GROK": "x-ai/grok-4-fast",
+    "GROK": "x-ai/grok-4.3",
     "DEEPSEEK": "deepseek/deepseek-chat",
 }
 
