@@ -15,6 +15,7 @@ def run_round(market: str, symbol: str, context: str,
     """Collect independent votes, then publish majority and dissent."""
     if not market.strip() or not symbol.strip() or not context.strip():
         raise ValueError("Market, symbol and context are required")
+    mock_mode = providers is None
     if providers is None:
         providers = {agent: MockAIProvider(agent=agent) for agent in AGENTS}
     if set(providers) != set(AGENTS):
@@ -38,7 +39,7 @@ def run_round(market: str, symbol: str, context: str,
             {"agent": o.agent, "vote": o.vote.value, "reasoning": o.reasoning}
             for o in council.dissent()
         ],
-        "execution_mode": "provider_injected" if providers is not None
+        "execution_mode": "provider_injected" if not mock_mode
         else "mock",
         "trading_enabled": False,
     })
