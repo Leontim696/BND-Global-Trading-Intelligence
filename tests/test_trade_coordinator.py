@@ -1,9 +1,14 @@
 
-"""Integration tests for BND Trade Coordinator."""
+"""Integration tests for the five-agent BND Trade Coordinator."""
 
 import pytest
 
-from src.bnd.debate_engine import DebateEngine
+from src.bnd.debate_engine import (
+    DebateArgument,
+    DebateEngine,
+    DebateResponse,
+    DebateStatus,
+)
 from src.bnd.fusion_council import (
     AGENTS,
     FusionCouncil,
@@ -51,7 +56,9 @@ def proposal():
     )
 
 
-def make_debate(votes, close=True):
+def make_council(votes):
+    assert len(votes) == len(AGENTS)
+
     council = FusionCouncil()
 
     for agent, vote in zip(AGENTS, votes):
@@ -59,23 +66,61 @@ def make_debate(votes, close=True):
             Opinion(
                 agent=agent,
                 vote=vote,
-                reasoning="Independent analysis",
+                reasoning="Independent market analysis",
                 confidence=0.8,
             )
         )
 
+    return council
+
+
+def add_participation(debate, skip_response=None):
+    """Register one argument and response per active agent."""
+
+    for agent in AGENTS:
+        debate.submit_argument(
+            DebateArgument(
+                agent=agent,
+                claim="Market conditions require evaluation",
+                evidence="Liquidity and volatility observations",
+            )
+        )
+
+    for agent in AGENTS:
+        if agent == skip_response:
+            continue
+
+        opinion = debate.council.current_opinions()[agent]
+
+        debate.submit_response(
+            DebateResponse(
+                agent=agent,
+                reasoning="Reviewed the arguments",
+                vote=opinion.vote,
+                confidence=opinion.confidence,
+            )
+        )
+
+
+def make_debate(votes, close=True):
+    council = make_council(votes)
     debate = DebateEngine(council)
     debate.start()
 
     if close:
+        add_participation(debate)
         debate.close()
 
     return debate
 
 
+def test_five_agents():
+    assert len(AGENTS) == 5
+
+
 def test_buy_majority_approved(portfolio, limits, proposal):
     debate = make_debate(
-        [Vote.BUY] * 4 + [Vote.SELL] * 2
+        [Vote.BUY] * 3 + [Vote.SELL] * 2
     )
 
     result = coordinate_trade(
@@ -89,7 +134,7 @@ def test_buy_majority_approved(portfolio, limits, proposal):
 
 def test_sell_majority_approved(portfolio, limits, proposal):
     debate = make_debate(
-        [Vote.SELL] * 4 + [Vote.BUY] * 2
+        [Vote.SELL] * 3 + [Vote.BUY] * 2
     )
 
     result = coordinate_trade(
@@ -101,30 +146,19 @@ def test_sell_majority_approved(portfolio, limits, proposal):
 
 
 def test_open_debate_blocks_trade(portfolio, limits, proposal):
-    debate = make_debate([Vote.BUY] * 6, close=False)
+    debate = make_debate([Vote.BUY] * 5, close=False)
 
     result = coordinate_trade(
         debate, portfolio, limits, proposal
     )
 
     assert result.status == TradeStatus.NO_TRADE
-    assert result.approved_notional == 0.0
     assert result.direction is None
+    assert result.approved_notional == 0.0
 
 
 def test_waiting_debate_blocks_trade(portfolio, limits, proposal):
-    council = FusionCouncil()
-
-    for agent in AGENTS:
-        council.submit(
-            Opinion(
-                agent=agent,
-                vote=Vote.BUY,
-                reasoning="Initial analysis",
-                confidence=0.8,
-            )
-        )
-
+    council = make_council([Vote.BUY] * 5)
     debate = DebateEngine(council)
 
     result = coordinate_trade(
@@ -134,10 +168,20 @@ def test_waiting_debate_blocks_trade(portfolio, limits, proposal):
     assert result.status == TradeStatus.NO_TRADE
 
 
-def test_unanimous_buy_blocked_by_risk(
-    portfolio, limits
-):
-    debate = make_debate([Vote.BUY] * 6)
+def test_missing_response_blocks_close():
+    debate = make_debate([Vote.BUY] * 5, close=False)
+
+    add_participation(debate, skip_response=AGENTS[-1])
+
+    with pytest.raises(ValueError, match="Missing responses"):
+        debate.close()
+
+    assert debate.status == DebateStatus.OPEN
+
+
+def test_unanimous_buy_blocked_by_risk(portfolio, limits):
+    debate = make_debate([Vote.BUY] * 5)
+
     dangerous_trade = TradeProposal(
         notional=2000.0,
         stop_loss_pct=2.0,
@@ -152,11 +196,15 @@ def test_unanimous_buy_blocked_by_risk(
     assert result.approved_notional == 0.0
 
 
-def test_three_three_tie_no_trade(
-    portfolio, limits, proposal
-):
+def test_no_majority_no_trade(portfolio, limits, proposal):
     debate = make_debate(
-        [Vote.BUY] * 3 + [Vote.SELL] * 3
+        [
+            Vote.BUY,
+            Vote.BUY,
+            Vote.SELL,
+            Vote.SELL,
+            Vote.HOLD,
+        ]
     )
 
     result = coordinate_trade(
@@ -167,11 +215,9 @@ def test_three_three_tie_no_trade(
     assert result.direction is None
 
 
-def test_hold_majority_no_trade(
-    portfolio, limits, proposal
-):
+def test_hold_majority_no_trade(portfolio, limits, proposal):
     debate = make_debate(
-        [Vote.HOLD] * 4 + [Vote.BUY] * 2
+        [Vote.HOLD] * 3 + [Vote.BUY] * 2
     )
 
     result = coordinate_trade(
@@ -182,7 +228,7 @@ def test_hold_majority_no_trade(
 
 
 def test_missing_proposal_no_trade(portfolio, limits):
-    debate = make_debate([Vote.BUY] * 6)
+    debate = make_debate([Vote.BUY] * 5)
 
     result = coordinate_trade(
         debate, portfolio, limits, None
@@ -192,7 +238,8 @@ def test_missing_proposal_no_trade(portfolio, limits):
 
 
 def test_excessive_position_reduced(portfolio, limits):
-    debate = make_debate([Vote.BUY] * 6)
+    debate = make_debate([Vote.BUY] * 5)
+
     large_trade = TradeProposal(
         notional=10000.0,
         stop_loss_pct=5.0,
@@ -208,7 +255,8 @@ def test_excessive_position_reduced(portfolio, limits):
 
 
 def test_daily_loss_blocks_trade(limits, proposal):
-    debate = make_debate([Vote.BUY] * 6)
+    debate = make_debate([Vote.BUY] * 5)
+
     losing_portfolio = Portfolio(
         equity=10000.0,
         daily_loss=300.0,
@@ -221,10 +269,12 @@ def test_daily_loss_blocks_trade(limits, proposal):
     )
 
     assert result.status == TradeStatus.REJECTED
+    assert result.approved_notional == 0.0
 
 
 def test_drawdown_blocks_trade(limits, proposal):
-    debate = make_debate([Vote.BUY] * 6)
+    debate = make_debate([Vote.BUY] * 5)
+
     losing_portfolio = Portfolio(
         equity=10000.0,
         daily_loss=0.0,
@@ -237,36 +287,27 @@ def test_drawdown_blocks_trade(limits, proposal):
     )
 
     assert result.status == TradeStatus.REJECTED
+    assert result.approved_notional == 0.0
 
 
-def test_revised_votes_change_direction(
+def test_minority_changes_trade_direction(
     portfolio, limits, proposal
 ):
     debate = make_debate(
-        [Vote.BUY] * 4 + [Vote.SELL] * 2,
+        [Vote.BUY] * 3 + [Vote.SELL] * 2,
         close=False,
     )
 
-    from src.bnd.debate_engine import DebateArgument
+    add_participation(debate)
 
-    debate.submit_argument(
-        DebateArgument(
-            agent=AGENTS[4],
-            claim="SELL is supported by new evidence",
-            evidence="Liquidity and volatility analysis",
-            challenges=(AGENTS[0], AGENTS[1]),
+    debate.revise_vote(
+        Opinion(
+            agent=AGENTS[0],
+            vote=Vote.SELL,
+            reasoning="New evidence supports SELL",
+            confidence=0.9,
         )
     )
-
-    for agent in AGENTS[:2]:
-        debate.revise_vote(
-            Opinion(
-                agent=agent,
-                vote=Vote.SELL,
-                reasoning="Persuaded by minority evidence",
-                confidence=0.9,
-            )
-        )
 
     debate.close()
 
@@ -276,14 +317,18 @@ def test_revised_votes_change_direction(
 
     assert result.status == TradeStatus.APPROVED
     assert result.direction == "SELL"
-    assert len(debate.council.revisions) == 2
+    assert len(debate.council.revisions) == 1
+    assert (
+        debate.council.initial_opinions[AGENTS[0]].vote
+        == Vote.BUY
+    )
 
 
 def test_closed_debate_preserves_dissent(
     portfolio, limits, proposal
 ):
     debate = make_debate(
-        [Vote.BUY] * 4 + [Vote.SELL] * 2
+        [Vote.BUY] * 3 + [Vote.SELL] * 2
     )
 
     result = coordinate_trade(
@@ -292,3 +337,13 @@ def test_closed_debate_preserves_dissent(
 
     assert result.status == TradeStatus.APPROVED
     assert len(debate.unresolved_dissent()) == 2
+
+
+def test_all_five_agents_participated():
+    debate = make_debate([Vote.BUY] * 5)
+
+    assert debate.status == DebateStatus.CLOSED
+    assert debate.missing_arguments() == []
+    assert debate.missing_responses() == []
+    assert len(debate.arguments) == 5
+    assert len(debate.responses) == 5
