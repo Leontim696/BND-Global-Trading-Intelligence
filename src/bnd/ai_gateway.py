@@ -1,17 +1,26 @@
 
-"""BND AI Gateway — provider routing and response validation.
+"""BND AI Gateway — provider routing, validation and cost accounting.
 
-Initial version: supports simulated responses and prepares
-the interface for future real API integrations.
+MOCK mode remains the default. LIVE mode is intentionally disabled.
 
-No live API requests or trading orders are executed here.
+When cost accounting is configured, a budget reservation is created
+before provider execution and actual token usage is recorded afterward.
 """
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
+from decimal import Decimal
 from enum import Enum
 from math import isfinite
 from typing import Protocol
 
+from .cost_storage import SQLiteCostStorage
+from .cost_tracker import (
+    BudgetExceeded,
+    CostTracker,
+    ModelPricing,
+    UsageRecord,
+)
 from .fusion_council import AGENTS, Opinion, Vote
 
 
@@ -138,11 +147,36 @@ class MockAIProvider:
 
 
 class AIGateway:
-    """Routes analysis requests to registered AI providers."""
+    """Routes requests and optionally accounts for token costs."""
 
-    def __init__(self, mode: GatewayMode = GatewayMode.MOCK):
+    def __init__(
+        self,
+        mode: GatewayMode = GatewayMode.MOCK,
+        cost_storage: SQLiteCostStorage | None = None,
+        pricing: dict[str, ModelPricing] | None = None,
+        estimated_input_tokens: int = 1000,
+        estimated_output_tokens: int = 1000,
+    ):
+        if not isinstance(mode, GatewayMode):
+            raise ValueError("Invalid gateway mode")
+
+        for tokens in (
+            estimated_input_tokens,
+            estimated_output_tokens,
+        ):
+            if (
+                not isinstance(tokens, int)
+                or isinstance(tokens, bool)
+                or tokens < 0
+            ):
+                raise ValueError("Invalid estimated token usage")
+
         self.mode = mode
         self.providers: dict[str, AIProvider] = {}
+        self.cost_storage = cost_storage
+        self.pricing = dict(pricing or {})
+        self.estimated_input_tokens = estimated_input_tokens
+        self.estimated_output_tokens = estimated_output_tokens
 
     def register(self, agent: str, provider: AIProvider) -> None:
         if agent not in AGENTS:
@@ -166,19 +200,84 @@ class AIGateway:
                 f"No provider registered for {request.agent}"
             )
 
-        response = provider.analyze(request)
+        reservation_id = None
+        accounting_started = False
 
-        if not isinstance(response, AIResponse):
-            raise InvalidAIResponse(
-                "Provider returned an invalid response type"
+        if self.cost_storage is not None:
+            model = self._expected_model(request.agent)
+            model_pricing = self.pricing.get(model)
+
+            if model_pricing is None:
+                raise GatewayError(
+                    f"No pricing configured for model {model}"
+                )
+
+            estimated_cost = CostTracker.estimate_cost(
+                self.estimated_input_tokens,
+                self.estimated_output_tokens,
+                model_pricing,
             )
 
-        if response.agent != request.agent:
-            raise InvalidAIResponse(
-                "Provider response agent mismatch"
+            reservation_id = self.cost_storage.reserve(
+                estimated_cost
             )
 
-        return response
+        try:
+            response = provider.analyze(request)
+
+            if not isinstance(response, AIResponse):
+                raise InvalidAIResponse(
+                    "Provider returned an invalid response type"
+                )
+
+            if response.agent != request.agent:
+                raise InvalidAIResponse(
+                    "Provider response agent mismatch"
+                )
+
+            if self.cost_storage is not None:
+                model_pricing = self.pricing.get(response.model)
+
+                if model_pricing is None:
+                    raise GatewayError(
+                        "No pricing configured for response model"
+                    )
+
+                actual_cost = CostTracker.estimate_cost(
+                    response.input_tokens,
+                    response.output_tokens,
+                    model_pricing,
+                )
+
+                record = UsageRecord(
+                    agent=response.agent,
+                    model=response.model,
+                    input_tokens=response.input_tokens,
+                    output_tokens=response.output_tokens,
+                    cost_usd=actual_cost,
+                    timestamp=datetime.now(timezone.utc),
+                )
+
+                accounting_started = True
+                self.cost_storage.finalize(
+                    reservation_id,
+                    record,
+                )
+
+            return response
+
+        except Exception:
+            if (
+                reservation_id is not None
+                and not accounting_started
+            ):
+                self.cost_storage.release(reservation_id)
+            raise
+
+    @staticmethod
+    def _expected_model(agent: str) -> str:
+        """Model used by the built-in deterministic mock provider."""
+        return f"mock-{agent}"
 
     def registered_agents(self) -> list[str]:
         return [
@@ -187,10 +286,16 @@ class AIGateway:
         ]
 
 
-def create_mock_gateway() -> AIGateway:
+def create_mock_gateway(
+    cost_storage: SQLiteCostStorage | None = None,
+    pricing: dict[str, ModelPricing] | None = None,
+) -> AIGateway:
     """Create a gateway with all five mock providers."""
 
-    gateway = AIGateway()
+    gateway = AIGateway(
+        cost_storage=cost_storage,
+        pricing=pricing,
+    )
 
     for agent in AGENTS:
         gateway.register(
