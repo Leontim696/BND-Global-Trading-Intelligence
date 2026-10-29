@@ -1,5 +1,5 @@
 
-"""Tests for BND Debate Engine."""
+"""Tests for BND Debate Engine with five active AI agents."""
 
 import pytest
 
@@ -12,13 +12,14 @@ from src.bnd.fusion_council import (
 from src.bnd.debate_engine import (
     DebateArgument,
     DebateEngine,
+    DebateResponse,
     DebateStatus,
 )
 
 
 def make_council(votes=None):
     if votes is None:
-        votes = [Vote.BUY] * 4 + [Vote.SELL] * 2
+        votes = [Vote.BUY] * 3 + [Vote.SELL] * 2
 
     council = FusionCouncil()
 
@@ -27,7 +28,7 @@ def make_council(votes=None):
             Opinion(
                 agent=agent,
                 vote=vote,
-                reasoning="Independent analysis",
+                reasoning="Independent market analysis",
                 confidence=0.8,
             )
         )
@@ -35,13 +36,45 @@ def make_council(votes=None):
     return council
 
 
-def make_argument(agent=None):
+def make_argument(agent):
     return DebateArgument(
-        agent=agent or AGENTS[4],
-        claim="Market conditions favor SELL",
-        evidence="Liquidity and volatility analysis",
-        challenges=(AGENTS[0],),
+        agent=agent,
+        claim="Market analysis requires review",
+        evidence="Liquidity and volatility observations",
+        challenges=(),
     )
+
+
+def add_all_arguments(engine):
+    for agent in AGENTS:
+        engine.submit_argument(make_argument(agent))
+
+
+def add_all_responses(engine):
+    current = engine.council.current_opinions()
+
+    for agent in AGENTS:
+        opinion = current[agent]
+
+        engine.submit_response(
+            DebateResponse(
+                agent=agent,
+                reasoning="Reviewed the available arguments",
+                vote=opinion.vote,
+                confidence=opinion.confidence,
+            )
+        )
+
+
+def complete_debate(engine):
+    engine.start()
+    add_all_arguments(engine)
+    add_all_responses(engine)
+    engine.close()
+
+
+def test_five_active_agents():
+    assert len(AGENTS) == 5
 
 
 def test_initial_status():
@@ -53,14 +86,13 @@ def test_initial_status():
 
 def test_start_debate():
     engine = DebateEngine(make_council())
-
     engine.start()
 
     assert engine.status == DebateStatus.OPEN
     assert engine.round_number == 1
 
 
-def test_cannot_start_without_six_votes():
+def test_cannot_start_without_all_votes():
     council = FusionCouncil()
 
     council.submit(
@@ -90,33 +122,29 @@ def test_submit_argument():
     engine = DebateEngine(make_council())
     engine.start()
 
-    engine.submit_argument(make_argument())
+    engine.submit_argument(make_argument(AGENTS[0]))
 
     assert len(engine.arguments) == 1
-    assert engine.arguments[0].agent == AGENTS[4]
+    assert engine.arguments[0].agent == AGENTS[0]
 
 
 def test_argument_requires_open_debate():
     engine = DebateEngine(make_council())
 
     with pytest.raises(ValueError):
-        engine.submit_argument(make_argument())
+        engine.submit_argument(make_argument(AGENTS[0]))
 
 
 def test_invalid_argument_rejected():
     with pytest.raises(ValueError):
-        DebateArgument(
-            agent="unknown_ai",
-            claim="SELL",
-            evidence="Some evidence",
-        )
+        make_argument("local_ai")
 
 
 def test_empty_evidence_rejected():
     with pytest.raises(ValueError):
         DebateArgument(
             agent=AGENTS[0],
-            claim="SELL",
+            claim="Market signal",
             evidence="",
         )
 
@@ -130,61 +158,126 @@ def test_vote_revision_requires_argument():
             Opinion(
                 agent=AGENTS[0],
                 vote=Vote.SELL,
-                reasoning="Changed view",
+                reasoning="Changed analysis",
                 confidence=0.9,
             )
         )
 
 
-def test_minority_argument_changes_majority():
+def test_missing_arguments_blocks_close():
+    engine = DebateEngine(make_council())
+    engine.start()
+
+    with pytest.raises(ValueError, match="Missing arguments"):
+        engine.close()
+
+    assert engine.status == DebateStatus.OPEN
+
+
+def test_one_missing_argument_blocks_close():
+    engine = DebateEngine(make_council())
+    engine.start()
+
+    for agent in AGENTS[:-1]:
+        engine.submit_argument(make_argument(agent))
+
+    add_all_responses(engine)
+
+    with pytest.raises(ValueError, match="Missing arguments"):
+        engine.close()
+
+
+def test_missing_responses_blocks_close():
+    engine = DebateEngine(make_council())
+    engine.start()
+    add_all_arguments(engine)
+
+    with pytest.raises(ValueError, match="Missing responses"):
+        engine.close()
+
+
+def test_one_missing_response_blocks_close():
+    engine = DebateEngine(make_council())
+    engine.start()
+    add_all_arguments(engine)
+
+    for agent in AGENTS[:-1]:
+        engine.submit_response(
+            DebateResponse(
+                agent=agent,
+                reasoning="Reviewed evidence",
+                vote=engine.council.current_opinions()[agent].vote,
+                confidence=0.8,
+            )
+        )
+
+    with pytest.raises(ValueError, match="Missing responses"):
+        engine.close()
+
+
+def test_all_agents_can_complete_debate():
+    engine = DebateEngine(make_council())
+
+    complete_debate(engine)
+
+    assert engine.status == DebateStatus.CLOSED
+    assert engine.missing_arguments() == []
+    assert engine.missing_responses() == []
+
+
+def test_minority_can_change_majority():
     council = make_council()
     engine = DebateEngine(council)
     engine.start()
 
     assert council.decision() == Vote.BUY
 
-    engine.submit_argument(make_argument())
+    add_all_arguments(engine)
 
-    for agent in AGENTS[:2]:
-        engine.revise_vote(
-            Opinion(
+    engine.submit_response(
+        DebateResponse(
+            agent=AGENTS[0],
+            reasoning="Minority evidence is convincing",
+            vote=Vote.SELL,
+            confidence=0.9,
+        )
+    )
+
+    for agent in AGENTS[1:]:
+        opinion = council.current_opinions()[agent]
+        engine.submit_response(
+            DebateResponse(
                 agent=agent,
-                vote=Vote.SELL,
-                reasoning="Persuaded by minority evidence",
-                confidence=0.9,
+                reasoning="Reviewed arguments independently",
+                vote=opinion.vote,
+                confidence=opinion.confidence,
             )
         )
+
+    engine.close()
 
     assert council.decision() == Vote.SELL
-    assert len(council.revisions) == 2
+    assert len(council.revisions) == 1
 
 
-def test_minority_can_remain_unconvinced():
-    council = make_council()
-    engine = DebateEngine(council)
-    engine.start()
+def test_minority_remains_recorded():
+    engine = DebateEngine(make_council())
 
-    engine.submit_argument(make_argument())
+    complete_debate(engine)
 
-    assert council.decision() == Vote.BUY
     assert len(engine.unresolved_dissent()) == 2
-    assert len(council.revisions) == 0
 
 
 def test_next_round():
     engine = DebateEngine(make_council())
     engine.start()
-
     engine.next_round()
 
     assert engine.round_number == 2
 
 
-def test_maximum_rounds_enforced():
-    engine = DebateEngine(
-        make_council(),
-        max_rounds=2,
-    )
+def test_max_rounds_enforced():
+    engine = DebateEngine(make_council(), max_rounds=2)
     engine.start()
     engine.next_round()
 
@@ -192,31 +285,53 @@ def test_maximum_rounds_enforced():
         engine.next_round()
 
 
-def test_close_debate():
+def test_closed_debate_rejects_arguments():
     engine = DebateEngine(make_council())
-    engine.start()
-    engine.close()
-
-    assert engine.status == DebateStatus.CLOSED
+    complete_debate(engine)
 
     with pytest.raises(ValueError):
-        engine.submit_argument(make_argument())
+        engine.submit_argument(make_argument(AGENTS[0]))
 
 
-def test_audit_log_preserves_arguments():
+def test_closed_debate_rejects_responses():
     engine = DebateEngine(make_council())
-    engine.start()
-    engine.submit_argument(make_argument())
+    complete_debate(engine)
+
+    with pytest.raises(ValueError):
+        engine.submit_response(
+            DebateResponse(
+                agent=AGENTS[0],
+                reasoning="Late response",
+                vote=Vote.BUY,
+                confidence=0.8,
+            )
+        )
+
+
+def test_audit_log_preserves_participation():
+    engine = DebateEngine(make_council())
+    complete_debate(engine)
 
     log = engine.audit_log()
 
-    assert log["status"] == "OPEN"
-    assert log["round_number"] == 1
-    assert len(log["arguments"]) == 1
-    assert log["arguments"][0]["agent"] == AGENTS[4]
+    assert log["status"] == "CLOSED"
+    assert len(log["arguments"]) == 5
+    assert len(log["responses"]) == 5
+    assert log["missing_arguments"] == []
+    assert log["missing_responses"] == []
     assert "council" in log
 
 
 def test_invalid_round_limit():
     with pytest.raises(ValueError):
         DebateEngine(make_council(), max_rounds=0)
+
+
+def test_invalid_response_confidence():
+    with pytest.raises(ValueError):
+        DebateResponse(
+            agent=AGENTS[0],
+            reasoning="Invalid confidence",
+            vote=Vote.BUY,
+            confidence=1.5,
+        )
