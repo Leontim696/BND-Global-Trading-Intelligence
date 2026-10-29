@@ -4,7 +4,8 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from .fusion_council import FusionCouncil, Vote
+from .debate_engine import DebateEngine, DebateStatus
+from .fusion_council import Vote
 from .risk_engine import (
     Portfolio,
     RiskDecision,
@@ -30,16 +31,33 @@ class TradeOutcome:
 
 
 def coordinate_trade(
-    council: FusionCouncil,
+    debate: DebateEngine,
     portfolio: Portfolio,
     limits: RiskLimits,
     proposal: TradeProposal | None,
 ) -> TradeOutcome:
-    """Evaluate a council decision before any virtual order."""
+    """Evaluate a paper-trade proposal after debate and risk checks."""
+
+    if debate.status != DebateStatus.CLOSED:
+        return TradeOutcome(
+            TradeStatus.NO_TRADE,
+            None,
+            0.0,
+            "Debate must be closed before trading",
+        )
+
+    council = debate.council
+
+    if len(council.initial_opinions) != 6:
+        return TradeOutcome(
+            TradeStatus.NO_TRADE,
+            None,
+            0.0,
+            "All six agents must submit initial opinions",
+        )
 
     decision = council.decision()
 
-    # No majority or incomplete council: no trade.
     if decision is None:
         return TradeOutcome(
             TradeStatus.NO_TRADE,
@@ -48,7 +66,6 @@ def coordinate_trade(
             "No valid council majority",
         )
 
-    # HOLD is never an entry signal.
     if decision == Vote.HOLD:
         return TradeOutcome(
             TradeStatus.NO_TRADE,
@@ -57,7 +74,6 @@ def coordinate_trade(
             "Council voted HOLD",
         )
 
-    # Missing trade details must never trigger execution.
     if proposal is None:
         return TradeOutcome(
             TradeStatus.NO_TRADE,
@@ -66,7 +82,6 @@ def coordinate_trade(
             "Missing trade proposal",
         )
 
-    # Risk Engine has independent veto authority.
     risk = evaluate_risk(portfolio, proposal, limits)
 
     if risk.decision == RiskDecision.REJECT:
