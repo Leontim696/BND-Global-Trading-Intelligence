@@ -1,0 +1,70 @@
+
+name: BND Python Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  python-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Check Python syntax
+        run: |
+          python - <<'PY'
+          import ast
+          from pathlib import Path
+
+          files = [
+              p for p in Path(".").rglob("*.py")
+              if not any(
+                  part.startswith(".") or part == "__pycache__"
+                  for part in p.parts
+              )
+          ]
+
+          for file in files:
+              ast.parse(file.read_text(encoding="utf-8"), filename=str(file))
+              print(f"OK: {file}")
+
+          print(f"Validated {len(files)} Python files")
+          PY
+
+      - name: Run unit tests if present
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import subprocess
+          import sys
+
+          tests = Path("tests")
+          test_files = list(tests.rglob("test_*.py")) if tests.exists() else []
+
+          if not test_files:
+              print("No Python unit tests yet.")
+          else:
+              subprocess.run(
+                  [sys.executable, "-m", "pip", "install", "pytest"],
+                  check=True
+              )
+              subprocess.run(
+                  [sys.executable, "-m", "pytest", "-q"],
+                  check=True
+              )
+          PY
