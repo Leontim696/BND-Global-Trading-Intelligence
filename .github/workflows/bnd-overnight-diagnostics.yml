@@ -1,0 +1,43 @@
+name: BND Overnight Diagnostics
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 20-23,0-3 * * *"
+permissions:
+  contents: read
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BND_ALLOW_LIVE: "false"
+      BND_PAPER_ONLY: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: python -m pip install pytest
+      - name: Capture offline test results
+        run: |
+          mkdir -p overnight-reports
+          python -m pytest -q > overnight-reports/tests.txt 2>&1 || echo "Offline tests failed; inspect tests.txt" > overnight-reports/status.txt
+      - name: Collect code backlog
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          findings = []
+          for path in Path("src").rglob("*.py"):
+              for n, line in enumerate(path.read_text(errors="replace").splitlines(), 1):
+                  if "TODO" in line or "FIXME" in line:
+                      findings.append({"path": str(path), "line": n, "text": line.strip()[:200]})
+          Path("overnight-reports/backlog.json").write_text(json.dumps(findings[:200], indent=2))
+          PY
+      - name: Upload nightly diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bnd-nightly-diagnostics
+          path: overnight-reports/
+          retention-days: 14
