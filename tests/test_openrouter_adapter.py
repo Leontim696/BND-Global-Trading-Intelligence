@@ -508,3 +508,31 @@ def test_explicit_model_overrides_environment(monkeypatch):
     response = adapter.analyze(make_request())
 
     assert response.model == "custom/model"
+
+
+def test_actual_routed_model_is_reported(monkeypatch):
+    configure(monkeypatch)
+    payload = make_payload()
+    payload["model"] = "fallback/actual-model"
+    mock_http(monkeypatch, payload)
+
+    response = OpenRouterAdapter(
+        agent="gpt",
+        allow_live=True,
+    ).analyze(make_request())
+
+    assert response.model == "fallback/actual-model"
+
+
+@pytest.mark.parametrize("model", ["", None, 42])
+def test_invalid_routed_model_is_rejected(monkeypatch, model):
+    configure(monkeypatch)
+    payload = make_payload()
+    payload["model"] = model
+    mock_http(monkeypatch, payload)
+
+    with pytest.raises(InvalidAIResponse):
+        OpenRouterAdapter(
+            agent="gpt",
+            allow_live=True,
+        ).analyze(make_request())
