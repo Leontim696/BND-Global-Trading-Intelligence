@@ -536,3 +536,35 @@ def test_invalid_routed_model_is_rejected(monkeypatch, model):
             agent="gpt",
             allow_live=True,
         ).analyze(make_request())
+
+
+def test_empty_claude_content_has_specific_error(monkeypatch):
+    configure(monkeypatch, "claude")
+    mock_http(monkeypatch, {
+        "choices": [{"message": {"content": "  "}}],
+    })
+
+    with pytest.raises(
+        InvalidAIResponse,
+        match="empty message content",
+    ):
+        OpenRouterAdapter(
+            agent="claude",
+            allow_live=True,
+        ).analyze(make_request("claude"))
+
+
+def test_nonempty_invalid_json_remains_rejected(monkeypatch):
+    configure(monkeypatch, "claude")
+    mock_http(monkeypatch, {
+        "choices": [{"message": {"content": "not-json"}}],
+    })
+
+    with pytest.raises(
+        InvalidAIResponse,
+        match="invalid AI response",
+    ):
+        OpenRouterAdapter(
+            agent="claude",
+            allow_live=True,
+        ).analyze(make_request("claude"))
