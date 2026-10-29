@@ -219,3 +219,46 @@ def test_gateway_keeps_live_mode_disabled(tmp_path):
 
     assert storage.summary()["record_count"] == 0
     assert storage.summary()["active_reservations"] == 0
+
+
+def test_budget_shared_across_gateway_instances(tmp_path):
+    """Independent gateways cannot bypass the persistent budget."""
+    storage = make_storage(tmp_path, daily="0.05", monthly="0.05")
+    provider = FixedUsageProvider(make_response())
+    first = make_gateway(storage, provider)
+    second = make_gateway(
+        make_storage(tmp_path, daily="0.05", monthly="0.05"),
+        provider,
+    )
+
+    first.analyze(make_request())
+
+    with pytest.raises(BudgetExceeded):
+        second.analyze(make_request())
+
+    summary = storage.summary()
+    assert summary["record_count"] == 1
+    assert summary["active_reservations"] == 0
+    assert summary["daily_committed_usd"] == Decimal("0.03")
+
+
+def test_budget_overage_blocks_followup_requests(tmp_path):
+    """A persisted overage must stop additional provider calls."""
+    storage = make_storage(tmp_path, daily="0.05", monthly="0.05")
+    expensive = make_gateway(
+        storage,
+        FixedUsageProvider(make_response(3000, 3000)),
+    )
+
+    with pytest.raises(BudgetExceeded):
+        expensive.analyze(make_request())
+
+    followup = make_gateway(
+        make_storage(tmp_path, daily="0.05", monthly="0.05"),
+        FixedUsageProvider(make_response()),
+    )
+
+    with pytest.raises(BudgetExceeded):
+        followup.analyze(make_request())
+
+    assert storage.summary()["record_count"] == 1
