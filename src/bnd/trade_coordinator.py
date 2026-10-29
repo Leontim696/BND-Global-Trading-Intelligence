@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from .debate_engine import DebateEngine, DebateStatus
-from .fusion_council import Vote
+from .fusion_council import AGENTS, Vote
 from .risk_engine import (
     Portfolio,
     RiskDecision,
@@ -36,7 +36,7 @@ def coordinate_trade(
     limits: RiskLimits,
     proposal: TradeProposal | None,
 ) -> TradeOutcome:
-    """Evaluate a paper-trade proposal after debate and risk checks."""
+    """Evaluate a paper trade after debate and risk checks."""
 
     if debate.status != DebateStatus.CLOSED:
         return TradeOutcome(
@@ -48,12 +48,28 @@ def coordinate_trade(
 
     council = debate.council
 
-    if len(council.initial_opinions) != 6:
+    if len(council.initial_opinions) != len(AGENTS):
         return TradeOutcome(
             TradeStatus.NO_TRADE,
             None,
             0.0,
-            "All six agents must submit initial opinions",
+            "All active agents must submit initial opinions",
+        )
+
+    if debate.missing_arguments():
+        return TradeOutcome(
+            TradeStatus.NO_TRADE,
+            None,
+            0.0,
+            "Missing debate arguments",
+        )
+
+    if debate.missing_responses():
+        return TradeOutcome(
+            TradeStatus.NO_TRADE,
+            None,
+            0.0,
+            "Missing final debate responses",
         )
 
     decision = council.decision()
