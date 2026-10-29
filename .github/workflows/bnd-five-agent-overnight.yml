@@ -1,5 +1,10 @@
 name: BND Five-Agent Overnight Council
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/overnight_five_agent_council.py'
+      - '.github/workflows/bnd-five-agent-overnight.yml'
   workflow_dispatch:
   schedule:
     - cron: "20 20 * * *"
