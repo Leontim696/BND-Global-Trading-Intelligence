@@ -3,7 +3,7 @@ name: BND Overnight Validation
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 1 * * *" # 02:00 CET / 03:00 CEST (UTC)
+    - cron: "0 21 * * *" # 22:00 CET / 23:00 CEST (UTC); adjust for DST
   pull_request:
     branches: [main]
 
