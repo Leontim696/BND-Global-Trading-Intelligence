@@ -19,7 +19,7 @@ def run_research_round(market, symbol, context, *, live=False, providers=None):
         raise RuntimeError("Live research requires explicit environment opt-in")
     if live and os.getenv("BND_LIVE_COUNCIL_APPROVED") != "YES":
         raise RuntimeError("Live council requires explicit paid-round approval")
-    if not live and providers is None:
+    if live:\n        raise RuntimeError("Paid council disabled until per-round budget enforcement is implemented")\n    if not live and providers is None:
         raise RuntimeError("Offline round requires injected mock providers")
     active = providers if providers is not None else configured_adapters()
     if set(active) != set(AGENTS):
