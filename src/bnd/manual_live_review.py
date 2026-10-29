@@ -1,7 +1,7 @@
-"""Two-call manual connectivity check, no trading and no automatic retries.
+"""Three-call manual code review, no trading and no automatic retries.
 
 Provider-side key limit is required: estimates alone cannot cap spending.
-The first GPT answer is passed to Claude for review. Never print secrets.
+GPT proposes, Claude critiques, then GPT revises. Never print secrets.
 """
 import argparse
 import json
@@ -23,7 +23,7 @@ def preflight():
     if not os.getenv("OPENROUTER_API_KEY", "").strip():
         raise RuntimeError("OPENROUTER_API_KEY missing")
     costs = []
-    for agent in ("GPT", "CLAUDE"):
+    for agent in ("GPT", "CLAUDE", "GPT"):
         model = os.getenv(agent + "_MODEL", "").strip()
         if not model or model.lower() == "openrouter/auto":
             raise RuntimeError("Explicit model IDs required")
@@ -42,7 +42,7 @@ def preflight():
     worst = sum(costs)
     if worst > CAP:
         raise RuntimeError("Conservative estimate exceeds USD 0.50")
-    print("Preflight passed; two calls; estimated upper bound based on supplied prices:",
+    print("Preflight passed; three calls; estimated upper bound based on supplied prices:",
           str(worst), "USD (not a hard cap)")
     return worst
 
@@ -91,8 +91,13 @@ def main():
     preflight()
     if args.execute:
         proposal = call("GPT", TASK)
-        call("CLAUDE", "Review this GPT proposal for correctness and tests:\\n"
+        critique = call("CLAUDE", "Review this GPT proposal for correctness and tests:\\n"
              + proposal[:2500] + "\\nOriginal task: " + TASK)
+        call("GPT", "Revise your original proposal based on Claude critique. "
+             "Preserve any valid dissent, explain accepted/rejected criticisms, "
+             "and provide a corrected test. Original task: " + TASK
+             + "\\nOriginal proposal: " + proposal[:2000]
+             + "\\nClaude critique: " + critique[:2000])
 
 
 if __name__ == "__main__":
