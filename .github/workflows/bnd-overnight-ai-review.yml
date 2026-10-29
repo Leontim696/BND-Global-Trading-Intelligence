@@ -1,0 +1,29 @@
+name: BND Overnight AI Review
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 20-23,0-3 * * *"
+permissions:
+  contents: read
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    env:
+      BND_ALLOW_LIVE: "false"
+      BND_PAPER_ONLY: "true"
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      BND_DEV_MODEL: ${{ vars.BND_DEV_MODEL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Generate bounded AI review
+        run: python scripts/overnight_ai_review.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bnd-ai-review-${{ github.run_id }}
+          path: overnight-reports/
+          retention-days: 7
