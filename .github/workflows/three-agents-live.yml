@@ -1,0 +1,78 @@
+name: BND Gemini DeepSeek Grok Live (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_test:
+        description: 'Type YES to authorize one API call per agent'
+        required: true
+        type: string
+      key_limit_confirmed:
+        description: 'Type YES if OpenRouter key has USD 0.50 provider cap'
+        required: true
+        type: string
+      gemini_model:
+        description: 'Google Gemini exact OpenRouter model ID'
+        required: true
+        type: string
+      deepseek_model:
+        description: 'DeepSeek exact OpenRouter model ID'
+        required: true
+        type: string
+      grok_model:
+        description: 'xAI Grok exact OpenRouter model ID'
+        required: true
+        type: string
+      gemini_input_price:
+        description: 'Gemini USD per million input tokens'
+        required: true
+        type: string
+      gemini_output_price:
+        description: 'Gemini USD per million output tokens'
+        required: true
+        type: string
+      deepseek_input_price:
+        description: 'DeepSeek USD per million input tokens'
+        required: true
+        type: string
+      deepseek_output_price:
+        description: 'DeepSeek USD per million output tokens'
+        required: true
+        type: string
+      grok_input_price:
+        description: 'Grok USD per million input tokens'
+        required: true
+        type: string
+      grok_output_price:
+        description: 'Grok USD per million output tokens'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-openrouter-manual-tests
+  cancel-in-progress: false
+
+jobs:
+  connectivity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      CONFIRM: ${{ inputs.confirm_paid_test }}
+      LIMIT_CONFIRM: ${{ inputs.key_limit_confirmed }}
+      GEMINI_MODEL: ${{ inputs.gemini_model }}
+      DEEPSEEK_MODEL: ${{ inputs.deepseek_model }}
+      GROK_MODEL: ${{ inputs.grok_model }}
+      GEMINI_IN: ${{ inputs.gemini_input_price }}
+      GEMINI_OUT: ${{ inputs.gemini_output_price }}
+      DEEPSEEK_IN: ${{ inputs.deepseek_input_price }}
+      DEEPSEEK_OUT: ${{ inputs.deepseek_output_price }}
+      GROK_IN: ${{ inputs.grok_input_price }}
+      GROK_OUT: ${{ inputs.grok_output_price }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify real Gemini DeepSeek and Grok responses
+        run: python -m src.bnd.three_agents_live
