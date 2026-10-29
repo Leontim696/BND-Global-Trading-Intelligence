@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_paid_test:
-        description: 'Type YES to authorize exactly one GPT and one Claude API request'
+        description: 'Type YES to authorize exactly two GPT and one Claude API requests'
         required: true
         type: string
       gpt_model:
@@ -58,7 +58,7 @@ jobs:
       CLAUDE_OUT: ${{ inputs.claude_output_price }}
     steps:
       - uses: actions/checkout@v4
-      - name: Two-model cost and key preflight
+      - name: Three-call cost and key preflight
         run: python -m src.bnd.manual_live_review --preflight
-      - name: One GPT and one Claude call, no trading
+      - name: GPT proposal, Claude critique, GPT revision; no trading
         run: python -m src.bnd.manual_live_review --execute
