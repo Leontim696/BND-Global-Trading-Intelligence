@@ -3,6 +3,7 @@ import json
 import os
 from pathlib import Path
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
 
 AGENTS = ("GPT", "CLAUDE", "GEMINI", "GROK", "DEEPSEEK")
 DEFAULT_MODELS = {
@@ -46,9 +47,15 @@ def main():
                     data = json.loads(response.read(100000))
                 answer = data["choices"][0]["message"]["content"]
                 results["agents"][agent] = {"status": "ok", "proposal": str(answer)[:6000]}
+            except HTTPError as exc:
+                # Record only the status code; never expose response bodies or credentials.
+                results["agents"][agent] = {"status": "failed", "error_type": "HTTPError", "http_status": exc.code, "model": model}
+            except (URLError, TimeoutError) as exc:
+                results["agents"][agent] = {"status": "failed", "error_type": type(exc).__name__, "model": model}
             except Exception as exc:
-                results["agents"][agent] = {"status": "failed", "error_type": type(exc).__name__}
-    results["status"] = "ok" if any(x.get("status") == "ok" for x in results["agents"].values()) else "no_successful_agent"
+                results["agents"][agent] = {"status": "failed", "error_type": type(exc).__name__, "model": model}
+    successful = sum(x.get("status") == "ok" for x in results["agents"].values())
+    results["status"] = "ok" if successful == len(AGENTS) else ("partial_success" if successful else "no_successful_agent")
     (OUT / "five-agent-review.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
 
 if __name__ == "__main__":
@@ -56,4 +63,4 @@ if __name__ == "__main__":
     report = json.loads((OUT / "five-agent-review.json").read_text(encoding="utf-8"))
     print("Agent statuses:", {k: v["status"] for k, v in report["agents"].items()})
     if report["status"] != "ok":
-        raise SystemExit("No AI agent responded successfully; check OpenRouter configuration and report artifact")
+        raise SystemExit("Five-agent council incomplete; check per-agent statuses and report artifact")
