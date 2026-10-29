@@ -5,6 +5,14 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 
 AGENTS = ("GPT", "CLAUDE", "GEMINI", "GROK", "DEEPSEEK")
+DEFAULT_MODELS = {
+    "GPT": "openai/gpt-4.1-mini",
+    "CLAUDE": "anthropic/claude-sonnet-4.5",
+    "GEMINI": "google/gemini-2.5-flash",
+    "GROK": "x-ai/grok-4-fast",
+    "DEEPSEEK": "deepseek/deepseek-chat",
+}
+
 OUT = Path("overnight-reports")
 
 def main():
@@ -18,7 +26,7 @@ def main():
         for path in sorted(Path("src").rglob("*.py"))[:8]:
             sources.append({"path": str(path), "excerpt": path.read_text(errors="replace")[:1800]})
         for agent in AGENTS:
-            model = os.getenv("BND_MODEL_" + agent, "").strip()
+            model = os.getenv("BND_MODEL_" + agent, "").strip() or DEFAULT_MODELS[agent]
             if not model:
                 results["agents"][agent] = {"status": "model_not_configured"}
                 continue
@@ -40,7 +48,12 @@ def main():
                 results["agents"][agent] = {"status": "ok", "proposal": str(answer)[:6000]}
             except Exception as exc:
                 results["agents"][agent] = {"status": "failed", "error_type": type(exc).__name__}
+    results["status"] = "ok" if any(x.get("status") == "ok" for x in results["agents"].values()) else "no_successful_agent"
     (OUT / "five-agent-review.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
 
 if __name__ == "__main__":
     main()
+    report = json.loads((OUT / "five-agent-review.json").read_text(encoding="utf-8"))
+    print("Agent statuses:", {k: v["status"] for k, v in report["agents"].items()})
+    if report["status"] != "ok":
+        raise SystemExit("No AI agent responded successfully; check OpenRouter configuration and report artifact")
