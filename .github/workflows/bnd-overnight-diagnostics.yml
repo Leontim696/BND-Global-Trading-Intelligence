@@ -21,8 +21,12 @@ jobs:
       - name: Capture offline test results
         run: |
           mkdir -p overnight-reports
-          python -m pytest -q > overnight-reports/tests.txt 2>&1 || echo "Offline tests failed; inspect tests.txt" > overnight-reports/status.txt
+          python -m pytest -q > overnight-reports/tests.txt 2>&1 || {
+            echo "Offline tests failed; inspect tests.txt" > overnight-reports/status.txt
+            exit 1
+          }
       - name: Collect code backlog
+        if: always()
         run: |
           python - <<'PY'
           from pathlib import Path
