@@ -192,6 +192,12 @@ class OpenRouterAdapter:
 
             vote = Vote(analysis["vote"])
 
+            # Provider fallbacks may use a different model than requested.
+            # Record the model actually reported by OpenRouter.
+            response_model = result.get("model", model)
+            if not isinstance(response_model, str) or not response_model.strip():
+                raise ValueError("Invalid response model")
+
             usage = result.get("usage") or {}
 
             if not isinstance(usage, dict):
@@ -207,7 +213,7 @@ class OpenRouterAdapter:
                 vote=vote,
                 reasoning=analysis["reasoning"],
                 confidence=analysis["confidence"],
-                model=model,
+                model=response_model,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
             )
