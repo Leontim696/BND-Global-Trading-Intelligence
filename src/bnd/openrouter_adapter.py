@@ -178,6 +178,11 @@ class OpenRouterAdapter:
             if not isinstance(content, str):
                 raise ValueError("Invalid message content")
 
+            if not content.strip():
+                raise InvalidAIResponse(
+                    "OpenRouter returned empty message content"
+                )
+
             analysis = json.loads(content)
 
             if not isinstance(analysis, dict):
@@ -217,6 +222,9 @@ class OpenRouterAdapter:
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
             )
+
+        except InvalidAIResponse:
+            raise
 
         except (
             ValueError,
