@@ -9,7 +9,7 @@ from decimal import Decimal
 
 import pytest
 
-from bnd.ai_gateway import (
+from src.bnd.ai_gateway import (
     AIGateway,
     AIRequest,
     AIResponse,
@@ -19,13 +19,13 @@ from bnd.ai_gateway import (
     MockAIProvider,
     ProviderUnavailable,
 )
-from bnd.cost_storage import SQLiteCostStorage
-from bnd.cost_tracker import (
+from src.bnd.cost_storage import SQLiteCostStorage
+from src.bnd.cost_tracker import (
     BudgetExceeded,
     BudgetLimits,
     ModelPricing,
 )
-from bnd.fusion_council import Vote
+from src.bnd.fusion_council import Vote
 
 
 MODEL = "mock-gpt"
