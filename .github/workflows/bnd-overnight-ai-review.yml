@@ -2,9 +2,12 @@ name: BND Overnight AI Review
 on:
   workflow_dispatch:
   schedule:
-    - cron: "20 20-23,0-3 * * *"
+    - cron: "50 21 * * *"
 permissions:
   contents: read
+concurrency:
+  group: bnd-paid-ai
+  cancel-in-progress: false
 jobs:
   review:
     runs-on: ubuntu-latest

@@ -11,7 +11,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: bnd-five-agent-council
+  group: bnd-paid-ai
   cancel-in-progress: false
 jobs:
   council:
