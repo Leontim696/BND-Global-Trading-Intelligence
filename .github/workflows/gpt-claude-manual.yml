@@ -1,0 +1,64 @@
+name: BND GPT-Claude Live Connectivity (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm_paid_test:
+        description: 'Type YES to authorize exactly one GPT and one Claude API request'
+        required: true
+        type: string
+      gpt_model:
+        description: 'Exact OpenRouter GPT model ID (no auto)'
+        required: true
+        type: string
+      claude_model:
+        description: 'Exact OpenRouter Claude model ID (no auto)'
+        required: true
+        type: string
+      gpt_input_price:
+        description: 'GPT USD per 1M input tokens; verify from OpenRouter'
+        required: true
+        type: string
+      gpt_output_price:
+        description: 'GPT USD per 1M output tokens; verify from OpenRouter'
+        required: true
+        type: string
+      claude_input_price:
+        description: 'Claude USD per 1M input tokens; verify from OpenRouter'
+        required: true
+        type: string
+      claude_output_price:
+        description: 'Claude USD per 1M output tokens; verify from OpenRouter'
+        required: true
+      key_limit_confirmed:
+        description: 'Type YES only if bndaiteam has a provider-side USD 0.50 spending limit'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-first-live-review
+  cancel-in-progress: false
+
+jobs:
+  controlled-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      CONFIRM: ${{ inputs.confirm_paid_test }}
+      LIMIT_CONFIRM: ${{ inputs.key_limit_confirmed }}
+      GPT_MODEL: ${{ inputs.gpt_model }}
+      CLAUDE_MODEL: ${{ inputs.claude_model }}
+      GPT_IN: ${{ inputs.gpt_input_price }}
+      GPT_OUT: ${{ inputs.gpt_output_price }}
+      CLAUDE_IN: ${{ inputs.claude_input_price }}
+      CLAUDE_OUT: ${{ inputs.claude_output_price }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Two-model cost and key preflight
+        run: python -m src.bnd.manual_live_review --preflight
+      - name: One GPT and one Claude call, no trading
+        run: python -m src.bnd.manual_live_review --execute
