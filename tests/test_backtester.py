@@ -409,3 +409,74 @@ def test_risk_sizing_shows_low_capital_exposure():
 
     # 1% risk / 5% stop -> 20% of equity invested on 4 of 5 bars.
     assert result.metrics["avg_capital_exposure_pct"] == pytest.approx(16.0)
+
+
+def test_fractional_exposure_tracks_part_of_the_move():
+    candles = bars([100, 100, 200])
+
+    result = run_backtest(candles, lambda h: 0.5, BacktestConfig(costs=NO_COSTS))
+
+    # 50 units bought at 100 with half the equity; price doubles.
+    assert result.trades[0].quantity == pytest.approx(50)
+    assert result.metrics["final_equity"] == pytest.approx(15_000)
+
+
+def test_rebalance_reduces_position_and_pnl_is_exact():
+    candles = bars([100, 100, 200, 200, 100])
+    # Full position, then half from bar 3's open.
+    config = BacktestConfig(costs=CostModel(fee_pct=0.1, slippage_pct=0.0))
+
+    result = run_backtest(candles, fixed(1, 1, 0.5, 0.5, 0.5), config)
+
+    assert len(result.trades) == 1
+    trade = result.trades[0]
+    fee = 0.001
+    units = 10_000 / (100 * (1 + fee))
+    after_buy = 10_000 - units * 100 * (1 + fee)
+    equity_at_200 = after_buy + units * 200
+    sold = units - equity_at_200 * 0.5 / 200
+    cash = after_buy + sold * 200 * (1 - fee)
+    final = cash + (units - sold) * 100 * (1 - fee)
+    assert result.metrics["final_equity"] == pytest.approx(final)
+    assert trade.pnl == pytest.approx(final - 10_000)
+    assert trade.fees == pytest.approx(
+        units * 100 * fee + sold * 200 * fee + (units - sold) * 100 * fee
+    )
+
+
+def test_small_target_changes_do_not_rebalance():
+    candles = bars([100, 100, 120, 150])
+    config = BacktestConfig(costs=CostModel(fee_pct=0.1, slippage_pct=0.0))
+
+    nudged = run_backtest(candles, fixed(1, 1, 0.95, 0.95), config)
+    steady = run_backtest(candles, fixed(1, 1, 1, 1), config)
+
+    # 0.05 is below the 0.10 rebalance threshold: no extra trades or fees.
+    assert nudged.metrics["final_equity"] == pytest.approx(steady.metrics["final_equity"])
+
+
+def test_rebalance_increase_is_capped_by_whole_position_risk():
+    candles = bars([100, 100, 100, 100, 100])
+    config = BacktestConfig(
+        costs=NO_COSTS,
+        stop_loss_pct=5.0,
+        risk_limits=RiskLimits(1.0, 3.0, 25.0, 100.0, 1.0),
+    )
+
+    # 10% exposure, then a request for 50% and later 60%.
+    result = run_backtest(candles, fixed(0.1, 0.5, 0.6, 0.6, 0.6), config)
+
+    # 1% risk / 5% stop caps the WHOLE position at 2,000 = 20 units.
+    assert result.trades[0].quantity == pytest.approx(20)
+    assert result.rejected_entries == 0
+
+
+@pytest.mark.parametrize("bad", [1.5, -1.01, float("nan"), True, "1"])
+def test_invalid_fractional_targets_rejected(bad):
+    with pytest.raises(ValueError):
+        run_backtest(bars([100, 101, 102]), lambda h: bad)
+
+
+def test_rebalance_threshold_validation():
+    with pytest.raises(ValueError):
+        BacktestConfig(rebalance_threshold=0)

@@ -26,8 +26,9 @@ from .risk_engine import (
     evaluate_risk,
 )
 
-# Target position: 1 = long, 0 = flat, -1 = short.
-Strategy = Callable[[Sequence[Candle]], int]
+# Target exposure in [-1, 1] as a fraction of the allocation:
+# 1 = fully long, 0 = flat, -1 = fully short, 0.6 = 60% long.
+Strategy = Callable[[Sequence[Candle]], float]
 
 SECONDS_PER_YEAR = 365.25 * 24 * 3600
 
@@ -55,6 +56,9 @@ class BacktestConfig:
     stop_loss_pct: float | None = None
     allow_short: bool = False
     risk_limits: RiskLimits | None = None
+    # Resize an open position only when the target exposure moves by at
+    # least this fraction of the allocation, to limit fee churn.
+    rebalance_threshold: float = 0.10
 
     def __post_init__(self):
         if not isfinite(self.initial_equity) or self.initial_equity <= 0:
@@ -68,6 +72,9 @@ class BacktestConfig:
             or not 0 < self.stop_loss_pct < 100
         ):
             raise ValueError("Stop loss must be in (0, 100) percent")
+
+        if not isfinite(self.rebalance_threshold) or not 0 < self.rebalance_threshold <= 1:
+            raise ValueError("Rebalance threshold must be in (0, 1]")
 
         if self.risk_limits is not None and self.stop_loss_pct is None:
             raise ValueError("Risk limits require a stop loss for sizing")
@@ -186,9 +193,13 @@ class _Simulator:
         self.cash = config.initial_equity
         self.quantity = 0.0
         self.side = 0
+        # Requested exposure of the open position (fraction of allocation).
+        self.size = 0.0
+        self.trade_start_cash = 0.0
+        self.trade_fees = 0.0
+        self.max_quantity = 0.0
         self.entry_time: datetime | None = None
         self.entry_price = 0.0
-        self.entry_fee = 0.0
         self.stop_price: float | None = None
         self.trades: list[Trade] = []
         self.rejected_entries = 0
@@ -209,70 +220,121 @@ class _Simulator:
     def _fee(self, notional: float) -> float:
         return abs(notional) * self.config.costs.fee_pct / 100
 
-    def open_position(self, side: int, candle: Candle) -> None:
+    def _approve(self, equity: float, notional: float, held: float) -> float | None:
+        """Risk-approved additional notional, or None when vetoed."""
+        if self.config.risk_limits is None:
+            return notional
+        risk = evaluate_risk(
+            Portfolio(
+                equity=equity,
+                daily_loss=max(0.0, self.day_start_equity - equity),
+                drawdown=max(0.0, self.peak - equity),
+                gross_exposure=held,
+            ),
+            TradeProposal(
+                notional=notional,
+                stop_loss_pct=self.config.stop_loss_pct,
+                leverage=1.0,
+            ),
+            self.config.risk_limits,
+        )
+        if risk.decision == RiskDecision.REJECT:
+            self.rejected_entries += 1
+            return None
+        return risk.approved_notional
+
+    def _add(self, notional: float, candle: Candle) -> None:
+        """Buy (long) or sell short ``notional`` more at the open."""
+        side = self.side
+        price = self._fill(candle.open, side)
+        # Keep the fee inside the approved notional.
+        added = notional / (price * (1 + self.config.costs.fee_pct / 100))
+        fee = self._fee(added * price)
+        held = abs(self.quantity)
+
+        self.entry_price = (held * self.entry_price + added * price) / (held + added)
+        self.quantity += side * added
+        self.cash -= side * added * price + fee
+        self.trade_fees += fee
+        self.max_quantity = max(self.max_quantity, abs(self.quantity))
+
+        if self.config.stop_loss_pct is not None:
+            distance = self.config.stop_loss_pct / 100
+            self.stop_price = self.entry_price * (1 - side * distance)
+
+    def open_position(self, side: int, candle: Candle, size: float = 1.0) -> None:
         equity = self.equity(candle.open)
         if equity <= 0:
             # Account wiped out (e.g. a short gapped through its stop).
             self.rejected_entries += 1
             return
-        notional = equity * self.config.allocation_pct / 100
+        notional = self._approve(
+            equity, equity * self.config.allocation_pct / 100 * size, 0.0
+        )
+        if notional is None:
+            return
 
-        if self.config.risk_limits is not None:
-            risk = evaluate_risk(
-                Portfolio(
-                    equity=equity,
-                    daily_loss=max(0.0, self.day_start_equity - equity),
-                    drawdown=max(0.0, self.peak - equity),
-                    gross_exposure=0.0,
-                ),
-                TradeProposal(
-                    notional=notional,
-                    stop_loss_pct=self.config.stop_loss_pct,
-                    leverage=1.0,
-                ),
-                self.config.risk_limits,
-            )
-            if risk.decision == RiskDecision.REJECT:
-                self.rejected_entries += 1
-                return
-            notional = risk.approved_notional
-
-        price = self._fill(candle.open, side)
-        # Keep the entry fee inside the approved notional.
-        quantity = notional / (price * (1 + self.config.costs.fee_pct / 100))
-        fee = self._fee(quantity * price)
-
-        self.quantity = side * quantity
-        self.cash -= self.quantity * price + fee
+        self.trade_start_cash = self.cash
+        self.trade_fees = 0.0
+        self.max_quantity = 0.0
+        self.quantity = 0.0
+        self.entry_price = 0.0
         self.side = side
+        self.size = size
         self.entry_time = candle.open_time
-        self.entry_price = price
-        self.entry_fee = fee
+        self._add(notional, candle)
 
-        if self.config.stop_loss_pct is not None:
-            distance = self.config.stop_loss_pct / 100
-            self.stop_price = price * (1 - side * distance)
+    def resize_position(self, size: float, candle: Candle) -> None:
+        """Move an open position toward ``size`` of the allocation."""
+        equity = self.equity(candle.open)
+        if equity <= 0:
+            return
+        held = abs(self.quantity) * candle.open
+        wanted = equity * self.config.allocation_pct / 100 * size
+        change = wanted - held
+
+        if change > 0:
+            # Approve the whole resulting position, so repeated small
+            # increases cannot add up past the per-trade risk limit.
+            approved = self._approve(equity, wanted, 0.0)
+            if approved is None:
+                return
+            change = min(change, approved - held)
+            if change > 0:
+                self._add(change, candle)
+        elif change < 0:
+            removed = min(-change / candle.open, abs(self.quantity))
+            price = self._fill(candle.open, -self.side)
+            fee = self._fee(removed * price)
+            self.quantity -= self.side * removed
+            self.cash += self.side * removed * price - fee
+            self.trade_fees += fee
+
+        self.size = size
 
     def close_position(self, time: datetime, raw_price: float, reason: str) -> None:
         price = self._fill(raw_price, -self.side)
         fee = self._fee(self.quantity * price)
         self.cash += self.quantity * price - fee
-        pnl = self.quantity * (price - self.entry_price) - self.entry_fee - fee
+        self.trade_fees += fee
 
+        # Flat before and after, so the cash change is the exact P&L,
+        # including every resize and fee.
         self.trades.append(Trade(
             side=self.side,
             entry_time=self.entry_time,
             entry_price=self.entry_price,
             exit_time=time,
             exit_price=price,
-            quantity=abs(self.quantity),
-            pnl=pnl,
-            fees=self.entry_fee + fee,
+            quantity=self.max_quantity,
+            pnl=self.cash - self.trade_start_cash,
+            fees=self.trade_fees,
             exit_reason=reason,
         ))
 
         self.quantity = 0.0
         self.side = 0
+        self.size = 0.0
         self.stop_price = None
 
     def check_stop(self, candle: Candle) -> bool:
@@ -344,15 +406,20 @@ def run_backtest(
 
         # 1. Execute the decision made on the previous candle's close.
         if index > 0:
-            if target != blocked_side:
+            target_side = _sign(target)
+            if target_side != blocked_side:
                 blocked_side = 0
-            desired = target if target != blocked_side else 0
+            desired_side = target_side if target_side != blocked_side else 0
+            desired_size = abs(target) if desired_side else 0.0
 
-            if desired != sim.side:
+            if desired_side != sim.side:
                 if sim.side != 0:
                     sim.close_position(candle.open_time, candle.open, "signal")
-                if desired != 0:
-                    sim.open_position(desired, candle)
+                if desired_side != 0:
+                    sim.open_position(desired_side, candle, desired_size)
+            elif (sim.side != 0 and abs(desired_size - sim.size)
+                  >= config.rebalance_threshold - 1e-12):
+                sim.resize_position(desired_size, candle)
 
         # 2. Intrabar stop loss.
         if sim.side != 0:
@@ -407,11 +474,20 @@ def run_backtest(
     )
 
 
-def _decide(strategy, candles, index, config) -> int:
+def _sign(value: float) -> int:
+    return (value > 0) - (value < 0)
+
+
+def _decide(strategy, candles, index, config) -> float:
     """Ask the strategy for a target using candles[:index + 1] only."""
     target = strategy(_History(candles, index + 1))
-    if type(target) is not int or target not in (-1, 0, 1):
-        raise ValueError("Strategy must return -1, 0 or 1")
+    if (
+        isinstance(target, bool)
+        or not isinstance(target, (int, float))
+        or not isfinite(target)
+        or not -1 <= target <= 1
+    ):
+        raise ValueError("Strategy must return a number in [-1, 1]")
     if target < 0 and not config.allow_short:
         return 0
     return target

@@ -16,7 +16,7 @@ are ever placed.
 | `cost_tracker`, `cost_storage` | In-memory and SQLite token-cost accounting with daily/monthly budgets |
 | `market_data` | Validated OHLCV candles, CSV storage, Binance public-data download |
 | `backtester` | Next-open execution, fees, slippage, stop losses, risk-engine sizing, metrics |
-| `strategies` | Baselines: buy-and-hold, SMA crossover, Donchian breakout |
+| `strategies` | Baselines: buy-and-hold, SMA crossover, Donchian breakout, volatility targeting |
 | `quant_backtest`, `quant_evaluation`, `quant_metrics`, `quant_report` | Long/flat SMA walk-forward folds with risk-adjusted metrics versus buy-and-hold |
 | `council_orchestrator`, `council_round`, `live_council_bridge` | Five-agent research rounds; the paid live council stays disabled |
 | `code_review_loop`, `review_budget`, `manual_live_review` | GPT → Claude → GPT review with a fail-closed USD 0.50 preflight |
@@ -51,6 +51,17 @@ python -m src.bnd.backtest_cli walk-forward --data data/BTCUSDT-4h.csv \
 python -m src.bnd.backtest_cli robustness --data data/BTCUSDT-4h.csv \
     --strategy sma_crossover --stop-loss 5 --risk-per-trade 1
 ```
+
+Strategies return a target exposure in [-1, 1]; fractions such as 0.6
+hold 60% of the allocation, and positions are resized only when the
+target moves by `--rebalance` points (default 10).
+
+`volatility_target` holds `--target-vol` / realised volatility (capped at
+100%, no leverage), optionally flat below a `--trend` SMA. It aims at a
+better risk-adjusted result, not at beating buy-and-hold on return, so
+judge it by out-of-sample Sharpe and drawdown. A protective stop blocks
+re-entry until the target turns flat, which without `--trend` may never
+happen; research runs therefore use `--no-risk-gate --trend 1200`.
 
 `robustness` asks whether a result is an edge or luck:
 - **Parameter grid:** every combination (`--fast-range 10:50:10 --slow-range 50:200:25`);

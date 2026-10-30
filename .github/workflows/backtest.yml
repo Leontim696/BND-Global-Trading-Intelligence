@@ -19,9 +19,9 @@ on:
         description: 'Strategy'
         default: 'sma_crossover'
         type: choice
-        options: [sma_crossover, donchian_breakout, buy_and_hold]
+        options: [sma_crossover, donchian_breakout, volatility_target, buy_and_hold]
       extra_args:
-        description: 'Extra run arguments, e.g. --stop-loss 5 --risk-per-trade 1'
+        description: 'Extra run arguments, e.g. --stop-loss 5 --risk-per-trade 1 (volatility_target: --no-risk-gate --trend 1200)'
         default: '--stop-loss 5 --risk-per-trade 1'
         type: string
       publish:

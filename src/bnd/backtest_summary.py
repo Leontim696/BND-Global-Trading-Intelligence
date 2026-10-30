@@ -162,6 +162,24 @@ def verdict(robustness: dict | None) -> str:
             "before trusting it; this is not a profitability guarantee.")
 
 
+def risk_adjusted_line(run: dict | None) -> str | None:
+    """Out-of-sample Sharpe, drawdown and exposure versus buy-and-hold."""
+
+    period = (run or {}).get("periods", {}).get("out_of_sample")
+    if not period:
+        return None
+    strategy, benchmark = period["strategy"], period["buy_and_hold"]
+    return (
+        f"Out-of-sample, risk-adjusted: Sharpe {_fmt(strategy.get('sharpe'))} vs "
+        f"{_fmt(benchmark.get('sharpe'))} for buy & hold; max drawdown "
+        f"{_fmt(strategy.get('max_drawdown_pct'), '%')} vs "
+        f"{_fmt(benchmark.get('max_drawdown_pct'), '%')}; return "
+        f"{_fmt(strategy.get('total_return_pct'), '%')} vs "
+        f"{_fmt(benchmark.get('total_return_pct'), '%')} with "
+        f"{_fmt(strategy.get('avg_capital_exposure_pct'), '%')} average capital invested."
+    )
+
+
 def build_summary(run=None, walk_forward=None, robustness=None) -> str:
     reports, problems = {}, []
     for name, path in (("run", run), ("walk_forward", walk_forward),
@@ -176,6 +194,9 @@ def build_summary(run=None, walk_forward=None, robustness=None) -> str:
     if dataset_source:
         lines += _dataset_lines(dataset_source)
     lines += ["## Verdict", verdict(reports["robustness"]), ""]
+    risk_line = risk_adjusted_line(reports["run"])
+    if risk_line:
+        lines += [risk_line, ""]
     if reports["run"]:
         lines += _run_lines(reports["run"])
     if reports["walk_forward"]:

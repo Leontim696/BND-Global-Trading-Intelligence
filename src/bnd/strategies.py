@@ -1,12 +1,14 @@
 """Baseline strategies for the backtester.
 
 These are reference points, not recommendations. Every strategy
-receives only past candles and returns 1 (long), 0 (flat) or -1 (short).
+receives only past candles and returns a target exposure in [-1, 1]:
+1 (long), 0 (flat), -1 (short) or a fraction such as 0.6 (60% long).
 """
 
+from math import log, sqrt
 from typing import Sequence
 
-from .backtester import Strategy
+from .backtester import SECONDS_PER_YEAR, Strategy
 from .market_data import Candle
 
 
@@ -80,8 +82,88 @@ def donchian_breakout(entry: int = 55, exit: int = 20) -> Strategy:
     return strategy
 
 
+def volatility_target(
+    target_vol: float = 40.0,
+    lookback: int = 180,
+    trend: int = 0,
+    max_exposure: float = 1.0,
+    step: float = 0.1,
+) -> Strategy:
+    """Long exposure = target / realised volatility, capped, no leverage.
+
+    target_vol: annualised volatility target in percent.
+    lookback: candles used to measure realised volatility.
+    trend: optional SMA length; flat while the close is below it (0 = off).
+    step: exposure is rounded to this grid to limit rebalancing.
+    """
+
+    if not 0 < target_vol <= 500:
+        raise ValueError("Target volatility must be in (0, 500] percent")
+    if type(lookback) is not int or lookback < 2:
+        raise ValueError("Lookback must be an integer >= 2")
+    if type(trend) is not int or trend < 0:
+        raise ValueError("Trend length must be a nonnegative integer")
+    if not 0 < max_exposure <= 1:
+        raise ValueError("Maximum exposure must be in (0, 1]")
+    if not 0 < step <= max_exposure:
+        raise ValueError("Step must be in (0, max_exposure]")
+
+    # Rolling sums of log returns over the window. The backtester calls
+    # the strategy once per candle in order, so each call normally adds
+    # one return and drops one; anything else triggers a full recompute.
+    state = {"length": None, "last": None, "sum": 0.0, "sumsq": 0.0, "steps": 0}
+
+    def rolling_stdev(history: Sequence[Candle]) -> float:
+        length = len(history)
+        incremental = (
+            state["length"] == length - 1
+            and history[-2] is state["last"]
+            and state["steps"] < 500
+        )
+        if incremental:
+            new = log(history[-1].close / history[-2].close)
+            old = log(history[-lookback - 1].close / history[-lookback - 2].close)
+            state["sum"] += new - old
+            state["sumsq"] += new * new - old * old
+            state["steps"] += 1
+        else:
+            window = history[-lookback - 1:]
+            returns = [log(b.close / a.close) for a, b in zip(window, window[1:])]
+            state["sum"], state["sumsq"] = sum(returns), sum(r * r for r in returns)
+            state["steps"] = 0
+        state["length"], state["last"] = length, history[-1]
+        variance = (state["sumsq"] - state["sum"] ** 2 / lookback) / (lookback - 1)
+        return sqrt(max(variance, 0.0))
+
+    def strategy(history: Sequence[Candle]) -> float:
+        if len(history) <= max(lookback, trend) + 1:
+            return 0
+
+        # Always update the rolling window, even when the trend filter
+        # keeps the strategy flat, so it stays incremental.
+        deviation = rolling_stdev(history)
+
+        if trend and history[-1].close < _sma(history, trend):
+            return 0
+
+        # Average spacing, so occasional missing candles do not distort it.
+        seconds = (
+            history[-1].open_time - history[-lookback - 1].open_time
+        ).total_seconds()
+        volatility = deviation * sqrt(SECONDS_PER_YEAR * lookback / seconds)
+
+        exposure = (
+            max_exposure if volatility <= 0
+            else min(max_exposure, target_vol / 100 / volatility)
+        )
+        return min(max_exposure, round(exposure / step) * step)
+
+    return strategy
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
     "sma_crossover": sma_crossover,
     "donchian_breakout": donchian_breakout,
+    "volatility_target": volatility_target,
 }

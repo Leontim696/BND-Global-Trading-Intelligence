@@ -50,6 +50,7 @@ from .strategies import STRATEGIES, buy_and_hold
 SWEEP_PARAMS = {
     "sma_crossover": (("fast", "fast"), ("slow", "slow")),
     "donchian_breakout": (("entry", "entry"), ("exit", "exit")),
+    "volatility_target": (("target_vol", "target_vol"), ("vol_lookback", "lookback")),
 }
 
 SUMMARY_KEYS = (
@@ -81,6 +82,9 @@ def _make_strategy(args):
         return factory(fast=args.fast, slow=args.slow)
     if args.strategy == "donchian_breakout":
         return factory(entry=args.entry, exit=args.exit)
+    if args.strategy == "volatility_target":
+        return factory(target_vol=args.target_vol, lookback=args.vol_lookback,
+                       trend=args.trend)
     return factory()
 
 
@@ -159,6 +163,7 @@ def _build_configs(args):
         stop_loss_pct=args.stop_loss,
         allow_short=args.allow_short,
         risk_limits=risk_limits,
+        rebalance_threshold=args.rebalance / 100,
     )
     benchmark_config = BacktestConfig(
         initial_equity=args.equity, costs=config.costs
@@ -243,6 +248,11 @@ def command_robustness(args) -> int:
     config, benchmark_config = _build_configs(args)
     cut = split_index(len(candles), args.in_sample)
     factory = STRATEGIES[args.strategy]
+    if args.strategy == "volatility_target":
+        # Keep the fixed --trend filter while sweeping the other parameters.
+        base = factory
+        def factory(**params):
+            return base(trend=args.trend, **params)
     ranges = {
         name: parse_range(getattr(args, option + "_range"))
         for option, name in SWEEP_PARAMS[args.strategy]
@@ -316,6 +326,14 @@ def build_parser() -> argparse.ArgumentParser:
     common.add_argument("--slow", type=int, default=50)
     common.add_argument("--entry", type=int, default=55)
     common.add_argument("--exit", type=int, default=20)
+    common.add_argument("--target-vol", type=float, default=40.0,
+                        help="volatility_target: annualised target in percent")
+    common.add_argument("--vol-lookback", type=int, default=180,
+                        help="volatility_target: candles for realised volatility")
+    common.add_argument("--trend", type=int, default=0,
+                        help="volatility_target: flat below this SMA (0 = off)")
+    common.add_argument("--rebalance", type=float, default=10.0,
+                        help="resize only when target exposure moves this many points")
     common.add_argument("--equity", type=float, default=10_000.0)
     common.add_argument("--fee", type=float, default=0.10,
                         help="percent per fill")
@@ -347,6 +365,8 @@ def build_parser() -> argparse.ArgumentParser:
     robust.add_argument("--slow-range", default="50:200:25")
     robust.add_argument("--entry-range", default="20:100:20")
     robust.add_argument("--exit-range", default="10:50:10")
+    robust.add_argument("--target-vol-range", default="20:80:10")
+    robust.add_argument("--vol-lookback-range", default="60:360:60")
     robust.add_argument("--permutations", type=int, default=200)
     robust.add_argument("--seed", type=int, default=7)
     robust.add_argument("--full-grid", action="store_true",
