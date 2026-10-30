@@ -35,6 +35,7 @@ from .market_data import MarketDataError, load_csv
 from .paper_engine import Instrument, OrderRequest, PaperEngine, PaperEngineError
 from .portfolio import PortfolioConfig, _Book, _History, _volatility, target_weights
 from .robustness import parse_value
+from .scenarios import run_scenarios
 from .signal_pipeline import average_true_range
 from .strategies import SWEEP_RANGES
 from .universe import select as select_markets
@@ -216,6 +217,8 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
         weights = fit_limits(engine, weights, config.margin)
         report.update(signals=signals, weights=weights,
                       orders=rebalance(engine, data, weights, config, now))
+    # Current positions only: today's orders fill at the next open.
+    report["scenarios"] = run_scenarios(engine)
     summary = engine.summary()
     report.update(equity=summary["equity"], cash=summary["cash"],
                   gross_leverage=summary["gross_leverage"],
@@ -277,6 +280,14 @@ def render_report(engine: PaperEngine, report: dict) -> str:
                          f"{100 * o['weight_to']:+.1f}% | {o['status']} | {note} |")
     else:
         lines.append("No changes.")
+    if engine.positions():
+        lines += ["", "## Stress scenarios (instant shock to current positions)", "",
+                  "| Scenario | Equity change | Biggest loser | Kill switch |",
+                  "|---|---:|---|---|"]
+        lines += [f"| {row['description']} | {row['change_pct']:+.1f}% | "
+                  f"{row['worst_market'] or '-'} | "
+                  f"{'would trip' if row['beyond_kill_switch'] else 'no'} |"
+                  for row in report.get("scenarios", [])]
     past = history(engine)[-30:]
     if len(past) > 1:
         lines += ["", "## Equity, last runs", "", "| Run | Equity |", "|---|---:|"]
