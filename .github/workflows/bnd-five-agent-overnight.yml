@@ -37,7 +37,7 @@ jobs:
       BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT || 'openai/gpt-4o-mini' }}
       BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE || 'anthropic/claude-haiku-4.5' }}
       BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI || 'google/gemini-2.5-flash-lite' }}
-      BND_MODEL_GROK: ${{ vars.BND_MODEL_GROK || 'x-ai/grok-3-mini' }}
+      BND_MODEL_GROK: ${{ vars.BND_MODEL_GROK || 'x-ai/grok-4.1-fast' }}
       BND_MODEL_DEEPSEEK: ${{ vars.BND_MODEL_DEEPSEEK || 'deepseek/deepseek-chat' }}
     steps:
       - uses: actions/checkout@v4
