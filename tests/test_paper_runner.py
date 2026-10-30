@@ -273,3 +273,18 @@ def test_cli_combo_members_are_stored(tmp_path, monkeypatch, capsys):
     assert paper_runner.main(base) == 0
     settings = json.loads(capsys.readouterr().out)["settings"]
     assert settings["strategy"] == "combo" and settings["members"] == "macd,momentum"
+
+
+def test_report_shows_stress_scenarios_once_positions_exist(tmp_path):
+    from src.bnd.paper_runner import render_report
+
+    data = make_data(121)
+    today = {name: candles[:-1] for name, candles in data.items()}
+    engine = engine_at(tmp_path)
+    first = run_daily(engine, today, MARKETS, factory, config(), "sma", now_after(today))
+    assert "Stress scenarios" not in render_report(engine, first)
+
+    report = run_daily(engine, data, MARKETS, factory, config(), "sma", now_after(data))
+
+    assert {row["scenario"] for row in report["scenarios"]} >= {"crisis_2008", "covid_2020"}
+    assert "Stress scenarios" in render_report(engine, report)

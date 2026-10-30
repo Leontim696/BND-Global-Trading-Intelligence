@@ -206,6 +206,12 @@ this every day at 22:23 UTC and keeps the account and its status page
 (`README.md`) on the `paper-trading` branch. Until a manual run creates
 the account with a virtual capital, scheduled runs do nothing.
 
+Each status page also shows `scenarios.py` stress tests: what the current
+positions would lose in an instant repeat of 2008, the 2020 crash, 2022
+rates, a one-day crash, a dollar spike or a crypto collapse (stylised,
+rounded moves per market and asset class), and whether that would trip
+the kill switch.
+
 ## Paid API calls
 
 All OpenRouter calls are opt-in. The workflows under `.github/workflows`
