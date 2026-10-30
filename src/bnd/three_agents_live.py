@@ -1,7 +1,7 @@
 """Opt-in connectivity test for Gemini, DeepSeek, Grok; no trading."""
 import json
 import os
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
@@ -24,7 +24,10 @@ def preflight():
             raise RuntimeError("Explicit correct model required for " + agent)
         prices = []
         for kind in ("IN", "OUT"):
-            price = Decimal(os.environ[agent + "_" + kind])
+            try:
+                price = Decimal(os.getenv(agent + "_" + kind, "").strip())
+            except InvalidOperation:
+                raise RuntimeError("Missing or non-numeric price for " + agent) from None
             if not price.is_finite() or price <= 0:
                 raise RuntimeError("Invalid price for " + agent)
             prices.append(price)
@@ -50,12 +53,18 @@ def execute():
                                    "Content-Type": "application/json"}, method="POST")
         try:
             with urlopen(request, timeout=25) as response:
-                result = json.loads(response.read(100001))
+                raw = response.read(100001)
         except (HTTPError, URLError, TimeoutError) as exc:
             raise RuntimeError(agent + " failed; no retries") from exc
+        if len(raw) > 100000:
+            raise RuntimeError(agent + " response too large")
+        try:
+            result = json.loads(raw)
+            answer = result["choices"][0]["message"]["content"]
+        except (ValueError, KeyError, IndexError, TypeError) as exc:
+            raise RuntimeError(agent + " returned an invalid response") from exc
         if result.get("model") != model:
             raise RuntimeError(agent + " returned unexpected model")
-        answer = result["choices"][0]["message"]["content"]
         if not isinstance(answer, str) or not answer.strip():
             raise RuntimeError(agent + " empty answer")
         usage = result.get("usage", {})

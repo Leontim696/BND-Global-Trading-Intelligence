@@ -35,6 +35,29 @@ MODEL_ENV_VARS = {
     "deepseek": "BND_MODEL_DEEPSEEK",
 }
 
+# Upper bound on billed output tokens per analysis request.
+MAX_OUTPUT_TOKENS = 600
+
+
+def _strip_code_fence(content: str) -> str:
+    """Remove one surrounding ``` or ```json fence, if present."""
+
+    text = content.strip()
+
+    if not text.startswith("```"):
+        return text
+
+    lines = text.splitlines()
+
+    if (
+        len(lines) < 3
+        or lines[0].strip().lower() not in ("```", "```json")
+        or lines[-1].strip() != "```"
+    ):
+        raise ValueError("Malformed code fence")
+
+    return "\n".join(lines[1:-1]).strip()
+
 
 @dataclass
 class OpenRouterAdapter:
@@ -120,6 +143,7 @@ class OpenRouterAdapter:
         payload = {
             "model": model,
             "temperature": 0,
+            "max_tokens": MAX_OUTPUT_TOKENS,
             "messages": [
                 {
                     "role": "system",
@@ -178,7 +202,7 @@ class OpenRouterAdapter:
             if not isinstance(content, str):
                 raise ValueError("Invalid message content")
 
-            analysis = json.loads(content)
+            analysis = json.loads(_strip_code_fence(content))
 
             if not isinstance(analysis, dict):
                 raise ValueError("Invalid analysis object")

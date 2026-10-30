@@ -536,3 +536,79 @@ def test_invalid_routed_model_is_rejected(monkeypatch, model):
             agent="gpt",
             allow_live=True,
         ).analyze(make_request())
+
+
+@pytest.mark.parametrize(
+    "content",
+    [
+        '```json\n{"vote": "BUY", "reasoning": "OK", "confidence": 0.7}\n```',
+        '```\n{"vote": "BUY", "reasoning": "OK", "confidence": 0.7}\n```',
+    ],
+)
+def test_fenced_json_analysis_accepted(monkeypatch, content):
+    configure(monkeypatch)
+
+    mock_http(
+        monkeypatch,
+        {"choices": [{"message": {"content": content}}]},
+    )
+
+    response = OpenRouterAdapter(
+        agent="gpt",
+        allow_live=True,
+    ).analyze(make_request())
+
+    assert response.vote == Vote.BUY
+    assert response.confidence == 0.7
+
+
+def test_malformed_fence_rejected(monkeypatch):
+    configure(monkeypatch)
+
+    mock_http(
+        monkeypatch,
+        {
+            "choices": [
+                {
+                    "message": {
+                        "content": '```json\n{"vote": "BUY"}'
+                    }
+                }
+            ]
+        },
+    )
+
+    with pytest.raises(InvalidAIResponse):
+        OpenRouterAdapter(
+            agent="gpt",
+            allow_live=True,
+        ).analyze(make_request())
+
+
+def test_boolean_confidence_rejected(monkeypatch):
+    configure(monkeypatch)
+
+    mock_http(
+        monkeypatch,
+        {
+            "choices": [
+                {
+                    "message": {
+                        "content": json.dumps(
+                            {
+                                "vote": "BUY",
+                                "reasoning": "OK",
+                                "confidence": True,
+                            }
+                        )
+                    }
+                }
+            ]
+        },
+    )
+
+    with pytest.raises(InvalidAIResponse):
+        OpenRouterAdapter(
+            agent="gpt",
+            allow_live=True,
+        ).analyze(make_request())

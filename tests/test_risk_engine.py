@@ -97,6 +97,28 @@ def test_reject_when_exposure_full(limits):
     assert result.decision == RiskDecision.REJECT
 
 
+def test_reduce_to_remaining_daily_loss_capacity(limits):
+    # 2.9% already lost today; only 0.1% (USD 10) of risk remains.
+    portfolio = Portfolio(10000.0, 290.0, 290.0, 0.0)
+    trade = TradeProposal(5000.0, 2.0, 1.0)
+
+    result = evaluate_risk(portfolio, trade, limits)
+
+    assert result.decision == RiskDecision.APPROVE_REDUCED
+    assert result.approved_notional == pytest.approx(500.0)
+
+
+def test_reduce_to_remaining_drawdown_capacity(limits):
+    # 9.95% drawdown; only 0.05% (USD 5) of risk remains.
+    portfolio = Portfolio(10000.0, 0.0, 995.0, 0.0)
+    trade = TradeProposal(5000.0, 2.0, 1.0)
+
+    result = evaluate_risk(portfolio, trade, limits)
+
+    assert result.decision == RiskDecision.APPROVE_REDUCED
+    assert result.approved_notional == pytest.approx(250.0)
+
+
 def test_reject_negative_notional():
     with pytest.raises(ValueError):
         TradeProposal(-100.0, 2.0, 1.0)
