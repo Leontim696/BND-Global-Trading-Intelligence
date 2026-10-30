@@ -256,6 +256,8 @@ rates, a one-day crash, a dollar spike or a crypto collapse (stylised,
 rounded moves per market and asset class), and whether that would trip
 the kill switch.
 
+Research results so far, in Romanian: `docs/REZULTATE_CERCETARE.md`.
+
 ## Decision registry
 
 `decision_registry.DecisionRegistry` stores every council decision with
