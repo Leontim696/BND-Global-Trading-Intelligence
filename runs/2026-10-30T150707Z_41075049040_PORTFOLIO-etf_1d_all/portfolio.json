@@ -1,0 +1,905 @@
+{
+  "mode": "portfolio",
+  "universe": "etf",
+  "markets": [
+    {
+      "name": "GOLD",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "SILVER",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "CRUDE_OIL",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "NATURAL_GAS",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "COPPER",
+      "asset_class": "commodity",
+      "candles": 3760,
+      "first": "2011-11-15T00:00:00+00:00"
+    },
+    {
+      "name": "AGRICULTURE",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "BROAD_COMMODITIES",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "SP500",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "NASDAQ100",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "GERMANY",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "JAPAN",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "UK",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "EMERGING",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "US10Y_NOTE",
+      "asset_class": "bond",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "US20Y_BOND",
+      "asset_class": "bond",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "EURUSD",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "GBPUSD",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDJPY",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "AUDUSD",
+      "asset_class": "forex",
+      "candles": 4379,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDCHF",
+      "asset_class": "forex",
+      "candles": 4377,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDCAD",
+      "asset_class": "forex",
+      "candles": 4379,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "BITCOIN",
+      "asset_class": "crypto",
+      "candles": 4426,
+      "first": "2014-09-17T00:00:00+00:00"
+    },
+    {
+      "name": "ETHEREUM",
+      "asset_class": "crypto",
+      "candles": 3277,
+      "first": "2017-11-09T00:00:00+00:00"
+    }
+  ],
+  "skipped_missing": [],
+  "in_sample_markets": [
+    "GOLD",
+    "SILVER",
+    "CRUDE_OIL",
+    "NATURAL_GAS",
+    "COPPER",
+    "AGRICULTURE",
+    "BROAD_COMMODITIES",
+    "SP500",
+    "NASDAQ100",
+    "GERMANY",
+    "JAPAN",
+    "UK",
+    "EMERGING",
+    "US10Y_NOTE",
+    "US20Y_BOND",
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY",
+    "AUDUSD",
+    "USDCHF",
+    "USDCAD",
+    "BITCOIN",
+    "ETHEREUM"
+  ],
+  "out_of_sample_start": "2022-01-24T00:00:00+00:00",
+  "settings": {
+    "sizing": "volatility",
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 3.0,
+    "max_weight": 1.0,
+    "financing_pct_annual": 0.0,
+    "cash_rate_pct_annual": 0.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": true,
+    "params": {}
+  },
+  "equal_weight_basket_out_of_sample": {
+    "net_profit": 4880.4773,
+    "total_return_pct": 48.8048,
+    "cagr_pct": 8.7013,
+    "sharpe": 0.8371,
+    "sortino": 1.1862,
+    "calmar": 0.5089,
+    "volatility_pct": 10.6448,
+    "max_drawdown_pct": 17.0979,
+    "turnover": 0.4625,
+    "fills": 49,
+    "avg_gross_leverage": 0.9454,
+    "max_gross_leverage": 1.0034,
+    "total_fees": 3.7137,
+    "total_financing": 423.9785,
+    "total_interest": 0.0,
+    "kill_switch_at": null,
+    "years": 4.7639
+  },
+  "data_diagnostics": [
+    {
+      "market": "COPPER",
+      "largest_move_pct": 49.8851,
+      "largest_move_date": "2014-12-05",
+      "days_over_15pct": 5
+    },
+    {
+      "market": "ETHEREUM",
+      "largest_move_pct": -42.3472,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 35
+    },
+    {
+      "market": "BITCOIN",
+      "largest_move_pct": -37.1695,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 20
+    },
+    {
+      "market": "SILVER",
+      "largest_move_pct": -28.5403,
+      "largest_move_date": "2026-01-30",
+      "days_over_15pct": 2
+    },
+    {
+      "market": "CRUDE_OIL",
+      "largest_move_pct": -25.315,
+      "largest_move_date": "2020-03-09",
+      "days_over_15pct": 5
+    },
+    {
+      "market": "NATURAL_GAS",
+      "largest_move_pct": -24.8521,
+      "largest_move_date": "2026-02-02",
+      "days_over_15pct": 7
+    },
+    {
+      "market": "USDCHF",
+      "largest_move_pct": -16.1473,
+      "largest_move_date": "2015-01-16",
+      "days_over_15pct": 1
+    },
+    {
+      "market": "GERMANY",
+      "largest_move_pct": -12.6888,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "EMERGING",
+      "largest_move_pct": -12.4792,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "NASDAQ100",
+      "largest_move_pct": 12.0031,
+      "largest_move_date": "2025-04-09",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "UK",
+      "largest_move_pct": -11.99,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "SP500",
+      "largest_move_pct": -10.9424,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "GOLD",
+      "largest_move_pct": -10.2742,
+      "largest_move_date": "2026-01-30",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "JAPAN",
+      "largest_move_pct": -9.8047,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "BROAD_COMMODITIES",
+      "largest_move_pct": -7.9444,
+      "largest_move_date": "2022-03-09",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "GBPUSD",
+      "largest_move_pct": -7.6038,
+      "largest_move_date": "2016-06-26",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "US20Y_BOND",
+      "largest_move_pct": 7.5195,
+      "largest_move_date": "2020-03-20",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "AGRICULTURE",
+      "largest_move_pct": 6.2546,
+      "largest_move_date": "2010-10-08",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "AUDUSD",
+      "largest_move_pct": -5.3105,
+      "largest_move_date": "2025-04-06",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "USDJPY",
+      "largest_move_pct": 3.8196,
+      "largest_move_date": "2013-04-04",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "EURUSD",
+      "largest_move_pct": 3.1756,
+      "largest_move_date": "2013-07-10",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "USDCAD",
+      "largest_move_pct": -3.1434,
+      "largest_move_date": "2021-01-01",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "US10Y_NOTE",
+      "largest_move_pct": 2.6416,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    }
+  ],
+  "ranking": [
+    {
+      "strategy": "volatility_target",
+      "in_sample": {
+        "net_profit": 765.5333,
+        "total_return_pct": 7.6553,
+        "cagr_pct": 0.6134,
+        "sharpe": 0.1117,
+        "sortino": 0.1522,
+        "calmar": 0.0199,
+        "volatility_pct": 9.6877,
+        "max_drawdown_pct": 30.8152,
+        "turnover": 1.8728,
+        "fills": 278,
+        "avg_gross_leverage": 1.1111,
+        "max_gross_leverage": 3.176,
+        "total_fees": 11.1904,
+        "total_financing": 14.825,
+        "total_interest": 0.0,
+        "kill_switch_at": "2016-01-11T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": 9019.6936,
+        "total_return_pct": 90.1969,
+        "cagr_pct": 14.4481,
+        "sharpe": 0.9501,
+        "sortino": 1.367,
+        "calmar": 0.5561,
+        "volatility_pct": 15.4641,
+        "max_drawdown_pct": 25.9828,
+        "turnover": 3.8372,
+        "fills": 239,
+        "avg_gross_leverage": 2.655,
+        "max_gross_leverage": 3.147,
+        "total_fees": 9.7939,
+        "total_financing": 156.9726,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": 0.9501,
+        "shuffled_median_sharpe": 0.9415,
+        "shuffled_p95_sharpe": 0.9523,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.1463
+      },
+      "p_value": 0.1463,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "momentum",
+      "in_sample": {
+        "net_profit": -1162.9264,
+        "total_return_pct": -11.6293,
+        "cagr_pct": -1.0196,
+        "sharpe": -0.1192,
+        "sortino": -0.1584,
+        "calmar": -0.033,
+        "volatility_pct": 6.7041,
+        "max_drawdown_pct": 30.8732,
+        "turnover": 13.318,
+        "fills": 667,
+        "avg_gross_leverage": 0.4467,
+        "max_gross_leverage": 3.1833,
+        "total_fees": 61.2057,
+        "total_financing": 0.0,
+        "total_interest": 0.0,
+        "kill_switch_at": "2013-02-21T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": 4732.5979,
+        "total_return_pct": 47.326,
+        "cagr_pct": 8.4736,
+        "sharpe": 0.6435,
+        "sortino": 0.9074,
+        "calmar": 0.3588,
+        "volatility_pct": 14.2129,
+        "max_drawdown_pct": 23.6147,
+        "turnover": 56.5529,
+        "fills": 1182,
+        "avg_gross_leverage": 2.7844,
+        "max_gross_leverage": 3.2679,
+        "total_fees": 214.4029,
+        "total_financing": 360.3439,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": 0.6435,
+        "shuffled_median_sharpe": 0.7605,
+        "shuffled_p95_sharpe": 1.4176,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.7317
+      },
+      "p_value": 0.7317,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "bollinger_reversion",
+      "in_sample": {
+        "net_profit": -2949.4209,
+        "total_return_pct": -29.4942,
+        "cagr_pct": -2.8555,
+        "sharpe": -0.3303,
+        "sortino": -0.4613,
+        "calmar": -0.0917,
+        "volatility_pct": 7.8399,
+        "max_drawdown_pct": 31.1477,
+        "turnover": 25.7522,
+        "fills": 1608,
+        "avg_gross_leverage": 0.3344,
+        "max_gross_leverage": 3.3343,
+        "total_fees": 104.7791,
+        "total_financing": 0.0,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-07-19T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -155.4392,
+        "total_return_pct": -1.5544,
+        "cagr_pct": -0.3283,
+        "sharpe": 0.0646,
+        "sortino": 0.0949,
+        "calmar": -0.0118,
+        "volatility_pct": 16.8756,
+        "max_drawdown_pct": 27.817,
+        "turnover": 128.1322,
+        "fills": 3879,
+        "avg_gross_leverage": 2.4198,
+        "max_gross_leverage": 3.7109,
+        "total_fees": 402.6443,
+        "total_financing": 270.2756,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": 0.0646,
+        "shuffled_median_sharpe": -0.9667,
+        "shuffled_p95_sharpe": -0.5113,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0244
+      },
+      "p_value": 0.0244,
+      "p_value_adjusted": 0.2683
+    },
+    {
+      "strategy": "ema_crossover",
+      "in_sample": {
+        "net_profit": -1696.1727,
+        "total_return_pct": -16.9617,
+        "cagr_pct": -1.529,
+        "sharpe": -0.0875,
+        "sortino": -0.1198,
+        "calmar": -0.0504,
+        "volatility_pct": 10.857,
+        "max_drawdown_pct": 30.3479,
+        "turnover": 33.8186,
+        "fills": 1758,
+        "avg_gross_leverage": 1.3832,
+        "max_gross_leverage": 3.1826,
+        "total_fees": 187.0572,
+        "total_financing": 70.519,
+        "total_interest": 0.0,
+        "kill_switch_at": "2016-09-28T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -271.4278,
+        "total_return_pct": -2.7143,
+        "cagr_pct": -0.576,
+        "sharpe": 0.034,
+        "sortino": 0.0469,
+        "calmar": -0.0205,
+        "volatility_pct": 14.6623,
+        "max_drawdown_pct": 28.1323,
+        "turnover": 53.338,
+        "fills": 1271,
+        "avg_gross_leverage": 2.7722,
+        "max_gross_leverage": 3.1722,
+        "total_fees": 180.9108,
+        "total_financing": 300.0572,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": 0.034,
+        "shuffled_median_sharpe": 0.4441,
+        "shuffled_p95_sharpe": 1.191,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.8537
+      },
+      "p_value": 0.8537,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "donchian_breakout",
+      "in_sample": {
+        "net_profit": 18158.3653,
+        "total_return_pct": 181.5837,
+        "cagr_pct": 8.961,
+        "sharpe": 0.6232,
+        "sortino": 0.8999,
+        "calmar": 0.3809,
+        "volatility_pct": 15.7645,
+        "max_drawdown_pct": 23.5251,
+        "turnover": 39.1498,
+        "fills": 3804,
+        "avg_gross_leverage": 2.6278,
+        "max_gross_leverage": 3.5597,
+        "total_fees": 447.5319,
+        "total_financing": 526.6466,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -456.9741,
+        "total_return_pct": -4.5697,
+        "cagr_pct": -0.9771,
+        "sharpe": -0.0594,
+        "sortino": -0.0817,
+        "calmar": -0.032,
+        "volatility_pct": 9.2757,
+        "max_drawdown_pct": 30.5029,
+        "turnover": 12.0569,
+        "fills": 453,
+        "avg_gross_leverage": 0.5808,
+        "max_gross_leverage": 3.2784,
+        "total_fees": 45.1929,
+        "total_financing": 82.993,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-05-24T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.0594,
+        "shuffled_median_sharpe": 1.6616,
+        "shuffled_p95_sharpe": 2.4558,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 1.0
+      },
+      "p_value": 1.0,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "sma_crossover",
+      "in_sample": {
+        "net_profit": 17252.5985,
+        "total_return_pct": 172.526,
+        "cagr_pct": 8.666,
+        "sharpe": 0.6761,
+        "sortino": 0.9691,
+        "calmar": 0.4498,
+        "volatility_pct": 13.6791,
+        "max_drawdown_pct": 19.2659,
+        "turnover": 33.6205,
+        "fills": 2039,
+        "avg_gross_leverage": 2.7357,
+        "max_gross_leverage": 3.2338,
+        "total_fees": 343.6122,
+        "total_financing": 505.5599,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -981.4268,
+        "total_return_pct": -9.8143,
+        "cagr_pct": -2.145,
+        "sharpe": -0.201,
+        "sortino": -0.2715,
+        "calmar": -0.0713,
+        "volatility_pct": 8.8412,
+        "max_drawdown_pct": 30.1,
+        "turnover": 12.8071,
+        "fills": 348,
+        "avg_gross_leverage": 0.677,
+        "max_gross_leverage": 3.0849,
+        "total_fees": 45.7029,
+        "total_financing": 86.192,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-05-24T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.201,
+        "shuffled_median_sharpe": 0.4145,
+        "shuffled_p95_sharpe": 1.1525,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.9756
+      },
+      "p_value": 0.9756,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "keltner_breakout",
+      "in_sample": {
+        "net_profit": 884.996,
+        "total_return_pct": 8.85,
+        "cagr_pct": 0.7054,
+        "sharpe": 0.119,
+        "sortino": 0.1665,
+        "calmar": 0.023,
+        "volatility_pct": 12.7035,
+        "max_drawdown_pct": 30.6307,
+        "turnover": 57.3405,
+        "fills": 3793,
+        "avg_gross_leverage": 1.0196,
+        "max_gross_leverage": 3.5685,
+        "total_fees": 508.5919,
+        "total_financing": 98.5024,
+        "total_interest": 0.0,
+        "kill_switch_at": "2016-09-21T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -1286.3983,
+        "total_return_pct": -12.864,
+        "cagr_pct": -2.8491,
+        "sharpe": -0.2223,
+        "sortino": -0.3021,
+        "calmar": -0.0945,
+        "volatility_pct": 10.5132,
+        "max_drawdown_pct": 30.1557,
+        "turnover": 36.4928,
+        "fills": 1082,
+        "avg_gross_leverage": 0.6316,
+        "max_gross_leverage": 3.1904,
+        "total_fees": 137.4398,
+        "total_financing": 96.2887,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-10-13T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.2223,
+        "shuffled_median_sharpe": 1.4036,
+        "shuffled_p95_sharpe": 1.9533,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 1.0
+      },
+      "p_value": 1.0,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "adx_trend",
+      "in_sample": {
+        "net_profit": -2261.1702,
+        "total_return_pct": -22.6117,
+        "cagr_pct": -2.1025,
+        "sharpe": -0.1935,
+        "sortino": -0.2632,
+        "calmar": -0.0679,
+        "volatility_pct": 8.921,
+        "max_drawdown_pct": 30.9577,
+        "turnover": 41.8288,
+        "fills": 1797,
+        "avg_gross_leverage": 0.4731,
+        "max_gross_leverage": 3.2803,
+        "total_fees": 215.0187,
+        "total_financing": 0.0,
+        "total_interest": 0.0,
+        "kill_switch_at": "2013-09-19T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -1306.8655,
+        "total_return_pct": -13.0687,
+        "cagr_pct": -2.8971,
+        "sharpe": -0.2297,
+        "sortino": -0.3163,
+        "calmar": -0.0959,
+        "volatility_pct": 10.4306,
+        "max_drawdown_pct": 30.1941,
+        "turnover": 45.6111,
+        "fills": 880,
+        "avg_gross_leverage": 0.5529,
+        "max_gross_leverage": 3.0288,
+        "total_fees": 161.1414,
+        "total_financing": 113.1439,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-08-23T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.2297,
+        "shuffled_median_sharpe": 0.6322,
+        "shuffled_p95_sharpe": 1.1814,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.9024
+      },
+      "p_value": 0.9024,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "macd",
+      "in_sample": {
+        "net_profit": -2457.3438,
+        "total_return_pct": -24.5734,
+        "cagr_pct": -2.3107,
+        "sharpe": -0.1898,
+        "sortino": -0.2624,
+        "calmar": -0.0754,
+        "volatility_pct": 9.7924,
+        "max_drawdown_pct": 30.6568,
+        "turnover": 61.4435,
+        "fills": 3005,
+        "avg_gross_leverage": 1.1227,
+        "max_gross_leverage": 3.1584,
+        "total_fees": 289.0364,
+        "total_financing": 23.6598,
+        "total_interest": 0.0,
+        "kill_switch_at": "2015-09-30T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -2257.605,
+        "total_return_pct": -22.5761,
+        "cagr_pct": -5.2295,
+        "sharpe": -0.3572,
+        "sortino": -0.4823,
+        "calmar": -0.1706,
+        "volatility_pct": 12.7501,
+        "max_drawdown_pct": 30.6609,
+        "turnover": 101.1148,
+        "fills": 2260,
+        "avg_gross_leverage": 2.1266,
+        "max_gross_leverage": 3.1374,
+        "total_fees": 326.3976,
+        "total_financing": 225.8264,
+        "total_interest": 0.0,
+        "kill_switch_at": "2025-10-24T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.3572,
+        "shuffled_median_sharpe": -0.3359,
+        "shuffled_p95_sharpe": 0.5005,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.5122
+      },
+      "p_value": 0.5122,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "rsi_reversion",
+      "in_sample": {
+        "net_profit": -2567.2303,
+        "total_return_pct": -25.6723,
+        "cagr_pct": -2.4294,
+        "sharpe": -0.3316,
+        "sortino": -0.4797,
+        "calmar": -0.0795,
+        "volatility_pct": 6.7341,
+        "max_drawdown_pct": 30.5408,
+        "turnover": 9.5514,
+        "fills": 499,
+        "avg_gross_leverage": 0.1867,
+        "max_gross_leverage": 4.0558,
+        "total_fees": 40.469,
+        "total_financing": 0.0,
+        "total_interest": 0.0,
+        "kill_switch_at": "2011-09-22T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -2632.4841,
+        "total_return_pct": -26.3248,
+        "cagr_pct": -6.2117,
+        "sharpe": -0.3731,
+        "sortino": -0.5299,
+        "calmar": -0.2045,
+        "volatility_pct": 14.4083,
+        "max_drawdown_pct": 30.37,
+        "turnover": 56.4047,
+        "fills": 1391,
+        "avg_gross_leverage": 1.3369,
+        "max_gross_leverage": 3.3261,
+        "total_fees": 166.7022,
+        "total_financing": 191.9219,
+        "total_interest": 0.0,
+        "kill_switch_at": "2025-04-08T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.3731,
+        "shuffled_median_sharpe": -0.8696,
+        "shuffled_p95_sharpe": -0.5739,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0244
+      },
+      "p_value": 0.0244,
+      "p_value_adjusted": 0.2683
+    },
+    {
+      "strategy": "stochastic_reversion",
+      "in_sample": {
+        "net_profit": -2926.0517,
+        "total_return_pct": -29.2605,
+        "cagr_pct": -2.8288,
+        "sharpe": -0.319,
+        "sortino": -0.4412,
+        "calmar": -0.0901,
+        "volatility_pct": 7.9922,
+        "max_drawdown_pct": 31.3796,
+        "turnover": 28.4513,
+        "fills": 2314,
+        "avg_gross_leverage": 0.3899,
+        "max_gross_leverage": 3.6917,
+        "total_fees": 116.1314,
+        "total_financing": 0.0,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-09-13T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": -2687.1089,
+        "total_return_pct": -26.8711,
+        "cagr_pct": -6.3581,
+        "sharpe": -0.5053,
+        "sortino": -0.7066,
+        "calmar": -0.2078,
+        "volatility_pct": 11.657,
+        "max_drawdown_pct": 30.5941,
+        "turnover": 63.0974,
+        "fills": 2180,
+        "avg_gross_leverage": 1.1098,
+        "max_gross_leverage": 3.8597,
+        "total_fees": 174.0949,
+        "total_financing": 124.4851,
+        "total_interest": 0.0,
+        "kill_switch_at": "2024-04-15T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.5053,
+        "shuffled_median_sharpe": -0.9115,
+        "shuffled_p95_sharpe": -0.3339,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.1707
+      },
+      "p_value": 0.1707,
+      "p_value_adjusted": 1.0
+    }
+  ],
+  "note": "Paper research. With --universe futures, futures series are not roll-adjusted and indices stand in for futures/CFDs; --universe etf uses tradable, adjusted ETFs. The permutation test shuffles each market's signal timing; p_value_adjusted (Holm) accounts for comparing several strategies. Always-long strategies get p = 1: their result comes from diversification and leverage, not timing."
+}
