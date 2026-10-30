@@ -19,7 +19,7 @@ from itertools import groupby, product
 from statistics import median
 from typing import Callable, Sequence
 
-from .backtester import BacktestConfig, CostModel, run_backtest
+from .backtester import BacktestConfig, run_backtest
 from .market_data import Candle
 
 StrategyFactory = Callable[..., Callable]
@@ -210,9 +210,12 @@ def cost_stress(
 ) -> list[dict]:
     rows = []
     for multiplier in multipliers:
-        costs = CostModel(
+        # Stress every cost, but not the interest earned on idle cash.
+        costs = replace(
+            config.costs,
             fee_pct=config.costs.fee_pct * multiplier,
             slippage_pct=config.costs.slippage_pct * multiplier,
+            funding_pct_annual=min(100.0, config.costs.funding_pct_annual * multiplier),
         )
         result = run_backtest(
             candles,

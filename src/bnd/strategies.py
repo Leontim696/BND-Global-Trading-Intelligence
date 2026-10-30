@@ -88,12 +88,14 @@ def volatility_target(
     trend: int = 0,
     max_exposure: float = 1.0,
     step: float = 0.1,
+    long_short: bool = False,
 ) -> Strategy:
-    """Long exposure = target / realised volatility, capped, no leverage.
+    """Exposure = target / realised volatility, capped, no leverage.
 
     target_vol: annualised volatility target in percent.
     lookback: candles used to measure realised volatility.
-    trend: optional SMA length; flat while the close is below it (0 = off).
+    trend: optional SMA length (0 = off). Long-only: flat while the close
+        is below it. long_short: long above it, short below it.
     step: exposure is rounded to this grid to limit rebalancing.
     """
 
@@ -107,11 +109,14 @@ def volatility_target(
         raise ValueError("Maximum exposure must be in (0, 1]")
     if not 0 < step <= max_exposure:
         raise ValueError("Step must be in (0, max_exposure]")
+    if long_short and not trend:
+        raise ValueError("Long/short needs a trend length to pick a direction")
 
     # Rolling sums of log returns over the window. The backtester calls
     # the strategy once per candle in order, so each call normally adds
     # one return and drops one; anything else triggers a full recompute.
-    state = {"length": None, "last": None, "sum": 0.0, "sumsq": 0.0, "steps": 0}
+    state = {"length": None, "last": None, "sum": 0.0, "sumsq": 0.0,
+             "closes": 0.0, "steps": 0}
 
     def rolling_stdev(history: Sequence[Candle]) -> float:
         length = len(history)
@@ -125,11 +130,15 @@ def volatility_target(
             old = log(history[-lookback - 1].close / history[-lookback - 2].close)
             state["sum"] += new - old
             state["sumsq"] += new * new - old * old
+            if trend:
+                state["closes"] += history[-1].close - history[-trend - 1].close
             state["steps"] += 1
         else:
             window = history[-lookback - 1:]
             returns = [log(b.close / a.close) for a, b in zip(window, window[1:])]
             state["sum"], state["sumsq"] = sum(returns), sum(r * r for r in returns)
+            if trend:
+                state["closes"] = sum(c.close for c in history[-trend:])
             state["steps"] = 0
         state["length"], state["last"] = length, history[-1]
         variance = (state["sumsq"] - state["sum"] ** 2 / lookback) / (lookback - 1)
@@ -139,12 +148,15 @@ def volatility_target(
         if len(history) <= max(lookback, trend) + 1:
             return 0
 
-        # Always update the rolling window, even when the trend filter
-        # keeps the strategy flat, so it stays incremental.
+        # Always update the rolling windows, even when the trend filter
+        # keeps the strategy flat, so they stay incremental.
         deviation = rolling_stdev(history)
 
-        if trend and history[-1].close < _sma(history, trend):
-            return 0
+        direction = 1
+        if trend and history[-1].close < state["closes"] / trend:
+            if not long_short:
+                return 0
+            direction = -1
 
         # Average spacing, so occasional missing candles do not distort it.
         seconds = (
@@ -156,7 +168,7 @@ def volatility_target(
             max_exposure if volatility <= 0
             else min(max_exposure, target_vol / 100 / volatility)
         )
-        return min(max_exposure, round(exposure / step) * step)
+        return direction * min(max_exposure, round(exposure / step) * step)
 
     return strategy
 

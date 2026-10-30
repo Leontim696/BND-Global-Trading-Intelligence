@@ -62,6 +62,14 @@ better risk-adjusted result, not at beating buy-and-hold on return, so
 judge it by out-of-sample Sharpe and drawdown. A protective stop blocks
 re-entry until the target turns flat, which without `--trend` may never
 happen; research runs therefore use `--no-risk-gate --trend 1200`.
+`--long-short` goes short (same volatility sizing) while the close is
+below the trend average.
+
+Carry costs: `--funding` charges an annual percentage on open position
+notional, long or short (perpetual funding or borrow; default 10 when
+shorts are allowed, 0 for spot long-only). `--cash-rate` pays annual
+interest on uninvested equity (default 0). Buy-and-hold is treated as a
+spot holding without funding.
 
 `robustness` asks whether a result is an edge or luck:
 - **Parameter grid:** every combination (`--fast-range 10:50:10 --slow-range 50:200:25`);

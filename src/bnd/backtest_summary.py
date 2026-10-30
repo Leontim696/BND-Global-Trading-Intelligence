@@ -53,10 +53,20 @@ def _run_lines(report: dict) -> list[str]:
         ("Trades", "trades", ""),
         ("Time in market", "time_in_market_pct", "%"),
         ("Avg capital exposure", "avg_capital_exposure_pct", "%"),
+        ("Funding paid", "total_funding", ""),
+        ("Interest earned", "total_interest", ""),
         # Every candle a vetoed entry is retried counts once.
         ("Entries vetoed by risk engine", "rejected_entries", ""),
     ]
     lines = [f"## Backtest: `{report.get('strategy')}`"]
+    costs = report.get("costs")
+    if costs:
+        lines.append(
+            f"Costs per fill: fee {costs['fee_pct']}%, slippage {costs['slippage_pct']}%; "
+            f"funding {costs['funding_pct_annual']}%/yr on open positions; "
+            f"cash interest {costs['cash_rate_pct_annual']}%/yr; "
+            f"shorts {'allowed' if costs['allow_short'] else 'off'}."
+        )
     for name, period in report.get("periods", {}).items():
         strategy, benchmark = period["strategy"], period["buy_and_hold"]
         lines += [

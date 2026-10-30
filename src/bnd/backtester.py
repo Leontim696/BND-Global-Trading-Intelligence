@@ -35,15 +35,25 @@ SECONDS_PER_YEAR = 365.25 * 24 * 3600
 
 @dataclass(frozen=True)
 class CostModel:
-    """Percent costs applied to every fill."""
+    """Percent costs per fill, plus annual carry while a position is open.
+
+    funding_pct_annual: charged on open position notional, long or short
+        (perpetual-futures funding or borrow; conservative: both sides pay).
+    cash_rate_pct_annual: interest earned on equity not invested.
+    """
 
     fee_pct: float = 0.10
     slippage_pct: float = 0.05
+    funding_pct_annual: float = 0.0
+    cash_rate_pct_annual: float = 0.0
 
     def __post_init__(self):
         for value in (self.fee_pct, self.slippage_pct):
             if not isfinite(value) or not 0 <= value < 10:
                 raise ValueError("Costs must be in [0, 10) percent")
+        for value in (self.funding_pct_annual, self.cash_rate_pct_annual):
+            if not isfinite(value) or not 0 <= value <= 100:
+                raise ValueError("Annual rates must be in [0, 100] percent")
 
 
 @dataclass(frozen=True)
@@ -203,6 +213,8 @@ class _Simulator:
         self.stop_price: float | None = None
         self.trades: list[Trade] = []
         self.rejected_entries = 0
+        self.total_funding = 0.0
+        self.total_interest = 0.0
         self.peak = config.initial_equity
         self.day = None
         self.day_start_equity = config.initial_equity
@@ -355,6 +367,17 @@ class _Simulator:
 
         return False
 
+    def accrue(self, price: float, years: float) -> None:
+        """Charge funding on the position and pay interest on idle equity."""
+        costs = self.config.costs
+        held = abs(self.quantity) * price
+        idle = max(0.0, self.equity(price) - held)
+        funding = held * costs.funding_pct_annual / 100 * years
+        interest = idle * costs.cash_rate_pct_annual / 100 * years
+        self.cash += interest - funding
+        self.total_funding += funding
+        self.total_interest += interest
+
     def start_bar(self, candle: Candle) -> None:
         # Daily P&L policy: UTC calendar day measured from the previous
         # day's final close mark, so an overnight gap counts against the
@@ -396,6 +419,7 @@ def run_backtest(
     blocked_side = 0
     bars_in_market = 0
     capital_exposure = 0.0
+    years_per_bar = 1 / bars_per_year(candles)
 
     for index, candle in enumerate(candles):
         if index < trade_from:
@@ -427,6 +451,9 @@ def run_backtest(
             if sim.check_stop(candle):
                 blocked_side = side
 
+        # 3. Carry for this candle, at its close.
+        sim.accrue(candle.close, years_per_bar)
+
         equity = sim.equity(candle.close)
         sim.peak = max(sim.peak, equity)
         sim.last_mark = equity
@@ -440,7 +467,7 @@ def run_backtest(
         if equity <= 0:
             break
 
-        # 3. Decide using only data available at this close.
+        # 4. Decide using only data available at this close.
         target = _decide(strategy, candles, index, config)
 
     last = candles[trade_from + len(equity_curve) - 1]
@@ -456,6 +483,8 @@ def run_backtest(
         config.initial_equity,
     )
     metrics["rejected_entries"] = sim.rejected_entries
+    metrics["total_funding"] = sim.total_funding
+    metrics["total_interest"] = sim.total_interest
     # Low exposure makes "beats buy-and-hold" in a falling market cheap.
     metrics["time_in_market_pct"] = 100 * bars_in_market / len(equity_curve)
     metrics["avg_capital_exposure_pct"] = (

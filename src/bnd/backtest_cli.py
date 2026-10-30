@@ -63,6 +63,8 @@ SUMMARY_KEYS = (
     "profit_factor",
     "total_fees",
     "rejected_entries",
+    "total_funding",
+    "total_interest",
     "time_in_market_pct",
     "avg_capital_exposure_pct",
     "risk_gate",
@@ -84,7 +86,7 @@ def _make_strategy(args):
         return factory(entry=args.entry, exit=args.exit)
     if args.strategy == "volatility_target":
         return factory(target_vol=args.target_vol, lookback=args.vol_lookback,
-                       trend=args.trend)
+                       trend=args.trend, long_short=args.long_short)
     return factory()
 
 
@@ -156,19 +158,45 @@ def _build_configs(args):
             max_leverage=1.0,
         )
 
+    allow_short = args.allow_short or args.long_short
+    # Default funding: perpetual-style carry when shorting, none for spot.
+    funding = args.funding if args.funding is not None else (
+        10.0 if allow_short else 0.0
+    )
     config = BacktestConfig(
         initial_equity=args.equity,
-        costs=CostModel(fee_pct=args.fee, slippage_pct=args.slippage),
+        costs=CostModel(
+            fee_pct=args.fee,
+            slippage_pct=args.slippage,
+            funding_pct_annual=funding,
+            cash_rate_pct_annual=args.cash_rate,
+        ),
         allocation_pct=args.allocation,
         stop_loss_pct=args.stop_loss,
-        allow_short=args.allow_short,
+        allow_short=allow_short,
         risk_limits=risk_limits,
         rebalance_threshold=args.rebalance / 100,
     )
+    # Buy-and-hold is a spot holding: same fills, no funding.
     benchmark_config = BacktestConfig(
-        initial_equity=args.equity, costs=config.costs
+        initial_equity=args.equity,
+        costs=CostModel(
+            fee_pct=args.fee,
+            slippage_pct=args.slippage,
+            cash_rate_pct_annual=args.cash_rate,
+        ),
     )
     return config, benchmark_config
+
+
+def _cost_settings(config) -> dict:
+    return {
+        "fee_pct": config.costs.fee_pct,
+        "slippage_pct": config.costs.slippage_pct,
+        "funding_pct_annual": config.costs.funding_pct_annual,
+        "cash_rate_pct_annual": config.costs.cash_rate_pct_annual,
+        "allow_short": config.allow_short,
+    }
 
 
 def command_run(args) -> int:
@@ -186,6 +214,7 @@ def command_run(args) -> int:
     report = {
         **dataset,
         "strategy": args.strategy,
+        "costs": _cost_settings(config),
         "periods": {},
     }
 
@@ -252,7 +281,7 @@ def command_robustness(args) -> int:
         # Keep the fixed --trend filter while sweeping the other parameters.
         base = factory
         def factory(**params):
-            return base(trend=args.trend, **params)
+            return base(trend=args.trend, long_short=args.long_short, **params)
     ranges = {
         name: parse_range(getattr(args, option + "_range"))
         for option, name in SWEEP_PARAMS[args.strategy]
@@ -290,6 +319,7 @@ def command_robustness(args) -> int:
             "enforced" if config.risk_limits is not None
             else "disabled_research_only"
         ),
+        "costs": _cost_settings(config),
         "out_of_sample_start": candles[cut].open_time.isoformat(),
         "grid_summary": summaries,
         "in_sample_selection": selection,
@@ -332,6 +362,12 @@ def build_parser() -> argparse.ArgumentParser:
                         help="volatility_target: candles for realised volatility")
     common.add_argument("--trend", type=int, default=0,
                         help="volatility_target: flat below this SMA (0 = off)")
+    common.add_argument("--long-short", action="store_true",
+                        help="volatility_target: short below the trend (implies --allow-short)")
+    common.add_argument("--funding", type=float,
+                        help="annual %% charged on open positions; default 10 with shorts, else 0")
+    common.add_argument("--cash-rate", type=float, default=0.0,
+                        help="annual %% interest on uninvested equity")
     common.add_argument("--rebalance", type=float, default=10.0,
                         help="resize only when target exposure moves this many points")
     common.add_argument("--equity", type=float, default=10_000.0)
