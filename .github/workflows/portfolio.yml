@@ -20,7 +20,7 @@ on:
         description: 'Strategy (all = compare every strategy)'
         default: 'all'
         type: choice
-        options: [all, sma_crossover, ema_crossover, macd, adx_trend, donchian_breakout, keltner_breakout, momentum, rsi_reversion, bollinger_reversion, stochastic_reversion, volatility_target]
+        options: [all, sma_crossover, ema_crossover, macd, adx_trend, donchian_breakout, keltner_breakout, momentum, rsi_reversion, bollinger_reversion, stochastic_reversion, volatility_target, regime_switch]
       extra_args:
         description: 'Extra portfolio arguments, e.g. --max-leverage 3 --portfolio-vol 15 --no-shorts'
         default: '--max-leverage 3 --portfolio-vol 15'
