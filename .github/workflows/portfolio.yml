@@ -58,6 +58,7 @@ jobs:
         run: |
           set -o pipefail
           # EXTRA_ARGS is split into separate arguments on purpose.
+          # shellcheck disable=SC2086
           python -m src.bnd.backtest_cli portfolio \
             --data-dir backtest-reports/universe --classes "$CLASSES" --skip-missing \
             --strategy "$STRATEGY" $EXTRA_ARGS \

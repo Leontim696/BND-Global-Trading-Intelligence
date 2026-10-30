@@ -63,6 +63,7 @@ jobs:
         if: inputs.strategy == 'all'
         run: |
           set -o pipefail
+          # shellcheck disable=SC2086  # EXTRA_ARGS splits on purpose
           python -m src.bnd.backtest_cli compare \
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" $EXTRA_ARGS \
             | tee backtest-reports/compare.json
@@ -71,6 +72,7 @@ jobs:
         run: |
           set -o pipefail  # tee must not hide a failed backtest
           # EXTRA_ARGS is split into separate arguments on purpose.
+          # shellcheck disable=SC2086
           python -m src.bnd.backtest_cli run \
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
             --strategy "$STRATEGY" $EXTRA_ARGS \
@@ -85,6 +87,7 @@ jobs:
         if: inputs.strategy != 'buy_and_hold' && inputs.strategy != 'all'
         run: |
           set -o pipefail
+          # shellcheck disable=SC2086  # EXTRA_ARGS splits on purpose
           python -m src.bnd.backtest_cli robustness \
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
             --strategy "$STRATEGY" $EXTRA_ARGS \

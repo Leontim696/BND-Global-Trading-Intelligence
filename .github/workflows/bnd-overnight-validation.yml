@@ -35,6 +35,8 @@ jobs:
       - name: Write run summary
         if: always()
         run: |
-          echo "## BND overnight validation" >> "$GITHUB_STEP_SUMMARY"
-          echo "Offline tests only. No broker orders, live trading, or paid AI calls." >> "$GITHUB_STEP_SUMMARY"
-          echo "Result: ${{ job.status }}" >> "$GITHUB_STEP_SUMMARY"
+          {
+            echo "## BND overnight validation"
+            echo "Offline tests only. No broker orders, live trading, or paid AI calls."
+            echo "Result: ${{ job.status }}"
+          } >> "$GITHUB_STEP_SUMMARY"
