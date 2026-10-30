@@ -18,7 +18,7 @@ from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
-from math import isfinite
+from math import isfinite, log, sqrt
 from pathlib import Path
 
 from .market_data import Candle
@@ -79,6 +79,10 @@ class EngineLimits:
     max_position_pct: float = 100.0      # |position| / equity, per instrument
     max_sector_pct: float = 150.0        # |sector exposure| / equity
     max_currency_pct: float = 100.0      # |net exposure to one currency| / equity
+    # Annual volatility of the whole book from recent joint returns, so
+    # markets that move together count together (0 disables).
+    max_portfolio_vol_pct: float = 40.0
+    vol_lookback: int = 60
     max_daily_loss_pct: float = 5.0      # kill switch trigger
     max_drawdown_pct: float = 25.0       # kill switch trigger
     max_risk_per_trade_pct: float = 2.0  # loss at the stop, as % of equity
@@ -139,6 +143,10 @@ CREATE TABLE IF NOT EXISTS instruments (symbol TEXT PRIMARY KEY, spec TEXT NOT N
 CREATE TABLE IF NOT EXISTS marks (
     symbol TEXT PRIMARY KEY, price REAL NOT NULL, time TEXT NOT NULL,
     previous_close REAL
+);
+CREATE TABLE IF NOT EXISTS closes (
+    symbol TEXT NOT NULL, time TEXT NOT NULL, price REAL NOT NULL,
+    PRIMARY KEY (symbol, time)
 );
 CREATE TABLE IF NOT EXISTS positions (
     symbol TEXT PRIMARY KEY, quantity REAL NOT NULL, avg_price REAL NOT NULL,
@@ -418,6 +426,14 @@ class PaperEngine:
         if sector_exposure / equity * 100 > limits.max_sector_pct + 1e-9:
             return f"Sector limit {limits.max_sector_pct}% of equity for {sector}"
 
+        if limits.max_portfolio_vol_pct:
+            before_vol = self.portfolio_volatility()
+            after_vol = self.portfolio_volatility({request.symbol: after * price})
+            if (after_vol is not None and after_vol * 100 > limits.max_portfolio_vol_pct + 1e-9
+                    and (before_vol is None or after_vol > before_vol + 1e-12)):
+                return (f"Portfolio volatility {100 * after_vol:.1f}% would exceed "
+                        f"{limits.max_portfolio_vol_pct}% (markets moving together)")
+
         if instrument.currency_pair:
             before = self.currency_exposure()
             now_exposure = self.currency_exposure({request.symbol: after * price})
@@ -471,6 +487,48 @@ class PaperEngine:
                 exposure[base] = exposure.get(base, 0.0) + value
                 exposure[quote] = exposure.get(quote, 0.0) - value
         return exposure
+
+    def _record_close(self, symbol, price, time):
+        keep = self.limits().vol_lookback + 1
+        self._db.execute("INSERT OR REPLACE INTO closes (symbol, time, price) VALUES (?, ?, ?)",
+                         (symbol, time, price))
+        self._db.execute(
+            "DELETE FROM closes WHERE symbol = ? AND time NOT IN (SELECT time FROM closes"
+            " WHERE symbol = ? ORDER BY time DESC LIMIT ?)", (symbol, symbol, keep))
+
+    def portfolio_volatility(self, override: dict | None = None) -> float | None:
+        """Annualised volatility of today's positions over recent joint returns.
+
+        Each date's book return is the sum of value-weighted log returns of
+        the markets that traded that day, so correlations are included.
+        ``override`` maps symbol -> signed value to use instead (what-if).
+        None while there are fewer than 20 return dates.
+        """
+        equity = self.equity()
+        if equity <= 0:
+            return None
+        values = {p["symbol"]: p["quantity"] * self._price(p["symbol"]) for p in self.positions()}
+        values.update(override or {})
+        weights = {symbol: value / equity for symbol, value in values.items() if value}
+        if not weights:
+            return 0.0
+        by_date: dict = {}
+        for symbol, weight in weights.items():
+            rows = self._db.execute("SELECT time, price FROM closes WHERE symbol = ? ORDER BY time",
+                                    (symbol,)).fetchall()
+            for (_, a), (time, b) in zip(rows, rows[1:]):
+                day = time[:10]
+                by_date[day] = by_date.get(day, 0.0) + weight * log(b / a)
+        days = sorted(by_date)[-self.limits().vol_lookback:]
+        if len(days) < 20:
+            return None
+        span = (datetime.fromisoformat(days[-1]) - datetime.fromisoformat(days[0])).days
+        if span <= 0:
+            return None
+        series = [by_date[d] for d in days]
+        mean = sum(series) / len(series)
+        variance = sum((r - mean) ** 2 for r in series) / (len(series) - 1)
+        return sqrt(variance * (len(series) - 1) * 365.25 / span)
 
     def stress_test(self, shocks_pct: dict) -> dict:
         """Equity after instantaneous price shocks, without changing state."""
@@ -532,6 +590,7 @@ class PaperEngine:
             self._exit_checks(symbol, instrument, candle, time, stops_only=True)
 
         self._set_mark(symbol, candle.close, time, previous_close)
+        self._record_close(symbol, candle.close, time)
         self._after_mark(time)
 
     def _set_mark(self, symbol, price, time, previous_close):
