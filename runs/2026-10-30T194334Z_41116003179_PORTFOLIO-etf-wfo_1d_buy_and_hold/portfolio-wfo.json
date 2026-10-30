@@ -1,0 +1,259 @@
+{
+  "train_days": 1460,
+  "test_days": 365,
+  "embargo_days": 5,
+  "folds": [
+    {
+      "train": [
+        "2010-01-01",
+        "2013-12-31"
+      ],
+      "test": [
+        "2014-01-05",
+        "2015-01-05"
+      ],
+      "params": {},
+      "train_sharpe": 0.143,
+      "markets": 22,
+      "test_return_pct": -13.0588,
+      "test_sharpe": -1.2492,
+      "test_max_drawdown_pct": 20.6586,
+      "kill_switch_at": null,
+      "basket_return_pct": -5.2428,
+      "basket_sharpe": -1.057
+    },
+    {
+      "train": [
+        "2011-01-01",
+        "2014-12-31"
+      ],
+      "test": [
+        "2015-01-05",
+        "2016-01-05"
+      ],
+      "params": {},
+      "train_sharpe": -0.3137,
+      "markets": 22,
+      "test_return_pct": -22.6569,
+      "test_sharpe": -1.6162,
+      "test_max_drawdown_pct": 22.8706,
+      "kill_switch_at": null,
+      "basket_return_pct": -6.7769,
+      "basket_sharpe": -0.8333
+    },
+    {
+      "train": [
+        "2012-01-01",
+        "2015-12-31"
+      ],
+      "test": [
+        "2016-01-05",
+        "2017-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -0.5691,
+      "markets": 22,
+      "test_return_pct": 4.4788,
+      "test_sharpe": 0.3579,
+      "test_max_drawdown_pct": 10.1691,
+      "kill_switch_at": null,
+      "basket_return_pct": 9.8351,
+      "basket_sharpe": 1.2052
+    },
+    {
+      "train": [
+        "2012-12-31",
+        "2016-12-30"
+      ],
+      "test": [
+        "2017-01-04",
+        "2018-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -0.7157,
+      "markets": 22,
+      "test_return_pct": 29.564,
+      "test_sharpe": 2.7805,
+      "test_max_drawdown_pct": 4.9379,
+      "kill_switch_at": null,
+      "basket_return_pct": 30.1661,
+      "basket_sharpe": 4.005
+    },
+    {
+      "train": [
+        "2013-12-31",
+        "2017-12-30"
+      ],
+      "test": [
+        "2018-01-04",
+        "2019-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -0.8793,
+      "markets": 23,
+      "test_return_pct": -26.5493,
+      "test_sharpe": -1.9992,
+      "test_max_drawdown_pct": 30.3569,
+      "kill_switch_at": "2018-12-17T00:00:00+00:00",
+      "basket_return_pct": -15.2192,
+      "basket_sharpe": -1.8063
+    },
+    {
+      "train": [
+        "2014-12-31",
+        "2018-12-30"
+      ],
+      "test": [
+        "2019-01-04",
+        "2020-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -1.0748,
+      "markets": 23,
+      "test_return_pct": 12.0454,
+      "test_sharpe": 1.1835,
+      "test_max_drawdown_pct": 6.9374,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0925,
+      "basket_sharpe": 1.4189
+    },
+    {
+      "train": [
+        "2015-12-31",
+        "2019-12-30"
+      ],
+      "test": [
+        "2020-01-04",
+        "2021-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.0118,
+      "markets": 23,
+      "test_return_pct": -31.3721,
+      "test_sharpe": -2.2168,
+      "test_max_drawdown_pct": 32.6552,
+      "kill_switch_at": "2020-03-18T00:00:00+00:00",
+      "basket_return_pct": 25.5482,
+      "basket_sharpe": 1.3922
+    },
+    {
+      "train": [
+        "2016-12-30",
+        "2020-12-29"
+      ],
+      "test": [
+        "2021-01-03",
+        "2022-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.0109,
+      "markets": 23,
+      "test_return_pct": 13.7215,
+      "test_sharpe": 0.9059,
+      "test_max_drawdown_pct": 9.4828,
+      "kill_switch_at": null,
+      "basket_return_pct": 22.6431,
+      "basket_sharpe": 1.5339
+    },
+    {
+      "train": [
+        "2017-12-30",
+        "2021-12-29"
+      ],
+      "test": [
+        "2022-01-03",
+        "2023-01-03"
+      ],
+      "params": {},
+      "train_sharpe": -0.9551,
+      "markets": 23,
+      "test_return_pct": -20.4973,
+      "test_sharpe": -1.1282,
+      "test_max_drawdown_pct": 27.779,
+      "kill_switch_at": null,
+      "basket_return_pct": -8.0939,
+      "basket_sharpe": -0.5999
+    },
+    {
+      "train": [
+        "2018-12-30",
+        "2022-12-29"
+      ],
+      "test": [
+        "2023-01-03",
+        "2024-01-03"
+      ],
+      "params": {},
+      "train_sharpe": -0.62,
+      "markets": 23,
+      "test_return_pct": 6.3579,
+      "test_sharpe": 0.5404,
+      "test_max_drawdown_pct": 12.8059,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0945,
+      "basket_sharpe": 1.3899
+    },
+    {
+      "train": [
+        "2019-12-30",
+        "2023-12-29"
+      ],
+      "test": [
+        "2024-01-03",
+        "2025-01-02"
+      ],
+      "params": {},
+      "train_sharpe": -1.1255,
+      "markets": 23,
+      "test_return_pct": 16.4038,
+      "test_sharpe": 1.0087,
+      "test_max_drawdown_pct": 13.8138,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.3154,
+      "basket_sharpe": 1.2764
+    },
+    {
+      "train": [
+        "2020-12-29",
+        "2024-12-28"
+      ],
+      "test": [
+        "2025-01-02",
+        "2026-01-02"
+      ],
+      "params": {},
+      "train_sharpe": -0.2591,
+      "markets": 23,
+      "test_return_pct": 13.6496,
+      "test_sharpe": 0.8483,
+      "test_max_drawdown_pct": 18.1858,
+      "kill_switch_at": null,
+      "basket_return_pct": 16.0191,
+      "basket_sharpe": 1.3994
+    }
+  ],
+  "summary": {
+    "fold_count": 12,
+    "chained_test_return_pct": -34.5997,
+    "chained_basket_return_pct": 154.7791,
+    "folds_beating_basket": 1,
+    "positive_folds": 7,
+    "folds_with_kill_switch": 2,
+    "mean_train_sharpe": -0.5289,
+    "mean_test_sharpe": -0.0487,
+    "mean_basket_sharpe": 0.777,
+    "parameter_change_rate": 0.0
+  },
+  "note": "Parameters are chosen on each training window only; each test window starts from fresh equity. A large gap between mean train and test Sharpe signals overfitting.",
+  "mode": "portfolio-wfo",
+  "strategy": "buy_and_hold",
+  "universe": "etf",
+  "ranges": {},
+  "skipped_missing": [],
+  "settings": {
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 3.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": false
+  }
+}
