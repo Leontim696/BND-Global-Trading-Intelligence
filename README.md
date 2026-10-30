@@ -230,6 +230,12 @@ the kill switch.
 
 ## Paid API calls
 
+`ai_cache.ResponseCache` (pass `cache=` to `CouncilRunner`) stores each
+answer under a SHA-256 of agent, model, market, symbol and context for 12
+hours, so an identical question is never paid for twice; hits and money
+saved are counted. `python -m src.bnd.cost_report --db costs.sqlite
+[--cache cache.sqlite]` prints spending by model, agent and day.
+
 All OpenRouter calls are opt-in. The workflows under `.github/workflows`
 that call paid models require manual dispatch with explicit confirmation
 inputs, and an `OPENROUTER_API_KEY` secret with a provider-side spending limit.
