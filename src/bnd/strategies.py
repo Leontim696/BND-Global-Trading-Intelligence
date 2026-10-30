@@ -595,13 +595,7 @@ def combo(members=DEFAULT_COMBO) -> Strategy:
     Opposite signals cancel, so the book holds only what most members agree on.
     """
 
-    names = [n.strip() for n in members.split(",")] if isinstance(members, str) else list(members)
-    names = [n for n in names if n]
-    unknown = [n for n in names if n not in STRATEGIES or n in ("combo", "buy_and_hold")]
-    if len(names) < 2 or len(set(names)) != len(names) or unknown:
-        raise ValueError("combo needs at least two distinct strategies"
-                         + (f"; unknown or not allowed: {', '.join(unknown)}" if unknown else ""))
-    parts = [STRATEGIES[name]() for name in names]
+    parts = [STRATEGIES[name]() for name in _names(members)]
 
     def strategy(history: Sequence[Candle]) -> float:
         return sum(part(history) for part in parts) / len(parts)
@@ -609,9 +603,70 @@ def combo(members=DEFAULT_COMBO) -> Strategy:
     return strategy
 
 
+DEFAULT_SELECTOR = ("regime_switch", "momentum", "sma_crossover", "donchian_breakout",
+                    "bollinger_reversion", "rsi_reversion")
+
+
+def _names(members) -> list:
+    names = [n.strip() for n in members.split(",")] if isinstance(members, str) else list(members)
+    names = [n for n in names if n]
+    unknown = [n for n in names if n not in STRATEGIES or n in META_STRATEGIES]
+    if len(names) < 2 or len(set(names)) != len(names) or unknown:
+        raise ValueError("needs at least two distinct strategies"
+                         + (f"; unknown or not allowed: {', '.join(unknown)}" if unknown else ""))
+    return names
+
+
+def selector(members=DEFAULT_SELECTOR, lookback: int = 252, hold: int = 21,
+             min_score: float = 0.0) -> Strategy:
+    """Follow whichever member did best recently in this market; flat if none did.
+
+    Every member runs on every candle. A member's score is the Sharpe ratio
+    (per candle, not annualised) of its own paper returns over the last
+    ``lookback`` candles: yesterday's signal times today's close-to-close
+    return, without costs. Every ``hold`` candles the best member is chosen;
+    if no score exceeds ``min_score`` the strategy stays flat until the next
+    choice, which switches off a market where everything is failing.
+    """
+
+    names = _names(members)
+    if lookback < 20 or hold < 1:
+        raise ValueError("Require lookback >= 20 and hold >= 1")
+    parts = [STRATEGIES[name]() for name in names]
+    returns = [deque(maxlen=lookback) for _ in parts]
+    state = {"previous": None, "signals": [0.0] * len(parts), "chosen": None, "age": 0}
+
+    def score(window) -> float:
+        if len(window) < lookback:
+            return float("-inf")
+        mean = sum(window) / lookback
+        variance = sum((r - mean) ** 2 for r in window) / (lookback - 1)
+        return mean / sqrt(variance) if variance > 0 else float("-inf")
+
+    def strategy(history: Sequence[Candle]) -> float:
+        close = history[-1].close
+        previous = state["previous"]
+        if previous is not None:
+            change = log(close / previous)
+            for window, signal in zip(returns, state["signals"]):
+                window.append(signal * change)
+        state["previous"] = close
+        state["signals"] = [part(history) for part in parts]
+        if state["age"] % hold == 0:
+            scores = [score(window) for window in returns]
+            best = max(range(len(parts)), key=lambda i: scores[i])
+            state["chosen"] = best if scores[best] > min_score else None
+        state["age"] += 1
+        chosen = state["chosen"]
+        return 0.0 if chosen is None else state["signals"][chosen]
+
+    return strategy
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
     "combo": combo,
+    "selector": selector,
     "sma_crossover": sma_crossover,
     "donchian_breakout": donchian_breakout,
     "volatility_target": volatility_target,
@@ -625,6 +680,8 @@ STRATEGIES = {
     "stochastic_reversion": stochastic_reversion,
     "regime_switch": regime_switch,
 }
+
+META_STRATEGIES = ("buy_and_hold", "combo", "selector")
 
 # Default robustness ranges ("start:stop:step") for each strategy's
 # swept parameters. Other parameters stay at their given values.

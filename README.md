@@ -166,6 +166,13 @@ its result alone and the combo's result without it, so a member that adds
 nothing is visible. The paper runner accepts the same `--strategy combo
 --members ...`.
 
+`--strategy selector` chooses per market: every member runs all the time,
+and every `hold` candles (default 21) the one with the best recent Sharpe
+(own paper returns over `lookback` candles, default 252, no costs) is
+followed; if none scored above `min_score` (default 0) the market stays
+flat until the next choice. Members default to `regime_switch, momentum,
+sma_crossover, donchian_breakout, bollinger_reversion, rsi_reversion`.
+
 ## Paper-trading engine
 
 `paper_engine.PaperEngine` keeps a virtual account in one SQLite file
