@@ -169,6 +169,29 @@ def _book_volatility(books, weights, times) -> float | None:
     return deviation * sqrt((len(times) - 1) * SECONDS_PER_YEAR / seconds)
 
 
+def target_weights(books, config: PortfolioConfig, recent_times) -> dict:
+    """Weights to hold from each book's ``signal`` and ``vol`` (step 2-3).
+
+    ``recent_times`` are the last ``vol_lookback`` dates seen, used to
+    measure the book's joint volatility. Books without a volatility
+    estimate get no weight. Shared by the backtest and the paper runner.
+    """
+    ready = [b for b in books if b.vol is not None and b.vol > 0]
+    if config.sizing == "equal":
+        raw = {b.market.name: b.signal / len(books) for b in ready}
+    else:
+        raw = {b.market.name: b.signal * config.target_vol_pct / 100 / b.vol
+               for b in ready}
+        measured = _book_volatility(ready, raw, recent_times)
+        factor = (config.target_vol_pct / 100 / measured) if measured else 0.0
+        raw = {name: weight * factor for name, weight in raw.items()}
+    weights = {name: max(-config.max_weight, min(config.max_weight, weight))
+               for name, weight in raw.items()}
+    gross = sum(abs(w) for w in weights.values())
+    scale = config.max_leverage / gross if gross > config.max_leverage else 1.0
+    return {name: weight * scale for name, weight in weights.items()}
+
+
 def run_portfolio(
     data: Mapping[str, Sequence[Candle]],
     markets: Sequence[Market],
@@ -301,21 +324,9 @@ def run_portfolio(
             book.signal = signal if (signal >= 0 or config.allow_short) else 0.0
             book.vol = book.vols[end]
 
-        ready = [b for b in books if b.vol is not None and b.vol > 0]
-        if config.sizing == "equal":
-            raw = {b.market.name: b.signal / len(books) for b in ready}
-        else:
-            raw = {b.market.name: b.signal * config.target_vol_pct / 100 / b.vol
-                   for b in ready}
-            measured = _book_volatility(ready, raw, seen[-config.vol_lookback:])
-            factor = (config.target_vol_pct / 100 / measured) if measured else 0.0
-            raw = {name: weight * factor for name, weight in raw.items()}
-        weights = {name: max(-config.max_weight, min(config.max_weight, weight))
-                   for name, weight in raw.items()}
-        gross = sum(abs(w) for w in weights.values())
-        scale = config.max_leverage / gross if gross > config.max_leverage else 1.0
+        weights = target_weights(books, config, seen[-config.vol_lookback:])
         for book in books:
-            book.target = weights.get(book.market.name, 0.0) * scale
+            book.target = weights.get(book.market.name, 0.0)
 
     # Close everything at the final marks, paying exit costs.
     final_time = curve[-1][0] if curve else times[-1]
