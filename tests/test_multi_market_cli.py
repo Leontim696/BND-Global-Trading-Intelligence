@@ -198,3 +198,44 @@ def test_portfolio_summary(tmp_path):
     assert "diversification and leverage" in portfolio_verdict(report)
     report["ranking"][0]["p_value_adjusted"] = 0.01
     assert "preliminary evidence" in portfolio_verdict(report)
+
+
+def test_in_currency_converts_each_date_at_the_latest_rate():
+    from src.bnd.portfolio import currency_metrics, in_currency
+
+    fx = [Candle(START + timedelta(days=i), r, r, r, r, 1)
+          for i, r in enumerate((1.0, 1.25, 1.25))]
+    curve = [(START, 100.0), (START + timedelta(days=1, hours=5), 100.0),
+             (START + timedelta(days=5), 125.0)]
+
+    converted = in_currency(curve, fx)
+
+    # A flat USD account loses 20% for a EUR investor when EUR rises 25%.
+    assert [round(v, 6) for _, v in converted] == [100.0, 80.0, 100.0]
+    assert currency_metrics(curve, fx)["total_return_pct"] == pytest.approx(0.0)
+    assert currency_metrics(curve, fx, initial_equity=125.0)["total_return_pct"] == \
+        pytest.approx(-20.0)
+    with pytest.raises(ValueError, match="No exchange rate"):
+        in_currency([(START - timedelta(days=1), 1.0)], fx)
+
+
+def test_portfolio_base_currency_eur(tmp_path):
+    from src.bnd.backtest_summary import build_summary
+
+    write_markets(tmp_path, ["GOLD", "SP500"])
+    args = ["portfolio", "--permutations", "0", "--data-dir", str(tmp_path),
+            "--markets", "GOLD,SP500", "--strategy", "macd", "--base-currency", "EUR"]
+    code, _, err = run_cli(args)
+    assert code == 2 and "EURUSD.csv" in err
+
+    write_markets(tmp_path, ["EURUSD"])
+    code, out, _ = run_cli(args)
+
+    assert code == 0
+    report = json.loads(out)
+    assert report["base_currency"] == "EUR"
+    assert "sharpe" in report["ranking"][0]["out_of_sample_base_currency"]
+    assert "total_return_pct" in report["equal_weight_basket_out_of_sample_base_currency"]
+    path = tmp_path / "portfolio.json"
+    path.write_text(out)
+    assert "**In EUR, unhedged**" in build_summary(portfolio=path)

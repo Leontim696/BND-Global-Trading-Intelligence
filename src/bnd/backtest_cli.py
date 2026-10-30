@@ -36,6 +36,7 @@ from .market_data import (
 )
 from .portfolio import (
     PortfolioConfig,
+    currency_metrics,
     portfolio_permutation_test,
     record_signals,
     run_portfolio,
@@ -579,6 +580,14 @@ def command_portfolio(args) -> int:
     if not markets:
         raise ValueError("No market data found")
     data = {m.name: load_csv(folder / f"{m.name}.csv") for m in markets}
+    fx = None
+    if args.base_currency != "USD":
+        # Prices are in USD; results are also shown in the base currency.
+        pair = folder / f"{args.base_currency}USD.csv"
+        if not pair.exists():
+            raise ValueError(f"--base-currency {args.base_currency} needs {pair.name} "
+                             "in --data-dir (fetch the forex class)")
+        fx = load_csv(pair)
     times = sorted({c.open_time for candles in data.values() for c in candles})
     cut = times[int(len(times) * args.in_sample / 100)]
     config = _portfolio_config(args)
@@ -611,6 +620,9 @@ def command_portfolio(args) -> int:
             "in_sample": _portfolio_metrics(in_sample),
             "out_of_sample": _portfolio_metrics(out_of_sample),
         }
+        if fx is not None:
+            row["out_of_sample_base_currency"] = currency_metrics(
+                out_of_sample["equity_curve"], fx, config.initial_equity)
         if args.permutations:
             test = portfolio_permutation_test(data, markets, signals, config, cut,
                                               args.permutations, args.seed, workers)
@@ -658,6 +670,10 @@ def command_portfolio(args) -> int:
             "allow_short": config.allow_short, "params": params,
         },
         "equal_weight_basket_out_of_sample": _portfolio_metrics(basket_oos),
+        "base_currency": args.base_currency,
+        "equal_weight_basket_out_of_sample_base_currency": (
+            currency_metrics(basket_oos["equity_curve"], fx, basket.initial_equity)
+            if fx is not None else None),
         "data_diagnostics": _data_diagnostics(data),
         "ranking": rows,
         "note": (
@@ -814,6 +830,8 @@ def build_parser() -> argparse.ArgumentParser:
     port.add_argument("--max-drawdown", type=float, default=30.0,
                       help="kill switch in percent; 0 disables")
     port.add_argument("--no-shorts", action="store_true")
+    port.add_argument("--base-currency", choices=["USD", "EUR", "GBP", "AUD"], default="USD",
+                      help="also report results in this currency, unhedged (needs e.g. EURUSD.csv)")
     port.add_argument("--in-sample", type=float, default=70.0)
     port.add_argument("--permutations", type=int, default=40,
                       help="timing shuffles per strategy (0 disables)")
