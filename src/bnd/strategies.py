@@ -583,8 +583,35 @@ def regime_switch(window: int = 30, trend_level: float = 0.35,
     return _streaming(State)
 
 
+# Trend following plus mean reversion: they tend to win in different
+# market regimes, so their average is steadier than either alone.
+DEFAULT_COMBO = ("regime_switch", "momentum", "bollinger_reversion")
+
+
+def combo(members=DEFAULT_COMBO) -> Strategy:
+    """Equal-weight average of several strategies' signals (default parameters).
+
+    ``members`` is a sequence of strategy names or a comma-separated string.
+    Opposite signals cancel, so the book holds only what most members agree on.
+    """
+
+    names = [n.strip() for n in members.split(",")] if isinstance(members, str) else list(members)
+    names = [n for n in names if n]
+    unknown = [n for n in names if n not in STRATEGIES or n in ("combo", "buy_and_hold")]
+    if len(names) < 2 or len(set(names)) != len(names) or unknown:
+        raise ValueError("combo needs at least two distinct strategies"
+                         + (f"; unknown or not allowed: {', '.join(unknown)}" if unknown else ""))
+    parts = [STRATEGIES[name]() for name in names]
+
+    def strategy(history: Sequence[Candle]) -> float:
+        return sum(part(history) for part in parts) / len(parts)
+
+    return strategy
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
+    "combo": combo,
     "sma_crossover": sma_crossover,
     "donchian_breakout": donchian_breakout,
     "volatility_target": volatility_target,

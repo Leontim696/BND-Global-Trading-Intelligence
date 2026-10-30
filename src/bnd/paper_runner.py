@@ -290,7 +290,7 @@ def render_report(engine: PaperEngine, report: dict) -> str:
 # (including unattended scheduled ones) trades the same way.
 DEFAULTS = {
     "universe": "etf", "markets": None, "classes": None,
-    "strategy": "regime_switch", "param": [], "portfolio_vol": 15.0,
+    "strategy": "regime_switch", "members": None, "param": [], "portfolio_vol": 15.0,
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0,
 }
@@ -314,7 +314,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--universe", choices=["futures", "etf"])
     parser.add_argument("--markets")
     parser.add_argument("--classes")
-    parser.add_argument("--strategy", choices=sorted(SWEEP_RANGES))
+    parser.add_argument("--strategy", choices=["combo"] + sorted(SWEEP_RANGES))
+    parser.add_argument("--members", help="combo: comma-separated strategies")
     parser.add_argument("--param", action="append", metavar="NAME=VALUE")
     parser.add_argument("--portfolio-vol", type=float)
     parser.add_argument("--sizing-lookback", type=int)
@@ -362,7 +363,12 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
 
 
 def _params(settings) -> dict:
-    return {k: parse_value(v) for k, v in _pairs(settings["param"], "--param").items()}
+    params = {k: parse_value(v) for k, v in _pairs(settings["param"], "--param").items()}
+    if settings.get("members"):
+        if settings["strategy"] != "combo":
+            raise ValueError("--members is only for --strategy combo")
+        params["members"] = tuple(_split_list(settings["members"]))
+    return params
 
 
 def _config(settings) -> RunnerConfig:

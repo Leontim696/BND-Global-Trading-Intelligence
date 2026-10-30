@@ -159,6 +159,13 @@ reports every strategy and the basket as a EUR investor sees them,
 unhedged: the USD equity curve is converted at each date's EURUSD close,
 so a falling dollar lowers the result. It needs `EURUSD.csv` (forex class).
 
+`--strategy combo` trades the equal-weight average of several strategies'
+signals (`--members`, default `regime_switch,momentum,bollinger_reversion`:
+trend following plus mean reversion). The report shows, for each member,
+its result alone and the combo's result without it, so a member that adds
+nothing is visible. The paper runner accepts the same `--strategy combo
+--members ...`.
+
 ## Paper-trading engine
 
 `paper_engine.PaperEngine` keeps a virtual account in one SQLite file

@@ -293,6 +293,19 @@ def _portfolio_lines(report: dict) -> list[str]:
     if len(ranking) == 1:
         row = ranking[0]
         markets = row.get("per_market_out_of_sample", [])
+        attribution = row.get("combo_attribution_out_of_sample")
+        if attribution:
+            combo = row["out_of_sample"]
+            lines += ["", f"**What each combo member adds** (combo: Sharpe {_fmt(combo.get('sharpe'))}, "
+                      f"return {_fmt(combo.get('total_return_pct'), '%')}):", "",
+                      "| Member | Alone: return | Alone: Sharpe | Combo without it: return | "
+                      "Combo without it: Sharpe |", "| --- | ---: | ---: | ---: | ---: |"]
+            lines += [
+                f"| {a['strategy']} | {_fmt(a['alone'].get('total_return_pct'), '%')} | "
+                f"{_fmt(a['alone'].get('sharpe'))} | "
+                f"{_fmt(a['combo_without_it'].get('total_return_pct'), '%')} | "
+                f"{_fmt(a['combo_without_it'].get('sharpe'))} |"
+                for a in attribution]
         lines += ["", "**Profit by market (out-of-sample):** "
                   + ", ".join(f"{m['market']} {_fmt(m['pnl'], digits=0)}" for m in markets)]
         lines += ["", "| Max leverage | Return | Sharpe | Max drawdown | Kill switch |",

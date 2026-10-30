@@ -56,7 +56,7 @@ from .robustness import (
     select_in_sample,
     summarize_grid,
 )
-from .strategies import STRATEGIES, SWEEP_RANGES, buy_and_hold
+from .strategies import DEFAULT_COMBO, STRATEGIES, SWEEP_RANGES, buy_and_hold
 from .universe import select as select_markets
 from .walk_forward import walk_forward
 
@@ -567,6 +567,24 @@ def _portfolio_metrics(result) -> dict:
     return {key: result["metrics"].get(key) for key in keys}
 
 
+def _combo_attribution(data, markets, members, config, cut) -> list[dict]:
+    """What each combo member adds: its result alone, and the combo without it."""
+    members = list(members)
+    rows = []
+    for member in members:
+        rest = [m for m in members if m != member]
+        without = (_factory("combo", {"members": tuple(rest)}) if len(rest) > 1
+                   else _factory(rest[0], {}))
+        rows.append({
+            "strategy": member,
+            "alone": _portfolio_metrics(run_portfolio(
+                data, markets, _factory(member, {}), config, trade_from=cut)),
+            "combo_without_it": _portfolio_metrics(run_portfolio(
+                data, markets, without, config, trade_from=cut)),
+        })
+    return rows
+
+
 def command_portfolio(args) -> int:
     """Trade every market in one account; compare with an equal-weight basket."""
     markets = select_markets(_split_list(args.markets), _split_list(args.classes), args.universe)
@@ -602,6 +620,8 @@ def command_portfolio(args) -> int:
 
     names = sorted(SWEEP_RANGES) if args.strategy == "all" else [args.strategy]
     params = {} if args.strategy == "all" else _strategy_params(args)
+    if args.strategy == "combo" and args.members:
+        params["members"] = tuple(_split_list(args.members))
 
     def periods(factory, cfg):
         in_sample = run_portfolio(early, early_markets, factory, cfg)
@@ -628,6 +648,9 @@ def command_portfolio(args) -> int:
                                               args.permutations, args.seed, workers)
             row["permutation_test_out_of_sample"] = test
             row["p_value"] = test["p_value"]
+        if name == "combo":
+            row["combo_attribution_out_of_sample"] = _combo_attribution(
+                data, markets, params.get("members", DEFAULT_COMBO), config, cut)
         if len(names) == 1:
             row["per_market_out_of_sample"] = out_of_sample["per_market"]
             row["cost_stress_out_of_sample"] = [
@@ -811,8 +834,11 @@ def build_parser() -> argparse.ArgumentParser:
     port.add_argument("--classes")
     port.add_argument("--universe", choices=["futures", "etf"], default="futures")
     port.add_argument("--skip-missing", action="store_true")
-    port.add_argument("--strategy", choices=["all"] + sorted(SWEEP_RANGES),
+    port.add_argument("--strategy", choices=["all", "combo"] + sorted(SWEEP_RANGES),
                       default="all")
+    port.add_argument("--members",
+                      help="combo: comma-separated strategies, default "
+                           + ",".join(DEFAULT_COMBO))
     port.add_argument("--param", action="append", metavar="NAME=VALUE")
     port.add_argument("--sizing", choices=["volatility", "equal"], default="volatility")
     port.add_argument("--portfolio-vol", type=float, default=15.0,
