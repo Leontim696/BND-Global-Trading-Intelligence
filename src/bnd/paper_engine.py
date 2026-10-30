@@ -309,6 +309,11 @@ class PaperEngine:
         self._db.execute("INSERT OR REPLACE INTO instruments (symbol, spec) VALUES (?, ?)",
                          (instrument.symbol, json.dumps(asdict(instrument))))
 
+    def record(self, kind: str, payload: dict, now: datetime) -> None:
+        """Add an entry (e.g. a council decision) to the audit journal."""
+        with self._transaction():
+            self._log(kind, payload, _iso(now))
+
     def _log(self, kind: str, payload: dict, time: str) -> None:
         self._db.execute("INSERT INTO journal (time, kind, payload) VALUES (?, ?, ?)",
                          (time, kind, json.dumps(payload, default=str)))
