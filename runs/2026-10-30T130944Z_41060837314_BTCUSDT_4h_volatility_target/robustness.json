@@ -1,0 +1,148 @@
+{
+  "data": "backtest-reports/BTCUSDT-4h.csv",
+  "sha256": "5e094c7ec53092a0b91904e9904213c85c5469b2ac662b6235d375fb9748246d",
+  "candles": 17152,
+  "first_candle": "2019-01-01T00:00:00+00:00",
+  "last_candle": "2026-10-30T08:00:00+00:00",
+  "data_gaps": 4,
+  "first_gaps": [
+    [
+      "2019-03-12T00:00:00+00:00",
+      "2019-03-12T08:00:00+00:00"
+    ],
+    [
+      "2019-05-15T00:00:00+00:00",
+      "2019-05-15T12:00:00+00:00"
+    ],
+    [
+      "2019-08-15T00:00:00+00:00",
+      "2019-08-15T08:00:00+00:00"
+    ],
+    [
+      "2020-02-19T08:00:00+00:00",
+      "2020-02-19T16:00:00+00:00"
+    ]
+  ],
+  "strategy": "volatility_target",
+  "risk_gate": "disabled_research_only",
+  "costs": {
+    "fee_pct": 0.1,
+    "slippage_pct": 0.05,
+    "funding_pct_annual": 10.0,
+    "cash_rate_pct_annual": 4.0,
+    "allow_short": true
+  },
+  "out_of_sample_start": "2024-06-24T20:00:00+00:00",
+  "grid_summary": {
+    "in_sample": {
+      "combinations": 42,
+      "beat_buy_and_hold": 0,
+      "beat_buy_and_hold_pct": 0.0,
+      "profitable": 40,
+      "median_return_pct": 49.6404,
+      "best": {
+        "params": {
+          "target_vol": 40,
+          "lookback": 300
+        },
+        "total_return_pct": 101.2335,
+        "sharpe": 0.5227,
+        "max_drawdown_pct": 66.4745,
+        "trades": 69,
+        "time_in_market_pct": 89.9883,
+        "avg_capital_exposure_pct": 64.3091
+      },
+      "buy_and_hold_return_pct": 1501.4361
+    },
+    "out_of_sample": {
+      "combinations": 42,
+      "beat_buy_and_hold": 0,
+      "beat_buy_and_hold_pct": 0.0,
+      "profitable": 13,
+      "median_return_pct": -13.9172,
+      "best": {
+        "params": {
+          "target_vol": 20,
+          "lookback": 240
+        },
+        "total_return_pct": 13.8119,
+        "sharpe": 0.3704,
+        "max_drawdown_pct": 22.7328,
+        "trades": 47,
+        "time_in_market_pct": 100.0,
+        "avg_capital_exposure_pct": 48.0502
+      },
+      "buy_and_hold_return_pct": 30.0868
+    }
+  },
+  "in_sample_selection": {
+    "params": {
+      "target_vol": 20,
+      "lookback": 240
+    },
+    "in_sample": {
+      "total_return_pct": 89.336,
+      "sharpe": 0.6685,
+      "max_drawdown_pct": 38.2491,
+      "trades": 69,
+      "time_in_market_pct": 89.9883,
+      "avg_capital_exposure_pct": 34.1464
+    },
+    "out_of_sample": {
+      "total_return_pct": 13.8119,
+      "sharpe": 0.3704,
+      "max_drawdown_pct": 22.7328,
+      "trades": 47,
+      "time_in_market_pct": 100.0,
+      "avg_capital_exposure_pct": 48.0502
+    },
+    "out_of_sample_rank": 1,
+    "out_of_sample_combinations": 42
+  },
+  "permutation_test_out_of_sample": {
+    "actual_return_pct": 13.8119,
+    "permutations": 200,
+    "seed": 7,
+    "shuffled_median_return_pct": -32.8397,
+    "shuffled_p5_return_pct": -59.6227,
+    "shuffled_p95_return_pct": 11.4857,
+    "p_value": 0.0448
+  },
+  "cost_stress_out_of_sample": [
+    {
+      "cost_multiplier": 1.0,
+      "fee_pct": 0.1,
+      "slippage_pct": 0.05,
+      "total_return_pct": 13.8119,
+      "sharpe": 0.3704,
+      "max_drawdown_pct": 22.7328,
+      "trades": 47,
+      "time_in_market_pct": 100.0,
+      "avg_capital_exposure_pct": 48.0502
+    },
+    {
+      "cost_multiplier": 2.0,
+      "fee_pct": 0.2,
+      "slippage_pct": 0.1,
+      "total_return_pct": -5.1081,
+      "sharpe": -0.0051,
+      "max_drawdown_pct": 28.3738,
+      "trades": 47,
+      "time_in_market_pct": 100.0,
+      "avg_capital_exposure_pct": 48.1118
+    },
+    {
+      "cost_multiplier": 3.0,
+      "fee_pct": 0.3,
+      "slippage_pct": 0.15,
+      "total_return_pct": -20.9025,
+      "sharpe": -0.3793,
+      "max_drawdown_pct": 33.8393,
+      "trades": 47,
+      "time_in_market_pct": 100.0,
+      "avg_capital_exposure_pct": 48.1737
+    }
+  ],
+  "grid": null,
+  "note": "Parameters are chosen on in-sample data only. A p_value above 0.05 means the real timing is not distinguishable from shuffled timing of the same positions. No profitability is implied."
+}

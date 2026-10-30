@@ -1,4 +1,4 @@
-Latest run: `runs/2026-10-30T125655Z_41058895982_BTCUSDT_4h_volatility_target` (source ec4bb0e, job success)
+Latest run: `runs/2026-10-30T130944Z_41060837314_BTCUSDT_4h_volatility_target` (source cdd2b1c, job success)
 
 # BND backtest summary
 
@@ -8,49 +8,56 @@ Latest run: `runs/2026-10-30T125655Z_41058895982_BTCUSDT_4h_volatility_target` (
 - SHA-256: `5e094c7ec53092a0b91904e9904213c85c5469b2ac662b6235d375fb9748246d`
 
 ## Verdict
-**No evidence of an edge.** Failed: permutation p-value < 0.05. Treat any profit above as luck or overfitting.
+**No evidence of an edge.** Failed: still positive at 2× costs. Treat any profit above as luck or overfitting.
 
-Out-of-sample, risk-adjusted: Sharpe 0.52 vs 0.47 for buy & hold; max drawdown 31.16% vs 53.45%; return 28.32% vs 30.09% with 48.21% average capital invested.
+Out-of-sample, risk-adjusted: Sharpe 0.16 vs 0.47 for buy & hold; max drawdown 44.75% vs 53.45%; return -3.06% vs 30.09% with 91.17% average capital invested.
 
 ## Backtest: `volatility_target`
+Costs per fill: fee 0.1%, slippage 0.05%; funding 10.0%/yr on open positions; cash interest 4.0%/yr; shorts allowed.
 
 **full** (2019-01-01T00:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: disabled_research_only)
 
 | Metric | Strategy | Buy & hold |
 | --- | ---: | ---: |
-| Return | 338.39% | 1,989.48% |
-| CAGR | 20.78% | 47.46% |
-| Max drawdown | 42.36% | 77.04% |
-| Sharpe | 0.79 | 0.95 |
-| Trades | 58 | 1 |
-| Time in market | 54.34% | 99.99% |
-| Avg capital exposure | 43.40% | 99.99% |
+| Return | 58.94% | 1,989.52% |
+| CAGR | 6.10% | 47.46% |
+| Max drawdown | 64.41% | 77.04% |
+| Sharpe | 0.35 | 0.95 |
+| Trades | 115 | 1 |
+| Time in market | 92.99% | 99.99% |
+| Avg capital exposure | 72.76% | 99.99% |
+| Funding paid | 6,577.45 | 0.00 |
+| Interest earned | 935.05 | 0.18 |
 | Entries vetoed by risk engine | 0 | 0 |
 
 **in_sample** (2019-01-01T00:00:00+00:00 → 2024-06-24T16:00:00+00:00, risk gate: disabled_research_only)
 
 | Metric | Strategy | Buy & hold |
 | --- | ---: | ---: |
-| Return | 240.61% | 1,501.41% |
-| CAGR | 25.07% | 65.91% |
-| Max drawdown | 42.36% | 77.04% |
-| Sharpe | 0.89 | 1.11 |
-| Trades | 35 | 1 |
-| Time in market | 54.81% | 99.99% |
-| Avg capital exposure | 41.34% | 99.99% |
+| Return | 63.48% | 1,501.44% |
+| CAGR | 9.39% | 65.91% |
+| Max drawdown | 64.41% | 77.04% |
+| Sharpe | 0.43 | 1.11 |
+| Trades | 69 | 1 |
+| Time in market | 89.99% | 99.99% |
+| Avg capital exposure | 64.88% | 99.99% |
+| Funding paid | 3,422.08 | 0.00 |
+| Interest earned | 759.07 | 0.18 |
 | Entries vetoed by risk engine | 0 | 0 |
 
 **out_of_sample** (2024-06-24T20:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: disabled_research_only)
 
 | Metric | Strategy | Buy & hold |
 | --- | ---: | ---: |
-| Return | 28.32% | 30.09% |
-| CAGR | 11.20% | 11.85% |
-| Max drawdown | 31.16% | 53.45% |
-| Sharpe | 0.52 | 0.47 |
-| Trades | 24 | 1 |
-| Time in market | 53.26% | 100.00% |
-| Avg capital exposure | 48.21% | 100.00% |
+| Return | -3.06% | 30.09% |
+| CAGR | -1.31% | 11.85% |
+| Max drawdown | 44.75% | 53.45% |
+| Sharpe | 0.16 | 0.47 |
+| Trades | 47 | 1 |
+| Time in market | 100.00% | 100.00% |
+| Avg capital exposure | 91.17% | 100.00% |
+| Funding paid | 1,924.41 | 0.00 |
+| Interest earned | 107.33 | 0.00 |
 | Entries vetoed by risk engine | 0 | 0 |
 
 ## Walk-forward (SMA long/flat, independent folds)
@@ -61,17 +68,17 @@ Out-of-sample, risk-adjusted: Sharpe 0.52 vs 0.47 for buy & hold; max drawdown 3
 
 | Period | Combos | Beat B&H | Profitable | Median return | B&H |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| in_sample | 42 | 0% | 42 | 284.37% | 1,501.41% |
-| out_of_sample | 42 | 7% | 42 | 23.55% | 30.09% |
+| in_sample | 42 | 0% | 40 | 49.64% | 1,501.44% |
+| out_of_sample | 42 | 0% | 13 | -13.92% | 30.09% |
 
-**In-sample choice** target_vol=20, lookback=240: in-sample return 146.77% (Sharpe 1.09); out-of-sample return 20.57% (Sharpe 0.59), rank 2 of 42.
+**In-sample choice** target_vol=20, lookback=240: in-sample return 89.34% (Sharpe 0.67); out-of-sample return 13.81% (Sharpe 0.37), rank 1 of 42.
 
-**Permutation test** (out-of-sample, 200 shuffles): actual 20.57%, shuffled median 4.99%, 5–95% range -16.51% … 43.62%, p-value **0.244**.
+**Permutation test** (out-of-sample, 200 shuffles): actual 13.81%, shuffled median -32.84%, 5–95% range -59.62% … 11.49%, p-value **0.045**.
 
 | Cost multiplier | Return | Sharpe | Trades |
 | ---: | ---: | ---: | ---: |
-| ×1 | 20.57% | 0.59 | 24 |
-| ×2 | 16.36% | 0.50 | 24 |
-| ×3 | 12.30% | 0.40 | 24 |
+| ×1 | 13.81% | 0.37 | 47 |
+| ×2 | -5.11% | -0.01 | 47 |
+| ×3 | -20.90% | -0.38 | 47 |
 
 _Paper research only. Past results do not predict future returns._

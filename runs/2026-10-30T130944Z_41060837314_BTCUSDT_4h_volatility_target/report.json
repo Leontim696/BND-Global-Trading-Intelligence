@@ -1,0 +1,144 @@
+{
+  "data": "backtest-reports/BTCUSDT-4h.csv",
+  "sha256": "5e094c7ec53092a0b91904e9904213c85c5469b2ac662b6235d375fb9748246d",
+  "candles": 17152,
+  "first_candle": "2019-01-01T00:00:00+00:00",
+  "last_candle": "2026-10-30T08:00:00+00:00",
+  "data_gaps": 4,
+  "first_gaps": [
+    [
+      "2019-03-12T00:00:00+00:00",
+      "2019-03-12T08:00:00+00:00"
+    ],
+    [
+      "2019-05-15T00:00:00+00:00",
+      "2019-05-15T12:00:00+00:00"
+    ],
+    [
+      "2019-08-15T00:00:00+00:00",
+      "2019-08-15T08:00:00+00:00"
+    ],
+    [
+      "2020-02-19T08:00:00+00:00",
+      "2020-02-19T16:00:00+00:00"
+    ]
+  ],
+  "strategy": "volatility_target",
+  "costs": {
+    "fee_pct": 0.1,
+    "slippage_pct": 0.05,
+    "funding_pct_annual": 10.0,
+    "cash_rate_pct_annual": 4.0,
+    "allow_short": true
+  },
+  "periods": {
+    "full": {
+      "start": "2019-01-01T00:00:00+00:00",
+      "end": "2026-10-30T08:00:00+00:00",
+      "strategy": {
+        "total_return_pct": 58.9409,
+        "cagr_pct": 6.0991,
+        "max_drawdown_pct": 64.4051,
+        "sharpe": 0.3469,
+        "trades": 115,
+        "win_rate_pct": 9.5652,
+        "profit_factor": 1.2513,
+        "total_fees": 2090.0212,
+        "rejected_entries": 0,
+        "total_funding": 6577.4466,
+        "total_interest": 935.0492,
+        "time_in_market_pct": 92.9921,
+        "avg_capital_exposure_pct": 72.7649,
+        "risk_gate": "disabled_research_only"
+      },
+      "buy_and_hold": {
+        "total_return_pct": 1989.5161,
+        "cagr_pct": 47.4556,
+        "max_drawdown_pct": 77.0434,
+        "sharpe": 0.9501,
+        "trades": 1,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "total_fees": 219.151,
+        "rejected_entries": 0,
+        "total_funding": 0.0,
+        "total_interest": 0.1825,
+        "time_in_market_pct": 99.9942,
+        "avg_capital_exposure_pct": 99.9942,
+        "risk_gate": "disabled_research_only"
+      }
+    },
+    "in_sample": {
+      "start": "2019-01-01T00:00:00+00:00",
+      "end": "2024-06-24T16:00:00+00:00",
+      "strategy": {
+        "total_return_pct": 63.4781,
+        "cagr_pct": 9.3865,
+        "max_drawdown_pct": 64.4051,
+        "sharpe": 0.4252,
+        "trades": 69,
+        "win_rate_pct": 7.2464,
+        "profit_factor": 1.4459,
+        "total_fees": 966.8899,
+        "rejected_entries": 0,
+        "total_funding": 3422.0814,
+        "total_interest": 759.0696,
+        "time_in_market_pct": 89.9883,
+        "avg_capital_exposure_pct": 64.8755,
+        "risk_gate": "disabled_research_only"
+      },
+      "buy_and_hold": {
+        "total_return_pct": 1501.4361,
+        "cagr_pct": 65.9066,
+        "max_drawdown_pct": 77.0434,
+        "sharpe": 1.1054,
+        "trades": 1,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "total_fees": 170.2941,
+        "rejected_entries": 0,
+        "total_funding": 0.0,
+        "total_interest": 0.1825,
+        "time_in_market_pct": 99.9917,
+        "avg_capital_exposure_pct": 99.9917,
+        "risk_gate": "disabled_research_only"
+      }
+    },
+    "out_of_sample": {
+      "start": "2024-06-24T20:00:00+00:00",
+      "end": "2026-10-30T08:00:00+00:00",
+      "strategy": {
+        "total_return_pct": -3.0603,
+        "cagr_pct": -1.3149,
+        "max_drawdown_pct": 44.7471,
+        "sharpe": 0.1614,
+        "trades": 47,
+        "win_rate_pct": 12.766,
+        "profit_factor": 0.9456,
+        "total_fees": 704.9801,
+        "rejected_entries": 0,
+        "total_funding": 1924.4061,
+        "total_interest": 107.3318,
+        "time_in_market_pct": 100.0,
+        "avg_capital_exposure_pct": 91.1681,
+        "risk_gate": "disabled_research_only"
+      },
+      "buy_and_hold": {
+        "total_return_pct": 30.0868,
+        "cagr_pct": 11.8531,
+        "max_drawdown_pct": 53.4474,
+        "sharpe": 0.4738,
+        "trades": 1,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "total_fees": 23.0117,
+        "rejected_entries": 0,
+        "total_funding": 0.0,
+        "total_interest": 0.0,
+        "time_in_market_pct": 100.0,
+        "avg_capital_exposure_pct": 100.0,
+        "risk_gate": "disabled_research_only"
+      }
+    }
+  }
+}
