@@ -109,3 +109,18 @@ def test_verdict_needs_more_return_and_most_windows():
     assert "No evidence" in portfolio_wfo_verdict(report(10, 20, 3))
     assert "No evidence" in portfolio_wfo_verdict(report(30, 20, 2))
     assert "Beat the basket" in portfolio_wfo_verdict(report(30, 20, 3))
+
+
+def test_cli_skips_impossible_parameter_sets(tmp_path):
+    write_markets(tmp_path, [m.name for m in MARKETS], days=1000)
+    base = ["portfolio-wfo", "--data-dir", str(tmp_path), "--markets", "EURUSD,GOLD,SP500",
+            "--strategy", "sma_crossover", "--sizing-lookback", "20",
+            "--train-days", "400", "--test-days", "200"]
+
+    # fast=40 with slow=20 or 40 is impossible; the rest still runs.
+    code, out, err = run_cli(base + ["--range", "fast=10:40:30", "--range", "slow=20:40:20"])
+    assert code == 0, err
+    assert all(r["params"]["fast"] < r["params"]["slow"] for r in json.loads(out)["folds"])
+
+    code, _, err = run_cli(base + ["--range", "fast=40", "--range", "slow=20"])
+    assert code == 2 and "No valid parameter combination" in err

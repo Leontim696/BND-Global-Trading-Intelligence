@@ -620,10 +620,24 @@ def command_portfolio_wfo(args) -> int:
                 raise ValueError(f"Invalid parameters for cross_momentum: {exc}") from exc
         return _factory(args.strategy, {**fixed, **params})
 
-    for params in sets:   # fail fast on bad parameters, before hours of work
+    def check(params):
         factory = make_factory(params, data)
         if not getattr(factory, "per_market", False):
             factory()
+
+    # Skip impossible combinations (e.g. fast >= slow), as the single-market
+    # grid does; fail before hours of work only if none is valid.
+    usable, errors = [], []
+    for params in sets:
+        try:
+            check(params)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        usable.append(params)
+    if not usable:
+        raise ValueError("No valid parameter combination: " + (errors[0] if errors else ""))
+    sets = usable
     config = _portfolio_config(args)
     report = portfolio_walk_forward(data, markets, make_factory, sets, config,
                                     args.train_days, args.test_days, args.embargo_days)
