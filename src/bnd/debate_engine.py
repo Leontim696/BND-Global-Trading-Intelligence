@@ -68,6 +68,11 @@ class DebateEngine:
     status: DebateStatus = DebateStatus.WAITING
     round_number: int = 0
     max_rounds: int = 3
+    # Submission order of every argument and response, so a reply can be
+    # checked to come after the objection it answers.
+    argument_order: list[int] = field(default_factory=list)
+    response_order: list[int] = field(default_factory=list)
+    _sequence: int = field(default=0, repr=False)
 
     def __post_init__(self):
         if self.max_rounds < 1:
@@ -85,6 +90,11 @@ class DebateEngine:
         if self.status != DebateStatus.OPEN:
             raise ValueError("Debate is not open")
         self.arguments.append(argument)
+        self.argument_order.append(self._next())
+
+    def _next(self) -> int:
+        self._sequence += 1
+        return self._sequence
 
     def revise_vote(self, opinion: Opinion) -> None:
         if self.status != DebateStatus.OPEN:
@@ -121,6 +131,37 @@ class DebateEngine:
             )
 
         self.responses.append(response)
+        self.response_order.append(self._next())
+
+    def unanswered_objections(self) -> list[dict]:
+        """Objections that a challenged agent has not yet answered.
+
+        An argument that challenges agents currently voting differently
+        from its author is an objection. Each of those agents must submit
+        a response after it (keeping or changing their vote) before the
+        debate can close, so a single well-argued dissenter forces the
+        majority to reconsider without anyone being forced to agree.
+        """
+
+        current = self.council.current_opinions()
+        open_items = []
+        for argument, order in zip(self.arguments, self.argument_order):
+            author = current.get(argument.agent)
+            for challenged in argument.challenges:
+                target = current.get(challenged)
+                if author is None or target is None or target.vote == author.vote:
+                    continue
+                answered = any(
+                    response.agent == challenged and response_order > order
+                    for response, response_order in zip(self.responses, self.response_order)
+                )
+                if not answered:
+                    open_items.append({
+                        "objector": argument.agent,
+                        "challenged": challenged,
+                        "claim": argument.claim,
+                    })
+        return open_items
 
     def next_round(self) -> None:
         if self.status != DebateStatus.OPEN:
@@ -153,6 +194,14 @@ class DebateEngine:
                 "Missing responses from: " + ", ".join(missing_resp)
             )
 
+        unanswered = self.unanswered_objections()
+        if unanswered:
+            raise ValueError(
+                "Unanswered objections: " + ", ".join(
+                    f"{item['challenged']} to {item['objector']}" for item in unanswered
+                )
+            )
+
         self.status = DebateStatus.CLOSED
 
     def unresolved_dissent(self) -> list[Opinion]:
@@ -182,5 +231,6 @@ class DebateEngine:
             ],
             "missing_arguments": self.missing_arguments(),
             "missing_responses": self.missing_responses(),
+            "unanswered_objections": self.unanswered_objections(),
             "council": self.council.audit_log(),
         }
