@@ -350,8 +350,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--universe", choices=["futures", "etf"])
     parser.add_argument("--markets")
     parser.add_argument("--classes")
-    parser.add_argument("--strategy", choices=["combo"] + sorted(SWEEP_RANGES))
-    parser.add_argument("--members", help="combo: comma-separated strategies")
+    parser.add_argument("--strategy", choices=["combo", "selector"] + sorted(SWEEP_RANGES))
+    parser.add_argument("--members", help="combo/selector: comma-separated strategies")
     parser.add_argument("--param", action="append", metavar="NAME=VALUE")
     parser.add_argument("--portfolio-vol", type=float)
     parser.add_argument("--sizing-lookback", type=int)
@@ -401,8 +401,8 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
 def _params(settings) -> dict:
     params = {k: parse_value(v) for k, v in _pairs(settings["param"], "--param").items()}
     if settings.get("members"):
-        if settings["strategy"] != "combo":
-            raise ValueError("--members is only for --strategy combo")
+        if settings["strategy"] not in ("combo", "selector"):
+            raise ValueError("--members is only for --strategy combo or selector")
         params["members"] = tuple(_split_list(settings["members"]))
     return params
 

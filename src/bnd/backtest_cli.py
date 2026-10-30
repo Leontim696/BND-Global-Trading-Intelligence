@@ -620,7 +620,7 @@ def command_portfolio(args) -> int:
 
     names = sorted(SWEEP_RANGES) if args.strategy == "all" else [args.strategy]
     params = {} if args.strategy == "all" else _strategy_params(args)
-    if args.strategy == "combo" and args.members:
+    if args.strategy in ("combo", "selector") and args.members:
         params["members"] = tuple(_split_list(args.members))
 
     def periods(factory, cfg):
@@ -834,11 +834,11 @@ def build_parser() -> argparse.ArgumentParser:
     port.add_argument("--classes")
     port.add_argument("--universe", choices=["futures", "etf"], default="futures")
     port.add_argument("--skip-missing", action="store_true")
-    port.add_argument("--strategy", choices=["all", "combo"] + sorted(SWEEP_RANGES),
+    port.add_argument("--strategy", choices=["all", "combo", "selector"] + sorted(SWEEP_RANGES),
                       default="all")
     port.add_argument("--members",
-                      help="combo: comma-separated strategies, default "
-                           + ",".join(DEFAULT_COMBO))
+                      help="combo/selector: comma-separated strategies (combo default "
+                           + ",".join(DEFAULT_COMBO) + ")")
     port.add_argument("--param", action="append", metavar="NAME=VALUE")
     port.add_argument("--sizing", choices=["volatility", "equal"], default="volatility")
     port.add_argument("--portfolio-vol", type=float, default=15.0,

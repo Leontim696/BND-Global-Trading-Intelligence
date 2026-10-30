@@ -257,3 +257,16 @@ def test_portfolio_combo_reports_what_each_member_adds(tmp_path):
     path = tmp_path / "portfolio.json"
     path.write_text(out)
     assert "What each combo member adds" in build_summary(portfolio=path)
+
+
+def test_portfolio_selector_runs(tmp_path):
+    write_markets(tmp_path, ["EURUSD", "GOLD", "SP500"])
+
+    code, out, _ = run_cli(["portfolio", "--permutations", "2", "--data-dir", str(tmp_path),
+                            "--markets", "EURUSD,GOLD,SP500", "--strategy", "selector",
+                            "--members", "macd,momentum", "--param", "lookback=60"])
+
+    assert code == 0
+    report = json.loads(out)
+    assert report["ranking"][0]["strategy"] == "selector"
+    assert report["settings"]["params"] == {"lookback": 60, "members": ["macd", "momentum"]}

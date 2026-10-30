@@ -537,3 +537,65 @@ def test_combo_rejects_bad_members(members):
 
     with pytest.raises(ValueError):
         combo(members)
+
+
+def trend(count, step):
+    candles, price = [], 100.0
+    for i in range(count):
+        close = price * (1 + step + 0.004 * (-1) ** i)
+        candles.append(Candle(START + timedelta(days=i), price, max(price, close) * 1.001,
+                              min(price, close) * 0.999, close, 1))
+        price = close
+    return candles
+
+
+@pytest.fixture
+def fixed_members(monkeypatch):
+    from src.bnd import strategies
+
+    monkeypatch.setitem(strategies.STRATEGIES, "always_long", lambda: (lambda h: 1))
+    monkeypatch.setitem(strategies.STRATEGIES, "always_short", lambda: (lambda h: -1))
+    monkeypatch.setitem(strategies.STRATEGIES, "always_flat", lambda: (lambda h: 0))
+
+
+def run_all(strategy, candles):
+    return [strategy(candles[:end]) for end in range(1, len(candles) + 1)]
+
+
+@pytest.mark.parametrize("step, expected", [(0.002, 1), (-0.002, -1)])
+def test_selector_follows_the_member_that_worked(fixed_members, step, expected):
+    from src.bnd.strategies import selector
+
+    signals = run_all(selector("always_long,always_short", lookback=30, hold=5),
+                      trend(120, step))
+
+    assert set(signals[:30]) == {0.0}          # no choice before a full lookback
+    assert set(signals[40:]) == {expected}
+
+
+def test_selector_goes_flat_when_every_member_loses(fixed_members):
+    from src.bnd.strategies import selector
+
+    signals = run_all(selector("always_long,always_flat", lookback=30, hold=5),
+                      trend(120, -0.002))
+
+    assert set(signals) == {0.0}
+
+
+def test_selector_keeps_its_choice_for_hold_candles(fixed_members):
+    from src.bnd.strategies import selector
+
+    # The only choice is made on the first candle, before any history.
+    signals = run_all(selector("always_long,always_short", lookback=30, hold=1000),
+                      trend(120, 0.002))
+
+    assert set(signals) == {0.0}
+
+
+@pytest.mark.parametrize("kwargs", [dict(members="macd"), dict(members="macd,selector"),
+                                    dict(lookback=10), dict(hold=0)])
+def test_selector_validation(kwargs):
+    from src.bnd.strategies import selector
+
+    with pytest.raises(ValueError):
+        selector(**kwargs)
