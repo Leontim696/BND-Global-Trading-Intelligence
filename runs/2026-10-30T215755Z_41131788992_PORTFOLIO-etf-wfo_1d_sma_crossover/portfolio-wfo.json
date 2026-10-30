@@ -1,0 +1,299 @@
+{
+  "train_days": 1460,
+  "test_days": 365,
+  "embargo_days": 5,
+  "per_class": false,
+  "folds": [
+    {
+      "train": [
+        "2010-01-01",
+        "2013-12-31"
+      ],
+      "test": [
+        "2014-01-05",
+        "2015-01-05"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 150
+      },
+      "train_sharpe": 0.7661,
+      "markets": 22,
+      "test_return_pct": 12.9483,
+      "test_sharpe": 1.0324,
+      "test_max_drawdown_pct": 11.1819,
+      "kill_switch_at": null,
+      "basket_return_pct": -5.2428,
+      "basket_sharpe": -1.057
+    },
+    {
+      "train": [
+        "2011-01-01",
+        "2014-12-31"
+      ],
+      "test": [
+        "2015-01-05",
+        "2016-01-05"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 75
+      },
+      "train_sharpe": 0.5833,
+      "markets": 22,
+      "test_return_pct": -20.3518,
+      "test_sharpe": -1.259,
+      "test_max_drawdown_pct": 22.8619,
+      "kill_switch_at": null,
+      "basket_return_pct": -6.777,
+      "basket_sharpe": -0.8333
+    },
+    {
+      "train": [
+        "2012-01-01",
+        "2015-12-31"
+      ],
+      "test": [
+        "2016-01-05",
+        "2017-01-04"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 0.2475,
+      "markets": 22,
+      "test_return_pct": 30.5804,
+      "test_sharpe": 1.7389,
+      "test_max_drawdown_pct": 7.2219,
+      "kill_switch_at": null,
+      "basket_return_pct": 9.8351,
+      "basket_sharpe": 1.2052
+    },
+    {
+      "train": [
+        "2012-12-31",
+        "2016-12-30"
+      ],
+      "test": [
+        "2017-01-04",
+        "2018-01-04"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 0.7009,
+      "markets": 22,
+      "test_return_pct": 34.4004,
+      "test_sharpe": 2.2685,
+      "test_max_drawdown_pct": 6.4422,
+      "kill_switch_at": null,
+      "basket_return_pct": 30.1661,
+      "basket_sharpe": 4.005
+    },
+    {
+      "train": [
+        "2013-12-31",
+        "2017-12-30"
+      ],
+      "test": [
+        "2018-01-04",
+        "2019-01-04"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 1.0665,
+      "markets": 23,
+      "test_return_pct": -18.8269,
+      "test_sharpe": -1.0921,
+      "test_max_drawdown_pct": 28.5538,
+      "kill_switch_at": null,
+      "basket_return_pct": -15.2192,
+      "basket_sharpe": -1.8063
+    },
+    {
+      "train": [
+        "2014-12-31",
+        "2018-12-30"
+      ],
+      "test": [
+        "2019-01-04",
+        "2020-01-04"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 0.4403,
+      "markets": 23,
+      "test_return_pct": 15.1929,
+      "test_sharpe": 1.0817,
+      "test_max_drawdown_pct": 9.5181,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0925,
+      "basket_sharpe": 1.4189
+    },
+    {
+      "train": [
+        "2015-12-31",
+        "2019-12-30"
+      ],
+      "test": [
+        "2020-01-04",
+        "2021-01-03"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 0.8722,
+      "markets": 23,
+      "test_return_pct": 32.2631,
+      "test_sharpe": 1.6988,
+      "test_max_drawdown_pct": 17.5906,
+      "kill_switch_at": null,
+      "basket_return_pct": 25.5482,
+      "basket_sharpe": 1.3922
+    },
+    {
+      "train": [
+        "2016-12-30",
+        "2020-12-29"
+      ],
+      "test": [
+        "2021-01-03",
+        "2022-01-03"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 0.8584,
+      "markets": 23,
+      "test_return_pct": 16.2611,
+      "test_sharpe": 0.9317,
+      "test_max_drawdown_pct": 12.4335,
+      "kill_switch_at": null,
+      "basket_return_pct": 22.6431,
+      "basket_sharpe": 1.5339
+    },
+    {
+      "train": [
+        "2017-12-30",
+        "2021-12-29"
+      ],
+      "test": [
+        "2022-01-03",
+        "2023-01-03"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 50
+      },
+      "train_sharpe": 0.7005,
+      "markets": 23,
+      "test_return_pct": -23.2422,
+      "test_sharpe": -1.3089,
+      "test_max_drawdown_pct": 30.1946,
+      "kill_switch_at": "2022-11-28T00:00:00+00:00",
+      "basket_return_pct": -8.0939,
+      "basket_sharpe": -0.5999
+    },
+    {
+      "train": [
+        "2018-12-30",
+        "2022-12-29"
+      ],
+      "test": [
+        "2023-01-03",
+        "2024-01-03"
+      ],
+      "params": {
+        "fast": 10,
+        "slow": 150
+      },
+      "train_sharpe": 0.818,
+      "markets": 23,
+      "test_return_pct": 2.5981,
+      "test_sharpe": 0.2441,
+      "test_max_drawdown_pct": 12.3045,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0945,
+      "basket_sharpe": 1.3899
+    },
+    {
+      "train": [
+        "2019-12-30",
+        "2023-12-29"
+      ],
+      "test": [
+        "2024-01-03",
+        "2025-01-02"
+      ],
+      "params": {
+        "fast": 20,
+        "slow": 50
+      },
+      "train_sharpe": 0.8393,
+      "markets": 23,
+      "test_return_pct": 14.6451,
+      "test_sharpe": 0.9337,
+      "test_max_drawdown_pct": 14.8802,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.3154,
+      "basket_sharpe": 1.2764
+    },
+    {
+      "train": [
+        "2020-12-29",
+        "2024-12-28"
+      ],
+      "test": [
+        "2025-01-02",
+        "2026-01-02"
+      ],
+      "params": {
+        "fast": 40,
+        "slow": 150
+      },
+      "train_sharpe": 0.8033,
+      "markets": 23,
+      "test_return_pct": 9.538,
+      "test_sharpe": 0.5757,
+      "test_max_drawdown_pct": 20.1821,
+      "kill_switch_at": null,
+      "basket_return_pct": 16.0191,
+      "basket_sharpe": 1.3994
+    }
+  ],
+  "summary": {
+    "fold_count": 12,
+    "chained_test_return_pct": 124.5057,
+    "chained_basket_return_pct": 154.7791,
+    "folds_beating_basket": 6,
+    "positive_folds": 9,
+    "folds_with_kill_switch": 1,
+    "mean_train_sharpe": 0.7247,
+    "mean_test_sharpe": 0.5705,
+    "mean_basket_sharpe": 0.777,
+    "parameter_change_rate": 0.4545
+  },
+  "note": "Parameters are chosen on each training window only; each test window starts from fresh equity. A large gap between mean train and test Sharpe signals overfitting.",
+  "mode": "portfolio-wfo",
+  "strategy": "sma_crossover",
+  "universe": "etf",
+  "ranges": {
+    "fast": "10:50:10",
+    "slow": "50:200:25"
+  },
+  "skipped_missing": [],
+  "settings": {
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 3.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": false
+  }
+}
