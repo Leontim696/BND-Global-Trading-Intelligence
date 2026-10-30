@@ -229,7 +229,9 @@ python -m src.bnd.paper_runner --state paper.sqlite --data-dir data --capital 10
 `--capital` is required once and refused afterwards. Trading settings are
 stored in the account at creation and reused by every later run; a run
 with different settings is refused. The `paper-trading.yml` workflow runs
-this every day at 22:23 UTC and keeps the account and its status page
+this every day at 22:23 UTC (candles cached between runs and updated with
+`fetch-universe --update`, which re-downloads a market in full when Yahoo
+has re-adjusted its history) and keeps the account and its status page
 (`README.md`) on the `paper-trading` branch. Until a manual run creates
 the account with a virtual capital, scheduled runs do nothing.
 
