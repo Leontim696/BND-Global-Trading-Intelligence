@@ -7,6 +7,11 @@ on:
         description: 'First date (YYYY-MM-DD)'
         default: '2010-01-01'
         type: string
+      universe:
+        description: 'etf = tradable, roll-free, dividend-adjusted ETFs; futures = raw futures/indices'
+        default: 'etf'
+        type: choice
+        options: [etf, futures]
       classes:
         description: 'Asset classes, comma-separated (blank = all): forex,commodity,index,bond,crypto'
         default: ''
@@ -35,13 +40,14 @@ concurrency:
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     env:
       # Public market data only: no API keys, no paid AI, no orders.
       # Flags read by the code; live and paid AI stay off.
       BND_ALLOW_LIVE_AI: "false"
       START: ${{ inputs.start }}
       CLASSES: ${{ inputs.classes }}
+      UNIVERSE: ${{ inputs.universe }}
       STRATEGY: ${{ inputs.strategy }}
       EXTRA_ARGS: ${{ inputs.extra_args }}
     steps:
@@ -52,7 +58,7 @@ jobs:
       - name: Download every market (failures are recorded, not fatal)
         run: |
           python -m src.bnd.backtest_cli fetch-universe --start "$START" \
-            --classes "$CLASSES" --out-dir backtest-reports/universe
+            --universe "$UNIVERSE" --classes "$CLASSES" --out-dir backtest-reports/universe
           cp backtest-reports/universe/quality.json backtest-reports/data-quality.json
       - name: Portfolio backtest
         run: |
@@ -60,7 +66,8 @@ jobs:
           # EXTRA_ARGS is split into separate arguments on purpose.
           # shellcheck disable=SC2086
           python -m src.bnd.backtest_cli portfolio \
-            --data-dir backtest-reports/universe --classes "$CLASSES" --skip-missing \
+            --data-dir backtest-reports/universe --universe "$UNIVERSE" \
+            --classes "$CLASSES" --skip-missing \
             --strategy "$STRATEGY" $EXTRA_ARGS \
             | tee backtest-reports/portfolio.json
       - name: Job summary
@@ -97,7 +104,7 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       SOURCE_SHA: ${{ github.sha }}
       RESULT: ${{ needs.backtest.result }}
-      SYMBOL: PORTFOLIO
+      SYMBOL: PORTFOLIO-${{ inputs.universe }}
       INTERVAL: 1d
       STRATEGY: ${{ inputs.strategy }}
     steps:

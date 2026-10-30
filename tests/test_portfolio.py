@@ -277,3 +277,49 @@ def test_carry_is_per_market():
     # Default config charges nothing extra for leverage.
     assert PortfolioConfig().financing_pct_annual == 0
     assert {m.carry_pct_annual for m in select(classes=["crypto"])} == {10.0}
+
+
+def test_portfolio_permutation_test_detects_timing_and_constant_signals():
+    from src.bnd.portfolio import portfolio_permutation_test, record_signals
+
+    # Two markets that alternate 5 days up, 5 days down, out of phase.
+    def cycles(phase):
+        closes, price = [], 100.0
+        for i in range(400):
+            price *= 1.02 if ((i + phase) // 5) % 2 == 0 else 0.98
+            closes.append(price)
+        return closes
+
+    data = {"A": series(cycles(0)), "B": series(cycles(3))}
+    markets = [market("A"), market("B")]
+    config = PortfolioConfig(max_leverage=2, max_weight=2, max_drawdown_pct=None,
+                             vol_lookback=20)
+
+    def timer(phase):
+        return lambda history: 1 if ((len(history) + phase) // 5) % 2 == 0 else -1
+
+    phases = iter([0, 3])
+    _, signals = record_signals(data, markets, lambda: timer(next(phases)), config)
+    timed = portfolio_permutation_test(data, markets, signals, config, permutations=19, seed=1)
+    _, constant = record_signals(data, markets, buy_and_hold, config)
+    flat = portfolio_permutation_test(data, markets, constant, config, permutations=9)
+
+    assert timed["p_value"] <= 0.05 and timed["actual_sharpe"] > timed["shuffled_p95_sharpe"]
+    # Always long: nothing to shuffle, so timing cannot be credited.
+    assert flat["p_value"] == 1.0
+
+
+def test_parallel_permutations_match_serial():
+    from src.bnd.portfolio import portfolio_permutation_test, record_signals
+    from src.bnd.strategies import momentum
+
+    data = {"A": series(random_closes(7, 300)), "B": series(random_closes(8, 300))}
+    markets = [market("A"), market("B")]
+    config = PortfolioConfig(max_drawdown_pct=None, vol_lookback=20)
+    _, signals = record_signals(data, markets, lambda: momentum(10), config)
+
+    serial = portfolio_permutation_test(data, markets, signals, config, permutations=6, seed=3)
+    parallel = portfolio_permutation_test(data, markets, signals, config, permutations=6,
+                                          seed=3, workers=2)
+
+    assert serial == parallel

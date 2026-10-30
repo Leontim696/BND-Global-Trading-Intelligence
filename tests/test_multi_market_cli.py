@@ -43,7 +43,31 @@ def test_yahoo_parsing_cleans_and_reports():
     assert [c.close for c in candles] == [10.5, 10.6, 11]
     assert candles[1].high == 10.6 and candles[0].open_time.hour == 0
     assert quality == {"rows": 6, "dropped_missing": 1, "dropped_non_positive": 1,
-                       "repaired_high_low": 1, "duplicate_days": 1, "candles": 3}
+                       "repaired_high_low": 1, "duplicate_days": 1, "candles": 3,
+                       "adjusted_for_dividends_and_splits": False}
+
+
+def test_yahoo_adjusts_whole_bar_for_dividends():
+    payload = yahoo_payload([(day(0), 100, 102, 98, 100), (day(1), 100, 101, 99, 101)])
+    # A 2% dividend paid after day 0: earlier prices scale down by 0.98.
+    payload["chart"]["result"][0]["indicators"]["adjclose"] = [{"adjclose": [98.0, 101.0]}]
+
+    candles, quality = parse_yahoo_chart(payload)
+
+    first = candles[0]
+    assert (first.open, first.high, first.low, first.close) == pytest.approx((98, 99.96, 96.04, 98))
+    assert candles[1].close == 101 and quality["adjusted_for_dividends_and_splits"]
+
+
+def test_etf_universe_is_roll_free_and_selectable():
+    from src.bnd.universe import ETF_UNIVERSE, select
+
+    symbols = {m.symbol for m in ETF_UNIVERSE}
+    assert {"GLD", "USO", "SPY", "IEF"} <= symbols
+    assert not any(m.symbol.endswith("=F") for m in ETF_UNIVERSE)
+    assert [m.symbol for m in select(names=["gold"], universe="etf")] == ["GLD"]
+    with pytest.raises(ValueError):
+        select(universe="moon")
 
 
 def test_yahoo_bad_payload():
@@ -112,7 +136,7 @@ def write_markets(folder, names, days=900):
 def test_portfolio_single_strategy_report(tmp_path):
     write_markets(tmp_path, ["EURUSD", "GOLD", "SP500"])
 
-    code, out, _ = run_cli(["portfolio", "--data-dir", str(tmp_path),
+    code, out, _ = run_cli(["portfolio", "--permutations", "3", "--data-dir", str(tmp_path),
                             "--markets", "EURUSD,GOLD,SP500",
                             "--strategy", "sma_crossover", "--param", "fast=10",
                             "--param", "slow=40", "--max-leverage", "2"])
@@ -125,6 +149,8 @@ def test_portfolio_single_strategy_report(tmp_path):
     assert {m["market"] for m in row["per_market_out_of_sample"]} == {"EURUSD", "GOLD", "SP500"}
     assert [r["max_leverage"] for r in row["leverage_out_of_sample"]] == [1, 2, 3, 5]
     assert row["out_of_sample"]["max_gross_leverage"] <= 2 + 1e-9
+    assert row["permutation_test_out_of_sample"]["permutations"] == 3
+    assert row["p_value_adjusted"] >= row["p_value"]
     assert "total_return_pct" in report["equal_weight_basket_out_of_sample"]
     diagnostics = report["data_diagnostics"]
     assert {d["market"] for d in diagnostics} == {"EURUSD", "GOLD", "SP500"}
@@ -134,11 +160,11 @@ def test_portfolio_single_strategy_report(tmp_path):
 def test_portfolio_all_strategies_and_missing_data(tmp_path):
     write_markets(tmp_path, ["EURUSD", "GOLD"])
 
-    code, _, err = run_cli(["portfolio", "--data-dir", str(tmp_path),
+    code, _, err = run_cli(["portfolio", "--permutations", "3", "--data-dir", str(tmp_path),
                             "--markets", "EURUSD,GOLD,SP500"])
     assert code == 2 and "Missing data for: SP500" in err
 
-    code, out, _ = run_cli(["portfolio", "--data-dir", str(tmp_path),
+    code, out, _ = run_cli(["portfolio", "--permutations", "3", "--data-dir", str(tmp_path),
                             "--markets", "EURUSD,GOLD,SP500", "--skip-missing"])
     assert code == 0
     report = json.loads(out)
@@ -150,7 +176,7 @@ def test_portfolio_summary(tmp_path):
     from src.bnd.backtest_summary import build_summary, portfolio_verdict
 
     write_markets(tmp_path, ["EURUSD", "GOLD", "SP500"])
-    code, out, _ = run_cli(["portfolio", "--data-dir", str(tmp_path),
+    code, out, _ = run_cli(["portfolio", "--permutations", "3", "--data-dir", str(tmp_path),
                             "--markets", "EURUSD,GOLD,SP500", "--strategy", "macd"])
     assert code == 0
     path = tmp_path / "portfolio.json"
@@ -167,3 +193,8 @@ def test_portfolio_summary(tmp_path):
     assert "Best out-of-sample: x" in portfolio_verdict(report)
     report["equal_weight_basket_out_of_sample"]["sharpe"] = 1.2
     assert "No evidence" in portfolio_verdict(report)
+    report["equal_weight_basket_out_of_sample"]["sharpe"] = 0.4
+    report["ranking"][0]["p_value_adjusted"] = 0.6
+    assert "diversification and leverage" in portfolio_verdict(report)
+    report["ranking"][0]["p_value_adjusted"] = 0.01
+    assert "preliminary evidence" in portfolio_verdict(report)

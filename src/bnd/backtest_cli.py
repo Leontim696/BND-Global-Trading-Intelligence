@@ -12,6 +12,7 @@ reported separately for the in-sample and out-of-sample periods.
 import argparse
 import hashlib
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -32,7 +33,12 @@ from .market_data import (
     save_csv,
     to_bars,
 )
-from .portfolio import PortfolioConfig, run_portfolio
+from .portfolio import (
+    PortfolioConfig,
+    portfolio_permutation_test,
+    record_signals,
+    run_portfolio,
+)
 from .quant_backtest import BacktestConfig as QuantConfig
 from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
@@ -460,7 +466,7 @@ def _split_list(text):
 
 def command_fetch_universe(args) -> int:
     """Download daily candles for every selected market; skip failures."""
-    markets = select_markets(_split_list(args.markets), _split_list(args.classes))
+    markets = select_markets(_split_list(args.markets), _split_list(args.classes), args.universe)
     end = _utc_date(args.end) if args.end else datetime.now(timezone.utc)
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -527,7 +533,7 @@ def _portfolio_metrics(result) -> dict:
 
 def command_portfolio(args) -> int:
     """Trade every market in one account; compare with an equal-weight basket."""
-    markets = select_markets(_split_list(args.markets), _split_list(args.classes))
+    markets = select_markets(_split_list(args.markets), _split_list(args.classes), args.universe)
     folder = Path(args.data_dir)
     missing = [m.name for m in markets if not (folder / f"{m.name}.csv").exists()]
     if args.skip_missing:
@@ -555,19 +561,26 @@ def command_portfolio(args) -> int:
 
     def periods(factory, cfg):
         in_sample = run_portfolio(early, early_markets, factory, cfg)
-        out_of_sample = run_portfolio(data, markets, factory, cfg, trade_from=cut)
-        return in_sample, out_of_sample
+        out_of_sample, signals = record_signals(data, markets, factory, cfg, trade_from=cut)
+        return in_sample, out_of_sample, signals
 
-    _, basket_oos = periods(buy_and_hold, basket)
+    workers = max(1, min(4, os.cpu_count() or 1))
+
+    basket_oos = run_portfolio(data, markets, buy_and_hold, basket, trade_from=cut)
     rows = []
     for name in names:
         factory = _factory(name, params)
-        in_sample, out_of_sample = periods(factory, config)
+        in_sample, out_of_sample, signals = periods(factory, config)
         row = {
             "strategy": name,
             "in_sample": _portfolio_metrics(in_sample),
             "out_of_sample": _portfolio_metrics(out_of_sample),
         }
+        if args.permutations:
+            test = portfolio_permutation_test(data, markets, signals, config, cut,
+                                              args.permutations, args.seed, workers)
+            row["permutation_test_out_of_sample"] = test
+            row["p_value"] = test["p_value"]
         if len(names) == 1:
             row["per_market_out_of_sample"] = out_of_sample["per_market"]
             row["cost_stress_out_of_sample"] = [
@@ -588,9 +601,13 @@ def command_portfolio(args) -> int:
         sharpe = row["out_of_sample"]["sharpe"]
         return sharpe if sharpe is not None else float("-inf")
 
+    if args.permutations:
+        for row, adjusted in zip(rows, holm_adjust([row["p_value"] for row in rows])):
+            row["p_value_adjusted"] = adjusted
     rows.sort(key=score, reverse=True)
     report = {
         "mode": "portfolio",
+        "universe": args.universe,
         "markets": [{"name": m.name, "asset_class": m.asset_class,
                      "candles": len(data[m.name]),
                      "first": data[m.name][0].open_time.isoformat()} for m in markets],
@@ -609,9 +626,12 @@ def command_portfolio(args) -> int:
         "data_diagnostics": _data_diagnostics(data),
         "ranking": rows,
         "note": (
-            "Paper research. Futures series are not roll-adjusted and indices "
-            "stand in for futures/CFDs. No permutation test yet: treat "
-            "differences between strategies as unproven."
+            "Paper research. With --universe futures, futures series are not "
+            "roll-adjusted and indices stand in for futures/CFDs; --universe etf "
+            "uses tradable, adjusted ETFs. The permutation test shuffles each "
+            "market's signal timing; p_value_adjusted (Holm) accounts for "
+            "comparing several strategies. Always-long strategies get p = 1: "
+            "their result comes from diversification and leverage, not timing."
         ),
     }
     print(json.dumps(_rounded(report), indent=2))
@@ -713,6 +733,8 @@ def build_parser() -> argparse.ArgumentParser:
     universe.add_argument("--end")
     universe.add_argument("--markets", help="comma-separated names, default all")
     universe.add_argument("--classes", help="e.g. forex,commodity,index,bond,crypto")
+    universe.add_argument("--universe", choices=["futures", "etf"], default="futures",
+                          help="etf: tradable roll-free ETFs instead of futures/indices")
     universe.add_argument("--out-dir", required=True)
     universe.set_defaults(handler=command_fetch_universe)
 
@@ -720,6 +742,7 @@ def build_parser() -> argparse.ArgumentParser:
     port.add_argument("--data-dir", required=True)
     port.add_argument("--markets")
     port.add_argument("--classes")
+    port.add_argument("--universe", choices=["futures", "etf"], default="futures")
     port.add_argument("--skip-missing", action="store_true")
     port.add_argument("--strategy", choices=["all"] + sorted(SWEEP_RANGES),
                       default="all")
@@ -741,6 +764,9 @@ def build_parser() -> argparse.ArgumentParser:
                       help="kill switch in percent; 0 disables")
     port.add_argument("--no-shorts", action="store_true")
     port.add_argument("--in-sample", type=float, default=70.0)
+    port.add_argument("--permutations", type=int, default=40,
+                      help="timing shuffles per strategy (0 disables)")
+    port.add_argument("--seed", type=int, default=7)
     port.set_defaults(handler=command_portfolio)
 
     walk = sub.add_parser(

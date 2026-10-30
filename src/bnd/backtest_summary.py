@@ -252,8 +252,8 @@ def _portfolio_lines(report: dict) -> list[str]:
         f"{settings.get('max_drawdown_pct')}% drawdown, shorts "
         f"{'on' if settings.get('allow_short') else 'off'}",
         "",
-        "| # | Strategy | Return | CAGR | Sharpe | Max drawdown | Avg leverage | Fills | Financing | Kill switch |",
-        "| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+        "| # | Strategy | Return | CAGR | Sharpe | Max drawdown | Avg leverage | Fills | Financing | Kill switch | p-value (adjusted) |",
+        "| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: |",
     ]
     for rank, row in enumerate(report.get("ranking", []), 1):
         oos = row["out_of_sample"]
@@ -262,13 +262,14 @@ def _portfolio_lines(report: dict) -> list[str]:
             f"{_fmt(oos.get('cagr_pct'), '%')} | {_fmt(oos.get('sharpe'))} | "
             f"{_fmt(oos.get('max_drawdown_pct'), '%')} | {_fmt(oos.get('avg_gross_leverage'), 'x')} | "
             f"{oos.get('fills')} | {_fmt(oos.get('total_financing'))} | "
-            f"{(oos.get('kill_switch_at') or '–')[:10]} |"
+            f"{(oos.get('kill_switch_at') or '–')[:10]} | "
+            f"{_fmt(row.get('p_value'), digits=3)} ({_fmt(row.get('p_value_adjusted'), digits=3)}) |"
         )
     lines.append(
         f"| – | equal-weight basket (long, 1x) | {_fmt(basket.get('total_return_pct'), '%')} | "
         f"{_fmt(basket.get('cagr_pct'), '%')} | {_fmt(basket.get('sharpe'))} | "
         f"{_fmt(basket.get('max_drawdown_pct'), '%')} | {_fmt(basket.get('avg_gross_leverage'), 'x')} | "
-        f"{basket.get('fills')} | – | – |"
+        f"{basket.get('fills')} | – | – | – |"
     )
     diagnostics = report.get("data_diagnostics", [])
     if diagnostics:
@@ -307,9 +308,17 @@ def portfolio_verdict(report: dict) -> str:
     if sharpe is None or sharpe <= 0 or (basket is not None and sharpe <= basket):
         return ("**No evidence of an edge:** no strategy beat the simple equal-weight "
                 "basket on out-of-sample Sharpe.")
-    return (f"**Best out-of-sample: {best['strategy']}** (Sharpe {_fmt(sharpe)} vs "
-            f"{_fmt(basket)} for the basket). Not yet proven: there is no "
-            "permutation test for portfolios and several strategies were compared.")
+    adjusted = best.get("p_value_adjusted")
+    head = (f"**Best out-of-sample: {best['strategy']}** (Sharpe {_fmt(sharpe)} vs "
+            f"{_fmt(basket)} for the basket).")
+    if adjusted is None:
+        return head + " No permutation test was run, so its timing is unproven."
+    if adjusted < P_VALUE_THRESHOLD:
+        return (head + f" Its timing beats shuffled timing (adjusted p {_fmt(adjusted, digits=3)}): "
+                "preliminary evidence of an edge on this data only.")
+    return (head + f" But its timing is indistinguishable from shuffled timing "
+            f"(adjusted p {_fmt(adjusted, digits=3)}): the result comes from "
+            "diversification and leverage, not from choosing when to trade.")
 
 
 def build_summary(run=None, walk_forward=None, robustness=None, compare=None,

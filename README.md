@@ -124,7 +124,15 @@ is capped at `--max-leverage`. Per-market fees, slippage and carry depend
 on the asset class (`universe.CLASS_COSTS`): crypto perpetuals pay about
 10%/yr funding, futures pay no financing on notional. `--financing` adds
 an optional cost on exposure above equity (margin loans, CFDs; default 0).
-Reports list each market's largest daily move to expose bad data. The
+Reports list each market's largest daily move to expose bad data.
+`--universe etf` trades tradable ETFs (GLD, USO, SPY, IEF, ...) instead of
+raw futures and indices: no artificial roll jumps, prices adjusted for
+dividends and splits. Each strategy gets a portfolio permutation test
+(`--permutations`, default 40): every market's signal timing is shuffled
+while positions, holding periods, sizing and leverage stay the same.
+Holm-adjusted p-values correct for comparing all strategies. An
+always-long strategy has nothing to shuffle and gets p = 1: its result
+is diversification and leverage, not timing. The
 kill switch (`--max-drawdown`, default 30%) closes everything and stops
 trading. Reports compare each strategy with an equal-weight long basket
 (1x), sweep leverage (1x, 2x, 3x, 5x) and stress costs. Caveats: Yahoo
