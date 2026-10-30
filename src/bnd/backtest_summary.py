@@ -1,0 +1,200 @@
+"""Markdown summary of backtest_cli reports, for the GitHub job summary.
+
+    python -m src.bnd.backtest_summary --run report.json \\
+        --walk-forward walk-forward.json --robustness robustness.json
+
+Missing or unreadable reports are listed, not fatal: the summary should
+explain a partial run rather than hide it.
+"""
+
+import argparse
+import json
+import sys
+from pathlib import Path
+
+# Evidence threshold for the permutation test (one-sided).
+P_VALUE_THRESHOLD = 0.05
+
+
+def _fmt(value, suffix="", digits=2) -> str:
+    if value is None:
+        return "–"
+    if isinstance(value, float):
+        return f"{value:,.{digits}f}{suffix}"
+    return f"{value}{suffix}"
+
+
+def _load(path):
+    if path is None:
+        return None, None
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8")), None
+    except (OSError, ValueError) as exc:
+        return None, f"`{path}`: {type(exc).__name__}"
+
+
+def _dataset_lines(report: dict) -> list[str]:
+    return [
+        "## Dataset",
+        f"- File: `{report.get('data')}` ({report.get('candles')} candles, "
+        f"{report.get('data_gaps')} gaps)",
+        f"- Range: {report.get('first_candle')} → {report.get('last_candle')}",
+        f"- SHA-256: `{report.get('sha256')}`",
+        "",
+    ]
+
+
+def _run_lines(report: dict) -> list[str]:
+    rows = [
+        ("Return", "total_return_pct", "%"),
+        ("CAGR", "cagr_pct", "%"),
+        ("Max drawdown", "max_drawdown_pct", "%"),
+        ("Sharpe", "sharpe", ""),
+        ("Trades", "trades", ""),
+        ("Time in market", "time_in_market_pct", "%"),
+        ("Avg capital exposure", "avg_capital_exposure_pct", "%"),
+    ]
+    lines = [f"## Backtest: `{report.get('strategy')}`"]
+    for name, period in report.get("periods", {}).items():
+        strategy, benchmark = period["strategy"], period["buy_and_hold"]
+        lines += [
+            "",
+            f"**{name}** ({period['start']} → {period['end']}, "
+            f"risk gate: {strategy.get('risk_gate')})",
+            "",
+            "| Metric | Strategy | Buy & hold |",
+            "| --- | ---: | ---: |",
+        ]
+        lines += [
+            f"| {label} | {_fmt(strategy.get(key), unit)} | "
+            f"{_fmt(benchmark.get(key), unit)} |"
+            for label, key, unit in rows
+        ]
+    return lines + [""]
+
+
+def _walk_forward_lines(report: dict) -> list[str]:
+    summary = report.get("summary", {})
+    return [
+        "## Walk-forward (SMA long/flat, independent folds)",
+        f"- Folds: {summary.get('fold_count')}, beating buy & hold: "
+        f"{summary.get('outperforming_fold_count')}",
+        f"- Excess return per fold: mean "
+        f"{_fmt(summary.get('mean_excess_net_return_pct'), ' pp')}, median "
+        f"{_fmt(summary.get('median_excess_net_return_pct'), ' pp')}",
+        "",
+    ]
+
+
+def _robustness_lines(report: dict) -> list[str]:
+    lines = ["## Robustness", "", "| Period | Combos | Beat B&H | Profitable | Median return | B&H |",
+             "| --- | ---: | ---: | ---: | ---: | ---: |"]
+    for name, grid in report.get("grid_summary", {}).items():
+        lines.append(
+            f"| {name} | {grid['combinations']} | "
+            f"{_fmt(grid['beat_buy_and_hold_pct'], '%', 0)} | {grid['profitable']} | "
+            f"{_fmt(grid['median_return_pct'], '%')} | "
+            f"{_fmt(grid['buy_and_hold_return_pct'], '%')} |"
+        )
+
+    selection = report.get("in_sample_selection", {})
+    ins, oos = selection.get("in_sample", {}), selection.get("out_of_sample", {})
+    params = ", ".join(
+        f"{key}={value}" for key, value in (selection.get("params") or {}).items()
+    ) or "–"
+    lines += [
+        "",
+        f"**In-sample choice** {params}: in-sample return "
+        f"{_fmt(ins.get('total_return_pct'), '%')} (Sharpe {_fmt(ins.get('sharpe'))}); "
+        f"out-of-sample return {_fmt(oos.get('total_return_pct'), '%')} "
+        f"(Sharpe {_fmt(oos.get('sharpe'))}), rank "
+        f"{selection.get('out_of_sample_rank')} of "
+        f"{selection.get('out_of_sample_combinations')}.",
+    ]
+
+    perm = report.get("permutation_test_out_of_sample", {})
+    lines += [
+        "",
+        f"**Permutation test** (out-of-sample, {perm.get('permutations')} shuffles): "
+        f"actual {_fmt(perm.get('actual_return_pct'), '%')}, shuffled median "
+        f"{_fmt(perm.get('shuffled_median_return_pct'), '%')}, 5–95% range "
+        f"{_fmt(perm.get('shuffled_p5_return_pct'), '%')} … "
+        f"{_fmt(perm.get('shuffled_p95_return_pct'), '%')}, "
+        f"p-value **{_fmt(perm.get('p_value'), digits=3)}**.",
+        "",
+        "| Cost multiplier | Return | Sharpe | Trades |",
+        "| ---: | ---: | ---: | ---: |",
+    ]
+    lines += [
+        f"| ×{_fmt(row['cost_multiplier'], digits=0)} | "
+        f"{_fmt(row['total_return_pct'], '%')} | {_fmt(row['sharpe'])} | {row['trades']} |"
+        for row in report.get("cost_stress_out_of_sample", [])
+    ]
+    return lines + [""]
+
+
+def verdict(robustness: dict | None) -> str:
+    """One conservative sentence; every condition must hold for 'evidence'."""
+
+    if not robustness:
+        return "No robustness report: no conclusion about an edge is possible."
+
+    perm = robustness.get("permutation_test_out_of_sample", {})
+    oos = robustness.get("in_sample_selection", {}).get("out_of_sample", {})
+    stress = {
+        row["cost_multiplier"]: row["total_return_pct"]
+        for row in robustness.get("cost_stress_out_of_sample", [])
+    }
+    checks = {
+        f"permutation p-value < {P_VALUE_THRESHOLD}":
+            (perm.get("p_value") or 1) < P_VALUE_THRESHOLD,
+        "positive out-of-sample return": (oos.get("total_return_pct") or 0) > 0,
+        "still positive at 2× costs": (stress.get(2.0) or 0) > 0,
+    }
+    failed = [name for name, ok in checks.items() if not ok]
+    if failed:
+        return ("**No evidence of an edge.** Failed: " + "; ".join(failed)
+                + ". Treat any profit above as luck or overfitting.")
+    return ("**Preliminary evidence of an edge** on this dataset only. "
+            "Confirm on other periods and markets and in paper trading "
+            "before trusting it; this is not a profitability guarantee.")
+
+
+def build_summary(run=None, walk_forward=None, robustness=None) -> str:
+    reports, problems = {}, []
+    for name, path in (("run", run), ("walk_forward", walk_forward),
+                       ("robustness", robustness)):
+        data, error = _load(path)
+        reports[name] = data
+        if error:
+            problems.append(error)
+
+    lines = ["# BND backtest summary", ""]
+    dataset_source = reports["run"] or reports["robustness"]
+    if dataset_source:
+        lines += _dataset_lines(dataset_source)
+    lines += ["## Verdict", verdict(reports["robustness"]), ""]
+    if reports["run"]:
+        lines += _run_lines(reports["run"])
+    if reports["walk_forward"]:
+        lines += _walk_forward_lines(reports["walk_forward"])
+    if reports["robustness"]:
+        lines += _robustness_lines(reports["robustness"])
+    if problems:
+        lines += ["## Missing reports"] + [f"- {p}" for p in problems] + [""]
+    lines.append("_Paper research only. Past results do not predict future returns._")
+    return "\n".join(lines) + "\n"
+
+
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(prog="backtest_summary")
+    parser.add_argument("--run")
+    parser.add_argument("--walk-forward")
+    parser.add_argument("--robustness")
+    args = parser.parse_args(argv)
+    sys.stdout.write(build_summary(args.run, args.walk_forward, args.robustness))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

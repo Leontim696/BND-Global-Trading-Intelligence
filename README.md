@@ -70,7 +70,12 @@ Decisions use only past candles and fill at the next open, paying fees
 and slippage (defaults: 0.10% and 0.05% per fill). Each report compares
 the strategy with buy-and-hold for the full, in-sample (first 70%) and
 out-of-sample periods. Judge a strategy by its out-of-sample results.
-The "BND Backtest (manual)" workflow runs the same steps on GitHub.
+The "BND Backtest (manual)" workflow runs the same steps on GitHub, shows
+a summary with a conservative verdict on the run page
+(`src/bnd/backtest_summary.py`), and saves the JSON reports to the
+`backtest-results` branch under `runs/<time>_<run id>_<symbol>_<interval>_<strategy>/`
+(`LATEST.md` holds the newest summary). Only the separate `publish` job has
+write access; it never runs project code and only writes that branch.
 
 ## Paid API calls
 

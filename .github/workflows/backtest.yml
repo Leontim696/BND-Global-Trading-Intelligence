@@ -24,9 +24,17 @@ on:
         description: 'Extra run arguments, e.g. --stop-loss 5 --risk-per-trade 1'
         default: '--stop-loss 5 --risk-per-trade 1'
         type: string
+      publish:
+        description: 'Save the JSON reports to the backtest-results branch'
+        default: true
+        type: boolean
 
 permissions:
   contents: read
+
+concurrency:
+  group: bnd-backtest-results
+  cancel-in-progress: false
 
 jobs:
   backtest:
@@ -73,9 +81,89 @@ jobs:
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
             --strategy "$STRATEGY" $EXTRA_ARGS \
             | tee backtest-reports/robustness.json
+      - name: Job summary
+        if: always()
+        run: |
+          mkdir -p backtest-reports
+          python -m src.bnd.backtest_summary \
+            --run backtest-reports/report.json \
+            --walk-forward backtest-reports/walk-forward.json \
+            --robustness backtest-reports/robustness.json \
+            > backtest-reports/summary.md
+          cat backtest-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: bnd-backtest-${{ github.run_id }}
           path: backtest-reports/
           retention-days: 14
+
+  # Separate job: the write token never runs project code. It only
+  # commits the finished JSON/Markdown reports (not the candle CSV).
+  publish:
+    needs: backtest
+    if: always() && inputs.publish && needs.backtest.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+      SOURCE_SHA: ${{ github.sha }}
+      RESULT: ${{ needs.backtest.result }}
+      SYMBOL: ${{ inputs.symbol }}
+      INTERVAL: ${{ inputs.interval }}
+      STRATEGY: ${{ inputs.strategy }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bnd-backtest-${{ github.run_id }}
+          path: reports
+      - name: Commit reports to backtest-results branch
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(reports/*.json reports/*.md)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::warning::No reports to publish"; exit 0
+          fi
+          dir="runs/$(date -u +%Y-%m-%dT%H%M%SZ)_${RUN_ID}_${SYMBOL}_${INTERVAL}_${STRATEGY}"
+          git init -q results
+          cd results
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+
+          publish_once() {
+            # errexit is off inside a function used as an `if` condition,
+            # so every step checks its own status.
+            # Start from the latest branch tip each attempt (no rebase).
+            if git fetch -q --depth=1 origin backtest-results 2>/dev/null; then
+              git checkout -q -f -B backtest-results FETCH_HEAD || return 1
+            else
+              git checkout -q --orphan backtest-results || return 1
+            fi
+            git clean -fdq
+            mkdir -p "$dir" && cp "${files[@]/#/../}" "$dir/" || return 1
+            printf '{"run_id": "%s", "source_sha": "%s", "result": "%s", "symbol": "%s", "interval": "%s", "strategy": "%s"}\n' \
+              "$RUN_ID" "$SOURCE_SHA" "$RESULT" "$SYMBOL" "$INTERVAL" "$STRATEGY" > "$dir/run.json" || return 1
+            if [ -f ../reports/summary.md ]; then
+              { echo "Latest run: \`$dir\` (source ${SOURCE_SHA:0:7}, job $RESULT)"; echo;
+                cat ../reports/summary.md; } > LATEST.md || return 1
+            fi
+            git add -A || return 1
+            git commit -q -m "Backtest $SYMBOL $INTERVAL $STRATEGY, run $RUN_ID ($RESULT)" || return 1
+            git push -q origin HEAD:refs/heads/backtest-results
+          }
+
+          for attempt in 1 2 3; do
+            if publish_once; then
+              echo "Published to backtest-results/$dir" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not push reports to backtest-results"
+          exit 1
