@@ -188,18 +188,57 @@ def test_config_validation(kwargs):
         PortfolioConfig(**kwargs)
 
 
-def test_sqrt_n_scaling():
-    a, b = noisy(100, 120, wiggle=0.01), noisy(100, 120, wiggle=0.01)
+def random_closes(seed, count=500, sigma=0.01):
+    import random
+
+    rng, closes = random.Random(seed), [100.0]
+    for _ in range(count - 1):
+        closes.append(closes[-1] * (1 + rng.gauss(0, sigma)))
+    return closes
+
+
+def test_diversification_uses_measured_correlation():
     config = PortfolioConfig(max_leverage=10, max_weight=10, financing_pct_annual=0,
-                             max_drawdown_pct=None, vol_lookback=20)
+                             max_drawdown_pct=None, vol_lookback=60)
+    a, b = random_closes(1), random_closes(2)
 
     one = run_portfolio({"A": series(a)}, [market("A")], buy_and_hold, config)
-    two = run_portfolio({"A": series(a), "B": series(b)},
-                        [market("A"), market("B")], buy_and_hold, config)
+    same = run_portfolio({"A": series(a), "B": series(a)},
+                         [market("A"), market("B")], buy_and_hold, config)
+    independent = run_portfolio({"A": series(a), "B": series(b)},
+                                [market("A"), market("B")], buy_and_hold, config)
 
-    w_one = one["per_market"][0]["avg_abs_weight"]
-    w_two = {r["market"]: r for r in two["per_market"]}["A"]["avg_abs_weight"]
-    assert w_two == pytest.approx(w_one / sqrt(2), rel=0.05)
+    def weight(result):
+        return {r["market"]: r for r in result["per_market"]}["A"]["avg_abs_weight"]
+
+    # Identical markets: no diversification, each gets half.
+    assert weight(same) == pytest.approx(weight(one) / 2, rel=0.03)
+    # Independent markets: about 1 / sqrt(2) each.
+    assert weight(independent) == pytest.approx(weight(one) / sqrt(2), rel=0.15)
+
+
+def test_correlated_markets_hit_the_volatility_target():
+    from statistics import stdev
+
+    base = random_closes(3, count=1500)
+    # Ten markets moving almost together (correlation ~0.9).
+    data, markets = {}, []
+    for k in range(10):
+        noise = random_closes(100 + k, count=1500, sigma=0.0035)
+        closes = [b * n / 100 for b, n in zip(base, noise)]
+        data[f"M{k}"] = series(closes)
+        markets.append(market(f"M{k}"))
+    config = PortfolioConfig(target_vol_pct=15, max_leverage=10, max_weight=10,
+                             financing_pct_annual=0, max_drawdown_pct=None,
+                             vol_lookback=60)
+
+    result = run_portfolio(data, markets, buy_and_hold, config)
+
+    values = [v for _, v in result["equity_curve"]][100:]
+    returns = [b / a - 1 for a, b in zip(values, values[1:])]
+    realised = stdev(returns) * sqrt(365.25) * 100
+    # Assuming independence would give about 15 x sqrt(10) / sqrt(1 + 9 x 0.9) = ~45%.
+    assert realised == pytest.approx(15, rel=0.2)
 
 
 def test_precomputed_volatility_matches_direct():
@@ -220,3 +259,21 @@ def test_precomputed_volatility_matches_direct():
         assert (fast[end] is None) == (direct is None)
         if direct is not None:
             assert fast[end] == pytest.approx(direct, rel=1e-9)
+
+
+def test_carry_is_per_market():
+    flat = noisy(100, 400, wiggle=0.0005)
+    config = PortfolioConfig(sizing="equal", max_leverage=1, max_weight=1,
+                             max_drawdown_pct=None, vol_lookback=5)
+    crypto = Market("BTC", "BTC", "crypto", 0.0, 0.0, carry_pct_annual=10.0)
+    future = Market("GOLD", "GOLD", "commodity", 0.0, 0.0)
+
+    paid = run_portfolio({"BTC": series(flat)}, [crypto], buy_and_hold, config)
+    free = run_portfolio({"GOLD": series(flat)}, [future], buy_and_hold, config)
+
+    years = (len(flat) - 7) / 365.25
+    assert paid["metrics"]["total_financing"] == pytest.approx(10_000 * 0.10 * years, rel=0.05)
+    assert free["metrics"]["total_financing"] == 0
+    # Default config charges nothing extra for leverage.
+    assert PortfolioConfig().financing_pct_annual == 0
+    assert {m.carry_pct_annual for m in select(classes=["crypto"])} == {10.0}

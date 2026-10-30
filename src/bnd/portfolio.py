@@ -3,14 +3,20 @@
 One account trades every market in the universe at once:
 
 1. The strategy gives each market a signal in [-1, 1] (long/flat/short).
-2. Volatility sizing: weight = signal x target_vol / (market vol x sqrt(N)),
-   so a calm market (forex) gets a larger position than a wild one (gas)
-   and each contributes similar risk. ``sizing="equal"`` uses signal / N.
+2. Volatility sizing: each market starts at signal x target / market vol,
+   so a calm market (forex) gets a larger position than a wild one (gas).
+   The whole book is then scaled so its volatility, measured from the
+   last ``vol_lookback`` dates of real joint returns (correlations
+   included), equals the target. Assuming independent markets would
+   understate risk badly when they fall together, as in 2011 or 2020.
+   ``sizing="equal"`` uses signal / N instead.
 3. Leverage: if gross exposure (sum of |weights|) exceeds max_leverage,
    every weight is scaled down proportionally.
 4. Decisions use only candles up to each market's close and execute at
    that market's next open, with per-market fees and slippage.
-5. Borrowing above equity pays financing; idle equity may earn interest.
+5. Each market pays its annual carry on |notional| (crypto funding;
+   futures none). Optional extra financing on gross exposure above
+   equity, for margin loans or CFDs. Idle equity may earn interest.
 6. Kill switch: once drawdown from peak reaches max_drawdown_pct, every
    position is closed at its next open and trading stops.
 """
@@ -36,7 +42,9 @@ class PortfolioConfig:
     max_leverage: float = 3.0
     max_weight: float = 1.0
     rebalance_threshold: float = 0.05
-    financing_pct_annual: float = 5.0
+    # Extra financing on gross exposure above equity (margin loans, CFDs);
+    # futures need only margin, so the default is none.
+    financing_pct_annual: float = 0.0
     cash_rate_pct_annual: float = 0.0
     max_drawdown_pct: float | None = 30.0
     allow_short: bool = True
@@ -102,6 +110,7 @@ class _Book:
     weight_marks: int = 0
     by_time: dict = field(default_factory=dict)
     vols: list = field(default_factory=list)
+    returns: dict = field(default_factory=dict)  # time -> log return
 
 
 def _volatility(candles, end, lookback) -> float | None:
@@ -140,6 +149,26 @@ def _volatility_by_end(candles, lookback) -> list:
     return out
 
 
+def _book_volatility(books, weights, times) -> float | None:
+    """Annualised volatility of today's weights over past joint returns.
+
+    Each past date's return is the weighted sum of the markets' actual
+    returns that day (0 where a market was closed), so correlations are
+    included. None when there is not enough history.
+    """
+    if len(times) < 5:
+        return None
+    series = [
+        sum(weights[b.market.name] * b.returns.get(t, 0.0) for b in books)
+        for t in times
+    ]
+    seconds = (times[-1] - times[0]).total_seconds()
+    deviation = stdev(series)
+    if seconds <= 0 or deviation <= 0:
+        return None
+    return deviation * sqrt((len(times) - 1) * SECONDS_PER_YEAR / seconds)
+
+
 def run_portfolio(
     data: Mapping[str, Sequence[Candle]],
     markets: Sequence[Market],
@@ -165,6 +194,9 @@ def run_portfolio(
         book = _Book(market, candles, factory())
         book.by_time = {c.open_time: i for i, c in enumerate(candles)}
         book.vols = _volatility_by_end(candles, config.vol_lookback)
+        book.returns = {
+            b.open_time: log(b.close / a.close) for a, b in zip(candles, candles[1:])
+        }
         books.append(book)
 
     times = sorted({c.open_time for book in books for c in book.candles})
@@ -179,6 +211,7 @@ def run_portfolio(
     halted_at = None
     previous_time = None
     started = trade_from is None
+    seen: list[datetime] = []
 
     def equity() -> float:
         return cash + sum(b.quantity * b.price for b in books)
@@ -205,6 +238,7 @@ def run_portfolio(
         if not started and time >= trade_from:
             started = True
         today = [b for b in books if time in b.by_time]
+        seen.append(time)
 
         # 1. Opens: mark, then execute the targets decided at the last close.
         for book in today:
@@ -230,6 +264,9 @@ def run_portfolio(
             total = equity()
             gross = sum(abs(b.quantity * b.price) for b in books)
             financing = max(0.0, gross - total) * config.financing_pct_annual / 100 * years
+            financing += sum(
+                abs(b.quantity * b.price) * b.market.carry_pct_annual / 100 for b in books
+            ) * config.cost_multiplier * years
             interest = max(0.0, total - gross) * config.cash_rate_pct_annual / 100 * years
             cash += interest - financing
             totals["financing"] += financing
@@ -264,13 +301,16 @@ def run_portfolio(
             book.vol = book.vols[end]
 
         ready = [b for b in books if b.vol is not None and b.vol > 0]
-        weights = {}
-        for book in ready:
-            if config.sizing == "equal":
-                raw = book.signal / len(books)
-            else:
-                raw = book.signal * config.target_vol_pct / 100 / (book.vol * sqrt(len(ready)))
-            weights[book.market.name] = max(-config.max_weight, min(config.max_weight, raw))
+        if config.sizing == "equal":
+            raw = {b.market.name: b.signal / len(books) for b in ready}
+        else:
+            raw = {b.market.name: b.signal * config.target_vol_pct / 100 / b.vol
+                   for b in ready}
+            measured = _book_volatility(ready, raw, seen[-config.vol_lookback:])
+            factor = (config.target_vol_pct / 100 / measured) if measured else 0.0
+            raw = {name: weight * factor for name, weight in raw.items()}
+        weights = {name: max(-config.max_weight, min(config.max_weight, weight))
+                   for name, weight in raw.items()}
         gross = sum(abs(w) for w in weights.values())
         scale = config.max_leverage / gross if gross > config.max_leverage else 1.0
         for book in books:

@@ -115,11 +115,16 @@ python -m src.bnd.backtest_cli portfolio --data-dir data/universe --strategy all
     --max-leverage 3 --portfolio-vol 15
 ```
 
-Every market gets the strategy's signal; weights are
-`signal × portfolio_vol / (market vol × √N)`, so calm markets (forex) hold
-more notional than volatile ones. Gross exposure is capped at
-`--max-leverage`; the borrowed part pays `--financing` (default 5%/yr).
-Per-market costs depend on the asset class (`universe.CLASS_COSTS`). The
+Every market gets the strategy's signal, sized at
+`signal × portfolio_vol / market vol`, so calm markets (forex) hold more
+notional than volatile ones. The whole book is then scaled so that its
+volatility, measured on the last `--sizing-lookback` dates of real joint
+returns (correlations included), equals `--portfolio-vol`. Gross exposure
+is capped at `--max-leverage`. Per-market fees, slippage and carry depend
+on the asset class (`universe.CLASS_COSTS`): crypto perpetuals pay about
+10%/yr funding, futures pay no financing on notional. `--financing` adds
+an optional cost on exposure above equity (margin loans, CFDs; default 0).
+Reports list each market's largest daily move to expose bad data. The
 kill switch (`--max-drawdown`, default 30%) closes everything and stops
 trading. Reports compare each strategy with an equal-weight long basket
 (1x), sweep leverage (1x, 2x, 3x, 5x) and stress costs. Caveats: Yahoo

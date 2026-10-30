@@ -126,6 +126,9 @@ def test_portfolio_single_strategy_report(tmp_path):
     assert [r["max_leverage"] for r in row["leverage_out_of_sample"]] == [1, 2, 3, 5]
     assert row["out_of_sample"]["max_gross_leverage"] <= 2 + 1e-9
     assert "total_return_pct" in report["equal_weight_basket_out_of_sample"]
+    diagnostics = report["data_diagnostics"]
+    assert {d["market"] for d in diagnostics} == {"EURUSD", "GOLD", "SP500"}
+    assert abs(diagnostics[0]["largest_move_pct"]) >= abs(diagnostics[-1]["largest_move_pct"])
 
 
 def test_portfolio_all_strategies_and_missing_data(tmp_path):
@@ -156,7 +159,8 @@ def test_portfolio_summary(tmp_path):
     text = build_summary(portfolio=path)
 
     for part in ("## Multi-market portfolio", "equal-weight basket",
-                 "Profit by market", "Cost stress", "| Max leverage |"):
+                 "Profit by market", "Cost stress", "| Max leverage |",
+                 "Largest daily moves"):
         assert part in text
     report = {"ranking": [{"strategy": "x", "out_of_sample": {"sharpe": 0.9}}],
               "equal_weight_basket_out_of_sample": {"sharpe": 0.4}}

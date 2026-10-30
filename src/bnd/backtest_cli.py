@@ -477,6 +477,23 @@ def command_fetch_universe(args) -> int:
     return 0
 
 
+def _data_diagnostics(data) -> list[dict]:
+    """Largest daily move per market, to expose bad prints and roll jumps."""
+    rows = []
+    for name, candles in data.items():
+        moves = [(100 * (b.close / a.close - 1), b.open_time)
+                 for a, b in zip(candles, candles[1:])]
+        biggest = max(moves, key=lambda move: abs(move[0]))
+        rows.append({
+            "market": name,
+            "largest_move_pct": biggest[0],
+            "largest_move_date": biggest[1].date().isoformat(),
+            "days_over_15pct": sum(abs(move) > 15 for move, _ in moves),
+        })
+    rows.sort(key=lambda row: abs(row["largest_move_pct"]), reverse=True)
+    return rows
+
+
 def _portfolio_config(args, **overrides) -> PortfolioConfig:
     values = dict(
         sizing=args.sizing,
@@ -582,6 +599,7 @@ def command_portfolio(args) -> int:
             "allow_short": config.allow_short, "params": params,
         },
         "equal_weight_basket_out_of_sample": _portfolio_metrics(basket_oos),
+        "data_diagnostics": _data_diagnostics(data),
         "ranking": rows,
         "note": (
             "Paper research. Futures series are not roll-adjusted and indices "
@@ -708,8 +726,9 @@ def build_parser() -> argparse.ArgumentParser:
                       help="largest |weight| for one market")
     port.add_argument("--rebalance", type=float, default=5.0,
                       help="resize when a weight moves this many points")
-    port.add_argument("--financing", type=float, default=5.0,
-                      help="annual %% on the borrowed (leveraged) amount")
+    port.add_argument("--financing", type=float, default=0.0,
+                      help="extra annual %% on exposure above equity (margin loans/CFDs); "
+                           "per-market carry such as crypto funding always applies")
     port.add_argument("--cash-rate", type=float, default=0.0)
     port.add_argument("--max-drawdown", type=float, default=30.0,
                       help="kill switch in percent; 0 disables")

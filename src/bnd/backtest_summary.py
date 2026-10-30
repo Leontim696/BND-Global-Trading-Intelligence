@@ -264,6 +264,12 @@ def _portfolio_lines(report: dict) -> list[str]:
         f"{_fmt(basket.get('max_drawdown_pct'), '%')} | {_fmt(basket.get('avg_gross_leverage'), 'x')} | "
         f"{basket.get('fills')} | – | – |"
     )
+    diagnostics = report.get("data_diagnostics", [])
+    if diagnostics:
+        lines += ["", "**Largest daily moves (check for bad data):** " + ", ".join(
+            f"{d['market']} {_fmt(d['largest_move_pct'], '%', 1)} on {d['largest_move_date']}"
+            + (f" ({d['days_over_15pct']} days > 15%)" if d["days_over_15pct"] else "")
+            for d in diagnostics[:6])]
     ranking = report.get("ranking", [])
     if len(ranking) == 1:
         row = ranking[0]
