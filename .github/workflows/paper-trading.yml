@@ -1,0 +1,138 @@
+name: BND Paper Trading (virtual money, daily)
+
+# One daily step of the virtual account: fill yesterday's orders at the
+# new opens, apply stops and limits, then place orders for the next open.
+# The account lives on the paper-trading branch. Nothing happens until it
+# is created by a manual run with a confirmed virtual capital; scheduled
+# runs before that only report that no account exists.
+
+on:
+  schedule:
+    # After the US close (20:00/21:00 UTC), every day: crypto trades weekends.
+    - cron: '23 22 * * *'
+  workflow_dispatch:
+    inputs:
+      capital:
+        description: 'Virtual starting capital, only to CREATE the account (blank = continue)'
+        default: ''
+        type: string
+      settings:
+        description: 'Settings for a NEW account, e.g. --strategy regime_switch --portfolio-vol 15 --max-leverage 3'
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-paper-trading
+  cancel-in-progress: false
+
+jobs:
+  step:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      account: ${{ steps.restore.outputs.account }}
+    env:
+      # Public market data only: no API keys, no paid AI, no real orders.
+      BND_ALLOW_LIVE_AI: "false"
+      CAPITAL: ${{ inputs.capital }}
+      SETTINGS: ${{ inputs.settings }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Restore the account from the paper-trading branch
+        id: restore
+        run: |
+          mkdir -p state
+          if git fetch -q --depth=1 origin paper-trading 2>/dev/null \
+              && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
+            git show FETCH_HEAD:paper.sqlite > state/paper.sqlite
+            echo "account=existing" >> "$GITHUB_OUTPUT"
+          elif [ -n "$CAPITAL" ]; then
+            echo "account=new" >> "$GITHUB_OUTPUT"
+          else
+            echo "account=none" >> "$GITHUB_OUTPUT"
+            echo "No paper account yet. Start one with a manual run and a virtual capital." \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Download recent daily candles
+        if: steps.restore.outputs.account != 'none'
+        run: |
+          python -m src.bnd.backtest_cli fetch-universe --universe etf \
+            --start "$(date -u -d '-3 years' +%Y-%m-%d)" --out-dir data
+      - name: Daily paper step
+        if: steps.restore.outputs.account != 'none'
+        env:
+          ACCOUNT: ${{ steps.restore.outputs.account }}
+        run: |
+          args=()
+          if [ "$ACCOUNT" = new ]; then
+            args+=(--capital "$CAPITAL")
+            # SETTINGS is split into separate arguments on purpose.
+            # shellcheck disable=SC2206
+            args+=($SETTINGS)
+          fi
+          python -m src.bnd.paper_runner --state state/paper.sqlite --data-dir data \
+            --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
+          cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        # Also after a failure: a safe stop (kill switch) must be kept.
+        if: always() && steps.restore.outputs.account != 'none'
+        with:
+          name: bnd-paper-${{ github.run_id }}
+          path: state/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Separate job: the write token never runs project code. It only
+  # commits the account file and its status page.
+  publish:
+    needs: step
+    if: always() && needs.step.outputs.account != 'none' && needs.step.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+      SOURCE_SHA: ${{ github.sha }}
+      RESULT: ${{ needs.step.result }}
+    steps:
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: bnd-paper-${{ github.run_id }}
+          path: state
+      - name: Commit the account to the paper-trading branch
+        run: |
+          set -euo pipefail
+          if [ ! -f state/paper.sqlite ]; then
+            echo "::warning::No account file to publish"; exit 0
+          fi
+          day=$(date -u +%Y-%m-%d)
+          git init -q account
+          cd account
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          if git fetch -q --depth=1 origin paper-trading 2>/dev/null; then
+            git checkout -q -f -B paper-trading FETCH_HEAD
+          else
+            git checkout -q --orphan paper-trading
+          fi
+          cp ../state/paper.sqlite .
+          mkdir -p runs
+          if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
+          if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
+          git add -A
+          git commit -q -m "Paper step $day, run $RUN_ID ($RESULT, source ${SOURCE_SHA:0:7})"
+          # Runs are serialised by the concurrency group, so a plain push
+          # fails loudly instead of overwriting a newer account.
+          git push -q origin HEAD:refs/heads/paper-trading
+          echo "Saved to the paper-trading branch" >> "$GITHUB_STEP_SUMMARY"

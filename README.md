@@ -170,6 +170,30 @@ everything, survives restarts and needs `reset_kill_switch("RESET-KILL-SWITCH")`
 An unexpected error rolls the bar back and trips it. `TradingMode.LIVE`
 is refused: no real orders exist in this system.
 
+### Daily paper runner
+
+`paper_runner` is one daily step of a virtual multi-market account:
+new closed candles are fed to the engine (yesterday's orders fill at the
+new opens), the strategy is replayed and sized exactly like the portfolio
+backtest (`portfolio.target_weights`), the weights are fitted inside the
+engine's position, sector, leverage and risk-at-stop limits, and the
+differences become orders for the next open. Reductions are reduce-only;
+added risk carries a stop `--stop-atr` x ATR away. Client order ids are
+`<candle date>:<market>`, so a repeated run submits nothing new.
+
+```bash
+python -m src.bnd.backtest_cli fetch-universe --universe etf --start 2023-01-01 --out-dir data
+python -m src.bnd.paper_runner --state paper.sqlite --data-dir data --capital 10000 \
+    --strategy regime_switch --report REPORT.md
+```
+
+`--capital` is required once and refused afterwards. Trading settings are
+stored in the account at creation and reused by every later run; a run
+with different settings is refused. The `paper-trading.yml` workflow runs
+this every day at 22:23 UTC and keeps the account and its status page
+(`README.md`) on the `paper-trading` branch. Until a manual run creates
+the account with a virtual capital, scheduled runs do nothing.
+
 ## Paid API calls
 
 All OpenRouter calls are opt-in. The workflows under `.github/workflows`
