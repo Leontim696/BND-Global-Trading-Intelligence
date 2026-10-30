@@ -28,6 +28,7 @@ from .market_data import (
     MarketDataError,
     fetch_binance_klines,
     fetch_yahoo_daily,
+    repair_spikes,
     find_gaps,
     load_csv,
     save_csv,
@@ -474,6 +475,9 @@ def command_fetch_universe(args) -> int:
     for market in markets:
         try:
             candles, report = fetch_yahoo_daily(market.symbol, _utc_date(args.start), end)
+            if not args.keep_spikes:
+                candles, repairs = repair_spikes(candles)
+                report["repaired_spikes"] = repairs
             save_csv(candles, out / f"{market.name}.csv")
             quality[market.name] = {"symbol": market.symbol, **report,
                                     "first": candles[0].open_time.isoformat(),
@@ -736,6 +740,8 @@ def build_parser() -> argparse.ArgumentParser:
     universe.add_argument("--universe", choices=["futures", "etf"], default="futures",
                           help="etf: tradable roll-free ETFs instead of futures/indices")
     universe.add_argument("--out-dir", required=True)
+    universe.add_argument("--keep-spikes", action="store_true",
+                          help="do not repair one-day spikes that immediately revert")
     universe.set_defaults(handler=command_fetch_universe)
 
     port = sub.add_parser("portfolio", help="Trade every market in one leveraged account")

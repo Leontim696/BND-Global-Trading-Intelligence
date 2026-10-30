@@ -360,3 +360,31 @@ def fetch_yahoo_daily(
         quality["candles"] = len(candles)
     validate_series(candles)
     return candles, quality
+
+
+def repair_spikes(candles: Sequence[Candle], threshold_pct: float = 20.0,
+                  revert_ratio: float = 0.8) -> tuple[list[Candle], list[dict]]:
+    """Replace one-day price spikes that immediately revert (bad ticks).
+
+    A candle is a spike when its close moves more than ``threshold_pct``
+    from the previous close and the next close returns at least
+    ``revert_ratio`` of that move. The spike is replaced by a flat
+    candle at the previous close. Large moves that persist (a real
+    crash or rally) are left untouched. Every repair is reported.
+    """
+    result = list(candles)
+    repairs = []
+    for i in range(1, len(result) - 1):
+        before, spike, after = result[i - 1], result[i], result[i + 1]
+        move = spike.close / before.close - 1
+        if abs(move) * 100 <= threshold_pct:
+            continue
+        back = after.close / spike.close - 1
+        # The next move goes the other way and undoes most of the jump.
+        undone = (spike.close - after.close) / (spike.close - before.close)
+        if back * move < 0 and undone >= revert_ratio:
+            price = before.close
+            result[i] = Candle(spike.open_time, price, price, price, price, spike.volume)
+            repairs.append({"date": spike.open_time.date().isoformat(),
+                            "move_pct": 100 * move, "next_move_pct": 100 * back})
+    return result, repairs
