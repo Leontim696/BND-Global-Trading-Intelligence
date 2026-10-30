@@ -186,6 +186,10 @@ parameter set with the best training Sharpe is chosen and then traded on
 the next unseen year, each window from fresh equity and compared with the
 equal-weight basket on the same dates. In `portfolio.yml` choose
 `mode: walk-forward`.
+`--strategy buy_and_hold` runs the same walk-forward always long, with the
+same volatility sizing and leverage: the control that separates a
+strategy's timing from what sizing and leverage alone earn. On ETFs,
+leverage means a margin loan: pass `--financing` (e.g. 5) for its cost.
 
 ## Paper-trading engine
 

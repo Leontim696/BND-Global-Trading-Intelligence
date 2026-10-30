@@ -124,3 +124,17 @@ def test_cli_skips_impossible_parameter_sets(tmp_path):
 
     code, _, err = run_cli(base + ["--range", "fast=40", "--range", "slow=20"])
     assert code == 2 and "No valid parameter combination" in err
+
+
+def test_cli_buy_and_hold_control_uses_the_same_sizing(tmp_path):
+    write_markets(tmp_path, [m.name for m in MARKETS], days=1000)
+
+    code, out, err = run_cli(["portfolio-wfo", "--data-dir", str(tmp_path),
+                              "--markets", "EURUSD,GOLD,SP500", "--strategy", "buy_and_hold",
+                              "--sizing-lookback", "20", "--max-leverage", "2",
+                              "--train-days", "400", "--test-days", "200"])
+
+    assert code == 0, err
+    report = json.loads(out)
+    assert all(row["params"] == {} for row in report["folds"])
+    assert report["settings"]["max_leverage"] == 2
