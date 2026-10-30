@@ -31,9 +31,17 @@ from math import log
 from pathlib import Path
 
 from .backtest_cli import _factory, _pairs, _split_list
+from .cross_sectional import cross_momentum_factory
 from .market_data import MarketDataError, load_csv
 from .paper_engine import Instrument, OrderRequest, PaperEngine, PaperEngineError
-from .portfolio import PortfolioConfig, _Book, _History, _volatility, target_weights
+from .portfolio import (
+    PortfolioConfig,
+    _Book,
+    _History,
+    _volatility,
+    strategy_for,
+    target_weights,
+)
 from .robustness import parse_value
 from .scenarios import run_scenarios
 from .signal_pipeline import average_true_range
@@ -90,7 +98,7 @@ def latest_weights(data: dict, markets, factory, config: PortfolioConfig) -> tup
     books, signals = [], {}
     for market in markets:
         candles = data[market.name]
-        strategy = factory()
+        strategy = strategy_for(factory, market)
         signal = 0.0
         for end in range(1, len(candles) + 1):
             signal = strategy(_History(candles, end))
@@ -350,7 +358,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--universe", choices=["futures", "etf"])
     parser.add_argument("--markets")
     parser.add_argument("--classes")
-    parser.add_argument("--strategy", choices=["combo", "selector"] + sorted(SWEEP_RANGES))
+    parser.add_argument("--strategy",
+                        choices=["combo", "selector", "cross_momentum"] + sorted(SWEEP_RANGES))
     parser.add_argument("--members", help="combo/selector: comma-separated strategies")
     parser.add_argument("--param", action="append", metavar="NAME=VALUE")
     parser.add_argument("--portfolio-vol", type=float)
@@ -391,7 +400,7 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
         raise ValueError("No paper account yet: confirm the virtual starting capital "
                          "with --capital")
     settings = {**DEFAULTS, **given}
-    _factory(settings["strategy"], _params(settings))()   # fail before creating
+    _make_factory(settings, {})                            # fail before creating
     Path(args.state).parent.mkdir(parents=True, exist_ok=True)
     engine = PaperEngine.create(args.state, args.capital, currency=args.currency)
     engine.record("runner_settings", settings, datetime.now(timezone.utc))
@@ -405,6 +414,19 @@ def _params(settings) -> dict:
             raise ValueError("--members is only for --strategy combo or selector")
         params["members"] = tuple(_split_list(settings["members"]))
     return params
+
+
+def _make_factory(settings, data):
+    params = _params(settings)
+    if settings["strategy"] != "cross_momentum":
+        factory = _factory(settings["strategy"], params)
+        if not data:
+            factory()
+        return factory
+    try:
+        return cross_momentum_factory(data, **params)
+    except TypeError as exc:
+        raise ValueError(f"Invalid parameters for cross_momentum: {exc}") from exc
 
 
 def _config(settings) -> RunnerConfig:
@@ -427,7 +449,6 @@ def main(argv=None) -> int:
                     raise ValueError("Kill switch is not active; nothing to reset")
                 engine.reset_kill_switch(args.reset_kill_switch, datetime.now(timezone.utc))
             config = _config(settings)
-            factory = _factory(settings["strategy"], _params(settings))
             markets = select_markets(_split_list(settings["markets"]),
                                      _split_list(settings["classes"]), settings["universe"])
             folder = Path(args.data_dir)
@@ -435,6 +456,7 @@ def main(argv=None) -> int:
             if not available:
                 raise ValueError("No market data found in " + str(folder))
             data = {m.name: load_csv(folder / f"{m.name}.csv") for m in available}
+            factory = _make_factory(settings, data)
             report = run_daily(engine, data, available, factory, config, settings["strategy"])
             report["settings"] = settings
             report["missing_data"] = [m.name for m in markets if m not in available]

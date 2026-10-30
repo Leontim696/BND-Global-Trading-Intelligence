@@ -270,3 +270,23 @@ def test_portfolio_selector_runs(tmp_path):
     report = json.loads(out)
     assert report["ranking"][0]["strategy"] == "selector"
     assert report["settings"]["params"] == {"lookback": 60, "members": ["macd", "momentum"]}
+
+
+def test_portfolio_cross_momentum(tmp_path):
+    write_markets(tmp_path, ["EURUSD", "GOLD", "SP500"])
+
+    code, out, err = run_cli(["portfolio", "--permutations", "2", "--data-dir", str(tmp_path),
+                              "--markets", "EURUSD,GOLD,SP500", "--strategy", "cross_momentum",
+                              "--param", "lookback=120", "--param", "skip=10"])
+
+    assert code == 0, err
+    row = json.loads(out)["ranking"][0]
+    assert row["strategy"] == "cross_momentum"
+    assert row["out_of_sample"]["fills"] > 0
+    pnl = {m["market"]: m["pnl"] for m in row["per_market_out_of_sample"]}
+    assert set(pnl) == {"EURUSD", "GOLD", "SP500"}
+
+    code, _, err = run_cli(["portfolio", "--permutations", "0", "--data-dir", str(tmp_path),
+                            "--markets", "EURUSD,GOLD,SP500", "--strategy", "cross_momentum",
+                            "--param", "colour=1"])
+    assert code == 2 and "Invalid parameters for cross_momentum" in err

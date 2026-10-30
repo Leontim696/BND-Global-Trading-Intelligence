@@ -302,3 +302,19 @@ def test_fit_limits_caps_net_currency_exposure(tmp_path):
 
     # EUR would be +80%; both pairs hold EUR, so both shrink to fit 50%.
     assert fitted["EURUSD"] + fitted["EURGBP"] == pytest.approx(0.5)
+
+
+def test_cli_cross_momentum_account(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(paper_runner, "select_markets", lambda *a: MARKETS)
+    write_data(tmp_path / "data", make_data())
+    base = ["--state", str(tmp_path / "paper.sqlite"), "--data-dir", str(tmp_path / "data")]
+
+    assert paper_runner.main(base + ["--capital", "1000", "--strategy", "cross_momentum",
+                                     "--param", "fraction=0.9"]) == 2
+    assert not (tmp_path / "paper.sqlite").exists()
+    capsys.readouterr()
+    assert paper_runner.main(base + ["--capital", "1000", "--strategy", "cross_momentum",
+                                     "--param", "lookback=40", "--param", "skip=5",
+                                     "--sizing-lookback", "20"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["signals"] == {"UP": 1, "DOWN": -1, "FX": 0}

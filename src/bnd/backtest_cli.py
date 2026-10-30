@@ -24,6 +24,7 @@ from .backtester import (
     run_backtest,
     split_index,
 )
+from .cross_sectional import cross_momentum_factory
 from .market_data import (
     MarketDataError,
     fetch_binance_klines,
@@ -618,23 +619,35 @@ def command_portfolio(args) -> int:
     early = {name: [c for c in candles if c.open_time < cut] for name, candles in data.items()}
     early_markets = [m for m in markets if len(early[m.name]) >= minimum]
 
-    names = sorted(SWEEP_RANGES) if args.strategy == "all" else [args.strategy]
+    names = (sorted(SWEEP_RANGES) + ["cross_momentum"] if args.strategy == "all"
+             else [args.strategy])
     params = {} if args.strategy == "all" else _strategy_params(args)
     if args.strategy in ("combo", "selector") and args.members:
         params["members"] = tuple(_split_list(args.members))
 
-    def periods(factory, cfg):
-        in_sample = run_portfolio(early, early_markets, factory, cfg)
+    def make(name, frame):
+        # Cross-sectional ranking needs every market's candles at once.
+        if name == "cross_momentum":
+            try:
+                return cross_momentum_factory(frame, **params)
+            except TypeError as exc:
+                raise ValueError(f"Invalid parameters for cross_momentum: {exc}") from exc
+        return _factory(name, params)
+
+    def periods(name, cfg):
+        in_sample = run_portfolio(
+            early, early_markets,
+            make(name, {m.name: early[m.name] for m in early_markets}), cfg)
+        factory = make(name, data)
         out_of_sample, signals = record_signals(data, markets, factory, cfg, trade_from=cut)
-        return in_sample, out_of_sample, signals
+        return factory, in_sample, out_of_sample, signals
 
     workers = max(1, min(4, os.cpu_count() or 1))
 
     basket_oos = run_portfolio(data, markets, buy_and_hold, basket, trade_from=cut)
     rows = []
     for name in names:
-        factory = _factory(name, params)
-        in_sample, out_of_sample, signals = periods(factory, config)
+        factory, in_sample, out_of_sample, signals = periods(name, config)
         row = {
             "strategy": name,
             "in_sample": _portfolio_metrics(in_sample),
@@ -834,7 +847,8 @@ def build_parser() -> argparse.ArgumentParser:
     port.add_argument("--classes")
     port.add_argument("--universe", choices=["futures", "etf"], default="futures")
     port.add_argument("--skip-missing", action="store_true")
-    port.add_argument("--strategy", choices=["all", "combo", "selector"] + sorted(SWEEP_RANGES),
+    port.add_argument("--strategy",
+                      choices=["all", "combo", "selector", "cross_momentum"] + sorted(SWEEP_RANGES),
                       default="all")
     port.add_argument("--members",
                       help="combo/selector: comma-separated strategies (combo default "
