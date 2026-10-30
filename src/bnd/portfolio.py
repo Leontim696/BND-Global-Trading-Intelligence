@@ -21,6 +21,7 @@ One account trades every market in the universe at once:
    position is closed at its next open and trading stops.
 """
 
+from bisect import bisect_right
 from collections.abc import Sequence as SequenceABC
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -368,6 +369,43 @@ def run_portfolio(
     ]
     per_market.sort(key=lambda row: row["pnl"], reverse=True)
     return {"metrics": metrics, "per_market": per_market, "equity_curve": curve}
+
+
+def in_currency(curve, usd_per_unit: Sequence[Candle]) -> list:
+    """A USD equity curve seen by an investor whose money is in another currency.
+
+    ``usd_per_unit`` is that currency's USD price (EURUSD for EUR). Unhedged:
+    the investor converts at the start and back at each date, so a falling
+    dollar lowers the result. Each date uses the latest close at or before it.
+    """
+    times = [c.open_time for c in usd_per_unit]
+    out = []
+    for time, equity in curve:
+        index = bisect_right(times, time) - 1
+        if index < 0:
+            raise ValueError(f"No exchange rate on or before {time.date()}")
+        out.append((time, equity / usd_per_unit[index].close))
+    return out
+
+
+def currency_metrics(curve, usd_per_unit: Sequence[Candle],
+                     initial_equity: float | None = None) -> dict:
+    """Return and risk of an equity curve after conversion (see ``in_currency``).
+
+    ``initial_equity`` (USD) is converted at the first date's rate;
+    by default the first point of the curve is the start.
+    """
+    converted = in_currency(curve, usd_per_unit)
+    if len(converted) < 2:
+        raise ValueError("Not enough dates to convert")
+    start = converted[0][1] if initial_equity is None else \
+        initial_equity * converted[0][1] / curve[0][1]
+    span = (converted[-1][0] - converted[0][0]).total_seconds()
+    periods = (len(converted) - 1) * SECONDS_PER_YEAR / span if span > 0 else 0.0
+    metrics = compute_metrics(converted, [], periods, start)
+    keys = ("total_return_pct", "cagr_pct", "sharpe", "sortino", "volatility_pct",
+            "max_drawdown_pct")
+    return {key: metrics.get(key) for key in keys}
 
 
 def record_signals(data, markets, factory, config=None, trade_from=None):

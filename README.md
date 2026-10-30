@@ -154,6 +154,11 @@ Multi-Market Portfolio (manual)" workflow runs this on GitHub.
 Leverage in single-market runs: `--leverage 3` (risk-engine cap
 `--max-leverage`). Losses scale with leverage; an account can be wiped out.
 
+Prices are in USD. `--base-currency EUR` (default in `portfolio.yml`) also
+reports every strategy and the basket as a EUR investor sees them,
+unhedged: the USD equity curve is converted at each date's EURUSD close,
+so a falling dollar lowers the result. It needs `EURUSD.csv` (forex class).
+
 ## Paper-trading engine
 
 `paper_engine.PaperEngine` keeps a virtual account in one SQLite file

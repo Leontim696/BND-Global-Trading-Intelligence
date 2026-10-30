@@ -271,6 +271,18 @@ def _portfolio_lines(report: dict) -> list[str]:
         f"{_fmt(basket.get('max_drawdown_pct'), '%')} | {_fmt(basket.get('avg_gross_leverage'), 'x')} | "
         f"{basket.get('fills')} | – | – | – |"
     )
+    currency = report.get("base_currency")
+    if currency and currency != "USD":
+        lines += ["", f"**In {currency}, unhedged** (a {currency} investor; dollar moves included):",
+                  "", "| Strategy | Return | CAGR | Sharpe | Max drawdown |",
+                  "| --- | ---: | ---: | ---: | ---: |"]
+        rows = [(row["strategy"], row.get("out_of_sample_base_currency") or {})
+                for row in report.get("ranking", [])]
+        rows.append(("equal-weight basket",
+                     report.get("equal_weight_basket_out_of_sample_base_currency") or {}))
+        lines += [f"| {name} | {_fmt(m.get('total_return_pct'), '%')} | {_fmt(m.get('cagr_pct'), '%')} "
+                  f"| {_fmt(m.get('sharpe'))} | {_fmt(m.get('max_drawdown_pct'), '%')} |"
+                  for name, m in rows]
     diagnostics = report.get("data_diagnostics", [])
     if diagnostics:
         lines += ["", "**Largest daily moves (check for bad data):** " + ", ".join(
