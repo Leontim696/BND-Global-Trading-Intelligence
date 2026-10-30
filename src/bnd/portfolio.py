@@ -193,6 +193,15 @@ def target_weights(books, config: PortfolioConfig, recent_times) -> dict:
     return {name: weight * scale for name, weight in weights.items()}
 
 
+def strategy_for(factory, market):
+    """A new strategy for ``market``.
+
+    Factories marked ``per_market = True`` receive the market, so a
+    cross-sectional strategy can look up its own row in a shared ranking.
+    """
+    return factory(market) if getattr(factory, "per_market", False) else factory()
+
+
 def run_portfolio(
     data: Mapping[str, Sequence[Candle]],
     markets: Sequence[Market],
@@ -215,7 +224,7 @@ def run_portfolio(
         if len(candles) < 2:
             raise ValueError(f"Not enough candles for {market.name}")
         validate_series(candles)
-        book = _Book(market, candles, factory())
+        book = _Book(market, candles, strategy_for(factory, market))
         book.by_time = {c.open_time: i for i, c in enumerate(candles)}
         book.vols = _volatility_by_end(candles, config.vol_lookback)
         book.returns = {
@@ -415,7 +424,7 @@ def record_signals(data, markets, factory, config=None, trade_from=None):
 
     def recording_factory():
         market = next(order)
-        strategy, record = factory(), []
+        strategy, record = strategy_for(factory, market), []
         signals[market.name] = record
 
         def wrapped(history):

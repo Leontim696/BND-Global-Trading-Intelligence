@@ -173,6 +173,13 @@ followed; if none scored above `min_score` (default 0) the market stays
 flat until the next choice. Members default to `regime_switch, momentum,
 sma_crossover, donchian_breakout, bollinger_reversion, rsi_reversion`.
 
+`--strategy cross_momentum` ranks markets against each other: each day
+every market is scored by its return over `lookback` candles (default
+252) skipping the last `skip` (21); the top `fraction` (1/3) is long, the
+bottom short, the rest flat. The ranking for a date uses only candles of
+earlier dates, because markets close at different hours. Also in the
+paper runner and in `--strategy all`.
+
 ## Paper-trading engine
 
 `paper_engine.PaperEngine` keeps a virtual account in one SQLite file
