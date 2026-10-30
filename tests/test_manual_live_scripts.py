@@ -79,8 +79,11 @@ def test_review_prompt_uses_real_newlines(review_env, monkeypatch):
 
     manual_live_review.main()
 
-    assert "\\n" not in prompts[1]
+    # GPT proposal, Claude critique, GPT revision.
+    assert len(prompts) == 3
+    assert all("\\n" not in prompt for prompt in prompts)
     assert "\nOriginal task: " in prompts[1]
+    assert "\nClaude critique: " in prompts[2]
 
 
 def test_review_call_rejects_missing_content(review_env, monkeypatch):
