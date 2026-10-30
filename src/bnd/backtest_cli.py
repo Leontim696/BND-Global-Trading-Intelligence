@@ -10,9 +10,11 @@ reported separately for the in-sample and out-of-sample periods.
 """
 
 import argparse
+import hashlib
 import json
 import sys
 from datetime import datetime, timezone
+from pathlib import Path
 
 from .backtester import (
     BacktestConfig,
@@ -32,7 +34,23 @@ from .market_data import (
 from .quant_backtest import BacktestConfig as QuantConfig
 from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
+from .robustness import (
+    cost_stress,
+    parameter_grid,
+    parameter_sets,
+    parse_range,
+    permutation_test,
+    record_targets,
+    select_in_sample,
+    summarize_grid,
+)
 from .strategies import STRATEGIES, buy_and_hold
+
+# Strategy parameters swept by `robustness`, as (option, factory argument).
+SWEEP_PARAMS = {
+    "sma_crossover": (("fast", "fast"), ("slow", "slow")),
+    "donchian_breakout": (("entry", "entry"), ("exit", "exit")),
+}
 
 SUMMARY_KEYS = (
     "total_return_pct",
@@ -44,6 +62,8 @@ SUMMARY_KEYS = (
     "profit_factor",
     "total_fees",
     "rejected_entries",
+    "time_in_market_pct",
+    "avg_capital_exposure_pct",
     "risk_gate",
 )
 
@@ -86,7 +106,12 @@ def command_fetch(args) -> int:
     return 0
 
 
-def command_run(args) -> int:
+def _sha256(path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def _load_checked(args):
+    """Load candles, enforce --require-continuous, describe the dataset."""
     candles = load_csv(args.data)
     gaps = find_gaps(candles)
     if gaps and args.require_continuous:
@@ -94,7 +119,22 @@ def command_run(args) -> int:
             f"{len(gaps)} gaps in data; first after "
             + gaps[0][0].isoformat()
         )
+    dataset = {
+        "data": args.data,
+        "sha256": _sha256(args.data),
+        "candles": len(candles),
+        "first_candle": candles[0].open_time.isoformat(),
+        "last_candle": candles[-1].open_time.isoformat(),
+        "data_gaps": len(gaps),
+        "first_gaps": [
+            [before.isoformat(), after.isoformat()] for before, after in gaps[:5]
+        ],
+    }
+    return candles, dataset
 
+
+def _build_configs(args):
+    """Strategy and benchmark configs shared by `run` and `robustness`."""
     # Fail closed: running without the risk engine must be explicit.
     if args.risk_per_trade is None and not args.no_risk_gate:
         raise ValueError(
@@ -123,6 +163,12 @@ def command_run(args) -> int:
     benchmark_config = BacktestConfig(
         initial_equity=args.equity, costs=config.costs
     )
+    return config, benchmark_config
+
+
+def command_run(args) -> int:
+    candles, dataset = _load_checked(args)
+    config, benchmark_config = _build_configs(args)
 
     # (candles, first traded index). Out-of-sample trading starts at the
     # split, but strategies warm up on the preceding in-sample candles.
@@ -133,14 +179,8 @@ def command_run(args) -> int:
         periods["out_of_sample"] = (candles, cut)
 
     report = {
-        "data": args.data,
-        "first_candle": candles[0].open_time.isoformat(),
-        "last_candle": candles[-1].open_time.isoformat(),
+        **dataset,
         "strategy": args.strategy,
-        "data_gaps": len(gaps),
-        "first_gaps": [
-            [before.isoformat(), after.isoformat()] for before, after in gaps[:5]
-        ],
         "periods": {},
     }
 
@@ -163,10 +203,7 @@ def command_run(args) -> int:
 
 def command_walk_forward(args) -> int:
     """Independent train/test folds for a fixed SMA window (long/flat)."""
-    candles = load_csv(args.data)
-    gaps = find_gaps(candles)
-    if gaps and args.require_continuous:
-        raise MarketDataError(f"{len(gaps)} gaps in data")
+    candles, dataset = _load_checked(args)
 
     report = evaluate_sma_report(
         to_bars(candles),
@@ -182,9 +219,80 @@ def command_walk_forward(args) -> int:
         for key in ("train_start", "train_end", "test_start"):
             fold[key + "_time"] = candles[fold[key]].open_time.isoformat()
         fold["test_end_time"] = candles[fold["test_end"] - 1].open_time.isoformat()
-    report["data"] = args.data
-    report["data_gaps"] = len(gaps)
+    report["dataset"] = dataset
     print(json.dumps(report, indent=2))
+    return 0
+
+
+def _rounded(value):
+    if isinstance(value, float):
+        return round(value, 4)
+    if isinstance(value, dict):
+        return {key: _rounded(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_rounded(item) for item in value]
+    return value
+
+
+def command_robustness(args) -> int:
+    """Parameter grid, in-sample selection, permutation and cost stress."""
+    if args.strategy not in SWEEP_PARAMS:
+        raise ValueError("Robustness needs a strategy with parameters")
+
+    candles, dataset = _load_checked(args)
+    config, benchmark_config = _build_configs(args)
+    cut = split_index(len(candles), args.in_sample)
+    factory = STRATEGIES[args.strategy]
+    ranges = {
+        name: parse_range(getattr(args, option + "_range"))
+        for option, name in SWEEP_PARAMS[args.strategy]
+    }
+    params = parameter_sets(**ranges)
+
+    periods = {
+        "in_sample": (candles[:cut], 0),
+        "out_of_sample": (candles, cut),
+    }
+    grids, summaries = {}, {}
+    for name, (period, trade_from) in periods.items():
+        benchmark = run_backtest(
+            period, buy_and_hold(), benchmark_config, trade_from
+        ).metrics["total_return_pct"]
+        grids[name] = parameter_grid(period, factory, params, config, trade_from)
+        summaries[name] = summarize_grid(grids[name], benchmark)
+
+    selection = select_in_sample(grids["in_sample"], grids["out_of_sample"])
+    chosen = selection["params"]
+
+    # Judge the in-sample choice on unseen data only.
+    _, targets = record_targets(candles, factory(**chosen), config, cut)
+    permutation = permutation_test(
+        candles, targets, config, cut, args.permutations, args.seed
+    )
+    stress = cost_stress(
+        candles, lambda: factory(**chosen), config, trade_from=cut
+    )
+
+    report = {
+        **dataset,
+        "strategy": args.strategy,
+        "risk_gate": (
+            "enforced" if config.risk_limits is not None
+            else "disabled_research_only"
+        ),
+        "out_of_sample_start": candles[cut].open_time.isoformat(),
+        "grid_summary": summaries,
+        "in_sample_selection": selection,
+        "permutation_test_out_of_sample": permutation,
+        "cost_stress_out_of_sample": stress,
+        "grid": grids if args.full_grid else None,
+        "note": (
+            "Parameters are chosen on in-sample data only. A p_value above "
+            "0.05 means the real timing is not distinguishable from shuffled "
+            "timing of the same positions. No profitability is implied."
+        ),
+    }
+    print(json.dumps(_rounded(report), indent=2))
     return 0
 
 
@@ -200,33 +308,50 @@ def build_parser() -> argparse.ArgumentParser:
     fetch.add_argument("--out", required=True)
     fetch.set_defaults(handler=command_fetch)
 
-    run = sub.add_parser("run", help="Backtest a strategy on a CSV file")
-    run.add_argument("--data", required=True)
-    run.add_argument("--strategy", choices=sorted(STRATEGIES),
-                     default="sma_crossover")
-    run.add_argument("--fast", type=int, default=20)
-    run.add_argument("--slow", type=int, default=50)
-    run.add_argument("--entry", type=int, default=55)
-    run.add_argument("--exit", type=int, default=20)
-    run.add_argument("--equity", type=float, default=10_000.0)
-    run.add_argument("--fee", type=float, default=0.10,
-                     help="percent per fill")
-    run.add_argument("--slippage", type=float, default=0.05,
-                     help="percent per fill")
-    run.add_argument("--allocation", type=float, default=100.0)
-    run.add_argument("--stop-loss", type=float)
-    run.add_argument("--allow-short", action="store_true")
-    run.add_argument("--risk-per-trade", type=float,
-                     help="percent of equity; enables risk-engine sizing")
-    run.add_argument("--max-daily-loss", type=float, default=3.0)
-    run.add_argument("--max-drawdown", type=float, default=25.0)
-    run.add_argument("--no-risk-gate", action="store_true",
-                     help="research only: run without risk-engine sizing")
-    run.add_argument("--require-continuous", action="store_true",
-                     help="fail if candles are missing")
-    run.add_argument("--in-sample", type=float, default=70.0,
-                     help="percent of data for in-sample; the rest is out-of-sample")
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument("--data", required=True)
+    common.add_argument("--strategy", choices=sorted(STRATEGIES),
+                        default="sma_crossover")
+    common.add_argument("--fast", type=int, default=20)
+    common.add_argument("--slow", type=int, default=50)
+    common.add_argument("--entry", type=int, default=55)
+    common.add_argument("--exit", type=int, default=20)
+    common.add_argument("--equity", type=float, default=10_000.0)
+    common.add_argument("--fee", type=float, default=0.10,
+                        help="percent per fill")
+    common.add_argument("--slippage", type=float, default=0.05,
+                        help="percent per fill")
+    common.add_argument("--allocation", type=float, default=100.0)
+    common.add_argument("--stop-loss", type=float)
+    common.add_argument("--allow-short", action="store_true")
+    common.add_argument("--risk-per-trade", type=float,
+                        help="percent of equity; enables risk-engine sizing")
+    common.add_argument("--max-daily-loss", type=float, default=3.0)
+    common.add_argument("--max-drawdown", type=float, default=25.0)
+    common.add_argument("--no-risk-gate", action="store_true",
+                        help="research only: run without risk-engine sizing")
+    common.add_argument("--require-continuous", action="store_true",
+                        help="fail if candles are missing")
+    common.add_argument("--in-sample", type=float, default=70.0,
+                        help="percent of data for in-sample; the rest is out-of-sample")
+
+    run = sub.add_parser("run", parents=[common],
+                         help="Backtest a strategy on a CSV file")
     run.set_defaults(handler=command_run)
+
+    robust = sub.add_parser(
+        "robustness", parents=[common],
+        help="Parameter grid, permutation test and cost stress",
+    )
+    robust.add_argument("--fast-range", default="10:50:10")
+    robust.add_argument("--slow-range", default="50:200:25")
+    robust.add_argument("--entry-range", default="20:100:20")
+    robust.add_argument("--exit-range", default="10:50:10")
+    robust.add_argument("--permutations", type=int, default=200)
+    robust.add_argument("--seed", type=int, default=7)
+    robust.add_argument("--full-grid", action="store_true",
+                        help="include every grid row in the report")
+    robust.set_defaults(handler=command_robustness)
 
     walk = sub.add_parser(
         "walk-forward",

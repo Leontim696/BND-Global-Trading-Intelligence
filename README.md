@@ -48,7 +48,23 @@ python -m src.bnd.backtest_cli run --data data/BTCUSDT-4h.csv \
     --strategy sma_crossover --stop-loss 5 --risk-per-trade 1
 python -m src.bnd.backtest_cli walk-forward --data data/BTCUSDT-4h.csv \
     --window 50 --train 1000 --test 500
+python -m src.bnd.backtest_cli robustness --data data/BTCUSDT-4h.csv \
+    --strategy sma_crossover --stop-loss 5 --risk-per-trade 1
 ```
+
+`robustness` asks whether a result is an edge or luck:
+- **Parameter grid:** every combination (`--fast-range 10:50:10 --slow-range 50:200:25`);
+  a lone good setting among poor neighbours is overfitting.
+- **In-sample selection:** parameters are chosen on the first 70% only, then
+  ranked on the unseen 30%.
+- **Permutation test:** the same positions and holding periods, shuffled in
+  time 200 times. A `p_value` above 0.05 means the timing is indistinguishable
+  from luck.
+- **Cost stress:** fees and slippage ×1, ×2, ×3.
+
+Reports include the dataset SHA-256 and exposure (`time_in_market_pct`,
+`avg_capital_exposure_pct`): beating buy-and-hold in a falling market with
+little capital invested is not evidence of an edge.
 
 Decisions use only past candles and fill at the next open, paying fees
 and slippage (defaults: 0.10% and 0.05% per fill). Each report compares

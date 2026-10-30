@@ -385,3 +385,27 @@ def test_wiped_out_account_rejects_entry_instead_of_crashing():
 
     assert result.trades[0].exit_reason == "stop_loss"
     assert result.metrics["final_equity"] <= 0
+
+
+def test_exposure_metrics():
+    candles = bars([100, 100, 100, 100, 100])
+    # Long for bars 1-2 at full allocation, then flat.
+    result = run_backtest(candles, fixed(1, 1, 0, 0, 0),
+                          BacktestConfig(costs=NO_COSTS))
+
+    assert result.metrics["time_in_market_pct"] == pytest.approx(40.0)
+    assert result.metrics["avg_capital_exposure_pct"] == pytest.approx(40.0)
+
+
+def test_risk_sizing_shows_low_capital_exposure():
+    candles = bars([100] * 5)
+    config = BacktestConfig(
+        costs=NO_COSTS,
+        stop_loss_pct=5.0,
+        risk_limits=RiskLimits(1.0, 3.0, 25.0, 100.0, 1.0),
+    )
+
+    result = run_backtest(candles, buy_and_hold(), config)
+
+    # 1% risk / 5% stop -> 20% of equity invested on 4 of 5 bars.
+    assert result.metrics["avg_capital_exposure_pct"] == pytest.approx(16.0)

@@ -31,7 +31,7 @@ permissions:
 jobs:
   backtest:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     env:
       # Public market data only: no API keys, no paid AI, no orders.
       # Flags read by the code; live and paid AI stay off.
@@ -65,6 +65,14 @@ jobs:
           python -m src.bnd.backtest_cli walk-forward \
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
             | tee backtest-reports/walk-forward.json
+      - name: Robustness (parameter grid, permutation test, cost stress)
+        if: inputs.strategy != 'buy_and_hold'
+        run: |
+          set -o pipefail
+          python -m src.bnd.backtest_cli robustness \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            --strategy "$STRATEGY" $EXTRA_ARGS \
+            | tee backtest-reports/robustness.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

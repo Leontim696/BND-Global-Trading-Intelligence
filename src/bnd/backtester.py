@@ -332,6 +332,8 @@ def run_backtest(
     # After a stop-out, wait for the strategy to change its mind
     # before re-entering in the same direction.
     blocked_side = 0
+    bars_in_market = 0
+    capital_exposure = 0.0
 
     for index, candle in enumerate(candles):
         if index < trade_from:
@@ -363,6 +365,11 @@ def run_backtest(
         sim.last_mark = equity
         equity_curve.append((candle.open_time, equity))
 
+        if sim.side != 0:
+            bars_in_market += 1
+            if equity > 0:
+                capital_exposure += abs(sim.quantity * candle.close) / equity
+
         if equity <= 0:
             break
 
@@ -382,6 +389,11 @@ def run_backtest(
         config.initial_equity,
     )
     metrics["rejected_entries"] = sim.rejected_entries
+    # Low exposure makes "beats buy-and-hold" in a falling market cheap.
+    metrics["time_in_market_pct"] = 100 * bars_in_market / len(equity_curve)
+    metrics["avg_capital_exposure_pct"] = (
+        100 * capital_exposure / len(equity_curve)
+    )
     metrics["risk_gate"] = (
         "enforced" if config.risk_limits is not None
         else "disabled_research_only"
