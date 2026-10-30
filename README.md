@@ -135,6 +135,22 @@ Multi-Market Portfolio (manual)" workflow runs this on GitHub.
 Leverage in single-market runs: `--leverage 3` (risk-engine cap
 `--max-leverage`). Losses scale with leverage; an account can be wiped out.
 
+## Paper-trading engine
+
+`paper_engine.PaperEngine` keeps a virtual account in one SQLite file
+(`PaperEngine.create(path, capital)` once, `PaperEngine.open(path)` after a
+restart). Every bar (`on_bar`) and order (`submit_order`) is one
+transaction. Orders: market or limit, stop-loss, take-profit, trailing
+stop, reduce-only, partial fills capped by bar volume, expiry. The client
+order id makes resubmission idempotent. Mandatory checks on every opening
+order, at submission and again at fill: kill switch, known instrument,
+fresh data, no extreme gap, protective stop, per-instrument and per-sector
+exposure, risk per trade, daily loss, drawdown and gross leverage. The
+kill switch (daily loss, drawdown or margin below maintenance) closes
+everything, survives restarts and needs `reset_kill_switch("RESET-KILL-SWITCH")`.
+An unexpected error rolls the bar back and trips it. `TradingMode.LIVE`
+is refused: no real orders exist in this system.
+
 ## Paid API calls
 
 All OpenRouter calls are opt-in. The workflows under `.github/workflows`
