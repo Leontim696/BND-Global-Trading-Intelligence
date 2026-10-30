@@ -19,7 +19,7 @@ on:
         description: 'Strategy (all = compare every strategy)'
         default: 'all'
         type: choice
-        options: [all, sma_crossover, ema_crossover, macd, donchian_breakout, momentum, rsi_reversion, bollinger_reversion, volatility_target, buy_and_hold]
+        options: [all, sma_crossover, ema_crossover, macd, adx_trend, donchian_breakout, keltner_breakout, momentum, rsi_reversion, bollinger_reversion, stochastic_reversion, volatility_target, regime_switch, buy_and_hold]
       extra_args:
         description: 'Extra run arguments, e.g. --stop-loss 5 --risk-per-trade 1 (volatility_target long/short: --no-risk-gate --trend 1200 --long-short --cash-rate 4)'
         default: '--stop-loss 5 --risk-per-trade 1'
@@ -92,13 +92,22 @@ jobs:
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
             --strategy "$STRATEGY" $EXTRA_ARGS \
             | tee backtest-reports/robustness.json
+      - name: Walk-forward optimisation (parameters chosen on past data only)
+        if: inputs.strategy != 'buy_and_hold' && inputs.strategy != 'all'
+        run: |
+          set -o pipefail
+          # shellcheck disable=SC2086  # EXTRA_ARGS splits on purpose
+          python -m src.bnd.backtest_cli walk-forward-opt \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            --strategy "$STRATEGY" $EXTRA_ARGS \
+            | tee backtest-reports/walk-forward-opt.json
       - name: Job summary
         if: always()
         run: |
           mkdir -p backtest-reports
           # Pass only the reports this run produced.
           args=()
-          for pair in run:report walk-forward:walk-forward robustness:robustness compare:compare; do
+          for pair in run:report walk-forward:walk-forward robustness:robustness compare:compare walk-forward-opt:walk-forward-opt; do
             file="backtest-reports/${pair#*:}.json"
             if [ -f "$file" ]; then args+=("--${pair%%:*}" "$file"); fi
           done

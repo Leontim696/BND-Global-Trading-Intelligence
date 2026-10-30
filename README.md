@@ -11,7 +11,7 @@ are ever placed.
 | `debate_engine` | Structured debate rounds; every agent must argue and respond before closing |
 | `risk_engine` | Deterministic veto: leverage, daily loss, drawdown, exposure and per-trade risk limits |
 | `trade_coordinator` | Combines a closed debate with risk checks into a paper-trade outcome |
-| `ai_gateway` | Provider routing with budget reservations (MOCK mode only) |
+| `ai_gateway`, `council_runner` | Provider routing with budget reservations; parallel five-agent rounds with retries, failover and per-round budgets; LIVE only with explicit authorisation |
 | `openrouter_adapter` | Opt-in OpenRouter client returning validated BUY/SELL/HOLD analyses |
 | `cost_tracker`, `cost_storage` | In-memory and SQLite token-cost accounting with daily/monthly budgets |
 | `market_data` | Validated OHLCV candles, CSV storage, Binance (crypto) and Yahoo Finance (forex, futures, indices, stocks) downloads with data-quality reports |
@@ -26,8 +26,11 @@ are ever placed.
 `market_data.Candle` is the canonical data format; `market_data.to_bars`
 adapts it for the `quant_*` modules.
 
-Not yet implemented: walk-forward optimisation, AI-agent strategies in
-backtests, and LIVE gateway mode.
+Also: `decision_rules` (majority, weighted, unanimity, HOLD on
+uncertainty), `paper_engine` (persistent virtual account), `signal_pipeline`
+(council decision → virtual order), `walk_forward` (re-optimisation).
+Not yet implemented: AI-agent strategies in backtests and a real five-agent
+paid round (needs authorisation).
 
 ## Quick start
 
@@ -51,7 +54,15 @@ python -m src.bnd.backtest_cli walk-forward --data data/BTCUSDT-4h.csv \
     --window 50 --train 1000 --test 500
 python -m src.bnd.backtest_cli robustness --data data/BTCUSDT-4h.csv \
     --strategy sma_crossover --stop-loss 5 --risk-per-trade 1
+python -m src.bnd.backtest_cli walk-forward-opt --data data/BTCUSDT-4h.csv \
+    --strategy sma_crossover --no-risk-gate --train 1000 --test 250 --mode rolling
 ```
+
+`walk-forward-opt` re-chooses parameters on each training window only and
+trades the next window after an `--embargo`; test windows are chained
+into one out-of-sample record. It reports parameter stability and the
+gap between train and test Sharpe (overfitting), and compares the record
+with and without switching the strategy off after poor recent folds.
 
 Strategies return a target exposure in [-1, 1]; fractions such as 0.6
 hold 60% of the allocation, and positions are resized only when the
@@ -137,7 +148,7 @@ kill switch (`--max-drawdown`, default 30%) closes everything and stops
 trading. Reports compare each strategy with an equal-weight long basket
 (1x), sweep leverage (1x, 2x, 3x, 5x) and stress costs. Caveats: Yahoo
 futures (`=F`) are not roll-adjusted, indices stand in for futures/CFDs,
-and there is no permutation test for portfolios yet. The "BND
+and portfolio p-values compare strategies on one dataset only. The "BND
 Multi-Market Portfolio (manual)" workflow runs this on GitHub.
 
 Leverage in single-market runs: `--leverage 3` (risk-engine cap

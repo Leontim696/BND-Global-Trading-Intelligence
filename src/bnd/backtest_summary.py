@@ -321,12 +321,30 @@ def portfolio_verdict(report: dict) -> str:
             "diversification and leverage, not from choosing when to trade.")
 
 
+def _optimisation_lines(report: dict) -> list[str]:
+    summary = report.get("summary", {})
+    return [
+        f"## Walk-forward optimisation ({report.get('mode')}, train {report.get('train')}, "
+        f"test {report.get('test')}, embargo {report.get('embargo')})",
+        f"- Folds: {summary.get('fold_count')}, profitable: {summary.get('positive_folds')}",
+        f"- Chained out-of-sample return: {_fmt(summary.get('chained_test_return_pct'), '%')}; "
+        f"with switch-off after poor folds: "
+        f"{_fmt(summary.get('chained_return_with_switch_off_pct'), '%')} "
+        f"({summary.get('folds_switched_off')} folds skipped)",
+        f"- Mean Sharpe: train {_fmt(summary.get('mean_train_sharpe'))} vs test "
+        f"{_fmt(summary.get('mean_test_sharpe'))} (a large gap means overfitting)",
+        f"- Parameter change rate {_fmt(summary.get('parameter_change_rate'))}, "
+        f"{summary.get('distinct_parameter_sets')} distinct sets",
+        "",
+    ]
+
+
 def build_summary(run=None, walk_forward=None, robustness=None, compare=None,
-                  portfolio=None) -> str:
+                  portfolio=None, optimisation=None) -> str:
     reports, problems = {}, []
     for name, path in (("run", run), ("walk_forward", walk_forward),
                        ("robustness", robustness), ("compare", compare),
-                       ("portfolio", portfolio)):
+                       ("portfolio", portfolio), ("optimisation", optimisation)):
         data, error = _load(path)
         reports[name] = data
         if error:
@@ -353,6 +371,8 @@ def build_summary(run=None, walk_forward=None, robustness=None, compare=None,
         lines += _walk_forward_lines(reports["walk_forward"])
     if reports["robustness"]:
         lines += _robustness_lines(reports["robustness"])
+    if reports["optimisation"]:
+        lines += _optimisation_lines(reports["optimisation"])
     if problems:
         lines += ["## Missing reports"] + [f"- {p}" for p in problems] + [""]
     lines.append("_Paper research only. Past results do not predict future returns._")
@@ -366,9 +386,10 @@ def main(argv=None) -> int:
     parser.add_argument("--robustness")
     parser.add_argument("--compare")
     parser.add_argument("--portfolio")
+    parser.add_argument("--walk-forward-opt")
     args = parser.parse_args(argv)
     sys.stdout.write(build_summary(args.run, args.walk_forward, args.robustness,
-                                   args.compare, args.portfolio))
+                                   args.compare, args.portfolio, args.walk_forward_opt))
     return 0
 
 

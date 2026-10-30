@@ -57,6 +57,7 @@ from .robustness import (
 )
 from .strategies import STRATEGIES, SWEEP_RANGES, buy_and_hold
 from .universe import select as select_markets
+from .walk_forward import walk_forward
 
 # Older dedicated options, kept working: (strategy, option, parameter).
 LEGACY_PARAMS = (
@@ -400,6 +401,36 @@ def command_robustness(args) -> int:
     return 0
 
 
+def _sweep(args):
+    """Parameter ranges (defaults, legacy options, --range) and fixed params."""
+    if args.strategy not in SWEEP_RANGES:
+        raise ValueError("This command needs a strategy with parameters")
+    texts = dict(SWEEP_RANGES[args.strategy])
+    for name, option in LEGACY_RANGES.get(args.strategy, {}).items():
+        if hasattr(args, option):
+            texts[name] = getattr(args, option)
+    texts.update(_pairs(getattr(args, "range", None), "--range"))
+    ranges = {name: parse_range(text) for name, text in texts.items()}
+    fixed = {k: v for k, v in _strategy_params(args).items() if k not in ranges}
+    return ranges, fixed
+
+
+def command_walk_forward_opt(args) -> int:
+    """Re-optimise on each training window; trade the next unseen window."""
+    candles, dataset = _load_checked(args)
+    config, _ = _build_configs(args)
+    ranges, fixed = _sweep(args)
+    report = walk_forward(
+        candles, _factory(args.strategy, fixed), parameter_sets(**ranges), config,
+        train=args.train, test=args.test, embargo=args.embargo, mode=args.mode,
+        disable_below=None if args.no_switch_off else args.disable_below,
+        disable_after=args.disable_after,
+    )
+    report.update(dataset=dataset, strategy=args.strategy)
+    print(json.dumps(_rounded(report), indent=2))
+    return 0
+
+
 def command_compare(args) -> int:
     """Run every strategy with default parameters and rank them on
     out-of-sample Sharpe, each with its own permutation test."""
@@ -722,6 +753,20 @@ def build_parser() -> argparse.ArgumentParser:
     robust.add_argument("--full-grid", action="store_true",
                         help="include every grid row in the report")
     robust.set_defaults(handler=command_robustness)
+
+    wfo = sub.add_parser("walk-forward-opt", parents=[common],
+                         help="Rolling/expanding re-optimisation with unseen test windows")
+    wfo.add_argument("--range", action="append", metavar="NAME=START:STOP:STEP")
+    wfo.add_argument("--train", type=int, default=1000)
+    wfo.add_argument("--test", type=int, default=250)
+    wfo.add_argument("--embargo", type=int, default=5,
+                     help="candles skipped between training and testing")
+    wfo.add_argument("--mode", choices=["rolling", "expanding"], default="rolling")
+    wfo.add_argument("--disable-below", type=float, default=0.0,
+                     help="switch off after the last folds' mean Sharpe falls below this")
+    wfo.add_argument("--disable-after", type=int, default=2)
+    wfo.add_argument("--no-switch-off", action="store_true")
+    wfo.set_defaults(handler=command_walk_forward_opt)
 
     compare = sub.add_parser(
         "compare", parents=[common],
