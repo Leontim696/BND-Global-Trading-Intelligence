@@ -58,6 +58,38 @@ def configuration():
         raise ValueError("Missing OpenRouter API key")
     return models, run, per, key
 
+
+def source_excerpt(path, limit=1800):
+    """Backward-compatible excerpt helper for existing regression tests."""
+    content = Path(path).read_text(encoding="utf-8", errors="replace")
+    return {"path": str(path), "excerpt": content[:limit],
+            "truncated": len(content) > limit, "total_chars": len(content)}
+
+def validated_proposal(payload):
+    """Legacy structural validator; live execution uses stricter proposal()."""
+    if not isinstance(payload, dict):
+        raise ValueError("Invalid response")
+    choices = payload.get("choices")
+    if not isinstance(choices, list) or not choices or not isinstance(choices[0], dict):
+        raise ValueError("Missing choices")
+    choice = choices[0]
+    if choice.get("finish_reason") == "length":
+        raise ValueError("Truncated response")
+    message = choice.get("message")
+    raw = message.get("content") if isinstance(message, dict) else None
+    if not isinstance(raw, str) or not raw.strip() or len(raw) > 6000:
+        raise ValueError("Empty response")
+    cleaned = raw.strip()
+    if cleaned.startswith("```"):
+        lines = cleaned.splitlines()
+        if len(lines) < 3 or lines[0].strip().lower() not in ("```", "```json") or lines[-1].strip() != "```":
+            raise ValueError("Malformed fence")
+        cleaned = "\n".join(lines[1:-1]).strip()
+    obj = json.loads(cleaned)
+    if not isinstance(obj, dict):
+        raise ValueError("Expected JSON object")
+    return raw.strip()
+
 def sources():
     files = sorted(Path("src").rglob("*.py"))
     included, omitted, truncated = [], [], []
