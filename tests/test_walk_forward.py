@@ -70,6 +70,10 @@ def test_trend_rewards_trend_parameters_and_reports_stability():
     assert summary["positive_folds"] >= 3
     assert 0 <= summary["parameter_change_rate"] <= 1
     assert summary["chained_test_return_pct"] > 0
+    # Buy-and-hold on the same windows is reported for comparison.
+    assert summary["chained_buy_and_hold_return_pct"] > 0
+    assert 0 <= summary["folds_beating_buy_and_hold"] <= summary["fold_count"]
+    assert all("buy_and_hold_return_pct" in row for row in report["folds"])
 
 
 def test_switch_off_after_poor_folds():

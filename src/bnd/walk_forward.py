@@ -19,6 +19,7 @@ from typing import Callable, Sequence
 from .backtester import BacktestConfig, run_backtest
 from .market_data import Candle
 from .robustness import parameter_grid
+from .strategies import buy_and_hold
 
 
 def folds(length: int, train: int, test: int, embargo: int = 0,
@@ -66,6 +67,11 @@ def walk_forward(
         window = candles[train_start:test_end]
         result = run_backtest(window, factory(**best["params"]), config,
                               trade_from=test_start - train_start)
+        # Same window, same costs, no risk gate: the bar to beat.
+        benchmark = run_backtest(window, buy_and_hold(),
+                                 BacktestConfig(initial_equity=config.initial_equity,
+                                                costs=config.costs),
+                                 trade_from=test_start - train_start)
         rows.append({
             "train": [candles[train_start].open_time.isoformat(),
                       candles[train_end - 1].open_time.isoformat()],
@@ -77,6 +83,8 @@ def walk_forward(
             "test_sharpe": result.metrics["sharpe"],
             "test_max_drawdown_pct": result.metrics["max_drawdown_pct"],
             "test_trades": result.metrics["trades"],
+            "buy_and_hold_return_pct": benchmark.metrics["total_return_pct"],
+            "buy_and_hold_sharpe": benchmark.metrics["sharpe"],
         })
 
     def chain(returns):
@@ -106,6 +114,9 @@ def walk_forward(
             "fold_count": len(rows),
             "chained_test_return_pct": chain(r["test_return_pct"] for r in rows),
             "chained_return_with_switch_off_pct": chain(active),
+            "chained_buy_and_hold_return_pct": chain(r["buy_and_hold_return_pct"] for r in rows),
+            "folds_beating_buy_and_hold": sum(
+                r["test_return_pct"] > r["buy_and_hold_return_pct"] for r in rows),
             "folds_switched_off": sum(r["switched_off"] for r in rows),
             "positive_folds": sum(r["test_return_pct"] > 0 for r in rows),
             "mean_test_sharpe": mean(sharpes) if sharpes else None,
