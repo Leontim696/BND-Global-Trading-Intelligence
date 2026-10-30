@@ -98,6 +98,32 @@ def coordinate_trade(
             "Missing trade proposal",
         )
 
+    # Fail closed if runtime wiring omits mandatory safety context.
+    # Static annotations do not protect callers from None or wrong types.
+    if not isinstance(limits, RiskLimits):
+        return TradeOutcome(
+            TradeStatus.REJECTED,
+            None,
+            0.0,
+            "Missing or invalid mandatory risk limits",
+        )
+
+    if not isinstance(portfolio, Portfolio):
+        return TradeOutcome(
+            TradeStatus.REJECTED,
+            None,
+            0.0,
+            "Missing or invalid portfolio risk state",
+        )
+
+    if not isinstance(proposal, TradeProposal):
+        return TradeOutcome(
+            TradeStatus.REJECTED,
+            None,
+            0.0,
+            "Invalid trade proposal",
+        )
+
     risk = evaluate_risk(portfolio, proposal, limits)
 
     if risk.decision == RiskDecision.REJECT:
