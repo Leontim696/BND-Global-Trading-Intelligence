@@ -1,4 +1,4 @@
-Latest run: `runs/2026-10-30T150707Z_41075049040_PORTFOLIO-etf_1d_all` (source 6c3a1eb, job success)
+Latest run: `runs/2026-10-30T153109Z_41078732998_PORTFOLIO-etf_1d_all` (source 14daa90, job success)
 
 # BND backtest summary
 
@@ -16,7 +16,7 @@ Latest run: `runs/2026-10-30T150707Z_41075049040_PORTFOLIO-etf_1d_all` (source 6
 | 2 | momentum | 47.33% | 8.47% | 0.64 | 23.61% | 2.78x | 1182 | 360.34 | – | 0.732 (1.000) |
 | 3 | bollinger_reversion | -1.55% | -0.33% | 0.06 | 27.82% | 2.42x | 3879 | 270.28 | – | 0.024 (0.268) |
 | 4 | ema_crossover | -2.71% | -0.58% | 0.03 | 28.13% | 2.77x | 1271 | 300.06 | – | 0.854 (1.000) |
-| 5 | donchian_breakout | -4.57% | -0.98% | -0.06 | 30.50% | 0.58x | 453 | 82.99 | 2023-05-24 | 1.000 (1.000) |
+| 5 | donchian_breakout | -4.40% | -0.94% | -0.06 | 30.38% | 0.58x | 454 | 82.95 | 2023-05-24 | 1.000 (1.000) |
 | 6 | sma_crossover | -9.81% | -2.15% | -0.20 | 30.10% | 0.68x | 348 | 86.19 | 2023-05-24 | 0.976 (1.000) |
 | 7 | keltner_breakout | -12.86% | -2.85% | -0.22 | 30.16% | 0.63x | 1082 | 96.29 | 2023-10-13 | 1.000 (1.000) |
 | 8 | adx_trend | -13.07% | -2.90% | -0.23 | 30.19% | 0.55x | 880 | 113.14 | 2023-08-23 | 0.902 (1.000) |
@@ -25,6 +25,6 @@ Latest run: `runs/2026-10-30T150707Z_41075049040_PORTFOLIO-etf_1d_all` (source 6
 | 11 | stochastic_reversion | -26.87% | -6.36% | -0.51 | 30.59% | 1.11x | 2180 | 124.49 | 2024-04-15 | 0.171 (1.000) |
 | – | equal-weight basket (long, 1x) | 48.80% | 8.70% | 0.84 | 17.10% | 0.95x | 49 | – | – | – |
 
-**Largest daily moves (check for bad data):** COPPER 49.9% on 2014-12-05 (5 days > 15%), ETHEREUM -42.3% on 2020-03-12 (35 days > 15%), BITCOIN -37.2% on 2020-03-12 (20 days > 15%), SILVER -28.5% on 2026-01-30 (2 days > 15%), CRUDE_OIL -25.3% on 2020-03-09 (5 days > 15%), NATURAL_GAS -24.9% on 2026-02-02 (7 days > 15%)
+**Largest daily moves (check for bad data):** ETHEREUM -42.3% on 2020-03-12 (35 days > 15%), BITCOIN -37.2% on 2020-03-12 (20 days > 15%), SILVER -28.5% on 2026-01-30 (2 days > 15%), CRUDE_OIL -25.3% on 2020-03-09 (5 days > 15%), NATURAL_GAS -24.9% on 2026-02-02 (7 days > 15%), COPPER -19.3% on 2025-07-30 (1 days > 15%)
 
 _Paper research only. Past results do not predict future returns._
