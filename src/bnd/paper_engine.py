@@ -56,6 +56,8 @@ class Instrument:
     carry_pct_annual: float = 0.0
     # Largest share of one bar's volume an order may take (None: no cap).
     max_participation: float | None = None
+    # Forex only: the pair as quoted, e.g. "EURUSD" (long = long EUR, short USD).
+    currency_pair: str = ""
 
     def __post_init__(self):
         if not self.symbol.strip() or not self.asset_class.strip():
@@ -65,6 +67,10 @@ class Instrument:
                 raise PaperEngineError("Costs must be finite and nonnegative")
         if self.max_participation is not None and not 0 < self.max_participation <= 1:
             raise PaperEngineError("max_participation must be in (0, 1]")
+        if self.currency_pair and not (len(self.currency_pair) == 6
+                                       and self.currency_pair.isalpha()
+                                       and self.currency_pair.isupper()):
+            raise PaperEngineError("currency_pair must look like EURUSD")
 
 
 @dataclass(frozen=True)
@@ -72,6 +78,7 @@ class EngineLimits:
     max_gross_leverage: float = 3.0
     max_position_pct: float = 100.0      # |position| / equity, per instrument
     max_sector_pct: float = 150.0        # |sector exposure| / equity
+    max_currency_pct: float = 100.0      # |net exposure to one currency| / equity
     max_daily_loss_pct: float = 5.0      # kill switch trigger
     max_drawdown_pct: float = 25.0       # kill switch trigger
     max_risk_per_trade_pct: float = 2.0  # loss at the stop, as % of equity
@@ -411,6 +418,17 @@ class PaperEngine:
         if sector_exposure / equity * 100 > limits.max_sector_pct + 1e-9:
             return f"Sector limit {limits.max_sector_pct}% of equity for {sector}"
 
+        if instrument.currency_pair:
+            before = self.currency_exposure()
+            now_exposure = self.currency_exposure({request.symbol: after * price})
+            for currency in _pair_currencies(instrument.currency_pair):
+                if currency == account["currency"]:
+                    continue
+                new = abs(now_exposure.get(currency, 0.0))
+                if (new / equity * 100 > limits.max_currency_pct + 1e-9
+                        and new > abs(before.get(currency, 0.0)) + 1e-9):
+                    return f"Currency limit {limits.max_currency_pct}% of equity for {currency}"
+
         increase = abs(after) - abs(held) if (after > 0) == (held > 0) or held == 0 else abs(after)
         gross_other = self.gross_exposure() - abs(held) * self._price(request.symbol)
         stop_distance = (abs(price - request.stop_loss) / price * 100
@@ -435,6 +453,24 @@ class PaperEngine:
             return (f"Risk engine allows at most {risk.approved_notional:.2f} notional; "
                     "resubmit a smaller order")
         return None
+
+    def currency_exposure(self, override: dict | None = None) -> dict:
+        """Net exposure per currency from forex positions, in account money.
+
+        A long EURUSD position worth N is +N EUR and -N USD. Other
+        instruments are treated as priced in the account currency.
+        ``override`` maps symbol -> signed value to use instead (what-if).
+        """
+        values = {p["symbol"]: p["quantity"] * self._price(p["symbol"]) for p in self.positions()}
+        values.update(override or {})
+        exposure: dict = {}
+        for symbol, value in values.items():
+            pair = self.instrument(symbol).currency_pair
+            if pair:
+                base, quote = _pair_currencies(pair)
+                exposure[base] = exposure.get(base, 0.0) + value
+                exposure[quote] = exposure.get(quote, 0.0) - value
+        return exposure
 
     def stress_test(self, shocks_pct: dict) -> dict:
         """Equity after instantaneous price shocks, without changing state."""
@@ -686,6 +722,10 @@ class PaperEngine:
                 self._db.execute("UPDATE orders SET status = 'CANCELLED', reason = ?"
                                  " WHERE client_order_id = ?", ("Kill switch", order["client_order_id"]))
         self._log("kill_switch", {"reason": reason}, time)
+
+
+def _pair_currencies(pair: str) -> tuple[str, str]:
+    return pair[:3], pair[3:]
 
 
 def _request_from(order: dict, quantity: float) -> OrderRequest:
