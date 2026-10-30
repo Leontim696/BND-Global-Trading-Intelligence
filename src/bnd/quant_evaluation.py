@@ -1,6 +1,5 @@
 """Offline strategy evaluation helpers; no market connectivity or trading."""
 import csv
-from math import isfinite
 from pathlib import Path
 
 from .quant_backtest import Bar, BacktestConfig, backtest, walk_forward_splits
@@ -54,8 +53,8 @@ def evaluate_sma_walk_forward(bars: list[Bar], window: int, train_size: int,
     Test fold starts at its first bar open using only preceding close signals.
     Never tune window on test results. Folds are independently funded.
     """
-    if window > train_size:
-        raise ValueError("SMA window exceeds available training history")
+    if type(window) is not int or window < 2 or window > train_size:
+        raise ValueError("SMA window must be an integer between 2 and train_size")
     folds = walk_forward_splits(len(bars), train_size, test_size)
     reports = []
     for train, test in folds:
