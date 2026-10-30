@@ -198,8 +198,10 @@ order id makes resubmission idempotent. Mandatory checks on every opening
 order, at submission and again at fill: kill switch, known instrument,
 fresh data, no extreme gap, protective stop, per-instrument and per-sector
 exposure, net exposure per currency (forex pairs count on both sides,
-so long EURUSD is long EUR and short USD), risk per trade, daily loss,
-drawdown and gross leverage. The
+so long EURUSD is long EUR and short USD), the whole book's volatility
+from recent joint returns (`max_portfolio_vol_pct`, default 40%/yr, so
+markets that move together count together; hedges are always allowed),
+risk per trade, daily loss, drawdown and gross leverage. The
 kill switch (daily loss, drawdown or margin below maintenance) closes
 everything (at today's price where it is known, otherwise with a
 reduce-only order at that market's next open, so a gap is not skipped),
