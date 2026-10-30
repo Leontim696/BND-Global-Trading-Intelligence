@@ -227,10 +227,85 @@ def _compare_lines(report: dict) -> list[str]:
     return lines + [""]
 
 
-def build_summary(run=None, walk_forward=None, robustness=None, compare=None) -> str:
+def _portfolio_lines(report: dict) -> list[str]:
+    settings = report.get("settings", {})
+    classes = {}
+    for market in report.get("markets", []):
+        classes[market["asset_class"]] = classes.get(market["asset_class"], 0) + 1
+    basket = report.get("equal_weight_basket_out_of_sample", {})
+    lines = [
+        "## Multi-market portfolio",
+        f"- Markets: {len(report.get('markets', []))} ("
+        + ", ".join(f"{count} {name}" for name, count in sorted(classes.items())) + ")"
+        + (f"; skipped (no data): {', '.join(report['skipped_missing'])}"
+           if report.get("skipped_missing") else ""),
+        f"- Out-of-sample from {report.get('out_of_sample_start')}",
+        f"- Sizing {settings.get('sizing')}, portfolio volatility target "
+        f"{settings.get('portfolio_vol_pct')}%, max leverage {settings.get('max_leverage')}x, "
+        f"financing {settings.get('financing_pct_annual')}%/yr, kill switch at "
+        f"{settings.get('max_drawdown_pct')}% drawdown, shorts "
+        f"{'on' if settings.get('allow_short') else 'off'}",
+        "",
+        "| # | Strategy | Return | CAGR | Sharpe | Max drawdown | Avg leverage | Fills | Financing | Kill switch |",
+        "| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for rank, row in enumerate(report.get("ranking", []), 1):
+        oos = row["out_of_sample"]
+        lines.append(
+            f"| {rank} | {row['strategy']} | {_fmt(oos.get('total_return_pct'), '%')} | "
+            f"{_fmt(oos.get('cagr_pct'), '%')} | {_fmt(oos.get('sharpe'))} | "
+            f"{_fmt(oos.get('max_drawdown_pct'), '%')} | {_fmt(oos.get('avg_gross_leverage'), 'x')} | "
+            f"{oos.get('fills')} | {_fmt(oos.get('total_financing'))} | "
+            f"{(oos.get('kill_switch_at') or '–')[:10]} |"
+        )
+    lines.append(
+        f"| – | equal-weight basket (long, 1x) | {_fmt(basket.get('total_return_pct'), '%')} | "
+        f"{_fmt(basket.get('cagr_pct'), '%')} | {_fmt(basket.get('sharpe'))} | "
+        f"{_fmt(basket.get('max_drawdown_pct'), '%')} | {_fmt(basket.get('avg_gross_leverage'), 'x')} | "
+        f"{basket.get('fills')} | – | – |"
+    )
+    ranking = report.get("ranking", [])
+    if len(ranking) == 1:
+        row = ranking[0]
+        markets = row.get("per_market_out_of_sample", [])
+        lines += ["", "**Profit by market (out-of-sample):** "
+                  + ", ".join(f"{m['market']} {_fmt(m['pnl'], digits=0)}" for m in markets)]
+        lines += ["", "| Max leverage | Return | Sharpe | Max drawdown | Kill switch |",
+                  "| ---: | ---: | ---: | ---: | --- |"]
+        lines += [
+            f"| {_fmt(r['max_leverage'], 'x', 0)} | {_fmt(r.get('total_return_pct'), '%')} | "
+            f"{_fmt(r.get('sharpe'))} | {_fmt(r.get('max_drawdown_pct'), '%')} | "
+            f"{(r.get('kill_switch_at') or '–')[:10]} |"
+            for r in row.get("leverage_out_of_sample", [])
+        ]
+        lines += ["", "Cost stress: " + "; ".join(
+            f"×{_fmt(r['cost_multiplier'], digits=0)} → {_fmt(r.get('total_return_pct'), '%')} "
+            f"(Sharpe {_fmt(r.get('sharpe'))})"
+            for r in row.get("cost_stress_out_of_sample", []))]
+    return lines + [""]
+
+
+def portfolio_verdict(report: dict) -> str:
+    ranking = report.get("ranking", [])
+    basket = report.get("equal_weight_basket_out_of_sample", {}).get("sharpe")
+    if not ranking:
+        return "No strategy results."
+    best = ranking[0]
+    sharpe = best["out_of_sample"].get("sharpe")
+    if sharpe is None or sharpe <= 0 or (basket is not None and sharpe <= basket):
+        return ("**No evidence of an edge:** no strategy beat the simple equal-weight "
+                "basket on out-of-sample Sharpe.")
+    return (f"**Best out-of-sample: {best['strategy']}** (Sharpe {_fmt(sharpe)} vs "
+            f"{_fmt(basket)} for the basket). Not yet proven: there is no "
+            "permutation test for portfolios and several strategies were compared.")
+
+
+def build_summary(run=None, walk_forward=None, robustness=None, compare=None,
+                  portfolio=None) -> str:
     reports, problems = {}, []
     for name, path in (("run", run), ("walk_forward", walk_forward),
-                       ("robustness", robustness), ("compare", compare)):
+                       ("robustness", robustness), ("compare", compare),
+                       ("portfolio", portfolio)):
         data, error = _load(path)
         reports[name] = data
         if error:
@@ -240,7 +315,10 @@ def build_summary(run=None, walk_forward=None, robustness=None, compare=None) ->
     dataset_source = reports["run"] or reports["robustness"] or reports["compare"]
     if dataset_source:
         lines += _dataset_lines(dataset_source)
-    if reports["compare"]:
+    if reports["portfolio"]:
+        lines += ["## Verdict", portfolio_verdict(reports["portfolio"]), ""]
+        lines += _portfolio_lines(reports["portfolio"])
+    elif reports["compare"]:
         lines += ["## Verdict", compare_verdict(reports["compare"]), ""]
         lines += _compare_lines(reports["compare"])
     else:
@@ -266,9 +344,10 @@ def main(argv=None) -> int:
     parser.add_argument("--walk-forward")
     parser.add_argument("--robustness")
     parser.add_argument("--compare")
+    parser.add_argument("--portfolio")
     args = parser.parse_args(argv)
     sys.stdout.write(build_summary(args.run, args.walk_forward, args.robustness,
-                                   args.compare))
+                                   args.compare, args.portfolio))
     return 0
 
 

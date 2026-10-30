@@ -13,7 +13,6 @@ deterministic risk engine, which has veto power over every entry.
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from math import isfinite, sqrt
-from statistics import median
 from collections.abc import Sequence as SequenceABC
 from typing import Callable, Sequence
 
@@ -60,7 +59,8 @@ class CostModel:
 class BacktestConfig:
     initial_equity: float = 10_000.0
     costs: CostModel = field(default_factory=CostModel)
-    # Fraction of equity requested per entry, before risk checks.
+    # Percent of equity requested per entry, before risk checks. Above
+    # 100 is leverage (e.g. 300 = 3x); losses scale the same way.
     allocation_pct: float = 100.0
     # Optional protective stop; also used by the risk engine for sizing.
     stop_loss_pct: float | None = None
@@ -74,8 +74,8 @@ class BacktestConfig:
         if not isfinite(self.initial_equity) or self.initial_equity <= 0:
             raise ValueError("Initial equity must be positive")
 
-        if not isfinite(self.allocation_pct) or not 0 < self.allocation_pct <= 100:
-            raise ValueError("Allocation must be in (0, 100] percent")
+        if not isfinite(self.allocation_pct) or not 0 < self.allocation_pct <= 1000:
+            raise ValueError("Allocation must be in (0, 1000] percent (max 10x leverage)")
 
         if self.stop_loss_pct is not None and (
             not isfinite(self.stop_loss_pct)
@@ -132,13 +132,17 @@ class _History(SequenceABC):
 
 
 def bars_per_year(candles: Sequence[Candle]) -> float:
+    """Observed candles per year: count over elapsed time.
+
+    Using the typical spacing would assume trading every day; markets
+    closed at weekends (forex, stocks, futures) have about 252 daily
+    candles a year, not 365, which would overstate Sharpe and miscount
+    years.
+    """
     if len(candles) < 2:
         return 0.0
-    steps = [
-        (b.open_time - a.open_time).total_seconds()
-        for a, b in zip(candles, candles[1:])
-    ]
-    return SECONDS_PER_YEAR / median(steps)
+    seconds = (candles[-1].open_time - candles[0].open_time).total_seconds()
+    return (len(candles) - 1) * SECONDS_PER_YEAR / seconds
 
 
 def compute_metrics(
@@ -246,7 +250,8 @@ class _Simulator:
             TradeProposal(
                 notional=notional,
                 stop_loss_pct=self.config.stop_loss_pct,
-                leverage=1.0,
+                # Requested position size relative to equity.
+                leverage=max(1.0, (held + notional) / equity),
             ),
             self.config.risk_limits,
         )

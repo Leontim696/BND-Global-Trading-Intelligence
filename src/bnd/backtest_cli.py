@@ -26,11 +26,13 @@ from .backtester import (
 from .market_data import (
     MarketDataError,
     fetch_binance_klines,
+    fetch_yahoo_daily,
     find_gaps,
     load_csv,
     save_csv,
     to_bars,
 )
+from .portfolio import PortfolioConfig, run_portfolio
 from .quant_backtest import BacktestConfig as QuantConfig
 from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
@@ -47,6 +49,7 @@ from .robustness import (
     summarize_grid,
 )
 from .strategies import STRATEGIES, SWEEP_RANGES, buy_and_hold
+from .universe import select as select_markets
 
 # Older dedicated options, kept working: (strategy, option, parameter).
 LEGACY_PARAMS = (
@@ -103,10 +106,11 @@ def _pairs(items, what) -> dict:
 
 
 def _strategy_params(args) -> dict:
+    # Commands without the legacy options (e.g. portfolio) skip them.
     params = {
         parameter: getattr(args, option)
         for strategy, option, parameter in LEGACY_PARAMS
-        if strategy == args.strategy
+        if strategy == args.strategy and hasattr(args, option)
     }
     params.update({
         name: parse_value(value)
@@ -183,6 +187,10 @@ def _load_checked(args):
 
 def _build_configs(args):
     """Strategy and benchmark configs shared by `run` and `robustness`."""
+    if not 1 <= args.leverage <= 10:
+        raise ValueError("Leverage must be between 1 and 10")
+    if args.max_leverage is None:
+        args.max_leverage = args.leverage
     # Fail closed: running without the risk engine must be explicit.
     if args.risk_per_trade is None and not args.no_risk_gate:
         raise ValueError(
@@ -196,8 +204,8 @@ def _build_configs(args):
             max_risk_per_trade_pct=args.risk_per_trade,
             max_daily_loss_pct=args.max_daily_loss,
             max_drawdown_pct=args.max_drawdown,
-            max_gross_exposure_pct=100.0,
-            max_leverage=1.0,
+            max_gross_exposure_pct=100.0 * args.max_leverage,
+            max_leverage=args.max_leverage,
         )
 
     allow_short = args.allow_short or args.long_short
@@ -213,7 +221,7 @@ def _build_configs(args):
             funding_pct_annual=funding,
             cash_rate_pct_annual=args.cash_rate,
         ),
-        allocation_pct=args.allocation,
+        allocation_pct=args.allocation * args.leverage,
         stop_loss_pct=args.stop_loss,
         allow_short=allow_short,
         risk_limits=risk_limits,
@@ -238,6 +246,7 @@ def _cost_settings(config) -> dict:
         "funding_pct_annual": config.costs.funding_pct_annual,
         "cash_rate_pct_annual": config.costs.cash_rate_pct_annual,
         "allow_short": config.allow_short,
+        "leverage": config.allocation_pct / 100,
     }
 
 
@@ -439,6 +448,151 @@ def command_compare(args) -> int:
     return 0
 
 
+def _split_list(text):
+    return [item.strip() for item in (text or "").split(",") if item.strip()]
+
+
+def command_fetch_universe(args) -> int:
+    """Download daily candles for every selected market; skip failures."""
+    markets = select_markets(_split_list(args.markets), _split_list(args.classes))
+    end = _utc_date(args.end) if args.end else datetime.now(timezone.utc)
+    out = Path(args.out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    quality, failures = {}, {}
+    for market in markets:
+        try:
+            candles, report = fetch_yahoo_daily(market.symbol, _utc_date(args.start), end)
+            save_csv(candles, out / f"{market.name}.csv")
+            quality[market.name] = {"symbol": market.symbol, **report,
+                                    "first": candles[0].open_time.isoformat(),
+                                    "last": candles[-1].open_time.isoformat()}
+            print(f"{market.name}: {len(candles)} candles")
+        except MarketDataError as exc:
+            failures[market.name] = str(exc)
+            print(f"{market.name}: FAILED ({exc})", file=sys.stderr)
+    (out / "quality.json").write_text(
+        json.dumps({"markets": quality, "failures": failures}, indent=2))
+    if not quality:
+        raise MarketDataError("No market could be downloaded")
+    return 0
+
+
+def _portfolio_config(args, **overrides) -> PortfolioConfig:
+    values = dict(
+        sizing=args.sizing,
+        target_vol_pct=args.portfolio_vol,
+        vol_lookback=args.sizing_lookback,
+        max_leverage=args.max_leverage,
+        max_weight=args.max_weight,
+        rebalance_threshold=args.rebalance / 100,
+        financing_pct_annual=args.financing,
+        cash_rate_pct_annual=args.cash_rate,
+        max_drawdown_pct=args.max_drawdown or None,
+        allow_short=not args.no_shorts,
+    )
+    values.update(overrides)
+    return PortfolioConfig(**values)
+
+
+def _portfolio_metrics(result) -> dict:
+    keys = ("total_return_pct", "cagr_pct", "sharpe", "max_drawdown_pct", "fills",
+            "avg_gross_leverage", "max_gross_leverage", "total_fees",
+            "total_financing", "total_interest", "kill_switch_at", "years")
+    return {key: result["metrics"].get(key) for key in keys}
+
+
+def command_portfolio(args) -> int:
+    """Trade every market in one account; compare with an equal-weight basket."""
+    markets = select_markets(_split_list(args.markets), _split_list(args.classes))
+    folder = Path(args.data_dir)
+    missing = [m.name for m in markets if not (folder / f"{m.name}.csv").exists()]
+    if args.skip_missing:
+        markets = tuple(m for m in markets if m.name not in missing)
+    elif missing:
+        raise ValueError("Missing data for: " + ", ".join(missing)
+                         + " (use --skip-missing to ignore)")
+    if not markets:
+        raise ValueError("No market data found")
+    data = {m.name: load_csv(folder / f"{m.name}.csv") for m in markets}
+    times = sorted({c.open_time for candles in data.values() for c in candles})
+    cut = times[int(len(times) * args.in_sample / 100)]
+    config = _portfolio_config(args)
+    basket = _portfolio_config(args, sizing="equal", max_leverage=1.0, max_weight=1.0,
+                               financing_pct_annual=0.0, max_drawdown_pct=None,
+                               allow_short=False)
+
+    # In-sample uses only markets with enough history before the split.
+    minimum = args.sizing_lookback + 2
+    early = {name: [c for c in candles if c.open_time < cut] for name, candles in data.items()}
+    early_markets = [m for m in markets if len(early[m.name]) >= minimum]
+
+    names = sorted(SWEEP_RANGES) if args.strategy == "all" else [args.strategy]
+    params = {} if args.strategy == "all" else _strategy_params(args)
+
+    def periods(factory, cfg):
+        in_sample = run_portfolio(early, early_markets, factory, cfg)
+        out_of_sample = run_portfolio(data, markets, factory, cfg, trade_from=cut)
+        return in_sample, out_of_sample
+
+    _, basket_oos = periods(buy_and_hold, basket)
+    rows = []
+    for name in names:
+        factory = _factory(name, params)
+        in_sample, out_of_sample = periods(factory, config)
+        row = {
+            "strategy": name,
+            "in_sample": _portfolio_metrics(in_sample),
+            "out_of_sample": _portfolio_metrics(out_of_sample),
+        }
+        if len(names) == 1:
+            row["per_market_out_of_sample"] = out_of_sample["per_market"]
+            row["cost_stress_out_of_sample"] = [
+                {"cost_multiplier": m, **_portfolio_metrics(run_portfolio(
+                    data, markets, factory, _portfolio_config(args, cost_multiplier=m),
+                    trade_from=cut))}
+                for m in (2.0, 3.0)
+            ]
+            row["leverage_out_of_sample"] = [
+                {"max_leverage": lev, **_portfolio_metrics(run_portfolio(
+                    data, markets, factory, _portfolio_config(args, max_leverage=lev),
+                    trade_from=cut))}
+                for lev in sorted({1.0, 2.0, 3.0, 5.0, args.max_leverage})
+            ]
+        rows.append(row)
+
+    def score(row):
+        sharpe = row["out_of_sample"]["sharpe"]
+        return sharpe if sharpe is not None else float("-inf")
+
+    rows.sort(key=score, reverse=True)
+    report = {
+        "mode": "portfolio",
+        "markets": [{"name": m.name, "asset_class": m.asset_class,
+                     "candles": len(data[m.name]),
+                     "first": data[m.name][0].open_time.isoformat()} for m in markets],
+        "skipped_missing": missing if args.skip_missing else [],
+        "in_sample_markets": [m.name for m in early_markets],
+        "out_of_sample_start": cut.isoformat(),
+        "settings": {
+            "sizing": config.sizing, "portfolio_vol_pct": config.target_vol_pct,
+            "max_leverage": config.max_leverage, "max_weight": config.max_weight,
+            "financing_pct_annual": config.financing_pct_annual,
+            "cash_rate_pct_annual": config.cash_rate_pct_annual,
+            "max_drawdown_pct": config.max_drawdown_pct,
+            "allow_short": config.allow_short, "params": params,
+        },
+        "equal_weight_basket_out_of_sample": _portfolio_metrics(basket_oos),
+        "ranking": rows,
+        "note": (
+            "Paper research. Futures series are not roll-adjusted and indices "
+            "stand in for futures/CFDs. No permutation test yet: treat "
+            "differences between strategies as unproven."
+        ),
+    }
+    print(json.dumps(_rounded(report), indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="backtest_cli")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -481,6 +635,10 @@ def build_parser() -> argparse.ArgumentParser:
     common.add_argument("--slippage", type=float, default=0.05,
                         help="percent per fill")
     common.add_argument("--allocation", type=float, default=100.0)
+    common.add_argument("--leverage", type=float, default=1.0,
+                        help="position size multiple of equity (e.g. 3 = 3x)")
+    common.add_argument("--max-leverage", type=float,
+                        help="risk-engine leverage cap; default = --leverage")
     common.add_argument("--stop-loss", type=float)
     common.add_argument("--allow-short", action="store_true")
     common.add_argument("--risk-per-trade", type=float,
@@ -523,6 +681,41 @@ def build_parser() -> argparse.ArgumentParser:
     compare.add_argument("--permutations", type=int, default=100)
     compare.add_argument("--seed", type=int, default=7)
     compare.set_defaults(handler=command_compare)
+
+    universe = sub.add_parser("fetch-universe",
+                              help="Download daily candles for forex, commodities, indices, crypto")
+    universe.add_argument("--start", default="2010-01-01")
+    universe.add_argument("--end")
+    universe.add_argument("--markets", help="comma-separated names, default all")
+    universe.add_argument("--classes", help="e.g. forex,commodity,index,bond,crypto")
+    universe.add_argument("--out-dir", required=True)
+    universe.set_defaults(handler=command_fetch_universe)
+
+    port = sub.add_parser("portfolio", help="Trade every market in one leveraged account")
+    port.add_argument("--data-dir", required=True)
+    port.add_argument("--markets")
+    port.add_argument("--classes")
+    port.add_argument("--skip-missing", action="store_true")
+    port.add_argument("--strategy", choices=["all"] + sorted(SWEEP_RANGES),
+                      default="all")
+    port.add_argument("--param", action="append", metavar="NAME=VALUE")
+    port.add_argument("--sizing", choices=["volatility", "equal"], default="volatility")
+    port.add_argument("--portfolio-vol", type=float, default=15.0,
+                      help="annual portfolio volatility target, percent")
+    port.add_argument("--sizing-lookback", type=int, default=60)
+    port.add_argument("--max-leverage", type=float, default=3.0)
+    port.add_argument("--max-weight", type=float, default=1.0,
+                      help="largest |weight| for one market")
+    port.add_argument("--rebalance", type=float, default=5.0,
+                      help="resize when a weight moves this many points")
+    port.add_argument("--financing", type=float, default=5.0,
+                      help="annual %% on the borrowed (leveraged) amount")
+    port.add_argument("--cash-rate", type=float, default=0.0)
+    port.add_argument("--max-drawdown", type=float, default=30.0,
+                      help="kill switch in percent; 0 disables")
+    port.add_argument("--no-shorts", action="store_true")
+    port.add_argument("--in-sample", type=float, default=70.0)
+    port.set_defaults(handler=command_portfolio)
 
     walk = sub.add_parser(
         "walk-forward",

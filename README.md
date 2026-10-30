@@ -14,9 +14,10 @@ are ever placed.
 | `ai_gateway` | Provider routing with budget reservations (MOCK mode only) |
 | `openrouter_adapter` | Opt-in OpenRouter client returning validated BUY/SELL/HOLD analyses |
 | `cost_tracker`, `cost_storage` | In-memory and SQLite token-cost accounting with daily/monthly budgets |
-| `market_data` | Validated OHLCV candles, CSV storage, Binance public-data download |
+| `market_data` | Validated OHLCV candles, CSV storage, Binance (crypto) and Yahoo Finance (forex, futures, indices, stocks) downloads with data-quality reports |
 | `backtester` | Next-open execution, fees, slippage, stop losses, risk-engine sizing, metrics |
-| `strategies` | Trend (SMA, EMA, MACD), breakout (Donchian), momentum, mean reversion (RSI, Bollinger), volatility targeting, buy-and-hold |
+| `strategies` | Trend (SMA, EMA, MACD, ADX), breakout (Donchian, Keltner/ATR), momentum, mean reversion (RSI, Bollinger, Stochastic), volatility targeting |
+| `universe`, `portfolio` | 22 markets (forex, commodities, indices, bonds, crypto) traded in one leveraged account with volatility sizing and a drawdown kill switch |
 | `quant_backtest`, `quant_evaluation`, `quant_metrics`, `quant_report` | Long/flat SMA walk-forward folds with risk-adjusted metrics versus buy-and-hold |
 | `council_orchestrator`, `council_round`, `live_council_bridge` | Five-agent research rounds; the paid live council stays disabled |
 | `code_review_loop`, `review_budget`, `manual_live_review` | GPT → Claude → GPT review with a fail-closed USD 0.50 preflight |
@@ -105,6 +106,29 @@ a summary with a conservative verdict on the run page
 `backtest-results` branch under `runs/<time>_<run id>_<symbol>_<interval>_<strategy>/`
 (`LATEST.md` holds the newest summary). Only the separate `publish` job has
 write access; it never runs project code and only writes that branch.
+
+## Multi-market portfolio
+
+```bash
+python -m src.bnd.backtest_cli fetch-universe --start 2010-01-01 --out-dir data/universe
+python -m src.bnd.backtest_cli portfolio --data-dir data/universe --strategy all \
+    --max-leverage 3 --portfolio-vol 15
+```
+
+Every market gets the strategy's signal; weights are
+`signal × portfolio_vol / (market vol × √N)`, so calm markets (forex) hold
+more notional than volatile ones. Gross exposure is capped at
+`--max-leverage`; the borrowed part pays `--financing` (default 5%/yr).
+Per-market costs depend on the asset class (`universe.CLASS_COSTS`). The
+kill switch (`--max-drawdown`, default 30%) closes everything and stops
+trading. Reports compare each strategy with an equal-weight long basket
+(1x), sweep leverage (1x, 2x, 3x, 5x) and stress costs. Caveats: Yahoo
+futures (`=F`) are not roll-adjusted, indices stand in for futures/CFDs,
+and there is no permutation test for portfolios yet. The "BND
+Multi-Market Portfolio (manual)" workflow runs this on GitHub.
+
+Leverage in single-market runs: `--leverage 3` (risk-engine cap
+`--max-leverage`). Losses scale with leverage; an account can be wiped out.
 
 ## Paid API calls
 

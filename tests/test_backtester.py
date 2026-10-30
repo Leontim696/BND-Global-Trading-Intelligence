@@ -480,3 +480,64 @@ def test_invalid_fractional_targets_rejected(bad):
 def test_rebalance_threshold_validation():
     with pytest.raises(ValueError):
         BacktestConfig(rebalance_threshold=0)
+
+
+def test_bars_per_year_counts_weekday_markets_correctly():
+    from src.bnd.backtester import bars_per_year
+
+    # Two years of weekday-only daily candles (stocks, forex, futures).
+    day, candles = START, []
+    while day < START + timedelta(days=730):
+        if day.weekday() < 5:
+            candles.append(Candle(day, 100, 100, 100, 100, 1))
+        day += timedelta(days=1)
+
+    assert bars_per_year(candles) == pytest.approx(261, abs=2)
+    # Continuous 4-hour crypto candles are unchanged: about 2,192 a year.
+    assert bars_per_year(bars([100] * 500)) == pytest.approx(2191.5, rel=1e-3)
+
+
+def test_leverage_multiplies_gains_and_losses():
+    up = bars([100, 100, 110])
+    down = bars([100, 100, 90])
+    config = BacktestConfig(costs=NO_COSTS, allocation_pct=300)
+
+    gain = run_backtest(up, buy_and_hold(), config)
+    loss = run_backtest(down, buy_and_hold(), config)
+
+    # 3x a 10% move.
+    assert gain.metrics["total_return_pct"] == pytest.approx(30.0)
+    assert loss.metrics["total_return_pct"] == pytest.approx(-30.0)
+    # Flat on bar 0, then 30,000/10,000 and 33,000/13,000 invested.
+    assert gain.metrics["avg_capital_exposure_pct"] == pytest.approx(
+        (0 + 300 + 100 * 33_000 / 13_000) / 3
+    )
+
+
+def test_leverage_above_risk_limit_is_vetoed():
+    config = BacktestConfig(
+        costs=NO_COSTS,
+        allocation_pct=300,
+        stop_loss_pct=10.0,
+        risk_limits=RiskLimits(50.0, 50.0, 50.0, 1000.0, 2.0),
+    )
+
+    result = run_backtest(bars([100, 100, 100]), buy_and_hold(), config)
+
+    assert result.trades == []
+    assert result.rejected_entries == 2
+
+
+def test_leveraged_account_can_be_wiped_out():
+    # 5x long, price falls 25%: equity goes to zero or below and stops.
+    candles = bars([100, 100, 75, 75, 75])
+    result = run_backtest(candles, buy_and_hold(),
+                          BacktestConfig(costs=NO_COSTS, allocation_pct=500))
+
+    assert result.metrics["final_equity"] <= 0
+    assert len(result.equity_curve) < len(candles)
+
+
+def test_allocation_limit():
+    with pytest.raises(ValueError):
+        BacktestConfig(allocation_pct=1100)

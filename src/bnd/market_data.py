@@ -12,10 +12,11 @@ from math import isfinite
 from pathlib import Path
 from typing import Sequence
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 from urllib.request import Request, urlopen
 
 BINANCE_KLINES_URL = "https://data-api.binance.vision/api/v3/klines"
+YAHOO_CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart/"
 BINANCE_PAGE_LIMIT = 1000
 CSV_FIELDS = ("open_time", "open", "high", "low", "close", "volume")
 
@@ -257,3 +258,96 @@ def fetch_binance_klines(
 
     validate_series(candles)
     return candles
+
+
+def parse_yahoo_chart(payload) -> tuple[list[Candle], dict]:
+    """Daily candles from a Yahoo Finance chart response, plus a quality
+    report. Rows with missing or non-positive prices are dropped (e.g.
+    WTI crude settled at -37 USD on 2020-04-20); inconsistent highs and
+    lows are widened to contain open and close; duplicate days keep the
+    last row. Every change is counted so reports can show it.
+    """
+
+    try:
+        result = payload["chart"]["result"][0]
+        timestamps = result["timestamp"]
+        quote_data = result["indicators"]["quote"][0]
+        columns = [quote_data[key] for key in ("open", "high", "low", "close", "volume")]
+    except (KeyError, IndexError, TypeError) as exc:
+        raise MarketDataError("Invalid Yahoo chart response") from exc
+
+    quality = {"rows": len(timestamps), "dropped_missing": 0,
+               "dropped_non_positive": 0, "repaired_high_low": 0,
+               "duplicate_days": 0}
+    by_day: dict = {}
+    for index, stamp in enumerate(timestamps):
+        try:
+            open_, high, low, close, volume = (column[index] for column in columns)
+        except (IndexError, TypeError):
+            quality["dropped_missing"] += 1
+            continue
+        if None in (stamp, open_, high, low, close):
+            quality["dropped_missing"] += 1
+            continue
+        if min(open_, high, low, close) <= 0:
+            quality["dropped_non_positive"] += 1
+            continue
+        fixed_high, fixed_low = max(open_, high, low, close), min(open_, high, low, close)
+        if (fixed_high, fixed_low) != (high, low):
+            quality["repaired_high_low"] += 1
+        moment = datetime.fromtimestamp(int(stamp), tz=timezone.utc)
+        day = moment.date()
+        if day in by_day:
+            quality["duplicate_days"] += 1
+        by_day[day] = Candle(
+            # One candle per UTC day, stamped at 00:00 UTC.
+            datetime(day.year, day.month, day.day, tzinfo=timezone.utc),
+            float(open_), float(fixed_high), float(fixed_low), float(close),
+            float(volume or 0.0),
+        )
+
+    candles = [by_day[day] for day in sorted(by_day)]
+    validate_series(candles)
+    quality["candles"] = len(candles)
+    return candles, quality
+
+
+def fetch_yahoo_daily(
+    symbol: str, start: datetime, end: datetime, timeout: float = 30.0
+) -> tuple[list[Candle], dict]:
+    """Download daily candles for forex (EURUSD=X), futures (GC=F),
+    indices (^GSPC) or stocks (AAPL) from Yahoo Finance."""
+
+    for value in (start, end):
+        if value.tzinfo is None or value.utcoffset() is None:
+            raise MarketDataError("Timezone-aware start/end required")
+    if end <= start:
+        raise MarketDataError("End must be after start")
+
+    query = urlencode({
+        "period1": int(start.timestamp()),
+        "period2": int(end.timestamp()),
+        "interval": "1d",
+        "events": "history",
+    })
+    request = Request(
+        YAHOO_CHART_URL + quote(symbol, safe="") + "?" + query,
+        # Yahoo rejects requests without a browser-like user agent.
+        headers={"User-Agent": "Mozilla/5.0 (BND research backtester)"},
+        method="GET",
+    )
+    try:
+        with urlopen(request, timeout=timeout) as response:
+            payload = json.loads(response.read(20_000_001))
+    except HTTPError as exc:
+        raise MarketDataError(f"Yahoo HTTP error for {symbol}: {exc.code}") from exc
+    except (URLError, TimeoutError, ValueError) as exc:
+        raise MarketDataError(f"Yahoo request failed for {symbol}") from exc
+
+    candles, quality = parse_yahoo_chart(payload)
+    # Today's candle is still forming until the market closes.
+    if candles and candles[-1].open_time.date() >= datetime.now(timezone.utc).date():
+        candles.pop()
+        quality["candles"] = len(candles)
+    validate_series(candles)
+    return candles, quality

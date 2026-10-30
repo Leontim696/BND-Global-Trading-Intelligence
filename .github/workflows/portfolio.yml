@@ -1,0 +1,238 @@
+name: BND Multi-Market Portfolio (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      start:
+        description: 'First date (YYYY-MM-DD)'
+        default: '2010-01-01'
+        type: string
+      classes:
+        description: 'Asset classes, comma-separated (blank = all): forex,commodity,index,bond,crypto'
+        default: ''
+        type: string
+      strategy:
+        description: 'Strategy (all = compare every strategy)'
+        default: 'all'
+        type: choice
+        options: [all, sma_crossover, ema_crossover, macd, adx_trend, donchian_breakout, keltner_breakout, momentum, rsi_reversion, bollinger_reversion, stochastic_reversion, volatility_target]
+      extra_args:
+        description: 'Extra portfolio arguments, e.g. --max-leverage 3 --portfolio-vol 15 --no-shorts'
+        default: '--max-leverage 3 --portfolio-vol 15'
+        type: string
+      publish:
+        description: 'Save the JSON reports to the backtest-results branch'
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-backtest-results
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Public market data only: no API keys, no paid AI, no orders.
+      # Flags read by the code; live and paid AI stay off.
+      BND_ALLOW_LIVE_AI: "false"
+      START: ${{ inputs.start }}
+      CLASSES: ${{ inputs.classes }}
+      STRATEGY: ${{ inputs.strategy }}
+      EXTRA_ARGS: ${{ inputs.extra_args }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download every market (failures are recorded, not fatal)
+        run: |
+          python -m src.bnd.backtest_cli fetch-universe --start "$START" \
+            --classes "$CLASSES" --out-dir backtest-reports/universe
+          cp backtest-reports/universe/quality.json backtest-reports/data-quality.json
+      - name: Portfolio backtest
+        run: |
+          set -o pipefail
+          # EXTRA_ARGS is split into separate arguments on purpose.
+          python -m src.bnd.backtest_cli portfolio \
+            --data-dir backtest-reports/universe --classes "$CLASSES" --skip-missing \
+            --strategy "$STRATEGY" $EXTRA_ARGS \
+            | tee backtest-reports/portfolio.json
+      - name: Job summary
+        if: always()
+        run: |
+          mkdir -p backtest-reports
+          args=()
+          if [ -f backtest-reports/portfolio.json ]; then
+            args+=(--portfolio backtest-reports/portfolio.json)
+          fi
+          python -m src.bnd.backtest_summary "${args[@]}" > backtest-reports/summary.md
+          cat backtest-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bnd-portfolio-${{ github.run_id }}
+          path: |
+            backtest-reports/*.json
+            backtest-reports/*.md
+          retention-days: 14
+
+  # Separate job: the write token never runs project code. It only
+  # commits the finished JSON/Markdown reports (not the candle CSVs).
+  publish:
+        description: 'Save the JSON reports to the backtest-results branch'
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-backtest-results
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Public market data only: no API keys, no paid AI, no orders.
+      # Flags read by the code; live and paid AI stay off.
+      BND_ALLOW_LIVE_AI: "false"
+      SYMBOL: PORTFOLIO
+      INTERVAL: 1d
+      START: ${{ inputs.start }}
+      STRATEGY: ${{ inputs.strategy }}
+      EXTRA_ARGS: ${{ inputs.extra_args }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download candles
+        run: |
+          python -m src.bnd.backtest_cli fetch --symbol "$SYMBOL" \
+            --interval "$INTERVAL" --start "$START" \
+            --out "backtest-reports/$SYMBOL-$INTERVAL.csv"
+      - name: Compare every strategy
+        if: inputs.strategy == 'all'
+        run: |
+          set -o pipefail
+          python -m src.bnd.backtest_cli compare \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" $EXTRA_ARGS \
+            | tee backtest-reports/compare.json
+      - name: Run backtest
+        if: inputs.strategy != 'all'
+        run: |
+          set -o pipefail  # tee must not hide a failed backtest
+          # EXTRA_ARGS is split into separate arguments on purpose.
+          python -m src.bnd.backtest_cli run \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            --strategy "$STRATEGY" $EXTRA_ARGS \
+            | tee backtest-reports/report.json
+      - name: Walk-forward SMA folds
+        run: |
+          set -o pipefail
+          python -m src.bnd.backtest_cli walk-forward \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            | tee backtest-reports/walk-forward.json
+      - name: Robustness (parameter grid, permutation test, cost stress)
+        if: inputs.strategy != 'buy_and_hold' && inputs.strategy != 'all'
+        run: |
+          set -o pipefail
+          python -m src.bnd.backtest_cli robustness \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            --strategy "$STRATEGY" $EXTRA_ARGS \
+            | tee backtest-reports/robustness.json
+      - name: Job summary
+        if: always()
+        run: |
+          mkdir -p backtest-reports
+          # Pass only the reports this run produced.
+          args=()
+          for pair in run:report walk-forward:walk-forward robustness:robustness compare:compare; do
+            file="backtest-reports/${pair#*:}.json"
+            if [ -f "$file" ]; then args+=("--${pair%%:*}" "$file"); fi
+          done
+          python -m src.bnd.backtest_summary "${args[@]}" > backtest-reports/summary.md
+          cat backtest-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bnd-portfolio-${{ github.run_id }}
+          path: backtest-reports/
+          retention-days: 14
+
+  # Separate job: the write token never runs project code. It only
+  # commits the finished JSON/Markdown reports (not the candle CSV).
+  publish:
+    needs: backtest
+    if: always() && inputs.publish && needs.backtest.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+      SOURCE_SHA: ${{ github.sha }}
+      RESULT: ${{ needs.backtest.result }}
+      SYMBOL: PORTFOLIO
+      INTERVAL: 1d
+      STRATEGY: ${{ inputs.strategy }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bnd-portfolio-${{ github.run_id }}
+          path: reports
+      - name: Commit reports to backtest-results branch
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(reports/*.json reports/*.md)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::warning::No reports to publish"; exit 0
+          fi
+          dir="runs/$(date -u +%Y-%m-%dT%H%M%SZ)_${RUN_ID}_${SYMBOL}_${INTERVAL}_${STRATEGY}"
+          git init -q results
+          cd results
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+
+          publish_once() {
+            # errexit is off inside a function used as an `if` condition,
+            # so every step checks its own status.
+            # Start from the latest branch tip each attempt (no rebase).
+            if git fetch -q --depth=1 origin backtest-results 2>/dev/null; then
+              git checkout -q -f -B backtest-results FETCH_HEAD || return 1
+            else
+              git checkout -q --orphan backtest-results || return 1
+            fi
+            git clean -fdq
+            mkdir -p "$dir" && cp "${files[@]/#/../}" "$dir/" || return 1
+            printf '{"run_id": "%s", "source_sha": "%s", "result": "%s", "symbol": "%s", "interval": "%s", "strategy": "%s"}\n' \
+              "$RUN_ID" "$SOURCE_SHA" "$RESULT" "$SYMBOL" "$INTERVAL" "$STRATEGY" > "$dir/run.json" || return 1
+            if [ -f ../reports/summary.md ]; then
+              { echo "Latest run: \`$dir\` (source ${SOURCE_SHA:0:7}, job $RESULT)"; echo;
+                cat ../reports/summary.md; } > LATEST.md || return 1
+            fi
+            git add -A || return 1
+            git commit -q -m "Backtest $SYMBOL $INTERVAL $STRATEGY, run $RUN_ID ($RESULT)" || return 1
+            git push -q origin HEAD:refs/heads/backtest-results
+          }
+
+          for attempt in 1 2 3; do
+            if publish_once; then
+              echo "Published to backtest-results/$dir" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep $((attempt * 5))
+          done
+          echo "::error::Could not push reports to backtest-results"
+          exit 1

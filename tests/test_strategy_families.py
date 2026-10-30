@@ -324,3 +324,134 @@ def test_cli_compare_reports_adjusted_p_values(data):
 
     rows = json.loads(out)["ranking"]
     assert all(row["p_value_adjusted"] >= row["p_value"] for row in rows)
+
+
+# ADX, Keltner (ATR) and Stochastic ----------------------------------------
+
+from src.bnd.strategies import adx_trend, keltner_breakout, stochastic_reversion  # noqa: E402
+
+
+def ref_wilder(values, length):
+    out, value = [], None
+    for i, v in enumerate(values):
+        if i + 1 < length:
+            out.append(None)
+            continue
+        value = mean(values[:length]) if i + 1 == length else (value * (length - 1) + v) / length
+        out.append(value)
+    return out
+
+
+def ref_true_ranges(candles):
+    ranges = [candles[0].high - candles[0].low]
+    for prev, c in zip(candles, candles[1:]):
+        ranges.append(max(c.high - c.low, abs(c.high - prev.close), abs(c.low - prev.close)))
+    return ranges
+
+
+def ref_adx_targets(candles, period, threshold):
+    plus_dm, minus_dm, trs = [], [], []
+    for prev, c in zip(candles, candles[1:]):
+        up, down = c.high - prev.high, prev.low - c.low
+        plus_dm.append(up if up > down and up > 0 else 0.0)
+        minus_dm.append(down if down > up and down > 0 else 0.0)
+        trs.append(max(c.high - c.low, abs(c.high - prev.close), abs(c.low - prev.close)))
+    tr_s, plus_s, minus_s = (ref_wilder(x, period) for x in (trs, plus_dm, minus_dm))
+    dxs, di = [], []
+    for tr, p, m in zip(tr_s, plus_s, minus_s):
+        if tr is None:
+            continue
+        pdi, mdi = 100 * p / tr, 100 * m / tr
+        di.append((pdi, mdi))
+        dxs.append(0.0 if pdi + mdi == 0 else 100 * abs(pdi - mdi) / (pdi + mdi))
+    adx = ref_wilder(dxs, period)
+    targets = [0] * (len(candles) - len(dxs))
+    target = 0
+    for value, (pdi, mdi) in zip(adx, di):
+        if value is not None:
+            target = 0 if value < threshold else (pdi > mdi) - (pdi < mdi)
+        targets.append(target)
+    return targets
+
+
+def test_adx_matches_reference():
+    candles = random_walk(count=500, sigma=0.02)
+
+    assert sequential(adx_trend(14, 20), candles) == ref_adx_targets(candles, 14, 20)
+
+
+def test_adx_follows_strong_trend_and_ignores_chop():
+    up = closes_to_candles([100 * 1.01 ** i for i in range(120)])
+    # Symmetric oscillation: equal up and down moves, no trend.
+    chop = closes_to_candles([(100, 102, 100, 98)[i % 4] for i in range(120)])
+
+    assert adx_trend(14, 25)(up) == 1
+    assert adx_trend(14, 25)(chop) == 0
+
+
+def test_keltner_breaks_out_on_a_surge():
+    closes = [100 + 0.5 * (-1) ** i for i in range(60)] + [104.0, 108.0]
+    candles = closes_to_candles(closes)
+
+    assert keltner_breakout(20, 2.0)(candles[:60]) == 0
+    assert keltner_breakout(20, 2.0)(candles) == 1
+
+
+def test_keltner_atr_matches_reference_wilder():
+    candles = random_walk(count=300)
+    ranges = ref_true_ranges(candles)
+    expected = ref_wilder(ranges, 20)
+
+    # Rebuild the strategy state step by step and compare its ATR.
+    from src.bnd.strategies import _Wilder, _true_range
+    atr, previous = _Wilder(20), None
+    for candle, want in zip(candles, expected):
+        got = atr.update(_true_range(candle, previous))
+        previous = candle.close
+        assert (got is None and want is None) or got == pytest.approx(want)
+
+
+def ref_stochastic_targets(candles, period, smooth, low_level, high_level):
+    ks, targets, target = [], [], 0
+    for i, candle in enumerate(candles):
+        if i + 1 >= period:
+            window = candles[i + 1 - period: i + 1]
+            high, low = max(c.high for c in window), min(c.low for c in window)
+            ks.append(50.0 if high == low else 100 * (candle.close - low) / (high - low))
+            if len(ks) >= smooth:
+                d = mean(ks[-smooth:])
+                if target > 0 and d >= 50 or target < 0 and d <= 50:
+                    target = 0
+                if target == 0:
+                    target = 1 if d < low_level else -1 if d > high_level else 0
+        targets.append(target)
+    return targets
+
+
+def test_stochastic_matches_reference():
+    candles = random_walk(count=500, sigma=0.03)
+
+    got = sequential(stochastic_reversion(14, 3, 20, 80), candles)
+
+    assert got == ref_stochastic_targets(candles, 14, 3, 20, 80)
+    assert 1 in got and -1 in got
+
+
+@pytest.mark.parametrize("make", [
+    lambda: adx_trend(14, 25),
+    lambda: keltner_breakout(20, 2.0),
+    lambda: stochastic_reversion(14, 3),
+])
+def test_new_indicators_stream_like_full_recompute(make):
+    candles = random_walk(count=600)
+
+    assert sequential(make(), candles) == fresh(make, candles)
+
+
+@pytest.mark.parametrize("make", [
+    lambda: adx_trend(0), lambda: adx_trend(14, 0),
+    lambda: keltner_breakout(20, 0), lambda: stochastic_reversion(14, 3, 60, 80),
+])
+def test_new_indicator_validation(make):
+    with pytest.raises(ValueError):
+        make()

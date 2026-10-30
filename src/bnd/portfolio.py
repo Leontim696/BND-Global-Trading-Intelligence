@@ -1,0 +1,317 @@
+"""Multi-market portfolio backtester with leverage. Paper research only.
+
+One account trades every market in the universe at once:
+
+1. The strategy gives each market a signal in [-1, 1] (long/flat/short).
+2. Volatility sizing: weight = signal x target_vol / (market vol x sqrt(N)),
+   so a calm market (forex) gets a larger position than a wild one (gas)
+   and each contributes similar risk. ``sizing="equal"`` uses signal / N.
+3. Leverage: if gross exposure (sum of |weights|) exceeds max_leverage,
+   every weight is scaled down proportionally.
+4. Decisions use only candles up to each market's close and execute at
+   that market's next open, with per-market fees and slippage.
+5. Borrowing above equity pays financing; idle equity may earn interest.
+6. Kill switch: once drawdown from peak reaches max_drawdown_pct, every
+   position is closed at its next open and trading stops.
+"""
+
+from collections.abc import Sequence as SequenceABC
+from dataclasses import dataclass, field
+from datetime import datetime
+from math import isfinite, log, sqrt
+from statistics import stdev
+from typing import Callable, Mapping, Sequence
+
+from .backtester import SECONDS_PER_YEAR, compute_metrics
+from .market_data import Candle, validate_series
+from .universe import Market
+
+
+@dataclass(frozen=True)
+class PortfolioConfig:
+    initial_equity: float = 10_000.0
+    sizing: str = "volatility"
+    target_vol_pct: float = 15.0
+    vol_lookback: int = 60
+    max_leverage: float = 3.0
+    max_weight: float = 1.0
+    rebalance_threshold: float = 0.05
+    financing_pct_annual: float = 5.0
+    cash_rate_pct_annual: float = 0.0
+    max_drawdown_pct: float | None = 30.0
+    allow_short: bool = True
+    cost_multiplier: float = 1.0
+
+    def __post_init__(self):
+        if self.sizing not in ("volatility", "equal"):
+            raise ValueError("Sizing must be 'volatility' or 'equal'")
+        checks = (
+            (self.initial_equity, 0, None, "Initial equity"),
+            (self.target_vol_pct, 0, 200, "Target volatility"),
+            (self.max_leverage, 0, 20, "Maximum leverage"),
+            (self.max_weight, 0, 20, "Maximum weight"),
+            (self.rebalance_threshold, 0, 1, "Rebalance threshold"),
+            (self.cost_multiplier, 0, 10, "Cost multiplier"),
+        )
+        for value, low, high, name in checks:
+            if not isfinite(value) or value <= low or (high is not None and value > high):
+                raise ValueError(f"{name} out of range")
+        for value in (self.financing_pct_annual, self.cash_rate_pct_annual):
+            if not isfinite(value) or not 0 <= value <= 100:
+                raise ValueError("Annual rates must be in [0, 100] percent")
+        if type(self.vol_lookback) is not int or self.vol_lookback < 5:
+            raise ValueError("Volatility lookback must be an integer >= 5")
+        if self.max_drawdown_pct is not None and not 0 < self.max_drawdown_pct < 100:
+            raise ValueError("Maximum drawdown must be in (0, 100) percent")
+
+
+class _History(SequenceABC):
+    """Read-only view of one market's candles up to ``end``."""
+
+    def __init__(self, candles, end):
+        self._candles, self._end = candles, end
+
+    def __len__(self):
+        return self._end
+
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [self._candles[i] for i in range(*index.indices(self._end))]
+        if index < 0:
+            index += self._end
+        if not 0 <= index < self._end:
+            raise IndexError("History index out of range")
+        return self._candles[index]
+
+
+@dataclass
+class _Book:
+    market: Market
+    candles: list
+    strategy: Callable
+    position: int = -1          # index of the latest candle seen
+    quantity: float = 0.0
+    price: float = 0.0          # latest mark
+    signal: float = 0.0
+    vol: float | None = None
+    target: float = 0.0         # weight to execute at the next open
+    cashflow: float = 0.0       # trade cash flows, for per-market P&L
+    fees: float = 0.0
+    fills: int = 0
+    weight_sum: float = 0.0
+    weight_marks: int = 0
+    by_time: dict = field(default_factory=dict)
+    vols: list = field(default_factory=list)
+
+
+def _volatility(candles, end, lookback) -> float | None:
+    """Annualised close-to-close volatility from the candles before ``end``."""
+    if end <= lookback:
+        return None
+    window = candles[end - lookback - 1:end]
+    returns = [log(b.close / a.close) for a, b in zip(window, window[1:])]
+    seconds = (window[-1].open_time - window[0].open_time).total_seconds()
+    if seconds <= 0:
+        return None
+    return stdev(returns) * sqrt(SECONDS_PER_YEAR * lookback / seconds)
+
+
+def _volatility_by_end(candles, lookback) -> list:
+    """``_volatility(candles, end, lookback)`` for every end, in one pass.
+
+    Entry ``end`` uses candles[:end] only. Rolling sums are refreshed
+    from scratch every 500 steps to stop rounding drift.
+    """
+    out = [None] * (len(candles) + 1)
+    returns = [log(b.close / a.close) for a, b in zip(candles, candles[1:])]
+    total = squares = 0.0
+    for end in range(lookback + 1, len(candles) + 1):
+        window = returns[end - lookback - 1:end - 1]
+        if (end - lookback - 1) % 500 == 0:
+            total, squares = sum(window), sum(r * r for r in window)
+        else:
+            new, old = returns[end - 2], returns[end - lookback - 2]
+            total += new - old
+            squares += new * new - old * old
+        seconds = (candles[end - 1].open_time - candles[end - lookback - 1].open_time).total_seconds()
+        variance = (squares - total * total / lookback) / (lookback - 1)
+        if seconds > 0:
+            out[end] = sqrt(max(variance, 0.0)) * sqrt(SECONDS_PER_YEAR * lookback / seconds)
+    return out
+
+
+def run_portfolio(
+    data: Mapping[str, Sequence[Candle]],
+    markets: Sequence[Market],
+    factory: Callable[[], Callable],
+    config: PortfolioConfig | None = None,
+    trade_from: datetime | None = None,
+) -> dict:
+    """Simulate one account across ``markets``.
+
+    Candles before ``trade_from`` are warm-up: strategies and volatility
+    estimates see them, but nothing is traded or counted.
+    """
+
+    config = config or PortfolioConfig()
+    if not markets:
+        raise ValueError("At least one market is required")
+    books = []
+    for market in markets:
+        candles = list(data.get(market.name, ()))
+        if len(candles) < 2:
+            raise ValueError(f"Not enough candles for {market.name}")
+        validate_series(candles)
+        book = _Book(market, candles, factory())
+        book.by_time = {c.open_time: i for i, c in enumerate(candles)}
+        book.vols = _volatility_by_end(candles, config.vol_lookback)
+        books.append(book)
+
+    times = sorted({c.open_time for book in books for c in book.candles})
+    if trade_from is not None and not times[0] < trade_from <= times[-2]:
+        raise ValueError("trade_from must leave at least two traded dates")
+
+    cash = config.initial_equity
+    curve: list[tuple[datetime, float]] = []
+    totals = {"fees": 0.0, "financing": 0.0, "interest": 0.0, "fills": 0}
+    gross_marks: list[float] = []
+    peak = config.initial_equity
+    halted_at = None
+    previous_time = None
+    started = trade_from is None
+
+    def equity() -> float:
+        return cash + sum(b.quantity * b.price for b in books)
+
+    def trade(book, price_raw, weight, total_equity):
+        nonlocal cash
+        wanted = weight * total_equity / price_raw
+        delta = wanted - book.quantity
+        if delta == 0:
+            return
+        slip = book.market.slippage_pct * config.cost_multiplier / 100
+        fee_rate = book.market.fee_pct * config.cost_multiplier / 100
+        price = price_raw * (1 + slip) if delta > 0 else price_raw * (1 - slip)
+        fee = abs(delta) * price * fee_rate
+        cash -= delta * price + fee
+        book.cashflow -= delta * price + fee
+        book.quantity = wanted
+        book.fees += fee
+        book.fills += 1
+        totals["fees"] += fee
+        totals["fills"] += 1
+
+    for time in times:
+        if not started and time >= trade_from:
+            started = True
+        today = [b for b in books if time in b.by_time]
+
+        # 1. Opens: mark, then execute the targets decided at the last close.
+        for book in today:
+            book.position = book.by_time[time]
+            book.price = book.candles[book.position].open
+        if started and equity() > 0:
+            total = equity()
+            for book in today:
+                weight = 0.0 if halted_at else book.target
+                current = book.quantity * book.price / total
+                flips = (weight > 0) != (current > 0) or (weight < 0) != (current < 0)
+                if (flips and (weight or current)) or abs(weight - current) >= config.rebalance_threshold:
+                    trade(book, book.price, weight, total)
+
+        # 2. Closes.
+        for book in today:
+            book.price = book.candles[book.position].close
+
+        # 3. Carry for the calendar time since the previous date.
+        # Nothing accrues for the warm-up gap before the first traded date.
+        if started and curve:
+            years = (time - previous_time).total_seconds() / SECONDS_PER_YEAR
+            total = equity()
+            gross = sum(abs(b.quantity * b.price) for b in books)
+            financing = max(0.0, gross - total) * config.financing_pct_annual / 100 * years
+            interest = max(0.0, total - gross) * config.cash_rate_pct_annual / 100 * years
+            cash += interest - financing
+            totals["financing"] += financing
+            totals["interest"] += interest
+        previous_time = time
+
+        # 4. Mark the account; the kill switch is the deterministic veto.
+        if started:
+            total = equity()
+            curve.append((time, total))
+            gross = sum(abs(b.quantity * b.price) for b in books)
+            gross_marks.append(gross / total if total > 0 else 0.0)
+            for book in books:
+                if total > 0:
+                    book.weight_sum += abs(book.quantity * book.price) / total
+                    book.weight_marks += 1
+            peak = max(peak, total)
+            if total <= 0:
+                break
+            if (config.max_drawdown_pct is not None and not halted_at
+                    and 100 * (peak - total) / peak >= config.max_drawdown_pct):
+                halted_at = time
+
+        # 5. Decide at the close using only candles seen so far.
+        for book in today:
+            end = book.position + 1
+            signal = book.strategy(_History(book.candles, end))
+            if (isinstance(signal, bool) or not isinstance(signal, (int, float))
+                    or not isfinite(signal) or not -1 <= signal <= 1):
+                raise ValueError("Strategy must return a number in [-1, 1]")
+            book.signal = signal if (signal >= 0 or config.allow_short) else 0.0
+            book.vol = book.vols[end]
+
+        ready = [b for b in books if b.vol is not None and b.vol > 0]
+        weights = {}
+        for book in ready:
+            if config.sizing == "equal":
+                raw = book.signal / len(books)
+            else:
+                raw = book.signal * config.target_vol_pct / 100 / (book.vol * sqrt(len(ready)))
+            weights[book.market.name] = max(-config.max_weight, min(config.max_weight, raw))
+        gross = sum(abs(w) for w in weights.values())
+        scale = config.max_leverage / gross if gross > config.max_leverage else 1.0
+        for book in books:
+            book.target = weights.get(book.market.name, 0.0) * scale
+
+    # Close everything at the final marks, paying exit costs.
+    final_time = curve[-1][0] if curve else times[-1]
+    if curve and curve[-1][1] > 0:
+        total = equity()
+        for book in books:
+            if book.quantity:
+                trade(book, book.price, 0.0, total)
+        curve[-1] = (final_time, equity())
+
+    if len(curve) < 2:
+        raise ValueError("Not enough traded dates")
+    span = (curve[-1][0] - curve[0][0]).total_seconds()
+    periods = (len(curve) - 1) * SECONDS_PER_YEAR / span if span > 0 else 0.0
+    metrics = compute_metrics(curve, [], periods, config.initial_equity)
+    for key in ("trades", "win_rate_pct", "profit_factor"):
+        metrics.pop(key, None)
+    metrics.update({
+        "fills": totals["fills"],
+        "total_fees": totals["fees"],
+        "total_financing": totals["financing"],
+        "total_interest": totals["interest"],
+        "avg_gross_leverage": sum(gross_marks) / len(gross_marks) if gross_marks else 0.0,
+        "max_gross_leverage": max(gross_marks, default=0.0),
+        "kill_switch_at": halted_at.isoformat() if halted_at else None,
+        "markets": len(books),
+    })
+    per_market = [
+        {
+            "market": b.market.name,
+            "asset_class": b.market.asset_class,
+            "pnl": b.cashflow + b.quantity * b.price,
+            "fees": b.fees,
+            "fills": b.fills,
+            "avg_abs_weight": b.weight_sum / b.weight_marks if b.weight_marks else 0.0,
+        }
+        for b in books
+    ]
+    per_market.sort(key=lambda row: row["pnl"], reverse=True)
+    return {"metrics": metrics, "per_market": per_market, "equity_curve": curve}

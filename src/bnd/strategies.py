@@ -390,6 +390,141 @@ def bollinger_reversion(window: int = 20, width: float = 2.0) -> Strategy:
     return _streaming(State)
 
 
+class _Wilder:
+    """Wilder smoothing: simple average of the first ``length`` values,
+    then value = (previous * (length - 1) + new) / length."""
+
+    def __init__(self, length: int):
+        self.length, self.value, self.count, self.seed = length, None, 0, 0.0
+
+    def update(self, value: float):
+        self.count += 1
+        if self.count < self.length:
+            self.seed += value
+            return None
+        if self.count == self.length:
+            self.value = (self.seed + value) / self.length
+        else:
+            self.value = (self.value * (self.length - 1) + value) / self.length
+        return self.value
+
+
+def _true_range(candle, previous_close):
+    if previous_close is None:
+        return candle.high - candle.low
+    return max(candle.high - candle.low, abs(candle.high - previous_close),
+               abs(candle.low - previous_close))
+
+
+def adx_trend(period: int = 14, threshold: float = 25.0) -> Strategy:
+    """Trend strength: follow +DI/-DI direction only while ADX is above
+    ``threshold``; flat in weak, choppy markets."""
+
+    _check_lengths(period=period)
+    if not 0 < threshold < 100:
+        raise ValueError("Threshold must be in (0, 100)")
+
+    class State:
+        def __init__(self):
+            self.previous = None
+            self.tr, self.plus, self.minus = _Wilder(period), _Wilder(period), _Wilder(period)
+            self.adx = _Wilder(period)
+            self.target = 0
+
+        def update(self, candle):
+            previous = self.previous
+            self.previous = candle
+            if previous is None:
+                return
+            up = candle.high - previous.high
+            down = previous.low - candle.low
+            plus_dm = up if up > down and up > 0 else 0.0
+            minus_dm = down if down > up and down > 0 else 0.0
+            tr = self.tr.update(_true_range(candle, previous.close))
+            plus = self.plus.update(plus_dm)
+            minus = self.minus.update(minus_dm)
+            if tr is None or tr <= 0:
+                return
+            plus_di, minus_di = 100 * plus / tr, 100 * minus / tr
+            total = plus_di + minus_di
+            dx = 0.0 if total == 0 else 100 * abs(plus_di - minus_di) / total
+            adx = self.adx.update(dx)
+            if adx is None:
+                return
+            if adx < threshold:
+                self.target = 0
+            else:
+                self.target = (plus_di > minus_di) - (plus_di < minus_di)
+
+    return _streaming(State)
+
+
+def keltner_breakout(window: int = 20, multiplier: float = 2.0) -> Strategy:
+    """Volatility breakout: long above EMA + multiplier x ATR, short below
+    EMA - multiplier x ATR, exit when the close crosses back over the EMA."""
+
+    _check_lengths(window=window)
+    if not 0 < multiplier <= 10:
+        raise ValueError("Multiplier must be in (0, 10]")
+
+    class State:
+        def __init__(self):
+            self.ema, self.atr = _Ema(window), _Wilder(window)
+            self.previous_close = None
+            self.target = 0
+
+        def update(self, candle):
+            middle = self.ema.update(candle.close)
+            atr = self.atr.update(_true_range(candle, self.previous_close))
+            self.previous_close = candle.close
+            if atr is None or self.ema.count < window:
+                return
+            close = candle.close
+            if self.target > 0 and close < middle or self.target < 0 and close > middle:
+                self.target = 0
+            if self.target == 0:
+                if close > middle + multiplier * atr:
+                    self.target = 1
+                elif close < middle - multiplier * atr:
+                    self.target = -1
+
+    return _streaming(State)
+
+
+def stochastic_reversion(period: int = 14, smooth: int = 3,
+                         oversold: float = 20.0, overbought: float = 80.0) -> Strategy:
+    """Mean reversion on %D (smoothed stochastic): long when oversold until
+    it reaches 50, short when overbought until it falls to 50."""
+
+    _check_lengths(period=period, smooth=smooth)
+    if not 0 < oversold < 50 < overbought < 100:
+        raise ValueError("Require 0 < oversold < 50 < overbought < 100")
+
+    class State:
+        def __init__(self):
+            self.candles = deque(maxlen=period)
+            self.k_values = deque(maxlen=smooth)
+            self.target = 0
+
+        def update(self, candle):
+            self.candles.append(candle)
+            if len(self.candles) < period:
+                return
+            high = max(c.high for c in self.candles)
+            low = min(c.low for c in self.candles)
+            k = 50.0 if high == low else 100 * (candle.close - low) / (high - low)
+            self.k_values.append(k)
+            if len(self.k_values) < smooth:
+                return
+            d = sum(self.k_values) / smooth
+            if self.target > 0 and d >= 50 or self.target < 0 and d <= 50:
+                self.target = 0
+            if self.target == 0:
+                self.target = 1 if d < oversold else -1 if d > overbought else 0
+
+    return _streaming(State)
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
     "sma_crossover": sma_crossover,
@@ -400,6 +535,9 @@ STRATEGIES = {
     "momentum": momentum,
     "rsi_reversion": rsi_reversion,
     "bollinger_reversion": bollinger_reversion,
+    "adx_trend": adx_trend,
+    "keltner_breakout": keltner_breakout,
+    "stochastic_reversion": stochastic_reversion,
 }
 
 # Default robustness ranges ("start:stop:step") for each strategy's
@@ -413,4 +551,7 @@ SWEEP_RANGES = {
     "momentum": {"lookback": "30:360:30", "threshold": "0:10:5"},
     "rsi_reversion": {"period": "7:28:7", "oversold": "20:35:5"},
     "bollinger_reversion": {"window": "10:50:10", "width": "1.5:3:0.5"},
+    "adx_trend": {"period": "7:28:7", "threshold": "15:35:5"},
+    "keltner_breakout": {"window": "10:50:10", "multiplier": "1:3:0.5"},
+    "stochastic_reversion": {"period": "7:28:7", "oversold": "10:30:5"},
 }
