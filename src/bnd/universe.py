@@ -121,3 +121,26 @@ def select(names=None, classes=None, universe: str = "futures") -> tuple[Market,
     if not markets:
         raise ValueError("No markets selected")
     return markets
+
+
+# ESMA retail CFD initial margins (percent of notional): major currency
+# pairs 3.33% (30:1); other pairs, gold and major indices 5% (20:1); other
+# commodities and indices 10%; everything else (bonds, shares) 20%;
+# crypto 50% (2:1). A broker may ask more, never less.
+_MAJOR_CURRENCIES = {"USD", "EUR", "JPY", "GBP", "CAD", "CHF"}
+_MAJOR_INDICES = {"SP500", "NASDAQ100", "DAX", "GERMANY", "NIKKEI", "JAPAN", "FTSE100", "UK"}
+
+
+def esma_margin_pct(market: Market) -> float:
+    """Minimum retail margin for this market under the ESMA CFD rules."""
+    name, cls = market.name, market.asset_class
+    if cls == "forex":
+        pair = {name[:3], name[3:]}
+        return 3.33 if len(name) == 6 and pair <= _MAJOR_CURRENCIES else 5.0
+    if cls == "crypto":
+        return 50.0
+    if name == "GOLD" or (cls == "index" and name in _MAJOR_INDICES):
+        return 5.0
+    if cls in ("commodity", "index"):
+        return 10.0
+    return 20.0
