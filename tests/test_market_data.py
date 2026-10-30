@@ -187,3 +187,67 @@ def test_cli_missing_file_is_clear_error(tmp_path, capsys):
 
     assert code == 2
     assert "Cannot read" in capsys.readouterr().err
+
+
+def test_find_gaps_reports_missing_candles():
+    from src.bnd.market_data import find_gaps
+
+    series = candles(6)
+    gapped = series[:2] + series[4:]
+
+    assert find_gaps(series) == []
+    assert find_gaps(gapped) == [(series[1].open_time, series[4].open_time)]
+
+
+def write_trend_csv(path, count=200):
+    prices = [100 + i * 0.5 + (5 if i % 10 < 5 else -5) for i in range(count)]
+    save_csv(parse_binance_klines([kline(i, p) for i, p in enumerate(prices)]), path)
+
+
+def test_cli_refuses_to_run_without_risk_gate(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    write_trend_csv(path)
+
+    code = main(["run", "--data", str(path)])
+
+    assert code == 2
+    assert "--no-risk-gate" in capsys.readouterr().err
+
+
+def test_cli_research_mode_is_labelled(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    write_trend_csv(path)
+
+    code = main(["run", "--data", str(path), "--no-risk-gate",
+                 "--fast", "5", "--slow", "20"])
+
+    assert code == 0
+    report = json.loads(capsys.readouterr().out)
+    for period in report["periods"].values():
+        assert period["strategy"]["risk_gate"] == "disabled_research_only"
+
+
+def test_cli_out_of_sample_starts_at_split_with_warm_up(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    write_trend_csv(path)
+
+    main(["run", "--data", str(path), "--no-risk-gate",
+          "--fast", "5", "--slow", "20"])
+
+    report = json.loads(capsys.readouterr().out)
+    oos = report["periods"]["out_of_sample"]
+    assert oos["start"] == (START + STEP * 140).isoformat()
+    # Warm-up lets the benchmark (and strategy) trade from the first bar.
+    assert oos["buy_and_hold"]["trades"] == 1
+
+
+def test_cli_require_continuous_rejects_gaps(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    series = candles(60)
+    save_csv(series[:30] + series[31:], path)
+
+    code = main(["run", "--data", str(path), "--no-risk-gate",
+                 "--require-continuous"])
+
+    assert code == 2
+    assert "gaps" in capsys.readouterr().err

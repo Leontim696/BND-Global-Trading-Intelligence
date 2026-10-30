@@ -11,7 +11,7 @@ deterministic risk engine, which has veto power over every entry.
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from math import isfinite, sqrt
 from statistics import median
 from collections.abc import Sequence as SequenceABC
@@ -129,6 +129,7 @@ def compute_metrics(
     trades: Sequence[Trade],
     bars_per_year: float,
     initial_equity: float,
+    risk_free_rate_annual: float = 0.0,
 ) -> dict:
     equities = [value for _, value in equity_curve]
     final = equities[-1] if equities else initial_equity
@@ -149,7 +150,8 @@ def compute_metrics(
         mean = sum(returns) / len(returns)
         variance = sum((r - mean) ** 2 for r in returns) / (len(returns) - 1)
         if variance > 0:
-            sharpe = mean / sqrt(variance) * sqrt(bars_per_year)
+            rf = (1 + risk_free_rate_annual) ** (1 / bars_per_year) - 1
+            sharpe = (mean - rf) / sqrt(variance) * sqrt(bars_per_year)
 
     years = len(equities) / bars_per_year if bars_per_year > 0 else 0
     cagr = None
@@ -173,6 +175,7 @@ def compute_metrics(
         "total_fees": sum(t.fees for t in trades),
         "bars": len(equities),
         "years": years,
+        "risk_free_rate_annual": risk_free_rate_annual,
     }
 
 
@@ -192,6 +195,8 @@ class _Simulator:
         self.peak = config.initial_equity
         self.day = None
         self.day_start_equity = config.initial_equity
+        # Equity at the previous candle's close (last valuation mark).
+        self.last_mark = config.initial_equity
 
     def equity(self, price: float) -> float:
         return self.cash + self.quantity * price
@@ -206,6 +211,10 @@ class _Simulator:
 
     def open_position(self, side: int, candle: Candle) -> None:
         equity = self.equity(candle.open)
+        if equity <= 0:
+            # Account wiped out (e.g. a short gapped through its stop).
+            self.rejected_entries += 1
+            return
         notional = equity * self.config.allocation_pct / 100
 
         if self.config.risk_limits is not None:
@@ -285,22 +294,34 @@ class _Simulator:
         return False
 
     def start_bar(self, candle: Candle) -> None:
-        day = candle.open_time.date()
+        # Daily P&L policy: UTC calendar day measured from the previous
+        # day's final close mark, so an overnight gap counts against the
+        # new day's loss limit.
+        day = candle.open_time.astimezone(timezone.utc).date()
         if day != self.day:
             self.day = day
-            self.day_start_equity = self.equity(candle.open)
+            self.day_start_equity = self.last_mark
 
 
 def run_backtest(
     candles: Sequence[Candle],
     strategy: Strategy,
     config: BacktestConfig | None = None,
+    trade_from: int = 0,
 ) -> BacktestResult:
-    """Simulate a strategy; see the module docstring for fill rules."""
+    """Simulate a strategy; see the module docstring for fill rules.
+
+    Candles before ``trade_from`` are warm-up only: the strategy sees
+    them, but nothing is traded or counted. The decision made on candle
+    ``trade_from - 1`` is the first one executed.
+    """
 
     config = config or BacktestConfig()
     candles = list(candles)
     validate_series(candles)
+
+    if type(trade_from) is not int or not 0 <= trade_from <= len(candles) - 2:
+        raise ValueError("trade_from must leave at least two traded candles")
 
     if len(candles) < 2:
         raise ValueError("At least two candles are required")
@@ -313,6 +334,10 @@ def run_backtest(
     blocked_side = 0
 
     for index, candle in enumerate(candles):
+        if index < trade_from:
+            target = _decide(strategy, candles, index, config)
+            continue
+
         sim.start_bar(candle)
 
         # 1. Execute the decision made on the previous candle's close.
@@ -335,19 +360,16 @@ def run_backtest(
 
         equity = sim.equity(candle.close)
         sim.peak = max(sim.peak, equity)
+        sim.last_mark = equity
         equity_curve.append((candle.open_time, equity))
 
         if equity <= 0:
             break
 
         # 3. Decide using only data available at this close.
-        target = strategy(_History(candles, index + 1))
-        if target not in (-1, 0, 1):
-            raise ValueError("Strategy must return -1, 0 or 1")
-        if target < 0 and not config.allow_short:
-            target = 0
+        target = _decide(strategy, candles, index, config)
 
-    last = candles[len(equity_curve) - 1]
+    last = candles[trade_from + len(equity_curve) - 1]
     if sim.side != 0:
         # Close at the final close so metrics include exit costs.
         sim.close_position(last.open_time + _step(candles), last.close, "end_of_data")
@@ -360,6 +382,10 @@ def run_backtest(
         config.initial_equity,
     )
     metrics["rejected_entries"] = sim.rejected_entries
+    metrics["risk_gate"] = (
+        "enforced" if config.risk_limits is not None
+        else "disabled_research_only"
+    )
 
     return BacktestResult(
         trades=sim.trades,
@@ -369,8 +395,29 @@ def run_backtest(
     )
 
 
+def _decide(strategy, candles, index, config) -> int:
+    """Ask the strategy for a target using candles[:index + 1] only."""
+    target = strategy(_History(candles, index + 1))
+    if type(target) is not int or target not in (-1, 0, 1):
+        raise ValueError("Strategy must return -1, 0 or 1")
+    if target < 0 and not config.allow_short:
+        return 0
+    return target
+
+
 def _step(candles: Sequence[Candle]) -> timedelta:
     return candles[-1].open_time - candles[-2].open_time
+
+
+def split_index(length: int, in_sample_pct: float = 70.0) -> int:
+    """Index of the first out-of-sample candle."""
+
+    if not 0 < in_sample_pct < 100:
+        raise ValueError("In-sample share must be in (0, 100)")
+    cut = int(length * in_sample_pct / 100)
+    if cut < 2 or length - cut < 2:
+        raise ValueError("Not enough candles to split")
+    return cut
 
 
 def split_candles(
@@ -378,9 +425,5 @@ def split_candles(
 ) -> tuple[list[Candle], list[Candle]]:
     """Chronological split for in-sample / out-of-sample evaluation."""
 
-    if not 0 < in_sample_pct < 100:
-        raise ValueError("In-sample share must be in (0, 100)")
-    cut = int(len(candles) * in_sample_pct / 100)
-    if cut < 2 or len(candles) - cut < 2:
-        raise ValueError("Not enough candles to split")
+    cut = split_index(len(candles), in_sample_pct)
     return list(candles[:cut]), list(candles[cut:])

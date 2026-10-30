@@ -269,3 +269,119 @@ def test_history_view_cannot_reach_future():
     run_backtest(candles, strategy)
 
     assert checked == [1, 2, 3, 4]
+
+
+def test_overnight_gap_counts_toward_next_day_loss_limit():
+    # Long across UTC midnight; the 00:00 candle gaps down 50%.
+    t = datetime(2024, 1, 1, 21, tzinfo=timezone.utc)
+    candles = [Candle(t + timedelta(hours=i), 100, 100, 100, 100, 1)
+               for i in range(3)]
+    candles += [Candle(t + timedelta(hours=3 + h), 50, 50, 50, 50, 1)
+                for h in range(4)]
+    config = BacktestConfig(
+        costs=NO_COSTS,
+        stop_loss_pct=50.0,
+        risk_limits=RiskLimits(50.0, 3.0, 25.0, 100.0, 1.0),
+    )
+
+    # Long, then flat right after the gap, then try to re-enter.
+    result = run_backtest(candles, fixed(1, 1, 1, 0, 1, 1, 1), config)
+
+    # 3% / 50% stop -> 600 notional; the gap loses 300 = 3% of equity.
+    assert result.trades[0].pnl == pytest.approx(-300)
+    assert len(result.trades) == 1
+    assert result.rejected_entries == 2
+
+
+def test_warm_up_candles_are_seen_but_not_traded():
+    candles = bars([100, 100, 100, 100, 110, 120])
+    lengths = []
+
+    def strategy(history):
+        lengths.append(len(history))
+        # Decides long on candle 2, which is warm-up.
+        return 1 if len(history) >= 3 else 0
+
+    result = run_backtest(candles, strategy, BacktestConfig(costs=NO_COSTS),
+                          trade_from=3)
+
+    assert lengths == [1, 2, 3, 4, 5, 6]
+    # The warm-up decision executes at the first traded open.
+    assert result.trades[0].entry_time == candles[3].open_time
+    assert [t for t, _ in result.equity_curve] == [c.open_time for c in candles[3:]]
+    assert result.metrics["final_equity"] == pytest.approx(10_000 * 1.2)
+
+
+def test_trade_from_must_leave_two_candles():
+    with pytest.raises(ValueError):
+        run_backtest(bars([100, 101, 102]), buy_and_hold(), trade_from=2)
+
+
+def test_metrics_label_risk_gate():
+    candles = bars([100, 101, 102])
+    research = run_backtest(candles, buy_and_hold())
+    gated = run_backtest(candles, buy_and_hold(), BacktestConfig(
+        stop_loss_pct=5.0,
+        risk_limits=RiskLimits(1.0, 3.0, 25.0, 100.0, 1.0),
+    ))
+
+    assert research.metrics["risk_gate"] == "disabled_research_only"
+    assert gated.metrics["risk_gate"] == "enforced"
+
+
+def test_sharpe_subtracts_risk_free_rate():
+    curve = [(START, v) for v in (101.0, 102.5, 103.0, 104.8)]
+
+    base = compute_metrics(curve, [], 4, 100.0)
+    with_rf = compute_metrics(curve, [], 4, 100.0, risk_free_rate_annual=0.05)
+
+    assert with_rf["sharpe"] < base["sharpe"]
+
+
+def test_parity_with_main_quant_backtester():
+    """Both engines agree on long/flat fills, fees and slippage."""
+    from src.bnd.quant_backtest import Bar, BacktestConfig as QuantConfig
+    from src.bnd.quant_backtest import backtest as quant_backtest
+
+    prices = [100, 104, 99, 107, 111, 108, 115, 112, 118, 121]
+    candles = bars(prices)
+    signals = [True, True, False, True, True, False, True, True, True, True]
+
+    ours = run_backtest(
+        candles,
+        lambda h: 1 if signals[len(h) - 1] else 0,
+        BacktestConfig(costs=CostModel(fee_pct=0.10, slippage_pct=0.05)),
+    )
+    theirs = quant_backtest(
+        [Bar(c.open, c.close) for c in candles],
+        signals,
+        QuantConfig(fee_bps=10.0, slippage_bps=5.0),
+    )
+
+    # Main marks the open position at the final close; we also pay exit
+    # slippage and fee at that close. Remove that difference explicitly.
+    exit_factor = (1 - 0.0005) * (1 - 0.001)
+    assert ours.metrics["final_equity"] == pytest.approx(
+        theirs["final_equity"] * exit_factor
+    )
+    assert [v for _, v in ours.equity_curve[:-1]] == pytest.approx(
+        theirs["equity_curve"][:-1]
+    )
+
+
+def test_wiped_out_account_rejects_entry_instead_of_crashing():
+    # A short gaps from 100 to 300: the loss exceeds all equity.
+    candles = bars([100, 100])
+    candles.append(Candle(START + timedelta(hours=8), 300, 300, 300, 300, 1))
+    candles.append(Candle(START + timedelta(hours=12), 300, 300, 300, 300, 1))
+    config = BacktestConfig(
+        costs=NO_COSTS,
+        allow_short=True,
+        stop_loss_pct=10.0,
+        risk_limits=RiskLimits(100.0, 100.0, 100.0, 100.0, 1.0),
+    )
+
+    result = run_backtest(candles, fixed(-1, -1, 1, 1), config)
+
+    assert result.trades[0].exit_reason == "stop_loss"
+    assert result.metrics["final_equity"] <= 0

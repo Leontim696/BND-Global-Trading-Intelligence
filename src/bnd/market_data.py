@@ -7,7 +7,7 @@ API key. Nothing here places orders.
 import csv
 import json
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from math import isfinite
 from pathlib import Path
 from typing import Sequence
@@ -79,6 +79,29 @@ def validate_series(candles: Sequence[Candle]) -> None:
                 "Candles must be strictly increasing in time: "
                 + current.open_time.isoformat()
             )
+
+
+def find_gaps(
+    candles: Sequence[Candle], step: timedelta | None = None
+) -> list[tuple[datetime, datetime]]:
+    """Return (previous, next) open times where candles are missing.
+
+    The step defaults to the most common spacing. This suits 24/7
+    markets; session-based markets need an exchange calendar.
+    """
+
+    if len(candles) < 2:
+        return []
+
+    if step is None:
+        spacings = [b.open_time - a.open_time for a, b in zip(candles, candles[1:])]
+        step = max(set(spacings), key=spacings.count)
+
+    return [
+        (a.open_time, b.open_time)
+        for a, b in zip(candles, candles[1:])
+        if b.open_time - a.open_time != step
+    ]
 
 
 def save_csv(candles: Sequence[Candle], path) -> None:

@@ -14,10 +14,11 @@ import json
 import sys
 from datetime import datetime, timezone
 
-from .backtester import BacktestConfig, CostModel, run_backtest, split_candles
+from .backtester import BacktestConfig, CostModel, run_backtest, split_index
 from .market_data import (
     MarketDataError,
     fetch_binance_klines,
+    find_gaps,
     load_csv,
     save_csv,
 )
@@ -34,6 +35,7 @@ SUMMARY_KEYS = (
     "profit_factor",
     "total_fees",
     "rejected_entries",
+    "risk_gate",
 )
 
 
@@ -77,6 +79,19 @@ def command_fetch(args) -> int:
 
 def command_run(args) -> int:
     candles = load_csv(args.data)
+    gaps = find_gaps(candles)
+    if gaps and args.require_continuous:
+        raise MarketDataError(
+            f"{len(gaps)} gaps in data; first after "
+            + gaps[0][0].isoformat()
+        )
+
+    # Fail closed: running without the risk engine must be explicit.
+    if args.risk_per_trade is None and not args.no_risk_gate:
+        raise ValueError(
+            "Pass --risk-per-trade with --stop-loss, or --no-risk-gate "
+            "for an explicitly research-only run"
+        )
 
     risk_limits = None
     if args.risk_per_trade is not None:
@@ -100,26 +115,34 @@ def command_run(args) -> int:
         initial_equity=args.equity, costs=config.costs
     )
 
-    periods = {"full": candles}
+    # (candles, first traded index). Out-of-sample trading starts at the
+    # split, but strategies warm up on the preceding in-sample candles.
+    periods = {"full": (candles, 0)}
     if args.in_sample is not None:
-        periods["in_sample"], periods["out_of_sample"] = split_candles(
-            candles, args.in_sample
-        )
+        cut = split_index(len(candles), args.in_sample)
+        periods["in_sample"] = (candles[:cut], 0)
+        periods["out_of_sample"] = (candles, cut)
 
     report = {
         "data": args.data,
         "first_candle": candles[0].open_time.isoformat(),
         "last_candle": candles[-1].open_time.isoformat(),
         "strategy": args.strategy,
+        "data_gaps": len(gaps),
+        "first_gaps": [
+            [before.isoformat(), after.isoformat()] for before, after in gaps[:5]
+        ],
         "periods": {},
     }
 
-    for name, period in periods.items():
+    for name, (period, trade_from) in periods.items():
         # Fresh strategy per period: some strategies keep state.
-        result = run_backtest(period, _make_strategy(args), config)
-        benchmark = run_backtest(period, buy_and_hold(), benchmark_config)
+        result = run_backtest(period, _make_strategy(args), config, trade_from)
+        benchmark = run_backtest(
+            period, buy_and_hold(), benchmark_config, trade_from
+        )
         report["periods"][name] = {
-            "start": period[0].open_time.isoformat(),
+            "start": period[trade_from].open_time.isoformat(),
             "end": period[-1].open_time.isoformat(),
             "strategy": _summary(result),
             "buy_and_hold": _summary(benchmark),
@@ -161,6 +184,10 @@ def build_parser() -> argparse.ArgumentParser:
                      help="percent of equity; enables risk-engine sizing")
     run.add_argument("--max-daily-loss", type=float, default=3.0)
     run.add_argument("--max-drawdown", type=float, default=25.0)
+    run.add_argument("--no-risk-gate", action="store_true",
+                     help="research only: run without risk-engine sizing")
+    run.add_argument("--require-continuous", action="store_true",
+                     help="fail if candles are missing")
     run.add_argument("--in-sample", type=float, default=70.0,
                      help="percent of data for in-sample; the rest is out-of-sample")
     run.set_defaults(handler=command_run)
