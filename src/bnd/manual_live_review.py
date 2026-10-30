@@ -6,7 +6,7 @@ The first GPT answer is passed to Claude for review. Never print secrets.
 import argparse
 import json
 import os
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
@@ -33,7 +33,10 @@ def preflight():
             raise RuntimeError("Claude model must be from Anthropic")
         prices = []
         for suffix in ("IN", "OUT"):
-            price = Decimal(os.environ[agent + "_" + suffix])
+            try:
+                price = Decimal(os.getenv(agent + "_" + suffix, "").strip())
+            except InvalidOperation:
+                raise RuntimeError("Missing or non-numeric price for " + agent) from None
             if not price.is_finite() or price <= 0:
                 raise RuntimeError("Positive finite prices required")
             prices.append(price)
@@ -70,11 +73,17 @@ def call(agent, prompt):
         raise RuntimeError("OpenRouter request failed (no retry)") from exc
     if len(raw) > 100000:
         raise RuntimeError("Response too large")
-    result = json.loads(raw)
+    try:
+        result = json.loads(raw)
+    except ValueError as exc:
+        raise RuntimeError("OpenRouter returned invalid JSON") from exc
     actual_model = result.get("model", "")
     if actual_model != model:
         raise RuntimeError("Model mismatch; aborting")
-    content = result["choices"][0]["message"]["content"]
+    try:
+        content = result["choices"][0]["message"]["content"]
+    except (KeyError, IndexError, TypeError) as exc:
+        raise RuntimeError("OpenRouter response has no message content") from exc
     if not isinstance(content, str) or not content.strip():
         raise RuntimeError("Empty model response")
     usage = result.get("usage") or {}
@@ -91,8 +100,8 @@ def main():
     preflight()
     if args.execute:
         proposal = call("GPT", TASK)
-        call("CLAUDE", "Review this GPT proposal for correctness and tests:\\n"
-             + proposal[:2500] + "\\nOriginal task: " + TASK)
+        call("CLAUDE", "Review this GPT proposal for correctness and tests:\n"
+             + proposal[:2500] + "\nOriginal task: " + TASK)
 
 
 if __name__ == "__main__":

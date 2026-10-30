@@ -170,11 +170,14 @@ def evaluate_risk(
         - portfolio.gross_exposure
     )
 
-    # Calculate maximum allowed risk per trade.
-    remaining_risk = (
-        portfolio.equity
-        * limits.max_risk_per_trade_pct
-        / 100
+    # Calculate maximum allowed risk per trade. A stopped-out trade
+    # must not push daily loss or drawdown past their limits.
+    remaining_risk = min(
+        portfolio.equity * limits.max_risk_per_trade_pct / 100,
+        portfolio.equity * limits.max_daily_loss_pct / 100
+        - portfolio.daily_loss,
+        portfolio.equity * limits.max_drawdown_pct / 100
+        - portfolio.drawdown,
     )
 
     max_notional_by_risk = (

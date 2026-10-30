@@ -1,0 +1,66 @@
+name: BND Backtest (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      symbol:
+        description: 'Binance symbol'
+        default: 'BTCUSDT'
+        type: string
+      interval:
+        description: 'Candle interval (e.g. 4h, 1d)'
+        default: '4h'
+        type: string
+      start:
+        description: 'First date (YYYY-MM-DD)'
+        default: '2019-01-01'
+        type: string
+      strategy:
+        description: 'Strategy'
+        default: 'sma_crossover'
+        type: choice
+        options: [sma_crossover, donchian_breakout, buy_and_hold]
+      extra_args:
+        description: 'Extra run arguments, e.g. --stop-loss 5 --risk-per-trade 1'
+        default: '--stop-loss 5 --risk-per-trade 1'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      # Public market data only: no API keys, no paid AI, no orders.
+      BND_ALLOW_LIVE: "false"
+      BND_PAPER_ONLY: "true"
+      SYMBOL: ${{ inputs.symbol }}
+      INTERVAL: ${{ inputs.interval }}
+      START: ${{ inputs.start }}
+      STRATEGY: ${{ inputs.strategy }}
+      EXTRA_ARGS: ${{ inputs.extra_args }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Download candles
+        run: |
+          python -m src.bnd.backtest_cli fetch --symbol "$SYMBOL" \
+            --interval "$INTERVAL" --start "$START" \
+            --out "backtest-reports/$SYMBOL-$INTERVAL.csv"
+      - name: Run backtest
+        run: |
+          # EXTRA_ARGS is split into separate arguments on purpose.
+          python -m src.bnd.backtest_cli run \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            --strategy "$STRATEGY" $EXTRA_ARGS \
+            | tee backtest-reports/report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bnd-backtest-${{ github.run_id }}
+          path: backtest-reports/
+          retention-days: 14

@@ -3,6 +3,7 @@
 
 from dataclasses import dataclass, field
 from enum import Enum
+from math import isfinite
 
 from .fusion_council import (
     AGENTS,
@@ -46,11 +47,16 @@ class DebateResponse:
     def __post_init__(self):
         if self.agent not in AGENTS:
             raise ValueError("Unknown agent")
-        if not self.reasoning.strip():
+        if not isinstance(self.reasoning, str) or not self.reasoning.strip():
             raise ValueError("Response reasoning is required")
         if not isinstance(self.vote, Vote):
             raise ValueError("Invalid vote")
-        if not 0.0 <= self.confidence <= 1.0:
+        if (
+            not isinstance(self.confidence, (int, float))
+            or isinstance(self.confidence, bool)
+            or not isfinite(self.confidence)
+            or not 0.0 <= self.confidence <= 1.0
+        ):
             raise ValueError("Confidence must be between 0 and 1")
 
 
@@ -71,7 +77,7 @@ class DebateEngine:
         if self.status != DebateStatus.WAITING:
             raise ValueError("Debate already started")
         if len(self.council.initial_opinions) != len(AGENTS):
-            raise ValueError("All six agents must vote first")
+            raise ValueError("All agents must vote first")
         self.status = DebateStatus.OPEN
         self.round_number = 1
 

@@ -6,6 +6,7 @@ even if the final charge exceeds the reserved amount or budget.
 """
 
 import sqlite3
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
@@ -30,10 +31,16 @@ class SQLiteCostStorage:
         self._lock = RLock()
         self._initialize()
 
+    @contextmanager
     def _connect(self):
+        """Yield a connection inside one transaction, then close it."""
         connection = sqlite3.connect(self.database_path, timeout=30)
-        connection.execute("PRAGMA busy_timeout = 30000")
-        return connection
+        try:
+            connection.execute("PRAGMA busy_timeout = 30000")
+            with connection:
+                yield connection
+        finally:
+            connection.close()
 
     def _initialize(self):
         with self._connect() as connection:
@@ -56,9 +63,15 @@ class SQLiteCostStorage:
     def _totals(connection, now):
         daily = Decimal("0")
         monthly = Decimal("0")
+        # Timestamps are stored as UTC ISO strings, so they sort
+        # chronologically and only the current month needs scanning.
+        month_start = now.replace(day=1, hour=0, minute=0, second=0,
+                                  microsecond=0).isoformat()
         for table, column in (("usage_records", "cost_usd"),
                               ("reservations", "amount_usd")):
-            rows = connection.execute(f"SELECT {column}, timestamp FROM {table}").fetchall()
+            rows = connection.execute(
+                f"SELECT {column}, timestamp FROM {table} WHERE timestamp >= ?",
+                (month_start,)).fetchall()
             for amount_text, timestamp_text in rows:
                 timestamp = utc_time(datetime.fromisoformat(timestamp_text))
                 amount = money(amount_text)

@@ -42,6 +42,7 @@ class Opinion:
 
         if (
             not isinstance(self.confidence, (int, float))
+            or isinstance(self.confidence, bool)
             or not isfinite(self.confidence)
             or not 0.0 <= self.confidence <= 1.0
         ):
