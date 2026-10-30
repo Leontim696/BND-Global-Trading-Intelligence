@@ -1,5 +1,6 @@
 """Offline strategy evaluation helpers; no market connectivity or trading."""
 import csv
+from datetime import datetime, timezone
 from pathlib import Path
 
 from .quant_backtest import Bar, BacktestConfig, backtest, walk_forward_splits
@@ -8,7 +9,9 @@ from .quant_backtest import Bar, BacktestConfig, backtest, walk_forward_splits
 def load_ohlc_csv(path: str | Path) -> list[Bar]:
     """Read ordered bars from a CSV with timestamp,open,close columns.
 
-    Reject duplicate or unsorted timestamps. Callers must validate their data source.
+    Parse ISO timestamps and compare in UTC, not lexicographic string order.
+    Date-only/naive ISO timestamps are interpreted as UTC. Callers must
+    validate source, interval consistency and market-specific adjustments.
     """
     bars = []
     previous = None
@@ -18,9 +21,18 @@ def load_ohlc_csv(path: str | Path) -> list[Bar]:
             raise ValueError("CSV requires timestamp, open, close")
         for row in reader:
             stamp = row["timestamp"]
-            if not stamp or (previous is not None and stamp <= previous):
-                raise ValueError("Timestamps must be nonempty, unique and ascending ISO strings")
-            previous = stamp
+            if not isinstance(stamp, str) or not stamp.strip():
+                raise ValueError("Timestamp must be a nonempty ISO string")
+            try:
+                parsed = datetime.fromisoformat(stamp.strip().replace("Z", "+00:00"))
+            except ValueError as exc:
+                raise ValueError("Invalid ISO timestamp") from exc
+            if parsed.tzinfo is None or parsed.utcoffset() is None:
+                parsed = parsed.replace(tzinfo=timezone.utc)
+            instant = parsed.astimezone(timezone.utc)
+            if previous is not None and instant <= previous:
+                raise ValueError("Timestamps must be unique and strictly increasing in UTC")
+            previous = instant
             bars.append(Bar(float(row["open"]), float(row["close"])))
     if len(bars) < 2:
         raise ValueError("At least two bars are required")
