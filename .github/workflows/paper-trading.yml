@@ -41,6 +41,8 @@ jobs:
     env:
       # Public market data only: no API keys, no paid AI, no real orders.
       BND_ALLOW_LIVE_AI: "false"
+      # Read by src/bnd/safety.py: only MOCK or PAPER are accepted.
+      BND_TRADING_MODE: PAPER
       CAPITAL: ${{ inputs.capital }}
       SETTINGS: ${{ inputs.settings }}
       RESET: ${{ inputs.reset_kill_switch }}

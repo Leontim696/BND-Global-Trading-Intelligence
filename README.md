@@ -228,6 +228,16 @@ rates, a one-day crash, a dollar spike or a crypto collapse (stylised,
 rounded moves per market and asset class), and whether that would trip
 the kill switch.
 
+## Safety
+
+`safety.trading_mode()` is the single mode check: `BND_TRADING_MODE` may be
+MOCK or PAPER (default); LIVE or anything else is refused, so no setting
+can switch on real orders. `tests/test_safety.py` also scans `src`,
+`scripts` and the workflows for broker/exchange order endpoints and for
+leaked keys. CI runs Bandit (`-ll`); reviewed exceptions are marked
+`# nosec <id>` with the reason on the line above. Dependabot proposes
+weekly updates for Actions and the test dependency.
+
 ## Paid API calls
 
 `ai_cache.ResponseCache` (pass `cache=` to `CouncilRunner`) stores each

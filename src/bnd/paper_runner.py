@@ -43,6 +43,7 @@ from .portfolio import (
     target_weights,
 )
 from .robustness import parse_value
+from .safety import SafetyError, trading_mode
 from .scenarios import run_scenarios
 from .signal_pipeline import average_true_range
 from .strategies import SWEEP_RANGES
@@ -442,6 +443,7 @@ def _config(settings) -> RunnerConfig:
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     try:
+        mode = trading_mode()
         engine, settings = _open_account(args)
         try:
             if args.reset_kill_switch is not None:
@@ -459,12 +461,13 @@ def main(argv=None) -> int:
             factory = _make_factory(settings, data)
             report = run_daily(engine, data, available, factory, config, settings["strategy"])
             report["settings"] = settings
+            report["mode"] = mode
             report["missing_data"] = [m.name for m in markets if m not in available]
             if args.report:
                 Path(args.report).write_text(render_report(engine, report))
         finally:
             engine.close()
-    except (MarketDataError, PaperEngineError, ValueError) as exc:
+    except (MarketDataError, PaperEngineError, SafetyError, ValueError) as exc:
         print("Error:", exc, file=sys.stderr)
         return 2
     text = json.dumps(report, indent=2, default=str)

@@ -67,11 +67,9 @@ class SQLiteCostStorage:
         # chronologically and only the current month needs scanning.
         month_start = now.replace(day=1, hour=0, minute=0, second=0,
                                   microsecond=0).isoformat()
-        for table, column in (("usage_records", "cost_usd"),
-                              ("reservations", "amount_usd")):
-            rows = connection.execute(
-                f"SELECT {column}, timestamp FROM {table} WHERE timestamp >= ?",
-                (month_start,)).fetchall()
+        for query in ("SELECT cost_usd, timestamp FROM usage_records WHERE timestamp >= ?",
+                      "SELECT amount_usd, timestamp FROM reservations WHERE timestamp >= ?"):
+            rows = connection.execute(query, (month_start,)).fetchall()
             for amount_text, timestamp_text in rows:
                 timestamp = utc_time(datetime.fromisoformat(timestamp_text))
                 amount = money(amount_text)

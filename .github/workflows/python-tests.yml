@@ -36,6 +36,12 @@ jobs:
           python -m pip install --disable-pip-version-check actionlint-py==1.7.12.25
           actionlint -color
 
+      - name: Security scan (Bandit, medium severity and up)
+        # Reviewed exceptions carry "# nosec <id>" with the reason above them.
+        run: |
+          python -m pip install --disable-pip-version-check bandit==1.8.6
+          bandit -q -r src scripts -ll
+
       - name: Check Python syntax
         run: |
           python - <<'PY'

@@ -161,7 +161,8 @@ def call(agent, model, key, body):
                   headers={"Authorization": "Bearer " + key,
                            "Content-Type": "application/json"})
     try:
-        with urlopen(req, timeout=35) as response:
+        # Reviewed: fixed https URL constant.
+        with urlopen(req, timeout=35) as response:  # nosec B310
             raw = response.read(150001)
         if len(raw) > 150000:
             raise ValueError("Response too large")
