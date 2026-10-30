@@ -1,31 +1,28 @@
-Latest run: `runs/2026-10-30T132754Z_41063393336_BTCUSDT_1d_all` (source 7d57db0, job success)
+Latest run: `runs/2026-10-30T140128Z_41068079079_PORTFOLIO_1d_all` (source e0407d0, job success)
 
 # BND backtest summary
 
-## Dataset
-- File: `backtest-reports/BTCUSDT-1d.csv` (2859 candles, 0 gaps)
-- Range: 2019-01-01T00:00:00+00:00 → 2026-10-29T00:00:00+00:00
-- SHA-256: `64207ddad540a3ade72544eefb9ae0fc1d08d6117590ac4c264407506662a4cc`
-
 ## Verdict
-**No strategy shows evidence of an edge** after adjusting for testing all of them at once. Treat any profit below as luck.
+**No evidence of an edge:** no strategy beat the simple equal-weight basket on out-of-sample Sharpe.
 
-## Strategy comparison (out-of-sample, default parameters)
+## Multi-market portfolio
+- Markets: 22 (1 bond, 8 commodity, 2 crypto, 6 forex, 5 index)
+- Out-of-sample from 2022-01-23T00:00:00+00:00
+- Sizing volatility, portfolio volatility target 15.0%, max leverage 3.0x, financing 5.0%/yr, kill switch at 30.0% drawdown, shorts on
 
-| # | Strategy | Return | Sharpe | Max drawdown | Trades | Capital invested | p-value (adjusted) |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| 1 | sma_crossover | 48.96% | 0.70 | 28.01% | 11 | 55.71% | 0.198 (1.000) |
-| 2 | momentum | 51.73% | 0.67 | 28.10% | 8 | 61.19% | 0.317 (1.000) |
-| 3 | ema_crossover | 30.91% | 0.54 | 30.95% | 16 | 52.68% | 0.416 (1.000) |
-| 4 | macd | 18.48% | 0.39 | 34.12% | 35 | 49.88% | 0.386 (1.000) |
-| 5 | volatility_target | 16.60% | 0.36 | 51.42% | 1 | 86.75% | 0.762 (1.000) |
-| 6 | donchian_breakout | 13.50% | 0.34 | 29.84% | 8 | 36.48% | 0.545 (1.000) |
-| 7 | rsi_reversion | 10.57% | 0.30 | 23.03% | 6 | 17.72% | 0.346 (1.000) |
-| 8 | bollinger_reversion | 7.16% | 0.24 | 37.60% | 15 | 24.71% | 0.386 (1.000) |
-| – | buy & hold | 23.02% | 0.42 | 52.97% | 1 | 100.00% | – |
-
-## Walk-forward (SMA long/flat, independent folds)
-- Folds: 3, beating buy & hold: 1
-- Excess return per fold: mean -13.20 pp, median -25.05 pp
+| # | Strategy | Return | CAGR | Sharpe | Max drawdown | Avg leverage | Fills | Financing | Kill switch |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| 1 | volatility_target | 20.99% | 4.08% | 0.35 | 26.53% | 2.99x | 213 | 4,843.45 | – |
+| 2 | donchian_breakout | -7.66% | -1.66% | -0.10 | 30.74% | 0.59x | 266 | 938.58 | 2023-03-10 |
+| 3 | bollinger_reversion | -23.32% | -5.42% | -0.38 | 30.31% | 1.09x | 1148 | 1,331.14 | 2024-04-18 |
+| 4 | macd | -22.52% | -5.21% | -0.40 | 30.09% | 1.81x | 1437 | 2,724.29 | 2024-12-13 |
+| 5 | rsi_reversion | -25.96% | -6.11% | -0.41 | 31.15% | 1.33x | 809 | 1,238.23 | 2026-01-23 |
+| 6 | momentum | -19.94% | -4.56% | -0.42 | 30.65% | 1.05x | 454 | 1,584.49 | 2023-09-28 |
+| 7 | adx_trend | -18.58% | -4.22% | -0.42 | 30.23% | 0.51x | 483 | 488.31 | 2023-08-29 |
+| 8 | sma_crossover | -20.20% | -4.62% | -0.42 | 31.32% | 0.73x | 238 | 1,162.26 | 2023-03-17 |
+| 9 | ema_crossover | -22.77% | -5.28% | -0.45 | 30.20% | 0.94x | 387 | 1,412.58 | 2023-07-23 |
+| 10 | keltner_breakout | -23.22% | -5.39% | -0.45 | 30.28% | 0.60x | 587 | 610.10 | 2023-10-10 |
+| 11 | stochastic_reversion | -25.63% | -6.02% | -0.56 | 30.25% | 0.56x | 736 | 742.87 | 2023-01-13 |
+| – | equal-weight basket (long, 1x) | 41.69% | 7.58% | 0.78 | 16.42% | 0.93x | 47 | – | – |
 
 _Paper research only. Past results do not predict future returns._
