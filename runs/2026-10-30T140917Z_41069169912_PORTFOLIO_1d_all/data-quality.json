@@ -1,0 +1,247 @@
+{
+  "markets": {
+    "EURUSD": {
+      "symbol": "EURUSD=X",
+      "rows": 4391,
+      "dropped_missing": 10,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 119,
+      "duplicate_days": 0,
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "GBPUSD": {
+      "symbol": "GBPUSD=X",
+      "rows": 4391,
+      "dropped_missing": 10,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 91,
+      "duplicate_days": 0,
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "USDJPY": {
+      "symbol": "JPY=X",
+      "rows": 4391,
+      "dropped_missing": 10,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 254,
+      "duplicate_days": 0,
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "AUDUSD": {
+      "symbol": "AUDUSD=X",
+      "rows": 4391,
+      "dropped_missing": 11,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 147,
+      "duplicate_days": 0,
+      "candles": 4379,
+      "first": "2010-01-01T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "USDCHF": {
+      "symbol": "CHF=X",
+      "rows": 4391,
+      "dropped_missing": 13,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 100,
+      "duplicate_days": 0,
+      "candles": 4377,
+      "first": "2010-01-01T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "USDCAD": {
+      "symbol": "CAD=X",
+      "rows": 4391,
+      "dropped_missing": 11,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 109,
+      "duplicate_days": 0,
+      "candles": 4379,
+      "first": "2010-01-01T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "GOLD": {
+      "symbol": "GC=F",
+      "rows": 4239,
+      "dropped_missing": 6,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 25,
+      "duplicate_days": 0,
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "SILVER": {
+      "symbol": "SI=F",
+      "rows": 4239,
+      "dropped_missing": 7,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 57,
+      "duplicate_days": 0,
+      "candles": 4231,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "CRUDE_OIL": {
+      "symbol": "CL=F",
+      "rows": 4239,
+      "dropped_missing": 6,
+      "dropped_non_positive": 2,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4230,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "NATURAL_GAS": {
+      "symbol": "NG=F",
+      "rows": 4239,
+      "dropped_missing": 5,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 1,
+      "duplicate_days": 0,
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "COPPER": {
+      "symbol": "HG=F",
+      "rows": 4239,
+      "dropped_missing": 6,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 30,
+      "duplicate_days": 0,
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "CORN": {
+      "symbol": "ZC=F",
+      "rows": 4239,
+      "dropped_missing": 9,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 3,
+      "duplicate_days": 0,
+      "candles": 4229,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "WHEAT": {
+      "symbol": "ZW=F",
+      "rows": 4239,
+      "dropped_missing": 7,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 12,
+      "duplicate_days": 0,
+      "candles": 4231,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "SOYBEANS": {
+      "symbol": "ZS=F",
+      "rows": 4239,
+      "dropped_missing": 7,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 7,
+      "duplicate_days": 0,
+      "candles": 4231,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "SP500": {
+      "symbol": "^GSPC",
+      "rows": 4233,
+      "dropped_missing": 0,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "NASDAQ100": {
+      "symbol": "^NDX",
+      "rows": 4233,
+      "dropped_missing": 0,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "DAX": {
+      "symbol": "^GDAXI",
+      "rows": 4277,
+      "dropped_missing": 5,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4271,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "NIKKEI": {
+      "symbol": "^N225",
+      "rows": 4135,
+      "dropped_missing": 21,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4113,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "FTSE100": {
+      "symbol": "^FTSE",
+      "rows": 4252,
+      "dropped_missing": 2,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4249,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "US10Y_NOTE": {
+      "symbol": "ZN=F",
+      "rows": 4239,
+      "dropped_missing": 7,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 5,
+      "duplicate_days": 0,
+      "candles": 4231,
+      "first": "2010-01-04T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "BITCOIN": {
+      "symbol": "BTC-USD",
+      "rows": 4427,
+      "dropped_missing": 0,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 4426,
+      "first": "2014-09-17T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    },
+    "ETHEREUM": {
+      "symbol": "ETH-USD",
+      "rows": 3278,
+      "dropped_missing": 0,
+      "dropped_non_positive": 0,
+      "repaired_high_low": 0,
+      "duplicate_days": 0,
+      "candles": 3277,
+      "first": "2017-11-09T00:00:00+00:00",
+      "last": "2026-10-29T00:00:00+00:00"
+    }
+  },
+  "failures": {}
+}
