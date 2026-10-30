@@ -13,7 +13,7 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-AGENTS = ("GPT", "CLAUDE", "GEMINI", "GROK", "DEEPSEEK")
+AGENTS = ("DEEPSEEK", "GPT", "CLAUDE", "GEMINI", "GROK")
 URL = "https://openrouter.ai/api/v1/chat/completions"
 OUT = Path("overnight-reports")
 REPORT = OUT / "five-agent-review.json"
