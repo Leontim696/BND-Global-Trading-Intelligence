@@ -1,25 +1,33 @@
 name: BND Five-Agent Overnight Council
+
 on:
   push:
     branches: [main]
     paths:
       - 'scripts/overnight_five_agent_council.py'
+      - 'tests/test_five_agent_council.py'
       - '.github/workflows/bnd-five-agent-overnight.yml'
   workflow_dispatch:
   schedule:
     - cron: "20 20 * * *"
+
 permissions:
   contents: read
+
 concurrency:
   group: bnd-paid-ai
   cancel-in-progress: false
+
 jobs:
   council:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      BND_ALLOW_LIVE: "false"
+      # Deliberately off on push, manual dispatch and schedule.
+      BND_ALLOW_PAID_AI: "false"
       BND_PAPER_ONLY: "true"
+      BND_MAX_RUN_COST_USD: "0.25"
+      BND_MAX_CALL_COST_USD: "0.10"
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT }}
       BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE }}
@@ -31,11 +39,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
-      - name: Generate independent agent proposals
+      - name: Offline safety tests (no paid calls)
+        run: python -m unittest discover -s tests -p 'test_five_agent_council.py' -v
+      - name: Generate independent agent proposals (disabled by default)
         run: python scripts/overnight_five_agent_council.py
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: bnd-five-agent-review-${{ github.run_id }}
           path: overnight-reports/five-agent-review.json
+          if-no-files-found: warn
           retention-days: 7
