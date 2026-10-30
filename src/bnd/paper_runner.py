@@ -243,8 +243,8 @@ def render_report(engine: PaperEngine, report: dict) -> str:
         f"- Equity: {report['equity']:,.2f} {money} (start {start:,.2f}, {change:+.2f}%)",
         f"- Gross leverage: {report['gross_leverage'] or 0:.2f}x | "
         f"candles processed: {report['candles_processed']}",
-        "- Kill switch: " + (f"**ACTIVE** ({report['kill_reason']}); a manual reset is "
-                             "required" if report["kill_switch"] else "off"),
+        "- Kill switch: " + (f"**ACTIVE** ({report['kill_reason']}); restart with a manual "
+                             "run and reset_kill_switch = RESET-KILL-SWITCH" if report["kill_switch"] else "off"),
     ]
     if report.get("missing_data"):
         lines.append("- No data this run (not traded): " + ", ".join(report["missing_data"]))
@@ -308,6 +308,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--data-dir", required=True, help="CSV per market (fetch-universe)")
     parser.add_argument("--report", help="write the Markdown status page here")
     parser.add_argument("--json", help="write this run's result here")
+    parser.add_argument("--reset-kill-switch", metavar="CONFIRMATION",
+                        help="restart after a kill switch; the text must be RESET-KILL-SWITCH")
     # Settings default to None so an explicit value can be told apart.
     parser.add_argument("--universe", choices=["futures", "etf"])
     parser.add_argument("--markets")
@@ -378,6 +380,10 @@ def main(argv=None) -> int:
     try:
         engine, settings = _open_account(args)
         try:
+            if args.reset_kill_switch is not None:
+                if not engine.account()["kill_switch"]:
+                    raise ValueError("Kill switch is not active; nothing to reset")
+                engine.reset_kill_switch(args.reset_kill_switch, datetime.now(timezone.utc))
             config = _config(settings)
             factory = _factory(settings["strategy"], _params(settings))
             markets = select_markets(_split_list(settings["markets"]),
