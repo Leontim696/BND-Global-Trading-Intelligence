@@ -255,6 +255,12 @@ hours, so an identical question is never paid for twice; hits and money
 saved are counted. `python -m src.bnd.cost_report --db costs.sqlite
 [--cache cache.sqlite]` prints spending by model, agent and day.
 
+`ai_budgets.BudgetSet` keeps a separate cost file and daily/monthly limit
+for research, development and trading, so one purpose cannot spend
+another's money; a purpose without a budget cannot spend at all.
+`choose_model(task, options)` picks the cheapest configured model that
+reaches the task's minimum tier (trading votes always need the top tier).
+
 All OpenRouter calls are opt-in. The workflows under `.github/workflows`
 that call paid models require manual dispatch with explicit confirmation
 inputs, and an `OPENROUTER_API_KEY` secret with a provider-side spending limit.
