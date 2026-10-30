@@ -192,6 +192,8 @@ strategy's timing from what sizing and leverage alone earn. On ETFs,
 leverage means a margin loan: with `--universe etf` the portfolio commands
 charge 5%/yr on exposure above equity by default (`--financing` overrides;
 futures default to 0 because their financing is in the price).
+`--per-class` chooses a parameter set for each asset class separately,
+each on the training window of that class's markets alone.
 
 ## Paper-trading engine
 

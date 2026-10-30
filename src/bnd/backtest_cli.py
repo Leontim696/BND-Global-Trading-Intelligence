@@ -685,7 +685,8 @@ def command_portfolio_wfo(args) -> int:
     sets = usable
     config = _portfolio_config(args)
     report = portfolio_walk_forward(data, markets, make_factory, sets, config,
-                                    args.train_days, args.test_days, args.embargo_days)
+                                    args.train_days, args.test_days, args.embargo_days,
+                                    per_class=args.per_class)
     report.update(mode="portfolio-wfo", strategy=args.strategy, universe=args.universe,
                   ranges=texts, skipped_missing=missing if args.skip_missing else [],
                   settings={"portfolio_vol_pct": config.target_vol_pct,
@@ -998,6 +999,8 @@ def build_parser() -> argparse.ArgumentParser:
     pwfo.add_argument("--train-days", type=int, default=4 * 365)
     pwfo.add_argument("--test-days", type=int, default=365)
     pwfo.add_argument("--embargo-days", type=int, default=5)
+    pwfo.add_argument("--per-class", action="store_true",
+                      help="choose parameters separately for each asset class")
     pwfo.set_defaults(handler=command_portfolio_wfo)
 
     walk = sub.add_parser(

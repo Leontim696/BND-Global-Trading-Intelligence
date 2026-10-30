@@ -396,7 +396,10 @@ def _portfolio_wfo_lines(report: dict) -> list[str]:
         "| --- | --- | ---: | ---: | ---: | ---: | --- |",
     ]
     for row in report.get("folds", []):
-        params = ", ".join(f"{k}={v}" for k, v in row["params"].items())
+        params = "; ".join(
+            f"{k}: " + ", ".join(f"{n}={v}" for n, v in value.items())
+            if isinstance(value, dict) else f"{k}={value}"
+            for k, value in row["params"].items()) or "–"
         lines.append(
             f"| {row['test'][0]} → {row['test'][1]} | {params} | "
             f"{_fmt(row['test_return_pct'], '%')} | {_fmt(row['test_sharpe'])} | "

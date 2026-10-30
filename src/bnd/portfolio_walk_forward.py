@@ -17,7 +17,7 @@ from statistics import mean
 from typing import Callable, Mapping, Sequence
 
 from .market_data import Candle
-from .portfolio import PortfolioConfig, run_portfolio
+from .portfolio import PortfolioConfig, run_portfolio, strategy_for
 from .strategies import buy_and_hold
 from .universe import Market
 
@@ -64,6 +64,23 @@ def _run(data, markets, factory, config, start, end, minimum):
         return None
 
 
+def _members(frame, members):
+    return {m.name: frame[m.name] for m in members if m.name in frame}
+
+
+def _by_class(choices, make_factory, frame, markets):
+    """One portfolio factory that gives each market its asset class's parameters."""
+    factories = {cls: make_factory(params, _members(frame, [m for m in markets
+                                                             if m.asset_class == cls]))
+                 for cls, params in choices.items()}
+
+    def factory(market):
+        return strategy_for(factories[market.asset_class], market)
+
+    factory.per_market = True
+    return factory
+
+
 def _sharpe(result) -> float:
     if result is None or result["metrics"]["sharpe"] is None:
         return float("-inf")
@@ -79,8 +96,14 @@ def portfolio_walk_forward(
     train_days: int = 4 * 365,
     test_days: int = 365,
     embargo_days: int = 5,
+    per_class: bool = False,
 ) -> dict:
-    """``make_factory(params, frame)`` builds a portfolio factory for one window."""
+    """``make_factory(params, frame)`` builds a portfolio factory for one window.
+
+    With ``per_class`` each asset class gets its own parameter set, chosen on
+    the training window of that class's markets alone (a cross-sectional
+    strategy then ranks markets within their class).
+    """
     if not param_sets:
         raise ValueError("At least one parameter set is required")
     times = sorted({c.open_time for m in markets for c in data[m.name]})
@@ -92,13 +115,26 @@ def portfolio_walk_forward(
     for train_start, train_end, test_start, test_end in calendar_folds(
             times, train_days, test_days, embargo_days):
         frame, _ = _window(data, markets, train_end, minimum)
-        scored = [(params, _run(data, markets, make_factory(params, frame), config,
-                                train_start, train_end, minimum))
-                  for params in param_sets]
-        best, trained = max(scored, key=lambda item: _sharpe(item[1]))
+        if per_class:
+            best = {}
+            for cls in sorted({m.asset_class for m in markets}):
+                members = [m for m in markets if m.asset_class == cls]
+                own = _members(frame, members)
+                scored = [(params, _run(data, members, make_factory(params, own), config,
+                                        train_start, train_end, minimum))
+                          for params in param_sets]
+                best[cls] = max(scored, key=lambda item: _sharpe(item[1]))[0]
+            trained = _run(data, markets, _by_class(best, make_factory, frame, markets),
+                           config, train_start, train_end, minimum)
+        else:
+            scored = [(params, _run(data, markets, make_factory(params, frame), config,
+                                    train_start, train_end, minimum))
+                      for params in param_sets]
+            best, trained = max(scored, key=lambda item: _sharpe(item[1]))
         frame, _ = _window(data, markets, test_end, minimum)
-        tested = _run(data, markets, make_factory(best, frame), config,
-                      test_start, test_end, minimum)
+        factory = (_by_class(best, make_factory, frame, markets) if per_class
+                   else make_factory(best, frame))
+        tested = _run(data, markets, factory, config, test_start, test_end, minimum)
         bench = _run(data, markets, buy_and_hold, basket, test_start, test_end, minimum)
         if tested is None or bench is None:
             continue
@@ -130,6 +166,7 @@ def portfolio_walk_forward(
     changes = sum(a["params"] != b["params"] for a, b in zip(rows, rows[1:]))
     return {
         "train_days": train_days, "test_days": test_days, "embargo_days": embargo_days,
+        "per_class": per_class,
         "folds": rows,
         "summary": {
             "fold_count": len(rows),
