@@ -638,8 +638,10 @@ def _portfolio_data(args):
 def command_portfolio_wfo(args) -> int:
     """Choose parameters on each training window; trade the next unseen year."""
     markets, data, missing = _portfolio_data(args)
+    # buy_and_hold has no parameters: one set, the same sizing and leverage
+    # as the strategies, so it shows what sizing alone earns.
     texts = dict(CROSS_RANGES if args.strategy == "cross_momentum"
-                 else SWEEP_RANGES[args.strategy])
+                 else SWEEP_RANGES.get(args.strategy, {}))
     texts.update(_pairs(args.range, "--range"))
     ranges = {name: parse_range(text) for name, text in texts.items()}
     fixed = {k: v for k, v in _strategy_params(args).items() if k not in ranges}
@@ -975,8 +977,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     pwfo = sub.add_parser("portfolio-wfo", parents=[book],
                           help="Portfolio walk-forward: re-choose parameters every test window")
-    pwfo.add_argument("--strategy", choices=["cross_momentum"] + sorted(SWEEP_RANGES),
-                      required=True)
+    pwfo.add_argument("--strategy",
+                      choices=["buy_and_hold", "cross_momentum"] + sorted(SWEEP_RANGES),
+                      required=True,
+                      help="buy_and_hold = always long with the same sizing and leverage "
+                           "(the control for any strategy's timing)")
     pwfo.add_argument("--range", action="append", metavar="NAME=START:STOP:STEP",
                       help="parameter range, repeatable; defaults to the strategy's grid")
     pwfo.add_argument("--train-days", type=int, default=4 * 365)
