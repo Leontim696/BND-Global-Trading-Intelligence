@@ -138,3 +138,15 @@ def test_cli_buy_and_hold_control_uses_the_same_sizing(tmp_path):
     report = json.loads(out)
     assert all(row["params"] == {} for row in report["folds"])
     assert report["settings"]["max_leverage"] == 2
+
+
+def test_etf_leverage_pays_a_margin_loan_by_default():
+    from src.bnd.backtest_cli import ETF_MARGIN_LOAN_PCT, build_parser, _portfolio_config
+
+    def config(*extra):
+        args = build_parser().parse_args(["portfolio", "--data-dir", "x", *extra])
+        return _portfolio_config(args).financing_pct_annual
+
+    assert config("--universe", "etf") == ETF_MARGIN_LOAN_PCT == 5.0
+    assert config("--universe", "futures") == 0.0
+    assert config("--universe", "etf", "--financing", "2.5") == 2.5

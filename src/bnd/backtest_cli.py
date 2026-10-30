@@ -577,6 +577,16 @@ def _data_diagnostics(data) -> list[dict]:
     return rows
 
 
+# Leverage on ETFs is a margin loan; a typical retail rate, not zero.
+ETF_MARGIN_LOAN_PCT = 5.0
+
+
+def _financing(args) -> float:
+    if args.financing is not None:
+        return args.financing
+    return ETF_MARGIN_LOAN_PCT if args.universe == "etf" else 0.0
+
+
 def _portfolio_config(args, **overrides) -> PortfolioConfig:
     values = dict(
         sizing=args.sizing,
@@ -585,7 +595,7 @@ def _portfolio_config(args, **overrides) -> PortfolioConfig:
         max_leverage=args.max_leverage,
         max_weight=args.max_weight,
         rebalance_threshold=args.rebalance / 100,
-        financing_pct_annual=args.financing,
+        financing_pct_annual=_financing(args),
         cash_rate_pct_annual=args.cash_rate,
         max_drawdown_pct=args.max_drawdown or None,
         allow_short=not args.no_shorts,
@@ -954,9 +964,10 @@ def build_parser() -> argparse.ArgumentParser:
                       help="largest |weight| for one market")
     book.add_argument("--rebalance", type=float, default=5.0,
                       help="resize when a weight moves this many points")
-    book.add_argument("--financing", type=float, default=0.0,
-                      help="extra annual %% on exposure above equity (margin loans/CFDs); "
-                           "per-market carry such as crypto funding always applies")
+    book.add_argument("--financing", type=float,
+                      help="annual %% on exposure above equity (margin loan); default "
+                           f"{ETF_MARGIN_LOAN_PCT} for --universe etf, 0 for futures (their "
+                           "financing is in the price); crypto funding always applies")
     book.add_argument("--cash-rate", type=float, default=0.0)
     book.add_argument("--max-drawdown", type=float, default=30.0,
                       help="kill switch in percent; 0 disables")
