@@ -21,6 +21,11 @@ on:
         default: 'all'
         type: choice
         options: [all, combo, selector, cross_momentum, sma_crossover, ema_crossover, macd, adx_trend, donchian_breakout, keltner_breakout, momentum, rsi_reversion, bollinger_reversion, stochastic_reversion, volatility_target, regime_switch]
+      mode:
+        description: 'compare = fixed parameters, in/out-of-sample split; walk-forward = re-choose parameters every year (not for all/combo/selector)'
+        default: 'compare'
+        type: choice
+        options: [compare, walk-forward]
       extra_args:
         description: 'Extra portfolio arguments, e.g. --max-leverage 3 --portfolio-vol 15 --no-shorts'
         default: '--max-leverage 3 --portfolio-vol 15 --base-currency EUR'
@@ -61,6 +66,7 @@ jobs:
             --universe "$UNIVERSE" --classes "$CLASSES" --out-dir backtest-reports/universe
           cp backtest-reports/universe/quality.json backtest-reports/data-quality.json
       - name: Portfolio backtest
+        if: inputs.mode != 'walk-forward'
         run: |
           set -o pipefail
           # EXTRA_ARGS is split into separate arguments on purpose.
@@ -70,6 +76,19 @@ jobs:
             --classes "$CLASSES" --skip-missing \
             --strategy "$STRATEGY" $EXTRA_ARGS \
             | tee backtest-reports/portfolio.json
+      - name: Portfolio walk-forward
+        if: inputs.mode == 'walk-forward'
+        run: |
+          set -o pipefail
+          # --base-currency belongs to the compare mode only.
+          args=$(printf '%s' "$EXTRA_ARGS" | sed -E 's/--base-currency +[A-Z]+//')
+          # args is split into separate arguments on purpose.
+          # shellcheck disable=SC2086
+          python -m src.bnd.backtest_cli portfolio-wfo \
+            --data-dir backtest-reports/universe --universe "$UNIVERSE" \
+            --classes "$CLASSES" --skip-missing \
+            --strategy "$STRATEGY" $args \
+            | tee backtest-reports/portfolio-wfo.json
       - name: Job summary
         if: always()
         run: |
@@ -77,6 +96,9 @@ jobs:
           args=()
           if [ -f backtest-reports/portfolio.json ]; then
             args+=(--portfolio backtest-reports/portfolio.json)
+          fi
+          if [ -f backtest-reports/portfolio-wfo.json ]; then
+            args+=(--portfolio-wfo backtest-reports/portfolio-wfo.json)
           fi
           python -m src.bnd.backtest_summary "${args[@]}" > backtest-reports/summary.md
           cat backtest-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
@@ -104,7 +126,7 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       SOURCE_SHA: ${{ github.sha }}
       RESULT: ${{ needs.backtest.result }}
-      SYMBOL: PORTFOLIO-${{ inputs.universe }}
+      SYMBOL: PORTFOLIO-${{ inputs.universe }}${{ inputs.mode == 'walk-forward' && '-wfo' || '' }}
       INTERVAL: 1d
       STRATEGY: ${{ inputs.strategy }}
     steps:

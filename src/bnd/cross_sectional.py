@@ -18,6 +18,10 @@ from typing import Mapping, Sequence
 from .market_data import Candle
 
 
+# Walk-forward grid for portfolio-wfo.
+CROSS_RANGES = {"lookback": "126:252:63", "skip": "0:21:21"}
+
+
 def ranking_table(data: Mapping[str, Sequence[Candle]], lookback: int = 252,
                   skip: int = 21, fraction: float = 1 / 3,
                   minimum_markets: int = 3) -> dict:

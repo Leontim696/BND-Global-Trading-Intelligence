@@ -24,7 +24,7 @@ from .backtester import (
     run_backtest,
     split_index,
 )
-from .cross_sectional import cross_momentum_factory
+from .cross_sectional import CROSS_RANGES, cross_momentum_factory
 from .market_data import (
     MarketDataError,
     fetch_binance_klines,
@@ -42,6 +42,7 @@ from .portfolio import (
     record_signals,
     run_portfolio,
 )
+from .portfolio_walk_forward import portfolio_walk_forward
 from .quant_backtest import BacktestConfig as QuantConfig
 from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
@@ -586,8 +587,8 @@ def _combo_attribution(data, markets, members, config, cut) -> list[dict]:
     return rows
 
 
-def command_portfolio(args) -> int:
-    """Trade every market in one account; compare with an equal-weight basket."""
+def _portfolio_data(args):
+    """Selected markets and their candles from --data-dir."""
     markets = select_markets(_split_list(args.markets), _split_list(args.classes), args.universe)
     folder = Path(args.data_dir)
     missing = [m.name for m in markets if not (folder / f"{m.name}.csv").exists()]
@@ -598,7 +599,48 @@ def command_portfolio(args) -> int:
                          + " (use --skip-missing to ignore)")
     if not markets:
         raise ValueError("No market data found")
-    data = {m.name: load_csv(folder / f"{m.name}.csv") for m in markets}
+    return markets, {m.name: load_csv(folder / f"{m.name}.csv") for m in markets}, missing
+
+
+def command_portfolio_wfo(args) -> int:
+    """Choose parameters on each training window; trade the next unseen year."""
+    markets, data, missing = _portfolio_data(args)
+    texts = dict(CROSS_RANGES if args.strategy == "cross_momentum"
+                 else SWEEP_RANGES[args.strategy])
+    texts.update(_pairs(args.range, "--range"))
+    ranges = {name: parse_range(text) for name, text in texts.items()}
+    fixed = {k: v for k, v in _strategy_params(args).items() if k not in ranges}
+    sets = parameter_sets(**ranges)
+
+    def make_factory(params, frame):
+        if args.strategy == "cross_momentum":
+            try:
+                return cross_momentum_factory(frame, **fixed, **params)
+            except TypeError as exc:
+                raise ValueError(f"Invalid parameters for cross_momentum: {exc}") from exc
+        return _factory(args.strategy, {**fixed, **params})
+
+    for params in sets:   # fail fast on bad parameters, before hours of work
+        factory = make_factory(params, data)
+        if not getattr(factory, "per_market", False):
+            factory()
+    config = _portfolio_config(args)
+    report = portfolio_walk_forward(data, markets, make_factory, sets, config,
+                                    args.train_days, args.test_days, args.embargo_days)
+    report.update(mode="portfolio-wfo", strategy=args.strategy, universe=args.universe,
+                  ranges=texts, skipped_missing=missing if args.skip_missing else [],
+                  settings={"portfolio_vol_pct": config.target_vol_pct,
+                            "max_leverage": config.max_leverage,
+                            "max_drawdown_pct": config.max_drawdown_pct,
+                            "allow_short": config.allow_short})
+    print(json.dumps(_rounded(report), indent=2))
+    return 0
+
+
+def command_portfolio(args) -> int:
+    """Trade every market in one account; compare with an equal-weight basket."""
+    markets, data, missing = _portfolio_data(args)
+    folder = Path(args.data_dir)
     fx = None
     if args.base_currency != "USD":
         # Prices are in USD; results are also shown in the base currency.
@@ -841,35 +883,38 @@ def build_parser() -> argparse.ArgumentParser:
                           help="do not repair one-day spikes that immediately revert")
     universe.set_defaults(handler=command_fetch_universe)
 
-    port = sub.add_parser("portfolio", help="Trade every market in one leveraged account")
-    port.add_argument("--data-dir", required=True)
-    port.add_argument("--markets")
-    port.add_argument("--classes")
-    port.add_argument("--universe", choices=["futures", "etf"], default="futures")
-    port.add_argument("--skip-missing", action="store_true")
+    book = argparse.ArgumentParser(add_help=False)
+    book.add_argument("--data-dir", required=True)
+    book.add_argument("--markets")
+    book.add_argument("--classes")
+    book.add_argument("--universe", choices=["futures", "etf"], default="futures")
+    book.add_argument("--skip-missing", action="store_true")
+    book.add_argument("--members",
+                      help="combo/selector: comma-separated strategies (combo default "
+                           + ",".join(DEFAULT_COMBO) + ")")
+    book.add_argument("--param", action="append", metavar="NAME=VALUE")
+    book.add_argument("--sizing", choices=["volatility", "equal"], default="volatility")
+    book.add_argument("--portfolio-vol", type=float, default=15.0,
+                      help="annual portfolio volatility target, percent")
+    book.add_argument("--sizing-lookback", type=int, default=60)
+    book.add_argument("--max-leverage", type=float, default=3.0)
+    book.add_argument("--max-weight", type=float, default=1.0,
+                      help="largest |weight| for one market")
+    book.add_argument("--rebalance", type=float, default=5.0,
+                      help="resize when a weight moves this many points")
+    book.add_argument("--financing", type=float, default=0.0,
+                      help="extra annual %% on exposure above equity (margin loans/CFDs); "
+                           "per-market carry such as crypto funding always applies")
+    book.add_argument("--cash-rate", type=float, default=0.0)
+    book.add_argument("--max-drawdown", type=float, default=30.0,
+                      help="kill switch in percent; 0 disables")
+    book.add_argument("--no-shorts", action="store_true")
+
+    port = sub.add_parser("portfolio", parents=[book],
+                          help="Trade every market in one leveraged account")
     port.add_argument("--strategy",
                       choices=["all", "combo", "selector", "cross_momentum"] + sorted(SWEEP_RANGES),
                       default="all")
-    port.add_argument("--members",
-                      help="combo/selector: comma-separated strategies (combo default "
-                           + ",".join(DEFAULT_COMBO) + ")")
-    port.add_argument("--param", action="append", metavar="NAME=VALUE")
-    port.add_argument("--sizing", choices=["volatility", "equal"], default="volatility")
-    port.add_argument("--portfolio-vol", type=float, default=15.0,
-                      help="annual portfolio volatility target, percent")
-    port.add_argument("--sizing-lookback", type=int, default=60)
-    port.add_argument("--max-leverage", type=float, default=3.0)
-    port.add_argument("--max-weight", type=float, default=1.0,
-                      help="largest |weight| for one market")
-    port.add_argument("--rebalance", type=float, default=5.0,
-                      help="resize when a weight moves this many points")
-    port.add_argument("--financing", type=float, default=0.0,
-                      help="extra annual %% on exposure above equity (margin loans/CFDs); "
-                           "per-market carry such as crypto funding always applies")
-    port.add_argument("--cash-rate", type=float, default=0.0)
-    port.add_argument("--max-drawdown", type=float, default=30.0,
-                      help="kill switch in percent; 0 disables")
-    port.add_argument("--no-shorts", action="store_true")
     port.add_argument("--base-currency", choices=["USD", "EUR", "GBP", "AUD"], default="USD",
                       help="also report results in this currency, unhedged (needs e.g. EURUSD.csv)")
     port.add_argument("--in-sample", type=float, default=70.0)
@@ -877,6 +922,17 @@ def build_parser() -> argparse.ArgumentParser:
                       help="timing shuffles per strategy (0 disables)")
     port.add_argument("--seed", type=int, default=7)
     port.set_defaults(handler=command_portfolio)
+
+    pwfo = sub.add_parser("portfolio-wfo", parents=[book],
+                          help="Portfolio walk-forward: re-choose parameters every test window")
+    pwfo.add_argument("--strategy", choices=["cross_momentum"] + sorted(SWEEP_RANGES),
+                      required=True)
+    pwfo.add_argument("--range", action="append", metavar="NAME=START:STOP:STEP",
+                      help="parameter range, repeatable; defaults to the strategy's grid")
+    pwfo.add_argument("--train-days", type=int, default=4 * 365)
+    pwfo.add_argument("--test-days", type=int, default=365)
+    pwfo.add_argument("--embargo-days", type=int, default=5)
+    pwfo.set_defaults(handler=command_portfolio_wfo)
 
     walk = sub.add_parser(
         "walk-forward",

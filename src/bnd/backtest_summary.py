@@ -367,12 +367,51 @@ def _optimisation_lines(report: dict) -> list[str]:
     ]
 
 
+def portfolio_wfo_verdict(report: dict) -> str:
+    s = report.get("summary", {})
+    folds, beat = s.get("fold_count", 0), s.get("folds_beating_basket", 0)
+    ours, basket = s.get("chained_test_return_pct"), s.get("chained_basket_return_pct")
+    if ours is None or basket is None or ours <= basket or beat * 2 <= folds:
+        return (f"**No evidence of an edge:** re-optimised every window, the strategy made "
+                f"{_fmt(ours, '%')} out of sample vs {_fmt(basket, '%')} for the basket, "
+                f"and beat it in {beat} of {folds} windows.")
+    return (f"**Beat the basket out of sample:** {_fmt(ours, '%')} vs {_fmt(basket, '%')}, "
+            f"in {beat} of {folds} windows. Preliminary: one dataset, no significance test.")
+
+
+def _portfolio_wfo_lines(report: dict) -> list[str]:
+    s = report.get("summary", {})
+    lines = [
+        f"## Portfolio walk-forward ({report.get('strategy')}, train "
+        f"{report.get('train_days')} days, test {report.get('test_days')} days)",
+        f"- Windows: {s.get('fold_count')}, profitable: {s.get('positive_folds')}, beating the "
+        f"basket: {s.get('folds_beating_basket')}, with kill switch: {s.get('folds_with_kill_switch')}",
+        f"- Chained out-of-sample: {_fmt(s.get('chained_test_return_pct'), '%')} vs basket "
+        f"{_fmt(s.get('chained_basket_return_pct'), '%')}",
+        f"- Mean Sharpe: train {_fmt(s.get('mean_train_sharpe'))}, test "
+        f"{_fmt(s.get('mean_test_sharpe'))}, basket {_fmt(s.get('mean_basket_sharpe'))}; "
+        f"parameter change rate {_fmt(s.get('parameter_change_rate'))}",
+        "",
+        "| Test window | Parameters | Return | Sharpe | Max drawdown | Basket return | Kill switch |",
+        "| --- | --- | ---: | ---: | ---: | ---: | --- |",
+    ]
+    for row in report.get("folds", []):
+        params = ", ".join(f"{k}={v}" for k, v in row["params"].items())
+        lines.append(
+            f"| {row['test'][0]} → {row['test'][1]} | {params} | "
+            f"{_fmt(row['test_return_pct'], '%')} | {_fmt(row['test_sharpe'])} | "
+            f"{_fmt(row['test_max_drawdown_pct'], '%')} | {_fmt(row['basket_return_pct'], '%')} | "
+            f"{(row.get('kill_switch_at') or '–')[:10]} |")
+    return lines + [""]
+
+
 def build_summary(run=None, walk_forward=None, robustness=None, compare=None,
-                  portfolio=None, optimisation=None) -> str:
+                  portfolio=None, optimisation=None, portfolio_wfo=None) -> str:
     reports, problems = {}, []
     for name, path in (("run", run), ("walk_forward", walk_forward),
                        ("robustness", robustness), ("compare", compare),
-                       ("portfolio", portfolio), ("optimisation", optimisation)):
+                       ("portfolio", portfolio), ("optimisation", optimisation),
+                       ("portfolio_wfo", portfolio_wfo)):
         data, error = _load(path)
         reports[name] = data
         if error:
@@ -385,6 +424,8 @@ def build_summary(run=None, walk_forward=None, robustness=None, compare=None,
     if reports["portfolio"]:
         lines += ["## Verdict", portfolio_verdict(reports["portfolio"]), ""]
         lines += _portfolio_lines(reports["portfolio"])
+    elif reports["portfolio_wfo"]:
+        lines += ["## Verdict", portfolio_wfo_verdict(reports["portfolio_wfo"]), ""]
     elif reports["compare"]:
         lines += ["## Verdict", compare_verdict(reports["compare"]), ""]
         lines += _compare_lines(reports["compare"])
@@ -401,6 +442,8 @@ def build_summary(run=None, walk_forward=None, robustness=None, compare=None,
         lines += _robustness_lines(reports["robustness"])
     if reports["optimisation"]:
         lines += _optimisation_lines(reports["optimisation"])
+    if reports["portfolio_wfo"]:
+        lines += _portfolio_wfo_lines(reports["portfolio_wfo"])
     if problems:
         lines += ["## Missing reports"] + [f"- {p}" for p in problems] + [""]
     lines.append("_Paper research only. Past results do not predict future returns._")
@@ -415,9 +458,11 @@ def main(argv=None) -> int:
     parser.add_argument("--compare")
     parser.add_argument("--portfolio")
     parser.add_argument("--walk-forward-opt")
+    parser.add_argument("--portfolio-wfo")
     args = parser.parse_args(argv)
     sys.stdout.write(build_summary(args.run, args.walk_forward, args.robustness,
-                                   args.compare, args.portfolio, args.walk_forward_opt))
+                                   args.compare, args.portfolio, args.walk_forward_opt,
+                                   args.portfolio_wfo))
     return 0
 
 

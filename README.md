@@ -180,6 +180,13 @@ bottom short, the rest flat. The ranking for a date uses only candles of
 earlier dates, because markets close at different hours. Also in the
 paper runner and in `--strategy all`.
 
+`portfolio-wfo` is walk-forward for the whole book: in calendar windows
+(default 4 years of training, 1 year of testing, 5 days embargo) the
+parameter set with the best training Sharpe is chosen and then traded on
+the next unseen year, each window from fresh equity and compared with the
+equal-weight basket on the same dates. In `portfolio.yml` choose
+`mode: walk-forward`.
+
 ## Paper-trading engine
 
 `paper_engine.PaperEngine` keeps a virtual account in one SQLite file
