@@ -189,7 +189,9 @@ equal-weight basket on the same dates. In `portfolio.yml` choose
 `--strategy buy_and_hold` runs the same walk-forward always long, with the
 same volatility sizing and leverage: the control that separates a
 strategy's timing from what sizing and leverage alone earn. On ETFs,
-leverage means a margin loan: pass `--financing` (e.g. 5) for its cost.
+leverage means a margin loan: with `--universe etf` the portfolio commands
+charge 5%/yr on exposure above equity by default (`--financing` overrides;
+futures default to 0 because their financing is in the price).
 
 ## Paper-trading engine
 
