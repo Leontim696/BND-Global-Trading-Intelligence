@@ -273,12 +273,14 @@ def parse_yahoo_chart(payload) -> tuple[list[Candle], dict]:
         timestamps = result["timestamp"]
         quote_data = result["indicators"]["quote"][0]
         columns = [quote_data[key] for key in ("open", "high", "low", "close", "volume")]
+        # Dividend- and split-adjusted close, when Yahoo provides it.
+        adjusted = (result["indicators"].get("adjclose") or [{}])[0].get("adjclose")
     except (KeyError, IndexError, TypeError) as exc:
         raise MarketDataError("Invalid Yahoo chart response") from exc
 
     quality = {"rows": len(timestamps), "dropped_missing": 0,
                "dropped_non_positive": 0, "repaired_high_low": 0,
-               "duplicate_days": 0}
+               "duplicate_days": 0, "adjusted_for_dividends_and_splits": bool(adjusted)}
     by_day: dict = {}
     for index, stamp in enumerate(timestamps):
         try:
@@ -292,6 +294,13 @@ def parse_yahoo_chart(payload) -> tuple[list[Candle], dict]:
         if min(open_, high, low, close) <= 0:
             quality["dropped_non_positive"] += 1
             continue
+        if adjusted:
+            factor = adjusted[index] / close if index < len(adjusted) and adjusted[index] else None
+            if factor is None or factor <= 0:
+                quality["dropped_missing"] += 1
+                continue
+            # Scale the whole bar so intraday ranges stay consistent.
+            open_, high, low, close = (v * factor for v in (open_, high, low, close))
         fixed_high, fixed_low = max(open_, high, low, close), min(open_, high, low, close)
         if (fixed_high, fixed_low) != (high, low):
             quality["repaired_high_low"] += 1

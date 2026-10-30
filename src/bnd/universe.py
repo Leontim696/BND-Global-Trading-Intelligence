@@ -69,11 +69,43 @@ DEFAULT_UNIVERSE = tuple(
     for name, symbol, asset_class in _DEFAULT
 )
 
+# Tradable, roll-free stand-ins: exchange-traded funds for commodities,
+# indices and bonds. ETF prices already include the cost of rolling
+# futures (contango) and, adjusted, their dividends; there are no
+# artificial roll jumps. Forex and crypto are the same as above.
+_ETF = (
+    ("GOLD", "GLD", "commodity"),
+    ("SILVER", "SLV", "commodity"),
+    ("CRUDE_OIL", "USO", "commodity"),
+    ("NATURAL_GAS", "UNG", "commodity"),
+    ("COPPER", "CPER", "commodity"),
+    ("AGRICULTURE", "DBA", "commodity"),
+    ("BROAD_COMMODITIES", "DBC", "commodity"),
+    ("SP500", "SPY", "index"),
+    ("NASDAQ100", "QQQ", "index"),
+    ("GERMANY", "EWG", "index"),
+    ("JAPAN", "EWJ", "index"),
+    ("UK", "EWU", "index"),
+    ("EMERGING", "EEM", "index"),
+    ("US10Y_NOTE", "IEF", "bond"),
+    ("US20Y_BOND", "TLT", "bond"),
+)
+_ETF_COSTS = {"commodity": (0.01, 0.03, 0.0), "index": (0.005, 0.01, 0.0),
+              "bond": (0.005, 0.01, 0.0)}
+ETF_UNIVERSE = tuple(
+    Market(name, symbol, asset_class, *_ETF_COSTS[asset_class])
+    for name, symbol, asset_class in _ETF
+) + tuple(m for m in DEFAULT_UNIVERSE if m.asset_class in ("forex", "crypto"))
 
-def select(names=None, classes=None) -> tuple[Market, ...]:
-    """Filter the default universe by market names and/or asset classes."""
+UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE}
 
-    markets = DEFAULT_UNIVERSE
+
+def select(names=None, classes=None, universe: str = "futures") -> tuple[Market, ...]:
+    """Filter a universe by market names and/or asset classes."""
+
+    if universe not in UNIVERSES:
+        raise ValueError("Unknown universe: " + universe)
+    markets = UNIVERSES[universe]
     if names:
         wanted = {name.upper() for name in names}
         unknown = wanted - {m.name for m in markets}

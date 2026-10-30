@@ -357,3 +357,96 @@ def run_portfolio(
     ]
     per_market.sort(key=lambda row: row["pnl"], reverse=True)
     return {"metrics": metrics, "per_market": per_market, "equity_curve": curve}
+
+
+def record_signals(data, markets, factory, config=None, trade_from=None):
+    """Run the portfolio and keep every market's signal per candle index."""
+    signals = {}
+    order = iter(markets)
+
+    def recording_factory():
+        market = next(order)
+        strategy, record = factory(), []
+        signals[market.name] = record
+
+        def wrapped(history):
+            value = strategy(history)
+            record.append(value)
+            return value
+
+        return wrapped
+
+    return run_portfolio(data, markets, recording_factory, config, trade_from), signals
+
+
+_WORKER: dict = {}
+
+
+def _init_worker(data, markets, config, trade_from):
+    _WORKER["context"] = (data, markets, config, trade_from)
+
+
+def _replay_in_worker(sequences):
+    return _replay_sharpe(sequences, *_WORKER["context"])
+
+
+def _replay_sharpe(sequences, data, markets, config, trade_from):
+    """Portfolio Sharpe for fixed per-market signal sequences."""
+    order = iter(markets)
+
+    def factory():
+        sequence = sequences[next(order).name]
+        return lambda history: sequence[min(len(history), len(sequence)) - 1]
+
+    sharpe = run_portfolio(data, markets, factory, config, trade_from)["metrics"]["sharpe"]
+    return sharpe if sharpe is not None else float("-inf")
+
+
+def portfolio_permutation_test(data, markets, signals, config=None, trade_from=None,
+                               permutations=100, seed=7, workers=1) -> dict:
+    """Does the strategy's timing matter, or only diversification and leverage?
+
+    Each market keeps its own positions and holding periods, but their
+    timing is shuffled (``robustness.permute_runs``) from the first traded
+    candle on. The portfolio is rebuilt with the same sizing and leverage.
+    p_value is the share of shuffles with a Sharpe at least as high. A
+    strategy whose signal never changes (always long) has nothing to
+    shuffle, so it gets p = 1: its result is diversification and leverage.
+    Shuffles are drawn up front from ``seed``, so results do not depend
+    on ``workers``.
+    """
+    import random
+    from concurrent.futures import ProcessPoolExecutor
+
+    from .robustness import permute_runs
+
+    if permutations < 1:
+        raise ValueError("At least one permutation is required")
+
+    starts = {}
+    for market in markets:
+        candles = data[market.name]
+        first = next((i for i, c in enumerate(candles)
+                      if trade_from is None or c.open_time >= trade_from), len(candles))
+        starts[market.name] = max(first - 1, 0)
+
+    rng = random.Random(seed)
+    shuffles = [{name: permute_runs(signals[name], rng, starts[name]) for name in signals}
+                for _ in range(permutations)]
+    actual = _replay_sharpe(signals, data, markets, config, trade_from)
+    if workers > 1:
+        with ProcessPoolExecutor(max_workers=workers, initializer=_init_worker,
+                                 initargs=(data, markets, config, trade_from)) as pool:
+            shuffled = list(pool.map(_replay_in_worker, shuffles))
+    else:
+        shuffled = [_replay_sharpe(seq, data, markets, config, trade_from) for seq in shuffles]
+    shuffled.sort()
+    at_least = sum(value >= actual - 1e-12 for value in shuffled)
+    return {
+        "actual_sharpe": actual,
+        "shuffled_median_sharpe": shuffled[len(shuffled) // 2],
+        "shuffled_p95_sharpe": shuffled[min(len(shuffled) - 1, int(0.95 * len(shuffled)))],
+        "permutations": permutations,
+        "seed": seed,
+        "p_value": (at_least + 1) / (permutations + 1),
+    }
