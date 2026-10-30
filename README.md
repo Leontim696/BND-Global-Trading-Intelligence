@@ -194,6 +194,9 @@ charge 5%/yr on exposure above equity by default (`--financing` overrides;
 futures default to 0 because their financing is in the price).
 `--per-class` chooses a parameter set for each asset class separately,
 each on the training window of that class's markets alone.
+`python -m src.bnd.compare_wfo a.json b.json` compares two walk-forward
+reports window by window: wins, mean difference, t-statistic and an exact
+sign-test p-value, so a few lucky years are not mistaken for an edge.
 
 ## Paper-trading engine
 
