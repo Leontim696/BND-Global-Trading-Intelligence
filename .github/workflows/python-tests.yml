@@ -30,6 +30,12 @@ jobs:
       - name: Install test dependencies
         run: python -m pip install --disable-pip-version-check -r requirements.txt
 
+      - name: Lint GitHub workflows
+        # A malformed workflow silently disappears from the Actions menu.
+        run: |
+          python -m pip install --disable-pip-version-check actionlint-py==1.7.12.25
+          actionlint -color
+
       - name: Check Python syntax
         run: |
           python - <<'PY'
