@@ -258,5 +258,13 @@ def main():
 if __name__ == "__main__":
     report = main()
     print("Status:", report["status"])
+    # Diagnostic metadata only: no credentials, request bodies or model output.
+    for agent, item in report.get("agents", {}).items():
+        print("Agent:", agent, "status:", item.get("status"),
+              "error_type:", item.get("error_type"),
+              "http_status:", item.get("http_status"),
+              "billing:", item.get("billing"))
+    if report.get("status") == "preflight_failed":
+        print("Preflight error type:", report.get("error_type"))
     if report["status"] not in ("ok", "skipped_paid_ai_disabled"):
         sys.exit("Five-agent council incomplete; inspect report artifact")
