@@ -55,6 +55,14 @@ class RiskLimits:
 
 @dataclass(frozen=True)
 class Portfolio:
+    """Current account state.
+
+    daily_loss: start-of-day equity minus current equity (>= 0).
+    drawdown: peak equity minus current equity (>= 0).
+    Loss limits are percentages of the start-of-day and peak equity,
+    the conventional definitions, so they match reported drawdowns.
+    """
+
     equity: float
     daily_loss: float
     drawdown: float
@@ -143,14 +151,12 @@ def evaluate_risk(
             "Leverage exceeds configured limit"
         )
 
-    # Check daily losses and drawdown.
-    daily_loss_pct = (
-        100 * portfolio.daily_loss / portfolio.equity
-    )
+    # Check daily losses and drawdown against their reference equity.
+    day_start_equity = portfolio.equity + portfolio.daily_loss
+    peak_equity = portfolio.equity + portfolio.drawdown
 
-    drawdown_pct = (
-        100 * portfolio.drawdown / portfolio.equity
-    )
+    daily_loss_pct = 100 * portfolio.daily_loss / day_start_equity
+    drawdown_pct = 100 * portfolio.drawdown / peak_equity
 
     if daily_loss_pct >= limits.max_daily_loss_pct:
         return reject(
@@ -174,9 +180,9 @@ def evaluate_risk(
     # must not push daily loss or drawdown past their limits.
     remaining_risk = min(
         portfolio.equity * limits.max_risk_per_trade_pct / 100,
-        portfolio.equity * limits.max_daily_loss_pct / 100
+        day_start_equity * limits.max_daily_loss_pct / 100
         - portfolio.daily_loss,
-        portfolio.equity * limits.max_drawdown_pct / 100
+        peak_equity * limits.max_drawdown_pct / 100
         - portfolio.drawdown,
     )
 

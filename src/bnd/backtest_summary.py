@@ -53,6 +53,8 @@ def _run_lines(report: dict) -> list[str]:
         ("Trades", "trades", ""),
         ("Time in market", "time_in_market_pct", "%"),
         ("Avg capital exposure", "avg_capital_exposure_pct", "%"),
+        # Every candle a vetoed entry is retried counts once.
+        ("Entries vetoed by risk engine", "rejected_entries", ""),
     ]
     lines = [f"## Backtest: `{report.get('strategy')}`"]
     for name, period in report.get("periods", {}).items():

@@ -257,8 +257,9 @@ def test_excessive_position_reduced(portfolio, limits):
 def test_daily_loss_blocks_trade(limits, proposal):
     debate = make_debate([Vote.BUY] * 5)
 
+    # Day started at 10,000; 3% lost.
     losing_portfolio = Portfolio(
-        equity=10000.0,
+        equity=9700.0,
         daily_loss=300.0,
         drawdown=0.0,
         gross_exposure=0.0,
@@ -275,8 +276,9 @@ def test_daily_loss_blocks_trade(limits, proposal):
 def test_drawdown_blocks_trade(limits, proposal):
     debate = make_debate([Vote.BUY] * 5)
 
+    # 10% below a 10,000 peak.
     losing_portfolio = Portfolio(
-        equity=10000.0,
+        equity=9000.0,
         daily_loss=0.0,
         drawdown=1000.0,
         gross_exposure=0.0,

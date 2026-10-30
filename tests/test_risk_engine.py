@@ -71,7 +71,8 @@ def test_reject_excessive_leverage(portfolio, limits):
 
 
 def test_reject_daily_loss_limit(limits):
-    portfolio = Portfolio(10000.0, 300.0, 0.0, 0.0)
+    # Day started at 10,000; 300 lost = 3% of start-of-day equity.
+    portfolio = Portfolio(9700.0, 300.0, 0.0, 0.0)
     trade = TradeProposal(1000.0, 2.0, 1.0)
 
     result = evaluate_risk(portfolio, trade, limits)
@@ -80,7 +81,8 @@ def test_reject_daily_loss_limit(limits):
 
 
 def test_reject_drawdown_limit(limits):
-    portfolio = Portfolio(10000.0, 0.0, 1000.0, 0.0)
+    # Peak 10,000; 1,000 below it = 10% drawdown from peak.
+    portfolio = Portfolio(9000.0, 0.0, 1000.0, 0.0)
     trade = TradeProposal(1000.0, 2.0, 1.0)
 
     result = evaluate_risk(portfolio, trade, limits)
@@ -98,8 +100,8 @@ def test_reject_when_exposure_full(limits):
 
 
 def test_reduce_to_remaining_daily_loss_capacity(limits):
-    # 2.9% already lost today; only 0.1% (USD 10) of risk remains.
-    portfolio = Portfolio(10000.0, 290.0, 290.0, 0.0)
+    # 2.9% of the 10,000 day start lost; only USD 10 of risk remains.
+    portfolio = Portfolio(9710.0, 290.0, 290.0, 0.0)
     trade = TradeProposal(5000.0, 2.0, 1.0)
 
     result = evaluate_risk(portfolio, trade, limits)
@@ -109,14 +111,25 @@ def test_reduce_to_remaining_daily_loss_capacity(limits):
 
 
 def test_reduce_to_remaining_drawdown_capacity(limits):
-    # 9.95% drawdown; only 0.05% (USD 5) of risk remains.
-    portfolio = Portfolio(10000.0, 0.0, 995.0, 0.0)
+    # 9.95% below the 10,000 peak; only USD 5 of risk remains.
+    portfolio = Portfolio(9005.0, 0.0, 995.0, 0.0)
     trade = TradeProposal(5000.0, 2.0, 1.0)
 
     result = evaluate_risk(portfolio, trade, limits)
 
     assert result.decision == RiskDecision.APPROVE_REDUCED
     assert result.approved_notional == pytest.approx(250.0)
+
+
+def test_drawdown_is_measured_from_peak_not_current_equity():
+    # Regression (BTC 4h run 41056874291): 20% below peak was read as
+    # 25% of current equity, tripping a 25% limit and halting all trading.
+    limits = RiskLimits(1.0, 3.0, 25.0, 100.0, 1.0)
+    portfolio = Portfolio(8000.0, 0.0, 2000.0, 0.0)
+
+    result = evaluate_risk(portfolio, TradeProposal(1000.0, 5.0, 1.0), limits)
+
+    assert result.decision != RiskDecision.REJECT
 
 
 def test_reject_negative_notional():
