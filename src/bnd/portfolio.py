@@ -205,7 +205,7 @@ def run_portfolio(
 
     cash = config.initial_equity
     curve: list[tuple[datetime, float]] = []
-    totals = {"fees": 0.0, "financing": 0.0, "interest": 0.0, "fills": 0}
+    totals = {"fees": 0.0, "financing": 0.0, "interest": 0.0, "fills": 0, "traded": 0.0}
     gross_marks: list[float] = []
     peak = config.initial_equity
     halted_at = None
@@ -226,6 +226,7 @@ def run_portfolio(
         fee_rate = book.market.fee_pct * config.cost_multiplier / 100
         price = price_raw * (1 + slip) if delta > 0 else price_raw * (1 - slip)
         fee = abs(delta) * price * fee_rate
+        totals["traded"] += abs(delta) * price
         cash -= delta * price + fee
         book.cashflow -= delta * price + fee
         book.quantity = wanted
@@ -329,8 +330,9 @@ def run_portfolio(
         raise ValueError("Not enough traded dates")
     span = (curve[-1][0] - curve[0][0]).total_seconds()
     periods = (len(curve) - 1) * SECONDS_PER_YEAR / span if span > 0 else 0.0
-    metrics = compute_metrics(curve, [], periods, config.initial_equity)
-    for key in ("trades", "win_rate_pct", "profit_factor"):
+    metrics = compute_metrics(curve, [], periods, config.initial_equity,
+                              traded_notional=totals["traded"])
+    for key in ("trades", "win_rate_pct", "profit_factor", "expectancy"):
         metrics.pop(key, None)
     metrics.update({
         "fills": totals["fills"],

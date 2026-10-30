@@ -151,7 +151,14 @@ def compute_metrics(
     bars_per_year: float,
     initial_equity: float,
     risk_free_rate_annual: float = 0.0,
+    traded_notional: float | None = None,
 ) -> dict:
+    """Profit and risk metrics, evaluated as two separate objectives:
+    absolute net profit and risk-adjusted return.
+
+    traded_notional: total |value| of every fill, for turnover
+    (traded value per year, in multiples of average equity).
+    """
     equities = [value for _, value in equity_curve]
     final = equities[-1] if equities else initial_equity
 
@@ -166,13 +173,18 @@ def compute_metrics(
         for a, b in zip([initial_equity] + equities, equities)
         if a > 0
     ]
-    sharpe = None
+    sharpe = sortino = volatility = None
     if len(returns) >= 2 and bars_per_year > 0:
         mean = sum(returns) / len(returns)
         variance = sum((r - mean) ** 2 for r in returns) / (len(returns) - 1)
+        rf = (1 + risk_free_rate_annual) ** (1 / bars_per_year) - 1
+        volatility = sqrt(variance) * sqrt(bars_per_year)
         if variance > 0:
-            rf = (1 + risk_free_rate_annual) ** (1 / bars_per_year) - 1
             sharpe = (mean - rf) / sqrt(variance) * sqrt(bars_per_year)
+        # Downside deviation below the risk-free rate, over all periods.
+        downside = sum(min(0.0, r - rf) ** 2 for r in returns) / len(returns)
+        if downside > 0:
+            sortino = (mean - rf) / sqrt(downside) * sqrt(bars_per_year)
 
     years = len(equities) / bars_per_year if bars_per_year > 0 else 0
     cagr = None
@@ -182,17 +194,33 @@ def compute_metrics(
     wins = [t.pnl for t in trades if t.pnl > 0]
     losses = [t.pnl for t in trades if t.pnl <= 0]
     gross_loss = -sum(losses)
+    calmar = (
+        cagr / max_drawdown if cagr is not None and max_drawdown > 0 else None
+    )
+    average_equity = sum(equities) / len(equities) if equities else initial_equity
+    turnover = (
+        traded_notional / average_equity / years
+        if traded_notional is not None and years > 0 and average_equity > 0
+        else None
+    )
 
     return {
         "initial_equity": initial_equity,
         "final_equity": final,
+        "net_profit": final - initial_equity,
         "total_return_pct": 100 * (final / initial_equity - 1),
         "cagr_pct": None if cagr is None else 100 * cagr,
         "max_drawdown_pct": 100 * max_drawdown,
         "sharpe": sharpe,
+        "sortino": sortino,
+        "calmar": calmar,
+        "volatility_pct": None if volatility is None else 100 * volatility,
+        "turnover": turnover,
         "trades": len(trades),
         "win_rate_pct": 100 * len(wins) / len(trades) if trades else None,
         "profit_factor": sum(wins) / gross_loss if gross_loss > 0 else None,
+        # Average net profit per closed trade, in account currency.
+        "expectancy": sum(t.pnl for t in trades) / len(trades) if trades else None,
         "total_fees": sum(t.fees for t in trades),
         "bars": len(equities),
         "years": years,
@@ -219,6 +247,7 @@ class _Simulator:
         self.rejected_entries = 0
         self.total_funding = 0.0
         self.total_interest = 0.0
+        self.traded_notional = 0.0
         self.peak = config.initial_equity
         self.day = None
         self.day_start_equity = config.initial_equity
@@ -267,6 +296,7 @@ class _Simulator:
         # Keep the fee inside the approved notional.
         added = notional / (price * (1 + self.config.costs.fee_pct / 100))
         fee = self._fee(added * price)
+        self.traded_notional += added * price
         held = abs(self.quantity)
 
         self.entry_price = (held * self.entry_price + added * price) / (held + added)
@@ -323,6 +353,7 @@ class _Simulator:
             removed = min(-change / candle.open, abs(self.quantity))
             price = self._fill(candle.open, -self.side)
             fee = self._fee(removed * price)
+            self.traded_notional += removed * price
             self.quantity -= self.side * removed
             self.cash += self.side * removed * price - fee
             self.trade_fees += fee
@@ -332,6 +363,7 @@ class _Simulator:
     def close_position(self, time: datetime, raw_price: float, reason: str) -> None:
         price = self._fill(raw_price, -self.side)
         fee = self._fee(self.quantity * price)
+        self.traded_notional += abs(self.quantity) * price
         self.cash += self.quantity * price - fee
         self.trade_fees += fee
 
@@ -486,6 +518,7 @@ def run_backtest(
         sim.trades,
         bars_per_year(candles),
         config.initial_equity,
+        traded_notional=sim.traded_notional,
     )
     metrics["rejected_entries"] = sim.rejected_entries
     metrics["total_funding"] = sim.total_funding

@@ -70,10 +70,16 @@ LEGACY_RANGES = {
 }
 
 SUMMARY_KEYS = (
+    "net_profit",
     "total_return_pct",
     "cagr_pct",
     "max_drawdown_pct",
+    "volatility_pct",
     "sharpe",
+    "sortino",
+    "calmar",
+    "expectancy",
+    "turnover",
     "trades",
     "win_rate_pct",
     "profit_factor",
@@ -512,7 +518,8 @@ def _portfolio_config(args, **overrides) -> PortfolioConfig:
 
 
 def _portfolio_metrics(result) -> dict:
-    keys = ("total_return_pct", "cagr_pct", "sharpe", "max_drawdown_pct", "fills",
+    keys = ("net_profit", "total_return_pct", "cagr_pct", "sharpe", "sortino", "calmar",
+            "volatility_pct", "max_drawdown_pct", "turnover", "fills",
             "avg_gross_leverage", "max_gross_leverage", "total_fees",
             "total_financing", "total_interest", "kill_switch_at", "years")
     return {key: result["metrics"].get(key) for key in keys}
