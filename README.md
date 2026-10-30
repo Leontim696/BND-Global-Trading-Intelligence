@@ -16,7 +16,7 @@ are ever placed.
 | `cost_tracker`, `cost_storage` | In-memory and SQLite token-cost accounting with daily/monthly budgets |
 | `market_data` | Validated OHLCV candles, CSV storage, Binance public-data download |
 | `backtester` | Next-open execution, fees, slippage, stop losses, risk-engine sizing, metrics |
-| `strategies` | Baselines: buy-and-hold, SMA crossover, Donchian breakout, volatility targeting |
+| `strategies` | Trend (SMA, EMA, MACD), breakout (Donchian), momentum, mean reversion (RSI, Bollinger), volatility targeting, buy-and-hold |
 | `quant_backtest`, `quant_evaluation`, `quant_metrics`, `quant_report` | Long/flat SMA walk-forward folds with risk-adjusted metrics versus buy-and-hold |
 | `council_orchestrator`, `council_round`, `live_council_bridge` | Five-agent research rounds; the paid live council stays disabled |
 | `code_review_loop`, `review_budget`, `manual_live_review` | GPT → Claude → GPT review with a fail-closed USD 0.50 preflight |
@@ -70,6 +70,16 @@ notional, long or short (perpetual funding or borrow; default 10 when
 shorts are allowed, 0 for spot long-only). `--cash-rate` pays annual
 interest on uninvested equity (default 0). Buy-and-hold is treated as a
 spot holding without funding.
+
+Strategy parameters: `--param name=value` (repeatable), e.g.
+`--strategy rsi_reversion --param period=21 --param oversold=25`. Add
+`--allow-short` to let any strategy take its short signals.
+
+`compare` runs every strategy with default parameters and ranks them on
+out-of-sample Sharpe. Each has a permutation test; `p_value_adjusted`
+(Holm) corrects for testing them all at once, since one of eight
+strategies looking lucky at p < 0.05 is likely even on random data.
+The workflow's default strategy `all` runs this comparison.
 
 `robustness` asks whether a result is an edge or luck:
 - **Parameter grid:** every combination (`--fast-range 10:50:10 --slow-range 50:200:25`);

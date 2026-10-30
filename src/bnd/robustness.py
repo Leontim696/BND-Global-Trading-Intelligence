@@ -14,6 +14,8 @@ All checks use the same backtester, fills and costs as `run`.
 """
 
 import random
+from decimal import Decimal, InvalidOperation
+from math import isfinite
 from dataclasses import replace
 from itertools import groupby, product
 from statistics import median
@@ -25,22 +27,57 @@ from .market_data import Candle
 StrategyFactory = Callable[..., Callable]
 
 
-def parse_range(text: str) -> list[int]:
-    """Parse 'start:stop:step' (inclusive) or a single integer."""
+def parse_value(text: str):
+    """Parse a parameter value: int, float or true/false."""
+
+    lowered = text.strip().lower()
+    if lowered in ("true", "false"):
+        return lowered == "true"
+    try:
+        return int(lowered)
+    except ValueError:
+        pass
+    try:
+        value = float(lowered)
+    except ValueError as exc:
+        raise ValueError(f"Invalid parameter value: {text!r}") from exc
+    if not isfinite(value):
+        raise ValueError(f"Invalid parameter value: {text!r}")
+    return value
+
+
+def parse_range(text: str) -> list:
+    """Parse 'start:stop:step' (inclusive) or a single number.
+
+    Integers stay integers; any decimal makes every value a float,
+    computed with Decimal so 1.5:3:0.5 gives exactly 1.5, 2.0, 2.5, 3.0.
+    """
 
     parts = text.split(":")
     try:
-        values = [int(part) for part in parts]
-    except ValueError as exc:
-        raise ValueError("Range must be start:stop:step integers") from exc
+        numbers = [Decimal(part.strip()) for part in parts]
+    except InvalidOperation as exc:
+        raise ValueError("Range must be start:stop:step numbers") from exc
+    if any(not number.is_finite() for number in numbers):
+        raise ValueError("Range must be start:stop:step numbers")
 
-    if len(values) == 1:
-        return values
-    if len(values) != 3 or values[2] <= 0 or values[1] < values[0]:
+    integral = all(number == number.to_integral_value() and "." not in part
+                   for number, part in zip(numbers, parts))
+
+    def convert(number):
+        return int(number) if integral else float(number)
+
+    if len(numbers) == 1:
+        return [convert(numbers[0])]
+    if len(numbers) != 3 or numbers[2] <= 0 or numbers[1] < numbers[0]:
         raise ValueError("Range must be start:stop:step with step > 0")
 
-    start, stop, step = values
-    return list(range(start, stop + 1, step))
+    start, stop, step = numbers
+    values = []
+    while start <= stop:
+        values.append(convert(start))
+        start += step
+    return values
 
 
 def parameter_sets(**ranges: list[int]) -> list[dict]:
@@ -230,3 +267,20 @@ def cost_stress(
             **_metrics(result),
         })
     return rows
+
+
+def holm_adjust(p_values: Sequence[float]) -> list[float]:
+    """Holm-Bonferroni adjusted p-values, in the input order.
+
+    Testing many strategies at once makes a lucky p < 0.05 likely; the
+    adjustment keeps the chance of any false discovery at the threshold.
+    """
+
+    count = len(p_values)
+    order = sorted(range(count), key=lambda i: p_values[i])
+    adjusted = [0.0] * count
+    running = 0.0
+    for rank, index in enumerate(order):
+        running = max(running, min(1.0, (count - rank) * p_values[index]))
+        adjusted[index] = running
+    return adjusted

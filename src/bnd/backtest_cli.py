@@ -36,21 +36,34 @@ from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
 from .robustness import (
     cost_stress,
+    holm_adjust,
     parameter_grid,
     parameter_sets,
     parse_range,
+    parse_value,
     permutation_test,
     record_targets,
     select_in_sample,
     summarize_grid,
 )
-from .strategies import STRATEGIES, buy_and_hold
+from .strategies import STRATEGIES, SWEEP_RANGES, buy_and_hold
 
-# Strategy parameters swept by `robustness`, as (option, factory argument).
-SWEEP_PARAMS = {
-    "sma_crossover": (("fast", "fast"), ("slow", "slow")),
-    "donchian_breakout": (("entry", "entry"), ("exit", "exit")),
-    "volatility_target": (("target_vol", "target_vol"), ("vol_lookback", "lookback")),
+# Older dedicated options, kept working: (strategy, option, parameter).
+LEGACY_PARAMS = (
+    ("sma_crossover", "fast", "fast"),
+    ("sma_crossover", "slow", "slow"),
+    ("donchian_breakout", "entry", "entry"),
+    ("donchian_breakout", "exit", "exit"),
+    ("volatility_target", "target_vol", "target_vol"),
+    ("volatility_target", "vol_lookback", "lookback"),
+    ("volatility_target", "trend", "trend"),
+    ("volatility_target", "long_short", "long_short"),
+)
+LEGACY_RANGES = {
+    "sma_crossover": {"fast": "fast_range", "slow": "slow_range"},
+    "donchian_breakout": {"entry": "entry_range", "exit": "exit_range"},
+    "volatility_target": {"target_vol": "target_vol_range",
+                          "lookback": "vol_lookback_range"},
 }
 
 SUMMARY_KEYS = (
@@ -78,16 +91,45 @@ def _utc_date(text: str) -> datetime:
     return value.astimezone(timezone.utc)
 
 
+def _pairs(items, what) -> dict:
+    """Parse repeated name=value options."""
+    result = {}
+    for item in items or ():
+        name, sep, value = item.partition("=")
+        if not sep or not name.strip():
+            raise ValueError(f"{what} must look like name=value, got {item!r}")
+        result[name.strip()] = value.strip()
+    return result
+
+
+def _strategy_params(args) -> dict:
+    params = {
+        parameter: getattr(args, option)
+        for strategy, option, parameter in LEGACY_PARAMS
+        if strategy == args.strategy
+    }
+    params.update({
+        name: parse_value(value)
+        for name, value in _pairs(args.param, "--param").items()
+    })
+    return params
+
+
+def _factory(name, fixed: dict):
+    """Strategy factory with fixed parameters; bad names become ValueError."""
+    base = STRATEGIES[name]
+
+    def factory(**params):
+        try:
+            return base(**{**fixed, **params})
+        except TypeError as exc:
+            raise ValueError(f"Invalid parameters for {name}: {exc}") from exc
+
+    return factory
+
+
 def _make_strategy(args):
-    factory = STRATEGIES[args.strategy]
-    if args.strategy == "sma_crossover":
-        return factory(fast=args.fast, slow=args.slow)
-    if args.strategy == "donchian_breakout":
-        return factory(entry=args.entry, exit=args.exit)
-    if args.strategy == "volatility_target":
-        return factory(target_vol=args.target_vol, lookback=args.vol_lookback,
-                       trend=args.trend, long_short=args.long_short)
-    return factory()
+    return _factory(args.strategy, _strategy_params(args))()
 
 
 def _summary(result) -> dict:
@@ -270,22 +312,22 @@ def _rounded(value):
 
 def command_robustness(args) -> int:
     """Parameter grid, in-sample selection, permutation and cost stress."""
-    if args.strategy not in SWEEP_PARAMS:
+    if args.strategy not in SWEEP_RANGES:
         raise ValueError("Robustness needs a strategy with parameters")
 
     candles, dataset = _load_checked(args)
     config, benchmark_config = _build_configs(args)
     cut = split_index(len(candles), args.in_sample)
-    factory = STRATEGIES[args.strategy]
-    if args.strategy == "volatility_target":
-        # Keep the fixed --trend filter while sweeping the other parameters.
-        base = factory
-        def factory(**params):
-            return base(trend=args.trend, long_short=args.long_short, **params)
-    ranges = {
-        name: parse_range(getattr(args, option + "_range"))
-        for option, name in SWEEP_PARAMS[args.strategy]
-    }
+
+    texts = dict(SWEEP_RANGES[args.strategy])
+    for name, option in LEGACY_RANGES.get(args.strategy, {}).items():
+        texts[name] = getattr(args, option)
+    texts.update(_pairs(args.range, "--range"))
+    ranges = {name: parse_range(text) for name, text in texts.items()}
+
+    # Swept parameters vary; every other parameter stays fixed.
+    fixed = {k: v for k, v in _strategy_params(args).items() if k not in ranges}
+    factory = _factory(args.strategy, fixed)
     params = parameter_sets(**ranges)
 
     periods = {
@@ -336,6 +378,67 @@ def command_robustness(args) -> int:
     return 0
 
 
+def command_compare(args) -> int:
+    """Run every strategy with default parameters and rank them on
+    out-of-sample Sharpe, each with its own permutation test."""
+    candles, dataset = _load_checked(args)
+    config, benchmark_config = _build_configs(args)
+    cut = split_index(len(candles), args.in_sample)
+
+    def metrics(result):
+        keys = ("total_return_pct", "sharpe", "max_drawdown_pct", "trades",
+                "avg_capital_exposure_pct", "total_funding")
+        return {key: result.metrics.get(key) for key in keys}
+
+    benchmark = {
+        "in_sample": metrics(run_backtest(candles[:cut], buy_and_hold(), benchmark_config)),
+        "out_of_sample": metrics(
+            run_backtest(candles, buy_and_hold(), benchmark_config, cut)
+        ),
+    }
+    rows = []
+    for name in sorted(SWEEP_RANGES):
+        factory = _factory(name, {})
+        in_sample = run_backtest(candles[:cut], factory(), config)
+        result, targets = record_targets(candles, factory(), config, cut)
+        permutation = permutation_test(
+            candles, targets, config, cut, args.permutations, args.seed
+        )
+        rows.append({
+            "strategy": name,
+            "in_sample": metrics(in_sample),
+            "out_of_sample": metrics(result),
+            "p_value": permutation["p_value"],
+        })
+
+    for row, adjusted in zip(rows, holm_adjust([row["p_value"] for row in rows])):
+        row["p_value_adjusted"] = adjusted
+
+    def score(row):
+        sharpe = row["out_of_sample"]["sharpe"]
+        return sharpe if sharpe is not None else float("-inf")
+
+    rows.sort(key=score, reverse=True)
+    report = {
+        **dataset,
+        "costs": _cost_settings(config),
+        "risk_gate": (
+            "enforced" if config.risk_limits is not None
+            else "disabled_research_only"
+        ),
+        "out_of_sample_start": candles[cut].open_time.isoformat(),
+        "buy_and_hold": benchmark,
+        "ranking": rows,
+        "note": (
+            "Default parameters, no tuning. Ranked by out-of-sample Sharpe. "
+            "p_value_adjusted (Holm) accounts for testing every strategy at "
+            "once; above 0.05 the timing is indistinguishable from luck."
+        ),
+    }
+    print(json.dumps(_rounded(report), indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="backtest_cli")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -356,6 +459,8 @@ def build_parser() -> argparse.ArgumentParser:
     common.add_argument("--slow", type=int, default=50)
     common.add_argument("--entry", type=int, default=55)
     common.add_argument("--exit", type=int, default=20)
+    common.add_argument("--param", action="append", metavar="NAME=VALUE",
+                        help="strategy parameter, repeatable (e.g. --param period=21)")
     common.add_argument("--target-vol", type=float, default=40.0,
                         help="volatility_target: annualised target in percent")
     common.add_argument("--vol-lookback", type=int, default=180,
@@ -403,11 +508,21 @@ def build_parser() -> argparse.ArgumentParser:
     robust.add_argument("--exit-range", default="10:50:10")
     robust.add_argument("--target-vol-range", default="20:80:10")
     robust.add_argument("--vol-lookback-range", default="60:360:60")
+    robust.add_argument("--range", action="append", metavar="NAME=START:STOP:STEP",
+                        help="sweep range for a parameter, repeatable")
     robust.add_argument("--permutations", type=int, default=200)
     robust.add_argument("--seed", type=int, default=7)
     robust.add_argument("--full-grid", action="store_true",
                         help="include every grid row in the report")
     robust.set_defaults(handler=command_robustness)
+
+    compare = sub.add_parser(
+        "compare", parents=[common],
+        help="Rank every strategy out-of-sample (default parameters)",
+    )
+    compare.add_argument("--permutations", type=int, default=100)
+    compare.add_argument("--seed", type=int, default=7)
+    compare.set_defaults(handler=command_compare)
 
     walk = sub.add_parser(
         "walk-forward",

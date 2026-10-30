@@ -85,3 +85,34 @@ def test_verdict_requires_all_conditions():
 
 def test_verdict_without_report():
     assert "No robustness report" in verdict(None)
+
+
+def test_compare_summary_and_verdict(tmp_path):
+    from src.bnd.backtest_summary import compare_verdict
+
+    candles, price = [], 100.0
+    for i in range(400):
+        close = price * (1.02 if (i // 5) % 2 == 0 else 0.98)
+        candles.append(Candle(START + timedelta(hours=4 * i), price,
+                              max(price, close), min(price, close), close, 1))
+        price = close
+    data = tmp_path / "cycles.csv"
+    save_csv(candles, data)
+    buffer = io.StringIO()
+    with contextlib.redirect_stdout(buffer):
+        assert cli(["compare", "--data", str(data), "--no-risk-gate",
+                    "--permutations", "9"]) == 0
+    path = tmp_path / "compare.json"
+    path.write_text(buffer.getvalue())
+
+    text = build_summary(compare=path)
+
+    assert "## Strategy comparison" in text
+    assert "buy & hold" in text
+    assert "## Missing reports" not in text
+
+    row = {"strategy": "x", "p_value_adjusted": 0.01,
+           "out_of_sample": {"total_return_pct": 5.0}}
+    assert "Candidates" in compare_verdict({"ranking": [row]})
+    row["p_value_adjusted"] = 0.2
+    assert "No strategy shows evidence" in compare_verdict({"ranking": [row]})

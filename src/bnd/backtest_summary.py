@@ -190,20 +190,61 @@ def risk_adjusted_line(run: dict | None) -> str | None:
     )
 
 
-def build_summary(run=None, walk_forward=None, robustness=None) -> str:
+def compare_verdict(compare: dict) -> str:
+    winners = [
+        row["strategy"] for row in compare.get("ranking", [])
+        if row.get("p_value_adjusted", 1) < P_VALUE_THRESHOLD
+        and (row["out_of_sample"].get("total_return_pct") or 0) > 0
+    ]
+    if not winners:
+        return ("**No strategy shows evidence of an edge** after adjusting for "
+                "testing all of them at once. Treat any profit below as luck.")
+    return ("**Candidates worth a closer look:** " + ", ".join(winners)
+            + ". Run `robustness` on each before trusting them.")
+
+
+def _compare_lines(report: dict) -> list[str]:
+    benchmark = report.get("buy_and_hold", {}).get("out_of_sample", {})
+    lines = [
+        "## Strategy comparison (out-of-sample, default parameters)",
+        "",
+        "| # | Strategy | Return | Sharpe | Max drawdown | Trades | Capital invested | p-value (adjusted) |",
+        "| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |",
+    ]
+    for rank, row in enumerate(report.get("ranking", []), 1):
+        oos = row["out_of_sample"]
+        lines.append(
+            f"| {rank} | {row['strategy']} | {_fmt(oos.get('total_return_pct'), '%')} | "
+            f"{_fmt(oos.get('sharpe'))} | {_fmt(oos.get('max_drawdown_pct'), '%')} | "
+            f"{oos.get('trades')} | {_fmt(oos.get('avg_capital_exposure_pct'), '%')} | "
+            f"{_fmt(row.get('p_value'), digits=3)} ({_fmt(row.get('p_value_adjusted'), digits=3)}) |"
+        )
+    lines.append(
+        f"| – | buy & hold | {_fmt(benchmark.get('total_return_pct'), '%')} | "
+        f"{_fmt(benchmark.get('sharpe'))} | {_fmt(benchmark.get('max_drawdown_pct'), '%')} | "
+        f"{benchmark.get('trades')} | {_fmt(benchmark.get('avg_capital_exposure_pct'), '%')} | – |"
+    )
+    return lines + [""]
+
+
+def build_summary(run=None, walk_forward=None, robustness=None, compare=None) -> str:
     reports, problems = {}, []
     for name, path in (("run", run), ("walk_forward", walk_forward),
-                       ("robustness", robustness)):
+                       ("robustness", robustness), ("compare", compare)):
         data, error = _load(path)
         reports[name] = data
         if error:
             problems.append(error)
 
     lines = ["# BND backtest summary", ""]
-    dataset_source = reports["run"] or reports["robustness"]
+    dataset_source = reports["run"] or reports["robustness"] or reports["compare"]
     if dataset_source:
         lines += _dataset_lines(dataset_source)
-    lines += ["## Verdict", verdict(reports["robustness"]), ""]
+    if reports["compare"]:
+        lines += ["## Verdict", compare_verdict(reports["compare"]), ""]
+        lines += _compare_lines(reports["compare"])
+    else:
+        lines += ["## Verdict", verdict(reports["robustness"]), ""]
     risk_line = risk_adjusted_line(reports["run"])
     if risk_line:
         lines += [risk_line, ""]
@@ -224,8 +265,10 @@ def main(argv=None) -> int:
     parser.add_argument("--run")
     parser.add_argument("--walk-forward")
     parser.add_argument("--robustness")
+    parser.add_argument("--compare")
     args = parser.parse_args(argv)
-    sys.stdout.write(build_summary(args.run, args.walk_forward, args.robustness))
+    sys.stdout.write(build_summary(args.run, args.walk_forward, args.robustness,
+                                   args.compare))
     return 0
 
 

@@ -5,6 +5,7 @@ receives only past candles and returns a target exposure in [-1, 1]:
 1 (long), 0 (flat), -1 (short) or a fraction such as 0.6 (60% long).
 """
 
+from collections import deque
 from math import log, sqrt
 from typing import Sequence
 
@@ -173,9 +174,243 @@ def volatility_target(
     return strategy
 
 
+class _Stream:
+    """Feed each new candle to an indicator state exactly once, in order.
+
+    The backtester calls a strategy once per candle with a history one
+    candle longer than before, so normally only the newest candle is
+    processed. Any other call replays the whole history from a fresh
+    state, which gives identical results.
+    """
+
+    def __init__(self, make_state):
+        self.make_state = make_state
+        self.state = None
+        self.length = None
+        self.last = None
+
+    def feed(self, history: Sequence[Candle]):
+        length = len(history)
+        if (
+            self.state is not None
+            and length == self.length + 1
+            and history[-2] is self.last
+        ):
+            self.state.update(history[-1])
+        else:
+            self.state = self.make_state()
+            for candle in history:
+                self.state.update(candle)
+        self.length, self.last = length, history[-1]
+        return self.state
+
+
+def _streaming(make_state) -> Strategy:
+    stream = _Stream(make_state)
+
+    def strategy(history: Sequence[Candle]) -> float:
+        return stream.feed(history).target
+
+    return strategy
+
+
+class _Ema:
+    def __init__(self, length: int):
+        self.alpha = 2 / (length + 1)
+        self.value = None
+        self.count = 0
+
+    def update(self, value: float) -> float:
+        self.value = value if self.value is None else (
+            self.value + self.alpha * (value - self.value)
+        )
+        self.count += 1
+        return self.value
+
+
+def _check_lengths(**lengths):
+    for name, value in lengths.items():
+        if type(value) is not int or value < 1:
+            raise ValueError(f"{name} must be a positive integer")
+
+
+def ema_crossover(fast: int = 12, slow: int = 26) -> Strategy:
+    """Trend: long while the fast EMA is above the slow EMA, else short."""
+
+    _check_lengths(fast=fast, slow=slow)
+    if fast >= slow:
+        raise ValueError("Require fast < slow")
+
+    class State:
+        def __init__(self):
+            self.fast, self.slow, self.target = _Ema(fast), _Ema(slow), 0
+
+        def update(self, candle):
+            difference = self.fast.update(candle.close) - self.slow.update(candle.close)
+            self.target = 0 if self.slow.count < slow else (
+                (difference > 0) - (difference < 0)
+            )
+
+    return _streaming(State)
+
+
+def macd(fast: int = 12, slow: int = 26, signal: int = 9) -> Strategy:
+    """Trend: long while MACD is above its signal line, short below."""
+
+    _check_lengths(fast=fast, slow=slow, signal=signal)
+    if fast >= slow:
+        raise ValueError("Require fast < slow")
+
+    class State:
+        def __init__(self):
+            self.fast, self.slow, self.signal = _Ema(fast), _Ema(slow), _Ema(signal)
+            self.target = 0
+
+        def update(self, candle):
+            line = self.fast.update(candle.close) - self.slow.update(candle.close)
+            if self.slow.count < slow:
+                return
+            difference = line - self.signal.update(line)
+            self.target = 0 if self.signal.count < signal else (
+                (difference > 0) - (difference < 0)
+            )
+
+    return _streaming(State)
+
+
+def momentum(lookback: int = 180, threshold: float = 0.0) -> Strategy:
+    """Time-series momentum: long after a rise over ``lookback`` candles
+    of more than ``threshold`` percent, short after a fall, else flat."""
+
+    _check_lengths(lookback=lookback)
+    if not 0 <= threshold < 100:
+        raise ValueError("Threshold must be in [0, 100) percent")
+
+    class State:
+        def __init__(self):
+            self.closes, self.target = deque(maxlen=lookback + 1), 0
+
+        def update(self, candle):
+            self.closes.append(candle.close)
+            if len(self.closes) <= lookback:
+                return
+            change = 100 * (self.closes[-1] / self.closes[0] - 1)
+            self.target = 1 if change > threshold else -1 if change < -threshold else 0
+
+    return _streaming(State)
+
+
+def rsi_reversion(period: int = 14, oversold: float = 30.0,
+                  overbought: float = 70.0, exit: float = 50.0) -> Strategy:
+    """Mean reversion: long when RSI is oversold until it recovers to
+    ``exit``; short when overbought until it falls back to ``exit``."""
+
+    _check_lengths(period=period)
+    if not 0 < oversold < exit < overbought < 100:
+        raise ValueError("Require 0 < oversold < exit < overbought < 100")
+
+    class State:
+        def __init__(self):
+            self.previous = None
+            self.gains = self.losses = 0.0
+            self.count = 0
+            self.target = 0
+
+        def update(self, candle):
+            if self.previous is None:
+                self.previous = candle.close
+                return
+            change = candle.close - self.previous
+            self.previous = candle.close
+            gain, loss = max(change, 0.0), max(-change, 0.0)
+            self.count += 1
+            if self.count <= period:
+                # Seed with a simple average, then use Wilder smoothing.
+                self.gains += gain / period
+                self.losses += loss / period
+                if self.count < period:
+                    return
+            else:
+                self.gains = (self.gains * (period - 1) + gain) / period
+                self.losses = (self.losses * (period - 1) + loss) / period
+
+            rsi = 100.0 if self.losses == 0 else 100 - 100 / (1 + self.gains / self.losses)
+            if self.target > 0 and rsi >= exit:
+                self.target = 0
+            elif self.target < 0 and rsi <= exit:
+                self.target = 0
+            if self.target == 0:
+                self.target = 1 if rsi < oversold else -1 if rsi > overbought else 0
+
+    return _streaming(State)
+
+
+def bollinger_reversion(window: int = 20, width: float = 2.0) -> Strategy:
+    """Mean reversion: long below the lower band until the close returns
+    to the average; short above the upper band until it returns."""
+
+    _check_lengths(window=window)
+    if window < 2 or not 0 < width <= 10:
+        raise ValueError("Require window >= 2 and 0 < width <= 10")
+
+    class State:
+        def __init__(self):
+            self.closes = deque(maxlen=window)
+            self.total = self.squares = 0.0
+            self.updates = 0
+            self.target = 0
+
+        def update(self, candle):
+            if len(self.closes) == window:
+                old = self.closes[0]
+                self.total -= old
+                self.squares -= old * old
+            self.closes.append(candle.close)
+            self.total += candle.close
+            self.squares += candle.close * candle.close
+            self.updates += 1
+            if self.updates % 500 == 0:
+                # Refresh the running sums to stop rounding drift.
+                self.total = sum(self.closes)
+                self.squares = sum(c * c for c in self.closes)
+            if len(self.closes) < window:
+                return
+
+            mean = self.total / window
+            variance = (self.squares - window * mean * mean) / (window - 1)
+            band = width * sqrt(max(variance, 0.0))
+            close = candle.close
+            if self.target > 0 and close >= mean:
+                self.target = 0
+            elif self.target < 0 and close <= mean:
+                self.target = 0
+            if self.target == 0:
+                self.target = 1 if close < mean - band else -1 if close > mean + band else 0
+
+    return _streaming(State)
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
     "sma_crossover": sma_crossover,
     "donchian_breakout": donchian_breakout,
     "volatility_target": volatility_target,
+    "ema_crossover": ema_crossover,
+    "macd": macd,
+    "momentum": momentum,
+    "rsi_reversion": rsi_reversion,
+    "bollinger_reversion": bollinger_reversion,
+}
+
+# Default robustness ranges ("start:stop:step") for each strategy's
+# swept parameters. Other parameters stay at their given values.
+SWEEP_RANGES = {
+    "sma_crossover": {"fast": "10:50:10", "slow": "50:200:25"},
+    "donchian_breakout": {"entry": "20:100:20", "exit": "10:50:10"},
+    "volatility_target": {"target_vol": "20:80:10", "lookback": "60:360:60"},
+    "ema_crossover": {"fast": "6:30:6", "slow": "26:156:26"},
+    "macd": {"fast": "6:18:6", "slow": "20:40:10"},
+    "momentum": {"lookback": "30:360:30", "threshold": "0:10:5"},
+    "rsi_reversion": {"period": "7:28:7", "oversold": "20:35:5"},
+    "bollinger_reversion": {"window": "10:50:10", "width": "1.5:3:0.5"},
 }
