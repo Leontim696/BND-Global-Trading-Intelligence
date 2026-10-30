@@ -19,6 +19,7 @@ from dataclasses import dataclass, field
 from decimal import Decimal
 from threading import Lock
 
+from .ai_cache import cache_key
 from .ai_gateway import AIGateway, AIRequest, GatewayError
 from .cost_tracker import BudgetExceeded, money
 from .fusion_council import AGENTS, FusionCouncil
@@ -69,12 +70,14 @@ class _Budget:
 class CouncilRunner:
     def __init__(self, primary: AIGateway, fallback: AIGateway | None = None,
                  max_attempts: int = 2, backoff_seconds: float = 1.0,
-                 sleep=time.sleep, clock=time.monotonic):
+                 sleep=time.sleep, clock=time.monotonic, cache=None):
         if not 1 <= max_attempts <= 3:
             raise ValueError("max_attempts must be between 1 and 3")
         self.primary, self.fallback = primary, fallback
         self.max_attempts, self.backoff_seconds = max_attempts, backoff_seconds
         self.sleep, self.clock = sleep, clock
+        # Optional ai_cache.ResponseCache: identical questions are not paid twice.
+        self.cache = cache
         self.health = {agent: AgentHealth() for agent in AGENTS}
 
     def availability(self) -> dict:
@@ -87,6 +90,15 @@ class CouncilRunner:
                   "request_sha256": hashlib.sha256(
                       f"{market}\n{symbol}\n{context}".encode()).hexdigest()}
         gateways = [g for g in (self.primary, self.fallback) if g is not None]
+        if self.cache is not None:
+            key = cache_key(agent, self.primary._expected_model(agent), market, symbol, context)
+            cached = self.cache.get(key)
+            if cached is not None:
+                record.update(status="ok", cached=True, model=cached.model,
+                              provider=cached.provider, route="cache", cost_usd="0",
+                              latency_s=0.0, input_tokens=cached.input_tokens,
+                              output_tokens=cached.output_tokens)
+                return record, cached
         for route, gateway in enumerate(gateways):
             for attempt in range(self.max_attempts):
                 model = gateway._expected_model(agent)
@@ -138,6 +150,9 @@ class CouncilRunner:
                               input_tokens=response.input_tokens,
                               output_tokens=response.output_tokens)
                 record["attempts"].append({"route": route, "model": response.model, "error": None})
+                if self.cache is not None:
+                    self.cache.put(cache_key(agent, model, market, symbol, context),
+                                   response, cost)
                 return record, response
         return record, None
 
