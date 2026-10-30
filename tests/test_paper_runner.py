@@ -238,3 +238,23 @@ def test_cli_rejects_bad_strategy_parameters_before_creating(tmp_path, capsys):
                               "--capital", "1000", "--param", "nonsense=1"])
 
     assert code == 2 and not state.exists()
+
+
+def test_cli_kill_switch_reset_needs_exact_confirmation(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(paper_runner, "select_markets", lambda *a: MARKETS)
+    write_data(tmp_path / "data", make_data())
+    state = tmp_path / "paper.sqlite"
+    base = ["--state", str(state), "--data-dir", str(tmp_path / "data")]
+    assert paper_runner.main(base + ["--capital", "1000"]) == 0
+
+    assert paper_runner.main(base + ["--reset-kill-switch", "RESET-KILL-SWITCH"]) == 2
+    assert "not active" in capsys.readouterr().err
+
+    engine = PaperEngine.open(state)
+    with engine._transaction():
+        engine._trip("test", START.isoformat())
+    engine.close()
+    assert paper_runner.main(base + ["--reset-kill-switch", "yes"]) == 2
+    assert "RESET-KILL-SWITCH" in capsys.readouterr().err
+    assert paper_runner.main(base + ["--reset-kill-switch", "RESET-KILL-SWITCH"]) == 0
+    assert json.loads(capsys.readouterr().out)["kill_switch"] is False
