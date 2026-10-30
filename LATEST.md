@@ -1,4 +1,4 @@
-Latest run: `runs/2026-10-30T130944Z_41060837314_BTCUSDT_4h_volatility_target` (source cdd2b1c, job success)
+Latest run: `runs/2026-10-30T131820Z_41061992492_BTCUSDT_4h_all` (source 7d57db0, job success)
 
 # BND backtest summary
 
@@ -8,77 +8,24 @@ Latest run: `runs/2026-10-30T130944Z_41060837314_BTCUSDT_4h_volatility_target` (
 - SHA-256: `5e094c7ec53092a0b91904e9904213c85c5469b2ac662b6235d375fb9748246d`
 
 ## Verdict
-**No evidence of an edge.** Failed: still positive at 2× costs. Treat any profit above as luck or overfitting.
+**No strategy shows evidence of an edge** after adjusting for testing all of them at once. Treat any profit below as luck.
 
-Out-of-sample, risk-adjusted: Sharpe 0.16 vs 0.47 for buy & hold; max drawdown 44.75% vs 53.45%; return -3.06% vs 30.09% with 91.17% average capital invested.
+## Strategy comparison (out-of-sample, default parameters)
 
-## Backtest: `volatility_target`
-Costs per fill: fee 0.1%, slippage 0.05%; funding 10.0%/yr on open positions; cash interest 4.0%/yr; shorts allowed.
-
-**full** (2019-01-01T00:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: disabled_research_only)
-
-| Metric | Strategy | Buy & hold |
-| --- | ---: | ---: |
-| Return | 58.94% | 1,989.52% |
-| CAGR | 6.10% | 47.46% |
-| Max drawdown | 64.41% | 77.04% |
-| Sharpe | 0.35 | 0.95 |
-| Trades | 115 | 1 |
-| Time in market | 92.99% | 99.99% |
-| Avg capital exposure | 72.76% | 99.99% |
-| Funding paid | 6,577.45 | 0.00 |
-| Interest earned | 935.05 | 0.18 |
-| Entries vetoed by risk engine | 0 | 0 |
-
-**in_sample** (2019-01-01T00:00:00+00:00 → 2024-06-24T16:00:00+00:00, risk gate: disabled_research_only)
-
-| Metric | Strategy | Buy & hold |
-| --- | ---: | ---: |
-| Return | 63.48% | 1,501.44% |
-| CAGR | 9.39% | 65.91% |
-| Max drawdown | 64.41% | 77.04% |
-| Sharpe | 0.43 | 1.11 |
-| Trades | 69 | 1 |
-| Time in market | 89.99% | 99.99% |
-| Avg capital exposure | 64.88% | 99.99% |
-| Funding paid | 3,422.08 | 0.00 |
-| Interest earned | 759.07 | 0.18 |
-| Entries vetoed by risk engine | 0 | 0 |
-
-**out_of_sample** (2024-06-24T20:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: disabled_research_only)
-
-| Metric | Strategy | Buy & hold |
-| --- | ---: | ---: |
-| Return | -3.06% | 30.09% |
-| CAGR | -1.31% | 11.85% |
-| Max drawdown | 44.75% | 53.45% |
-| Sharpe | 0.16 | 0.47 |
-| Trades | 47 | 1 |
-| Time in market | 100.00% | 100.00% |
-| Avg capital exposure | 91.17% | 100.00% |
-| Funding paid | 1,924.41 | 0.00 |
-| Interest earned | 107.33 | 0.00 |
-| Entries vetoed by risk engine | 0 | 0 |
+| # | Strategy | Return | Sharpe | Max drawdown | Trades | Capital invested | p-value (adjusted) |
+| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| 1 | volatility_target | -1.35% | 0.18 | 55.53% | 1 | 89.18% | 0.644 (1.000) |
+| 2 | donchian_breakout | -14.01% | -0.02 | 43.65% | 66 | 60.09% | 0.505 (1.000) |
+| 3 | sma_crossover | -57.50% | -0.63 | 63.73% | 121 | 98.07% | 0.495 (1.000) |
+| 4 | momentum | -57.03% | -0.65 | 69.75% | 183 | 94.77% | 0.475 (1.000) |
+| 5 | bollinger_reversion | -51.57% | -0.67 | 58.31% | 189 | 55.92% | 0.327 (1.000) |
+| 6 | rsi_reversion | -48.18% | -0.71 | 54.80% | 77 | 38.38% | 0.604 (1.000) |
+| 7 | macd | -68.85% | -0.91 | 75.80% | 387 | 98.62% | 0.307 (1.000) |
+| 8 | ema_crossover | -84.08% | -1.61 | 86.23% | 205 | 97.38% | 0.951 (1.000) |
+| – | buy & hold | 30.09% | 0.47 | 53.45% | 1 | 100.00% | – |
 
 ## Walk-forward (SMA long/flat, independent folds)
 - Folds: 32, beating buy & hold: 11
 - Excess return per fold: mean -8.45 pp, median -5.98 pp
-
-## Robustness
-
-| Period | Combos | Beat B&H | Profitable | Median return | B&H |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| in_sample | 42 | 0% | 40 | 49.64% | 1,501.44% |
-| out_of_sample | 42 | 0% | 13 | -13.92% | 30.09% |
-
-**In-sample choice** target_vol=20, lookback=240: in-sample return 89.34% (Sharpe 0.67); out-of-sample return 13.81% (Sharpe 0.37), rank 1 of 42.
-
-**Permutation test** (out-of-sample, 200 shuffles): actual 13.81%, shuffled median -32.84%, 5–95% range -59.62% … 11.49%, p-value **0.045**.
-
-| Cost multiplier | Return | Sharpe | Trades |
-| ---: | ---: | ---: | ---: |
-| ×1 | 13.81% | 0.37 | 47 |
-| ×2 | -5.11% | -0.01 | 47 |
-| ×3 | -20.90% | -0.38 | 47 |
 
 _Paper research only. Past results do not predict future returns._
