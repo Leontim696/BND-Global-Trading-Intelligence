@@ -1,0 +1,189 @@
+"""Offline market-data and backtest CLI tests; never contact Binance."""
+
+import json
+from datetime import datetime, timedelta, timezone
+from urllib.parse import parse_qs, urlparse
+
+import pytest
+
+from src.bnd import market_data
+from src.bnd.backtest_cli import main
+from src.bnd.market_data import (
+    Candle,
+    MarketDataError,
+    fetch_binance_klines,
+    load_csv,
+    parse_binance_klines,
+    save_csv,
+)
+
+START = datetime(2024, 1, 1, tzinfo=timezone.utc)
+STEP = timedelta(hours=4)
+
+
+def kline(index, price=100.0):
+    open_ms = int((START + STEP * index).timestamp() * 1000)
+    return [open_ms, str(price), str(price + 1), str(price - 1),
+            str(price + 0.5), "12.5", open_ms + 1, "0", 1, "0", "0", "0"]
+
+
+def candles(count):
+    return parse_binance_klines([kline(i, 100.0 + i) for i in range(count)])
+
+
+class FakeResponse:
+    def __init__(self, payload):
+        self.raw = json.dumps(payload).encode()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def read(self, limit):
+        return self.raw[:limit]
+
+
+def test_parse_binance_klines():
+    result = parse_binance_klines([kline(0)])
+
+    assert result[0].open_time == START
+    assert result[0].close == 100.5
+    assert result[0].volume == 12.5
+
+
+@pytest.mark.parametrize(
+    "fields",
+    [
+        dict(open=0.0),
+        dict(high=99.0),
+        dict(low=101.0),
+        dict(volume=-1.0),
+        dict(close=float("nan")),
+    ],
+)
+def test_invalid_candle_rejected(fields):
+    values = dict(open_time=START, open=100.0, high=101.0, low=99.0,
+                  close=100.0, volume=1.0)
+    values.update(fields)
+
+    with pytest.raises(MarketDataError):
+        Candle(**values)
+
+
+def test_naive_timestamp_rejected():
+    with pytest.raises(MarketDataError):
+        Candle(datetime(2024, 1, 1), 100, 101, 99, 100, 1)
+
+
+def test_csv_round_trip(tmp_path):
+    path = tmp_path / "data" / "btc.csv"
+    original = candles(5)
+
+    save_csv(original, path)
+
+    assert load_csv(path) == original
+
+
+def test_csv_rejects_duplicates(tmp_path):
+    path = tmp_path / "btc.csv"
+    save_csv(candles(3), path)
+    lines = path.read_text().splitlines()
+    path.write_text("\n".join(lines + [lines[-1]]) + "\n")
+
+    with pytest.raises(MarketDataError, match="increasing"):
+        load_csv(path)
+
+
+def test_csv_reports_bad_line(tmp_path):
+    path = tmp_path / "btc.csv"
+    save_csv(candles(3), path)
+    lines = path.read_text().splitlines()
+    lines[2] = lines[2].replace("101", "abc", 1)
+    path.write_text("\n".join(lines) + "\n")
+
+    with pytest.raises(MarketDataError, match="line 3"):
+        load_csv(path)
+
+
+def test_fetch_paginates_and_drops_open_candle(monkeypatch):
+    monkeypatch.setattr(market_data, "BINANCE_PAGE_LIMIT", 3)
+    requests = []
+    total = 7
+
+    def fake_urlopen(request, timeout):
+        query = parse_qs(urlparse(request.full_url).query)
+        requests.append(query)
+        start_ms = int(query["startTime"][0])
+        first = next(
+            i for i in range(total)
+            if kline(i)[0] >= start_ms
+        )
+        return FakeResponse([kline(i) for i in range(first, min(first + 3, total))])
+
+    monkeypatch.setattr(market_data, "urlopen", fake_urlopen)
+    end = START + STEP * total
+
+    result = fetch_binance_klines("btcusdt", "4h", START, end)
+
+    assert len(requests) == 3
+    assert requests[0]["symbol"] == ["BTCUSDT"]
+    assert len(result) == total
+    assert [c.open_time for c in result] == [START + STEP * i for i in range(total)]
+
+
+def test_fetch_drops_candle_still_forming(monkeypatch):
+    now = datetime.now(timezone.utc)
+    start = now - STEP * 3
+
+    def fake_urlopen(request, timeout):
+        rows = []
+        for i in range(3):
+            row = kline(0)
+            row[0] = int((start + STEP * i + STEP / 2).timestamp() * 1000)
+            rows.append(row)
+        return FakeResponse(rows)
+
+    monkeypatch.setattr(market_data, "urlopen", fake_urlopen)
+
+    result = fetch_binance_klines("BTCUSDT", "4h", start, now)
+
+    assert len(result) == 2
+
+
+def test_cli_run_reports_strategy_and_benchmark(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    # Synthetic zig-zag trend, for plumbing only.
+    prices = [100 + i * 0.5 + (5 if i % 10 < 5 else -5) for i in range(200)]
+    save_csv(parse_binance_klines([kline(i, p) for i, p in enumerate(prices)]), path)
+
+    code = main([
+        "run", "--data", str(path), "--strategy", "sma_crossover",
+        "--fast", "5", "--slow", "20", "--stop-loss", "5",
+        "--risk-per-trade", "1",
+    ])
+
+    assert code == 0
+    report = json.loads(capsys.readouterr().out)
+    assert set(report["periods"]) == {"full", "in_sample", "out_of_sample"}
+    for period in report["periods"].values():
+        assert "total_return_pct" in period["strategy"]
+        assert period["buy_and_hold"]["trades"] == 1
+
+
+def test_cli_risk_requires_stop_loss(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    save_csv(candles(50), path)
+
+    code = main(["run", "--data", str(path), "--risk-per-trade", "1"])
+
+    assert code == 2
+    assert "stop loss" in capsys.readouterr().err
+
+
+def test_cli_missing_file_is_clear_error(tmp_path, capsys):
+    code = main(["run", "--data", str(tmp_path / "missing.csv")])
+
+    assert code == 2
+    assert "Cannot read" in capsys.readouterr().err
