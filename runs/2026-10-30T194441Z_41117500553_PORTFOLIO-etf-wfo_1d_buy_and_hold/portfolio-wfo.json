@@ -1,0 +1,259 @@
+{
+  "train_days": 1460,
+  "test_days": 365,
+  "embargo_days": 5,
+  "folds": [
+    {
+      "train": [
+        "2010-01-01",
+        "2013-12-31"
+      ],
+      "test": [
+        "2014-01-05",
+        "2015-01-05"
+      ],
+      "params": {},
+      "train_sharpe": 0.6208,
+      "markets": 22,
+      "test_return_pct": -2.1897,
+      "test_sharpe": -0.1572,
+      "test_max_drawdown_pct": 14.6286,
+      "kill_switch_at": null,
+      "basket_return_pct": -5.2428,
+      "basket_sharpe": -1.057
+    },
+    {
+      "train": [
+        "2011-01-01",
+        "2014-12-31"
+      ],
+      "test": [
+        "2015-01-05",
+        "2016-01-05"
+      ],
+      "params": {},
+      "train_sharpe": 0.3292,
+      "markets": 22,
+      "test_return_pct": -16.2637,
+      "test_sharpe": -1.0885,
+      "test_max_drawdown_pct": 18.7628,
+      "kill_switch_at": null,
+      "basket_return_pct": -6.7769,
+      "basket_sharpe": -0.8333
+    },
+    {
+      "train": [
+        "2012-01-01",
+        "2015-12-31"
+      ],
+      "test": [
+        "2016-01-05",
+        "2017-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -0.0875,
+      "markets": 22,
+      "test_return_pct": 15.2231,
+      "test_sharpe": 1.0013,
+      "test_max_drawdown_pct": 7.8708,
+      "kill_switch_at": null,
+      "basket_return_pct": 9.8351,
+      "basket_sharpe": 1.2052
+    },
+    {
+      "train": [
+        "2012-12-31",
+        "2016-12-30"
+      ],
+      "test": [
+        "2017-01-04",
+        "2018-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -0.3569,
+      "markets": 22,
+      "test_return_pct": 41.7497,
+      "test_sharpe": 3.7595,
+      "test_max_drawdown_pct": 4.3093,
+      "kill_switch_at": null,
+      "basket_return_pct": 30.1661,
+      "basket_sharpe": 4.005
+    },
+    {
+      "train": [
+        "2013-12-31",
+        "2017-12-30"
+      ],
+      "test": [
+        "2018-01-04",
+        "2019-01-04"
+      ],
+      "params": {},
+      "train_sharpe": -0.5991,
+      "markets": 23,
+      "test_return_pct": -21.4966,
+      "test_sharpe": -1.5365,
+      "test_max_drawdown_pct": 26.7128,
+      "kill_switch_at": null,
+      "basket_return_pct": -15.2192,
+      "basket_sharpe": -1.8063
+    },
+    {
+      "train": [
+        "2014-12-31",
+        "2018-12-30"
+      ],
+      "test": [
+        "2019-01-04",
+        "2020-01-04"
+      ],
+      "params": {},
+      "train_sharpe": 0.2357,
+      "markets": 23,
+      "test_return_pct": 22.5722,
+      "test_sharpe": 2.122,
+      "test_max_drawdown_pct": 5.9075,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0925,
+      "basket_sharpe": 1.4189
+    },
+    {
+      "train": [
+        "2015-12-31",
+        "2019-12-30"
+      ],
+      "test": [
+        "2020-01-04",
+        "2021-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.9872,
+      "markets": 23,
+      "test_return_pct": -29.9227,
+      "test_sharpe": -2.0977,
+      "test_max_drawdown_pct": 31.4727,
+      "kill_switch_at": "2020-03-18T00:00:00+00:00",
+      "basket_return_pct": 25.5482,
+      "basket_sharpe": 1.3922
+    },
+    {
+      "train": [
+        "2016-12-30",
+        "2020-12-29"
+      ],
+      "test": [
+        "2021-01-03",
+        "2022-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.9556,
+      "markets": 23,
+      "test_return_pct": 24.7622,
+      "test_sharpe": 1.4918,
+      "test_max_drawdown_pct": 8.0691,
+      "kill_switch_at": null,
+      "basket_return_pct": 22.6431,
+      "basket_sharpe": 1.5339
+    },
+    {
+      "train": [
+        "2017-12-30",
+        "2021-12-29"
+      ],
+      "test": [
+        "2022-01-03",
+        "2023-01-03"
+      ],
+      "params": {},
+      "train_sharpe": -0.59,
+      "markets": 23,
+      "test_return_pct": -16.8932,
+      "test_sharpe": -0.8777,
+      "test_max_drawdown_pct": 25.7322,
+      "kill_switch_at": null,
+      "basket_return_pct": -8.0939,
+      "basket_sharpe": -0.5999
+    },
+    {
+      "train": [
+        "2018-12-30",
+        "2022-12-29"
+      ],
+      "test": [
+        "2023-01-03",
+        "2024-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.7183,
+      "markets": 23,
+      "test_return_pct": 13.8552,
+      "test_sharpe": 1.0875,
+      "test_max_drawdown_pct": 11.3478,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0945,
+      "basket_sharpe": 1.3899
+    },
+    {
+      "train": [
+        "2019-12-30",
+        "2023-12-29"
+      ],
+      "test": [
+        "2024-01-03",
+        "2025-01-02"
+      ],
+      "params": {},
+      "train_sharpe": -1.0638,
+      "markets": 23,
+      "test_return_pct": 28.0502,
+      "test_sharpe": 1.6259,
+      "test_max_drawdown_pct": 12.6146,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.3154,
+      "basket_sharpe": 1.2764
+    },
+    {
+      "train": [
+        "2020-12-29",
+        "2024-12-28"
+      ],
+      "test": [
+        "2025-01-02",
+        "2026-01-02"
+      ],
+      "params": {},
+      "train_sharpe": 0.809,
+      "markets": 23,
+      "test_return_pct": 23.6716,
+      "test_sharpe": 1.3521,
+      "test_max_drawdown_pct": 17.7629,
+      "kill_switch_at": null,
+      "basket_return_pct": 16.0191,
+      "basket_sharpe": 1.3994
+    }
+  ],
+  "summary": {
+    "fold_count": 12,
+    "chained_test_return_pct": 68.6324,
+    "chained_basket_return_pct": 154.7791,
+    "folds_beating_basket": 8,
+    "positive_folds": 7,
+    "folds_with_kill_switch": 1,
+    "mean_train_sharpe": 0.1632,
+    "mean_test_sharpe": 0.5569,
+    "mean_basket_sharpe": 0.777,
+    "parameter_change_rate": 0.0
+  },
+  "note": "Parameters are chosen on each training window only; each test window starts from fresh equity. A large gap between mean train and test Sharpe signals overfitting.",
+  "mode": "portfolio-wfo",
+  "strategy": "buy_and_hold",
+  "universe": "etf",
+  "ranges": {},
+  "skipped_missing": [],
+  "settings": {
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 3.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": false
+  }
+}
