@@ -1,4 +1,4 @@
-Latest run: `runs/2026-10-30T164225Z_41091872216_PORTFOLIO-etf_1d_combo` (source ed13f09, job success)
+Latest run: `runs/2026-10-30T170647Z_41095595232_PORTFOLIO-etf_1d_selector` (source b681fa1, job success)
 
 # BND backtest summary
 
@@ -12,35 +12,27 @@ Latest run: `runs/2026-10-30T164225Z_41091872216_PORTFOLIO-etf_1d_combo` (source
 
 | # | Strategy | Return | CAGR | Sharpe | Max drawdown | Avg leverage | Fills | Financing | Kill switch | p-value (adjusted) |
 | ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: |
-| 1 | combo | 50.75% | 9.00% | 0.71 | 17.31% | 2.72x | 4069 | 370.99 | – | 0.634 (0.634) |
+| 1 | selector | 27.09% | 5.16% | 0.42 | 29.87% | 2.82x | 2668 | 436.54 | – | 0.342 (0.342) |
 | – | equal-weight basket (long, 1x) | 48.80% | 8.70% | 0.84 | 17.10% | 0.95x | 49 | – | – | – |
 
 **In EUR, unhedged** (a EUR investor; dollar moves included):
 
 | Strategy | Return | CAGR | Sharpe | Max drawdown |
 | --- | ---: | ---: | ---: | ---: |
-| combo | 53.26% | 9.38% | 0.65 | 26.17% |
+| selector | 29.20% | 5.53% | 0.41 | 36.54% |
 | equal-weight basket | 51.28% | 9.08% | 0.79 | 14.57% |
 
 **Largest daily moves (check for bad data):** ETHEREUM -42.3% on 2020-03-12 (35 days > 15%), BITCOIN -37.2% on 2020-03-12 (20 days > 15%), SILVER -28.5% on 2026-01-30 (2 days > 15%), CRUDE_OIL -25.3% on 2020-03-09 (5 days > 15%), NATURAL_GAS -24.9% on 2026-02-02 (7 days > 15%), COPPER -19.3% on 2025-07-30 (1 days > 15%)
 
-**What each combo member adds** (combo: Sharpe 0.71, return 50.75%):
-
-| Member | Alone: return | Alone: Sharpe | Combo without it: return | Combo without it: Sharpe |
-| --- | ---: | ---: | ---: | ---: |
-| regime_switch | 9.12% | 0.20 | 77.22% | 0.88 |
-| momentum | 47.33% | 0.64 | 1.23% | 0.09 |
-| bollinger_reversion | -1.55% | 0.06 | 33.85% | 0.47 |
-
-**Profit by market (out-of-sample):** SP500 992, SILVER 958, NASDAQ100 871, JAPAN 868, NATURAL_GAS 662, BITCOIN 596, CRUDE_OIL 561, EMERGING 423, GBPUSD 365, GERMANY 328, BROAD_COMMODITIES 284, US20Y_BOND 240, UK 172, AGRICULTURE 91, USDJPY 33, USDCHF 32, EURUSD -67, US10Y_NOTE -75, AUDUSD -191, USDCAD -346, ETHEREUM -399, GOLD -442, COPPER -509
+**Profit by market (out-of-sample):** NASDAQ100 1,270, BROAD_COMMODITIES 960, JAPAN 801, SP500 677, GOLD 659, US20Y_BOND 565, EMERGING 530, NATURAL_GAS 427, CRUDE_OIL 174, AUDUSD 152, USDCAD 107, EURUSD 64, COPPER -28, GBPUSD -28, USDJPY -30, USDCHF -54, US10Y_NOTE -86, GERMANY -232, UK -340, BITCOIN -560, SILVER -561, AGRICULTURE -652, ETHEREUM -669
 
 | Max leverage | Return | Sharpe | Max drawdown | Kill switch |
 | ---: | ---: | ---: | ---: | --- |
-| 1x | 11.40% | 0.47 | 9.73% | – |
-| 2x | 34.31% | 0.66 | 16.19% | – |
-| 3x | 50.75% | 0.71 | 17.31% | – |
-| 5x | 55.10% | 0.66 | 19.20% | – |
+| 1x | 10.97% | 0.40 | 12.44% | – |
+| 2x | 24.51% | 0.48 | 21.94% | – |
+| 3x | 27.09% | 0.42 | 29.87% | – |
+| 5x | -12.47% | -0.23 | 30.87% | 2023-12-27 |
 
-Cost stress: ×2 → 30.20% (Sharpe 0.48); ×3 → 12.23% (Sharpe 0.25)
+Cost stress: ×2 → -14.18% (Sharpe -0.32); ×3 → -13.52% (Sharpe -0.31)
 
 _Paper research only. Past results do not predict future returns._

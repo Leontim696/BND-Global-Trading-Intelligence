@@ -1,0 +1,722 @@
+{
+  "mode": "portfolio",
+  "universe": "etf",
+  "markets": [
+    {
+      "name": "GOLD",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "SILVER",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "CRUDE_OIL",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "NATURAL_GAS",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "COPPER",
+      "asset_class": "commodity",
+      "candles": 3760,
+      "first": "2011-11-15T00:00:00+00:00"
+    },
+    {
+      "name": "AGRICULTURE",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "BROAD_COMMODITIES",
+      "asset_class": "commodity",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "SP500",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "NASDAQ100",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "GERMANY",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "JAPAN",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "UK",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "EMERGING",
+      "asset_class": "index",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "US10Y_NOTE",
+      "asset_class": "bond",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "US20Y_BOND",
+      "asset_class": "bond",
+      "candles": 4232,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "EURUSD",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "GBPUSD",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDJPY",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "AUDUSD",
+      "asset_class": "forex",
+      "candles": 4379,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDCHF",
+      "asset_class": "forex",
+      "candles": 4377,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDCAD",
+      "asset_class": "forex",
+      "candles": 4379,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "BITCOIN",
+      "asset_class": "crypto",
+      "candles": 4426,
+      "first": "2014-09-17T00:00:00+00:00"
+    },
+    {
+      "name": "ETHEREUM",
+      "asset_class": "crypto",
+      "candles": 3277,
+      "first": "2017-11-09T00:00:00+00:00"
+    }
+  ],
+  "skipped_missing": [],
+  "in_sample_markets": [
+    "GOLD",
+    "SILVER",
+    "CRUDE_OIL",
+    "NATURAL_GAS",
+    "COPPER",
+    "AGRICULTURE",
+    "BROAD_COMMODITIES",
+    "SP500",
+    "NASDAQ100",
+    "GERMANY",
+    "JAPAN",
+    "UK",
+    "EMERGING",
+    "US10Y_NOTE",
+    "US20Y_BOND",
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY",
+    "AUDUSD",
+    "USDCHF",
+    "USDCAD",
+    "BITCOIN",
+    "ETHEREUM"
+  ],
+  "out_of_sample_start": "2022-01-24T00:00:00+00:00",
+  "settings": {
+    "sizing": "volatility",
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 3.0,
+    "max_weight": 1.0,
+    "financing_pct_annual": 0.0,
+    "cash_rate_pct_annual": 0.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": true,
+    "params": {}
+  },
+  "equal_weight_basket_out_of_sample": {
+    "net_profit": 4880.4775,
+    "total_return_pct": 48.8048,
+    "cagr_pct": 8.7013,
+    "sharpe": 0.8371,
+    "sortino": 1.1862,
+    "calmar": 0.5089,
+    "volatility_pct": 10.6448,
+    "max_drawdown_pct": 17.0979,
+    "turnover": 0.4625,
+    "fills": 49,
+    "avg_gross_leverage": 0.9454,
+    "max_gross_leverage": 1.0034,
+    "total_fees": 3.7137,
+    "total_financing": 423.9786,
+    "total_interest": 0.0,
+    "kill_switch_at": null,
+    "years": 4.7639
+  },
+  "base_currency": "EUR",
+  "equal_weight_basket_out_of_sample_base_currency": {
+    "total_return_pct": 51.2823,
+    "cagr_pct": 9.0787,
+    "sharpe": 0.786,
+    "sortino": 1.114,
+    "volatility_pct": 11.9688,
+    "max_drawdown_pct": 14.5732
+  },
+  "data_diagnostics": [
+    {
+      "market": "ETHEREUM",
+      "largest_move_pct": -42.3472,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 35
+    },
+    {
+      "market": "BITCOIN",
+      "largest_move_pct": -37.1695,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 20
+    },
+    {
+      "market": "SILVER",
+      "largest_move_pct": -28.5403,
+      "largest_move_date": "2026-01-30",
+      "days_over_15pct": 2
+    },
+    {
+      "market": "CRUDE_OIL",
+      "largest_move_pct": -25.315,
+      "largest_move_date": "2020-03-09",
+      "days_over_15pct": 5
+    },
+    {
+      "market": "NATURAL_GAS",
+      "largest_move_pct": -24.8521,
+      "largest_move_date": "2026-02-02",
+      "days_over_15pct": 7
+    },
+    {
+      "market": "COPPER",
+      "largest_move_pct": -19.3143,
+      "largest_move_date": "2025-07-30",
+      "days_over_15pct": 1
+    },
+    {
+      "market": "USDCHF",
+      "largest_move_pct": -16.1473,
+      "largest_move_date": "2015-01-16",
+      "days_over_15pct": 1
+    },
+    {
+      "market": "GERMANY",
+      "largest_move_pct": -12.6888,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "EMERGING",
+      "largest_move_pct": -12.4792,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "NASDAQ100",
+      "largest_move_pct": 12.0031,
+      "largest_move_date": "2025-04-09",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "UK",
+      "largest_move_pct": -11.99,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "SP500",
+      "largest_move_pct": -10.9423,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "GOLD",
+      "largest_move_pct": -10.2742,
+      "largest_move_date": "2026-01-30",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "JAPAN",
+      "largest_move_pct": -9.8047,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "BROAD_COMMODITIES",
+      "largest_move_pct": -7.9444,
+      "largest_move_date": "2022-03-09",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "GBPUSD",
+      "largest_move_pct": -7.6038,
+      "largest_move_date": "2016-06-26",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "US20Y_BOND",
+      "largest_move_pct": 7.5196,
+      "largest_move_date": "2020-03-20",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "AGRICULTURE",
+      "largest_move_pct": 6.2546,
+      "largest_move_date": "2010-10-08",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "AUDUSD",
+      "largest_move_pct": -5.3105,
+      "largest_move_date": "2025-04-06",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "USDJPY",
+      "largest_move_pct": 3.8196,
+      "largest_move_date": "2013-04-04",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "EURUSD",
+      "largest_move_pct": 3.1756,
+      "largest_move_date": "2013-07-10",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "USDCAD",
+      "largest_move_pct": -3.1434,
+      "largest_move_date": "2021-01-01",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "US10Y_NOTE",
+      "largest_move_pct": 2.6416,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    }
+  ],
+  "ranking": [
+    {
+      "strategy": "selector",
+      "in_sample": {
+        "net_profit": -1433.746,
+        "total_return_pct": -14.3375,
+        "cagr_pct": -1.2747,
+        "sharpe": -0.1925,
+        "sortino": -0.2596,
+        "calmar": -0.0421,
+        "volatility_pct": 5.7904,
+        "max_drawdown_pct": 30.2815,
+        "turnover": 14.6193,
+        "fills": 870,
+        "avg_gross_leverage": 0.3344,
+        "max_gross_leverage": 3.5115,
+        "total_fees": 72.4036,
+        "total_financing": 0.0,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-10-22T00:00:00+00:00",
+        "years": 12.0632
+      },
+      "out_of_sample": {
+        "net_profit": 2708.5676,
+        "total_return_pct": 27.0857,
+        "cagr_pct": 5.1602,
+        "sharpe": 0.4214,
+        "sortino": 0.5781,
+        "calmar": 0.1728,
+        "volatility_pct": 14.4099,
+        "max_drawdown_pct": 29.8703,
+        "turnover": 90.7082,
+        "fills": 2668,
+        "avg_gross_leverage": 2.8221,
+        "max_gross_leverage": 3.5143,
+        "total_fees": 420.4527,
+        "total_financing": 436.54,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 4.7639
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": 29.2016,
+        "cagr_pct": 5.5253,
+        "sharpe": 0.4115,
+        "sortino": 0.5705,
+        "volatility_pct": 16.3072,
+        "max_drawdown_pct": 36.5446
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": 0.4214,
+        "shuffled_median_sharpe": 0.3044,
+        "shuffled_p95_sharpe": 0.8894,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.3415
+      },
+      "p_value": 0.3415,
+      "per_market_out_of_sample": [
+        {
+          "market": "NASDAQ100",
+          "asset_class": "index",
+          "pnl": 1270.1331,
+          "fees": 6.1961,
+          "fills": 104,
+          "avg_abs_weight": 0.1252
+        },
+        {
+          "market": "BROAD_COMMODITIES",
+          "asset_class": "commodity",
+          "pnl": 960.4003,
+          "fees": 13.6914,
+          "fills": 89,
+          "avg_abs_weight": 0.0835
+        },
+        {
+          "market": "JAPAN",
+          "asset_class": "index",
+          "pnl": 800.9746,
+          "fees": 9.2058,
+          "fills": 113,
+          "avg_abs_weight": 0.0951
+        },
+        {
+          "market": "SP500",
+          "asset_class": "index",
+          "pnl": 676.9904,
+          "fees": 8.4699,
+          "fills": 118,
+          "avg_abs_weight": 0.1248
+        },
+        {
+          "market": "GOLD",
+          "asset_class": "commodity",
+          "pnl": 658.5396,
+          "fees": 12.6203,
+          "fills": 90,
+          "avg_abs_weight": 0.1072
+        },
+        {
+          "market": "US20Y_BOND",
+          "asset_class": "bond",
+          "pnl": 564.9524,
+          "fees": 11.7468,
+          "fills": 121,
+          "avg_abs_weight": 0.1097
+        },
+        {
+          "market": "EMERGING",
+          "asset_class": "index",
+          "pnl": 530.1646,
+          "fees": 5.7899,
+          "fills": 69,
+          "avg_abs_weight": 0.096
+        },
+        {
+          "market": "NATURAL_GAS",
+          "asset_class": "commodity",
+          "pnl": 426.5726,
+          "fees": 2.9999,
+          "fills": 50,
+          "avg_abs_weight": 0.016
+        },
+        {
+          "market": "CRUDE_OIL",
+          "asset_class": "commodity",
+          "pnl": 174.0241,
+          "fees": 6.4146,
+          "fills": 57,
+          "avg_abs_weight": 0.0444
+        },
+        {
+          "market": "AUDUSD",
+          "asset_class": "forex",
+          "pnl": 152.1323,
+          "fees": 5.7603,
+          "fills": 112,
+          "avg_abs_weight": 0.1136
+        },
+        {
+          "market": "USDCAD",
+          "asset_class": "forex",
+          "pnl": 106.8696,
+          "fees": 8.5592,
+          "fills": 166,
+          "avg_abs_weight": 0.217
+        },
+        {
+          "market": "EURUSD",
+          "asset_class": "forex",
+          "pnl": 63.8368,
+          "fees": 7.3838,
+          "fills": 149,
+          "avg_abs_weight": 0.2173
+        },
+        {
+          "market": "COPPER",
+          "asset_class": "commodity",
+          "pnl": -27.8799,
+          "fees": 13.8744,
+          "fills": 93,
+          "avg_abs_weight": 0.071
+        },
+        {
+          "market": "GBPUSD",
+          "asset_class": "forex",
+          "pnl": -28.0406,
+          "fees": 6.4977,
+          "fills": 134,
+          "avg_abs_weight": 0.1773
+        },
+        {
+          "market": "USDJPY",
+          "asset_class": "forex",
+          "pnl": -30.3022,
+          "fees": 6.8086,
+          "fills": 179,
+          "avg_abs_weight": 0.2361
+        },
+        {
+          "market": "USDCHF",
+          "asset_class": "forex",
+          "pnl": -54.1054,
+          "fees": 9.0221,
+          "fills": 200,
+          "avg_abs_weight": 0.2776
+        },
+        {
+          "market": "US10Y_NOTE",
+          "asset_class": "bond",
+          "pnl": -86.3522,
+          "fees": 22.692,
+          "fills": 195,
+          "avg_abs_weight": 0.2604
+        },
+        {
+          "market": "GERMANY",
+          "asset_class": "index",
+          "pnl": -231.9841,
+          "fees": 8.6017,
+          "fills": 99,
+          "avg_abs_weight": 0.0899
+        },
+        {
+          "market": "UK",
+          "asset_class": "index",
+          "pnl": -340.2935,
+          "fees": 11.0343,
+          "fills": 112,
+          "avg_abs_weight": 0.0923
+        },
+        {
+          "market": "BITCOIN",
+          "asset_class": "crypto",
+          "pnl": -559.5683,
+          "fees": 125.9526,
+          "fills": 123,
+          "avg_abs_weight": 0.048
+        },
+        {
+          "market": "SILVER",
+          "asset_class": "commodity",
+          "pnl": -560.8292,
+          "fees": 8.4162,
+          "fills": 68,
+          "avg_abs_weight": 0.0594
+        },
+        {
+          "market": "AGRICULTURE",
+          "asset_class": "commodity",
+          "pnl": -652.2579,
+          "fees": 28.3559,
+          "fills": 133,
+          "avg_abs_weight": 0.1277
+        },
+        {
+          "market": "ETHEREUM",
+          "asset_class": "crypto",
+          "pnl": -668.8695,
+          "fees": 80.3589,
+          "fills": 94,
+          "avg_abs_weight": 0.0325
+        }
+      ],
+      "cost_stress_out_of_sample": [
+        {
+          "cost_multiplier": 2.0,
+          "net_profit": -1418.1945,
+          "total_return_pct": -14.1819,
+          "cagr_pct": -3.1595,
+          "sharpe": -0.3186,
+          "sortino": -0.432,
+          "calmar": -0.1029,
+          "volatility_pct": 8.8471,
+          "max_drawdown_pct": 30.6984,
+          "turnover": 37.7857,
+          "fills": 975,
+          "avg_gross_leverage": 1.0469,
+          "max_gross_leverage": 3.5167,
+          "total_fees": 346.401,
+          "total_financing": 289.387,
+          "total_interest": 0.0,
+          "kill_switch_at": "2023-11-29T00:00:00+00:00",
+          "years": 4.7639
+        },
+        {
+          "cost_multiplier": 3.0,
+          "net_profit": -1352.2495,
+          "total_return_pct": -13.5225,
+          "cagr_pct": -3.0037,
+          "sharpe": -0.3088,
+          "sortino": -0.417,
+          "calmar": -0.0992,
+          "volatility_pct": 8.6592,
+          "max_drawdown_pct": 30.2887,
+          "turnover": 35.8565,
+          "fills": 943,
+          "avg_gross_leverage": 1.0141,
+          "max_gross_leverage": 3.5191,
+          "total_fees": 497.9475,
+          "total_financing": 396.5703,
+          "total_interest": 0.0,
+          "kill_switch_at": "2023-11-09T00:00:00+00:00",
+          "years": 4.7639
+        }
+      ],
+      "leverage_out_of_sample": [
+        {
+          "max_leverage": 1.0,
+          "net_profit": 1096.9721,
+          "total_return_pct": 10.9697,
+          "cagr_pct": 2.209,
+          "sharpe": 0.4022,
+          "sortino": 0.5512,
+          "calmar": 0.1776,
+          "volatility_pct": 5.8596,
+          "max_drawdown_pct": 12.4359,
+          "turnover": 27.2903,
+          "fills": 1524,
+          "avg_gross_leverage": 1.0413,
+          "max_gross_leverage": 1.4662,
+          "total_fees": 124.2213,
+          "total_financing": 163.2872,
+          "total_interest": 0.0,
+          "kill_switch_at": null,
+          "years": 4.7639
+        },
+        {
+          "max_leverage": 2.0,
+          "net_profit": 2451.0897,
+          "total_return_pct": 24.5109,
+          "cagr_pct": 4.7093,
+          "sharpe": 0.4787,
+          "sortino": 0.6564,
+          "calmar": 0.2146,
+          "volatility_pct": 10.8438,
+          "max_drawdown_pct": 21.9431,
+          "turnover": 59.6112,
+          "fills": 2066,
+          "avg_gross_leverage": 2.0183,
+          "max_gross_leverage": 2.5254,
+          "total_fees": 278.4764,
+          "total_financing": 310.1374,
+          "total_interest": 0.0,
+          "kill_switch_at": null,
+          "years": 4.7639
+        },
+        {
+          "max_leverage": 3.0,
+          "net_profit": 2708.5676,
+          "total_return_pct": 27.0857,
+          "cagr_pct": 5.1602,
+          "sharpe": 0.4214,
+          "sortino": 0.5781,
+          "calmar": 0.1728,
+          "volatility_pct": 14.4099,
+          "max_drawdown_pct": 29.8703,
+          "turnover": 90.7082,
+          "fills": 2668,
+          "avg_gross_leverage": 2.8221,
+          "max_gross_leverage": 3.5143,
+          "total_fees": 420.4527,
+          "total_financing": 436.54,
+          "total_interest": 0.0,
+          "kill_switch_at": null,
+          "years": 4.7639
+        },
+        {
+          "max_leverage": 5.0,
+          "net_profit": -1247.2825,
+          "total_return_pct": -12.4728,
+          "cagr_pct": -2.7578,
+          "sharpe": -0.2334,
+          "sortino": -0.3189,
+          "calmar": -0.0893,
+          "volatility_pct": 9.8865,
+          "max_drawdown_pct": 30.8739,
+          "turnover": 52.5979,
+          "fills": 1316,
+          "avg_gross_leverage": 1.2891,
+          "max_gross_leverage": 5.2415,
+          "total_fees": 242.6229,
+          "total_financing": 185.5191,
+          "total_interest": 0.0,
+          "kill_switch_at": "2023-12-27T00:00:00+00:00",
+          "years": 4.7639
+        }
+      ],
+      "p_value_adjusted": 0.3415
+    }
+  ],
+  "note": "Paper research. With --universe futures, futures series are not roll-adjusted and indices stand in for futures/CFDs; --universe etf uses tradable, adjusted ETFs. The permutation test shuffles each market's signal timing; p_value_adjusted (Holm) accounts for comparing several strategies. Always-long strategies get p = 1: their result comes from diversification and leverage, not timing."
+}
