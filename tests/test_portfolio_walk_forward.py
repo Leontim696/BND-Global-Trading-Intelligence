@@ -150,3 +150,41 @@ def test_etf_leverage_pays_a_margin_loan_by_default():
     assert config("--universe", "etf") == ETF_MARGIN_LOAN_PCT == 5.0
     assert config("--universe", "futures") == 0.0
     assert config("--universe", "etf", "--financing", "2.5") == 2.5
+
+
+def test_per_class_chooses_parameters_for_each_asset_class(tmp_path):
+    from src.bnd.backtest_summary import build_summary
+
+    names = ["EURUSD", "GBPUSD", "GOLD", "SILVER"]
+    write_markets(tmp_path, names, days=1000)
+    code, out, err = run_cli(["portfolio-wfo", "--data-dir", str(tmp_path),
+                              "--markets", ",".join(names), "--strategy", "sma_crossover",
+                              "--range", "fast=5:10:5", "--range", "slow=20:40:20",
+                              "--sizing-lookback", "20", "--train-days", "400",
+                              "--test-days", "200", "--per-class"])
+
+    assert code == 0, err
+    report = json.loads(out)
+    assert report["per_class"] is True
+    for row in report["folds"]:
+        assert set(row["params"]) == {"forex", "commodity"}
+        assert all(set(p) == {"fast", "slow"} for p in row["params"].values())
+    path = tmp_path / "pc.json"
+    path.write_text(out)
+    assert "forex: fast=" in build_summary(portfolio_wfo=path)
+
+
+def test_per_class_training_sees_only_that_class(tmp_path):
+    data = load(tmp_path)
+    seen = []
+
+    def make_factory(params, frame):
+        seen.append(sorted(frame))
+        return lambda: sma_crossover(**params)
+
+    portfolio_walk_forward(data, MARKETS, make_factory, [{"fast": 5, "slow": 20}],
+                           PortfolioConfig(vol_lookback=20), train_days=400, test_days=200,
+                           per_class=True)
+
+    # Training factories get one class each; the combined ones get all three.
+    assert ["GOLD"] in seen and ["EURUSD"] in seen and ["SP500"] in seen
