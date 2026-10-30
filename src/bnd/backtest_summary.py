@@ -46,10 +46,16 @@ def _dataset_lines(report: dict) -> list[str]:
 
 def _run_lines(report: dict) -> list[str]:
     rows = [
+        ("Net profit", "net_profit", ""),
         ("Return", "total_return_pct", "%"),
         ("CAGR", "cagr_pct", "%"),
         ("Max drawdown", "max_drawdown_pct", "%"),
+        ("Volatility", "volatility_pct", "%"),
         ("Sharpe", "sharpe", ""),
+        ("Sortino", "sortino", ""),
+        ("Calmar", "calmar", ""),
+        ("Expectancy per trade", "expectancy", ""),
+        ("Turnover (x equity / yr)", "turnover", ""),
         ("Trades", "trades", ""),
         ("Time in market", "time_in_market_pct", "%"),
         ("Avg capital exposure", "avg_capital_exposure_pct", "%"),

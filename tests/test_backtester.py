@@ -9,6 +9,7 @@ from src.bnd.backtester import (
     BacktestConfig,
     CostModel,
     compute_metrics,
+    Trade,
     run_backtest,
     split_candles,
 )
@@ -541,3 +542,46 @@ def test_leveraged_account_can_be_wiped_out():
 def test_allocation_limit():
     with pytest.raises(ValueError):
         BacktestConfig(allocation_pct=1100)
+
+
+def test_risk_adjusted_metrics_by_hand():
+    from math import sqrt as root
+
+    curve = [(START, v) for v in (110.0, 99.0, 108.9, 98.01)]
+    # Returns: +10%, -10%, +10%, -10% from an initial 100.
+    trades = [Trade(1, START, 1, START, 1, 1, pnl, 0.0, "signal") for pnl in (30.0, -10.0)]
+
+    m = compute_metrics(curve, trades, bars_per_year=4, initial_equity=100.0,
+                        traded_notional=800.0)
+
+    returns = [0.1, -0.1, 0.1, -0.1]
+    mean = sum(returns) / 4
+    sd = root(sum((r - mean) ** 2 for r in returns) / 3)
+    downside = root((0.01 + 0.01) / 4)
+    assert m["net_profit"] == pytest.approx(-1.99)
+    assert m["volatility_pct"] == pytest.approx(100 * sd * 2)
+    assert m["sharpe"] == pytest.approx(mean / sd * 2)
+    assert m["sortino"] == pytest.approx(mean / downside * 2)
+    # CAGR over exactly one year equals the total return; drawdown 10.9%.
+    assert m["calmar"] == pytest.approx(-0.0199 / (1 - 98.01 / 110.0))
+    assert m["expectancy"] == pytest.approx(10.0)
+    # 800 traded over 1 year on an average equity of 103.98.
+    assert m["turnover"] == pytest.approx(800 / (sum(v for _, v in curve) / 4))
+
+
+def test_metrics_without_losses_or_drawdown():
+    curve = [(START, v) for v in (101.0, 102.0, 103.0)]
+
+    m = compute_metrics(curve, [], bars_per_year=3, initial_equity=100.0)
+
+    assert m["sortino"] is None and m["calmar"] is None
+    assert m["expectancy"] is None and m["turnover"] is None
+
+
+def test_backtest_reports_turnover():
+    candles = bars([100, 100, 100, 100, 100])
+    result = run_backtest(candles, fixed(1, 0, 1, 0, 0), BacktestConfig(costs=NO_COSTS))
+
+    # Two round trips of 10,000 each = 40,000 traded.
+    years = result.metrics["years"]
+    assert result.metrics["turnover"] == pytest.approx(40_000 / 10_000 / years)
