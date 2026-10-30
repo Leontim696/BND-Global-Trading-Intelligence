@@ -1,0 +1,207 @@
+{
+  "data": "backtest-reports/BTCUSDT-1d.csv",
+  "sha256": "64207ddad540a3ade72544eefb9ae0fc1d08d6117590ac4c264407506662a4cc",
+  "candles": 2859,
+  "first_candle": "2019-01-01T00:00:00+00:00",
+  "last_candle": "2026-10-29T00:00:00+00:00",
+  "data_gaps": 0,
+  "first_gaps": [],
+  "costs": {
+    "fee_pct": 0.1,
+    "slippage_pct": 0.05,
+    "funding_pct_annual": 0.0,
+    "cash_rate_pct_annual": 4.0,
+    "allow_short": false
+  },
+  "risk_gate": "disabled_research_only",
+  "out_of_sample_start": "2024-06-24T00:00:00+00:00",
+  "buy_and_hold": {
+    "in_sample": {
+      "total_return_pct": 1560.1711,
+      "sharpe": 1.1081,
+      "max_drawdown_pct": 76.6293,
+      "trades": 1,
+      "avg_capital_exposure_pct": 99.95,
+      "total_funding": 0.0
+    },
+    "out_of_sample": {
+      "total_return_pct": 23.0157,
+      "sharpe": 0.42,
+      "max_drawdown_pct": 52.9718,
+      "trades": 1,
+      "avg_capital_exposure_pct": 100.0,
+      "total_funding": 0.0
+    }
+  },
+  "ranking": [
+    {
+      "strategy": "sma_crossover",
+      "in_sample": {
+        "total_return_pct": 1046.609,
+        "sharpe": 1.1595,
+        "max_drawdown_pct": 57.3189,
+        "trades": 21,
+        "avg_capital_exposure_pct": 55.6222,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 48.9564,
+        "sharpe": 0.6995,
+        "max_drawdown_pct": 28.0132,
+        "trades": 11,
+        "avg_capital_exposure_pct": 55.711,
+        "total_funding": 0.0
+      },
+      "p_value": 0.198,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "momentum",
+      "in_sample": {
+        "total_return_pct": 342.2771,
+        "sharpe": 0.7998,
+        "max_drawdown_pct": 63.1411,
+        "trades": 20,
+        "avg_capital_exposure_pct": 58.4208,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 51.7309,
+        "sharpe": 0.6739,
+        "max_drawdown_pct": 28.0953,
+        "trades": 8,
+        "avg_capital_exposure_pct": 61.1888,
+        "total_funding": 0.0
+      },
+      "p_value": 0.3168,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "ema_crossover",
+      "in_sample": {
+        "total_return_pct": 2513.3281,
+        "sharpe": 1.4689,
+        "max_drawdown_pct": 57.656,
+        "trades": 25,
+        "avg_capital_exposure_pct": 55.2224,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 30.9091,
+        "sharpe": 0.5397,
+        "max_drawdown_pct": 30.9477,
+        "trades": 16,
+        "avg_capital_exposure_pct": 52.6807,
+        "total_funding": 0.0
+      },
+      "p_value": 0.4158,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "macd",
+      "in_sample": {
+        "total_return_pct": 1023.3055,
+        "sharpe": 1.2029,
+        "max_drawdown_pct": 52.6535,
+        "trades": 67,
+        "avg_capital_exposure_pct": 50.8746,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 18.4812,
+        "sharpe": 0.3916,
+        "max_drawdown_pct": 34.1199,
+        "trades": 35,
+        "avg_capital_exposure_pct": 49.8834,
+        "total_funding": 0.0
+      },
+      "p_value": 0.3861,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "volatility_target",
+      "in_sample": {
+        "total_return_pct": 610.2835,
+        "sharpe": 1.1085,
+        "max_drawdown_pct": 51.6423,
+        "trades": 1,
+        "avg_capital_exposure_pct": 58.6104,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 16.5994,
+        "sharpe": 0.3623,
+        "max_drawdown_pct": 51.423,
+        "trades": 1,
+        "avg_capital_exposure_pct": 86.7521,
+        "total_funding": 0.0
+      },
+      "p_value": 0.7624,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "donchian_breakout",
+      "in_sample": {
+        "total_return_pct": 694.5757,
+        "sharpe": 1.0794,
+        "max_drawdown_pct": 44.4111,
+        "trades": 13,
+        "avg_capital_exposure_pct": 45.927,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 13.5019,
+        "sharpe": 0.344,
+        "max_drawdown_pct": 29.8386,
+        "trades": 8,
+        "avg_capital_exposure_pct": 36.4802,
+        "total_funding": 0.0
+      },
+      "p_value": 0.5446,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "rsi_reversion",
+      "in_sample": {
+        "total_return_pct": 128.3779,
+        "sharpe": 0.6687,
+        "max_drawdown_pct": 23.4444,
+        "trades": 11,
+        "avg_capital_exposure_pct": 12.5437,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 10.5724,
+        "sharpe": 0.2983,
+        "max_drawdown_pct": 23.0291,
+        "trades": 6,
+        "avg_capital_exposure_pct": 17.7156,
+        "total_funding": 0.0
+      },
+      "p_value": 0.3465,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "bollinger_reversion",
+      "in_sample": {
+        "total_return_pct": 21.6203,
+        "sharpe": 0.2989,
+        "max_drawdown_pct": 51.8848,
+        "trades": 28,
+        "avg_capital_exposure_pct": 20.04,
+        "total_funding": 0.0
+      },
+      "out_of_sample": {
+        "total_return_pct": 7.1631,
+        "sharpe": 0.2434,
+        "max_drawdown_pct": 37.597,
+        "trades": 15,
+        "avg_capital_exposure_pct": 24.7086,
+        "total_funding": 0.0
+      },
+      "p_value": 0.3861,
+      "p_value_adjusted": 1.0
+    }
+  ],
+  "note": "Default parameters, no tuning. Ranked by out-of-sample Sharpe. p_value_adjusted (Holm) accounts for testing every strategy at once; above 0.05 the timing is indistinguishable from luck."
+}
