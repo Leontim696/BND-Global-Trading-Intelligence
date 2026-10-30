@@ -1,14 +1,18 @@
 
 """BND AI Gateway — provider routing, validation and cost accounting.
 
-MOCK mode remains the default. LIVE mode is intentionally disabled.
+MOCK mode is the default. LIVE mode needs all of: BND_ALLOW_LIVE_AI=true,
+an unexpired LiveAuthorization with a USD budget, and persistent cost
+storage with pricing for every model, so paid calls are always budgeted.
 
 When cost accounting is configured, a budget reservation is created
 before provider execution and actual token usage is recorded afterward.
 """
 
+import os
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from decimal import Decimal
 from enum import Enum
 from math import isfinite
 from typing import Protocol
@@ -16,6 +20,7 @@ from typing import Protocol
 from .cost_storage import SQLiteCostStorage
 from .cost_tracker import (
     CostTracker,
+    money,
     ModelPricing,
     UsageRecord,
 )
@@ -37,6 +42,32 @@ class InvalidAIResponse(GatewayError):
 class GatewayMode(str, Enum):
     MOCK = "MOCK"
     LIVE = "LIVE"
+
+
+@dataclass(frozen=True)
+class LiveAuthorization:
+    """Owner approval for paid calls: who, how much, until when."""
+
+    approved_by: str
+    max_round_usd: Decimal
+    expires_at: datetime
+    reference: str = ""
+
+    def __post_init__(self):
+        if not self.approved_by.strip():
+            raise ValueError("approved_by is required")
+        object.__setattr__(self, "max_round_usd", money(self.max_round_usd))
+        if self.max_round_usd <= 0:
+            raise ValueError("A positive USD budget is required")
+        if self.expires_at.tzinfo is None or self.expires_at.utcoffset() is None:
+            raise ValueError("Timezone-aware expiry required")
+
+    def check(self, now: datetime | None = None) -> None:
+        now = now or datetime.now(timezone.utc)
+        if os.getenv("BND_ALLOW_LIVE_AI", "false").strip().lower() != "true":
+            raise ProviderUnavailable("LIVE AI requires BND_ALLOW_LIVE_AI=true")
+        if now >= self.expires_at:
+            raise ProviderUnavailable("LIVE AI authorisation has expired")
 
 
 @dataclass(frozen=True)
@@ -69,6 +100,8 @@ class AIResponse:
     model: str
     input_tokens: int = 0
     output_tokens: int = 0
+    # Upstream provider that served the model, when the router reports it.
+    provider: str = ""
 
     def __post_init__(self):
         if self.agent not in AGENTS:
@@ -155,9 +188,13 @@ class AIGateway:
         pricing: dict[str, ModelPricing] | None = None,
         estimated_input_tokens: int = 1000,
         estimated_output_tokens: int = 1000,
+        live_authorization: LiveAuthorization | None = None,
     ):
         if not isinstance(mode, GatewayMode):
             raise ValueError("Invalid gateway mode")
+
+        if mode == GatewayMode.LIVE and (live_authorization is None or cost_storage is None):
+            raise ValueError("LIVE mode needs a LiveAuthorization and cost storage")
 
         for tokens in (
             estimated_input_tokens,
@@ -176,6 +213,7 @@ class AIGateway:
         self.pricing = dict(pricing or {})
         self.estimated_input_tokens = estimated_input_tokens
         self.estimated_output_tokens = estimated_output_tokens
+        self.live_authorization = live_authorization
 
     def register(self, agent: str, provider: AIProvider) -> None:
         if agent not in AGENTS:
@@ -187,10 +225,8 @@ class AIGateway:
         self.providers[agent] = provider
 
     def analyze(self, request: AIRequest) -> AIResponse:
-        if self.mode != GatewayMode.MOCK:
-            raise ProviderUnavailable(
-                "Live API integrations are not configured yet"
-            )
+        if self.mode == GatewayMode.LIVE:
+            self.live_authorization.check()
 
         provider = self.providers.get(request.agent)
 
@@ -273,10 +309,30 @@ class AIGateway:
                 self.cost_storage.release(reservation_id)
             raise
 
-    @staticmethod
-    def _expected_model(agent: str) -> str:
-        """Model used by the built-in deterministic mock provider."""
-        return f"mock-{agent}"
+    def _expected_model(self, agent: str) -> str:
+        """Model the agent's provider is configured to call."""
+        provider = self.providers.get(agent)
+        expected = getattr(provider, "expected_model", None)
+        if callable(expected):
+            expected = expected()
+        return expected or f"mock-{agent}"
+
+    def estimate_cost(self, agent: str) -> Decimal:
+        """Worst-case cost of one call, from the configured token estimate."""
+        model = self._expected_model(agent)
+        pricing = self.pricing.get(model)
+        if pricing is None:
+            if self.mode == GatewayMode.LIVE:
+                raise GatewayError(f"No pricing configured for model {model}")
+            return Decimal("0")
+        return CostTracker.estimate_cost(
+            self.estimated_input_tokens, self.estimated_output_tokens, pricing)
+
+    def actual_cost(self, response: AIResponse) -> Decimal:
+        pricing = self.pricing.get(response.model)
+        if pricing is None:
+            return Decimal("0")
+        return CostTracker.estimate_cost(response.input_tokens, response.output_tokens, pricing)
 
     def registered_agents(self) -> list[str]:
         return [

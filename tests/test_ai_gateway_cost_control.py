@@ -204,12 +204,22 @@ def test_gateway_rejects_missing_pricing(tmp_path):
     assert storage.summary()["active_reservations"] == 0
 
 
-def test_gateway_keeps_live_mode_disabled(tmp_path):
+def test_gateway_keeps_live_mode_disabled(tmp_path, monkeypatch):
+    from datetime import datetime, timedelta, timezone
+
+    from src.bnd.ai_gateway import LiveAuthorization
+
     storage = make_storage(tmp_path)
+    with pytest.raises(ValueError):
+        AIGateway(mode=GatewayMode.LIVE, cost_storage=storage, pricing={MODEL: PRICING})
+    # Authorised on paper, but the environment flag is off: still blocked.
+    monkeypatch.delenv("BND_ALLOW_LIVE_AI", raising=False)
     gateway = AIGateway(
         mode=GatewayMode.LIVE,
         cost_storage=storage,
         pricing={MODEL: PRICING},
+        live_authorization=LiveAuthorization(
+            "owner", "0.50", datetime.now(timezone.utc) + timedelta(hours=1)),
     )
     gateway.register("gpt", MockAIProvider(agent="gpt"))
 
