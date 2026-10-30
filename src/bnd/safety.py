@@ -1,0 +1,28 @@
+"""One place that decides the trading mode: MOCK or PAPER, never LIVE.
+
+Every entry point that could act on a market calls ``trading_mode()``
+first. The mode comes from ``BND_TRADING_MODE`` (default PAPER). LIVE and
+anything unknown are refused here, so no configuration mistake, workflow
+input or environment variable can switch the system to real orders: that
+would need a code change, reviewed in a pull request. The engines keep
+their own refusals as well (``PaperEngine.require_mode``).
+"""
+
+import os
+
+ENV_VAR = "BND_TRADING_MODE"
+ALLOWED = ("MOCK", "PAPER")
+
+
+class SafetyError(RuntimeError):
+    """The requested mode is not allowed in this system."""
+
+
+def trading_mode(environ=None) -> str:
+    """The active mode, or SafetyError for LIVE or an unknown value."""
+    environ = os.environ if environ is None else environ
+    mode = (environ.get(ENV_VAR) or "PAPER").strip().upper()
+    if mode not in ALLOWED:
+        raise SafetyError(f"{ENV_VAR}={mode!r} refused: only {', '.join(ALLOWED)} are allowed; "
+                          "real (LIVE) trading does not exist in this system")
+    return mode

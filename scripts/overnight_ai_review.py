@@ -61,7 +61,8 @@ def main():
                   headers={"Authorization": "Bearer " + key, "Content-Type": "application/json"},
                   method="POST")
     try:
-        with urlopen(req, timeout=45) as response:
+        # Reviewed: fixed https URL constant.
+        with urlopen(req, timeout=45) as response:  # nosec B310
             result = json.loads(response.read(150000).decode())
         content = result["choices"][0]["message"]["content"]
         if not isinstance(content, str):

@@ -52,7 +52,8 @@ def execute():
                           headers={"Authorization": "Bearer " + os.environ["OPENROUTER_API_KEY"],
                                    "Content-Type": "application/json"}, method="POST")
         try:
-            with urlopen(request, timeout=25) as response:
+            # Reviewed: fixed https URL constant.
+            with urlopen(request, timeout=25) as response:  # nosec B310
                 raw = response.read(100001)
         except (HTTPError, URLError, TimeoutError) as exc:
             raise RuntimeError(agent + " failed; no retries") from exc

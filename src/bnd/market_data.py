@@ -225,7 +225,8 @@ def fetch_binance_klines(
         request = Request(BINANCE_KLINES_URL + "?" + query, method="GET")
 
         try:
-            with urlopen(request, timeout=timeout) as response:
+            # Reviewed: fixed https URL constant.
+            with urlopen(request, timeout=timeout) as response:  # nosec B310
                 rows = json.loads(response.read(5_000_001))
         except HTTPError as exc:
             raise MarketDataError(
@@ -346,7 +347,8 @@ def fetch_yahoo_daily(
         method="GET",
     )
     try:
-        with urlopen(request, timeout=timeout) as response:
+        # Reviewed: fixed https URL constant.
+        with urlopen(request, timeout=timeout) as response:  # nosec B310
             payload = json.loads(response.read(20_000_001))
     except HTTPError as exc:
         raise MarketDataError(f"Yahoo HTTP error for {symbol}: {exc.code}") from exc
