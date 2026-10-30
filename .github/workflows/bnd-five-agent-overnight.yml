@@ -31,11 +31,9 @@ jobs:
     env:
       # Paid calls ONLY for explicit manual dispatch with exact confirmation.
       # Push and schedule ALWAYS remain disabled.
-      BND_ALLOW_PAID_AI: ${{ github.event_name == 'workflow_dispatch' && inputs.paid_test_confirmation == 'RUN-PAID-TEST' && 'true' || 'false' }}
       BND_PAPER_ONLY: "true"
       BND_MAX_RUN_COST_USD: "0.25"
       BND_MAX_CALL_COST_USD: "0.05"
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT || 'openai/gpt-4o-mini' }}
       BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE || 'anthropic/claude-3.5-haiku' }}
       BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI || 'google/gemini-2.0-flash-001' }}
@@ -47,8 +45,16 @@ jobs:
         with:
           python-version: "3.13"
       - name: Offline safety tests (no paid calls)
+        env:
+          BND_ALLOW_PAID_AI: 'false'
+          OPENROUTER_API_KEY: ''
         run: python -m unittest discover -s tests -p 'test_five_agent_council.py' -v
       - name: Generate independent agent proposals (manual opt-in only)
+        if: github.event_name == 'workflow_dispatch' && inputs.paid_test_confirmation == 'RUN-PAID-TEST'
+        timeout-minutes: 5
+        env:
+          BND_ALLOW_PAID_AI: 'true'
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python scripts/overnight_five_agent_council.py
       - uses: actions/upload-artifact@v4
         if: always()
