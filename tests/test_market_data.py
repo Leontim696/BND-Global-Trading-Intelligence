@@ -289,3 +289,22 @@ def test_cli_walk_forward_rejects_window_larger_than_train(tmp_path, capsys):
 
     assert code == 2
     assert "window" in capsys.readouterr().err.lower()
+
+
+def test_repair_spikes_fixes_reverting_bad_ticks_only():
+    from src.bnd.market_data import repair_spikes
+
+    def series(closes):
+        return [Candle(START + STEP * i, c, c, c, c, 1) for i, c in enumerate(closes)]
+
+    bad_tick = series([100, 101, 150, 102, 103])     # +48.5% then back
+    crash = series([100, 101, 60, 58, 57])           # -40% that persists
+    rebound = series([100, 101, 70, 95, 96])          # -31%, only 81% undone -> repaired
+    partial = series([100, 101, 70, 80, 81])          # -31%, only 32% undone -> real
+
+    fixed, repairs = repair_spikes(bad_tick)
+    assert [c.close for c in fixed] == [100, 101, 101, 102, 103]
+    assert repairs[0]["date"] == (START + STEP * 2).date().isoformat()
+    assert repair_spikes(crash)[1] == []
+    assert len(repair_spikes(rebound)[1]) == 1
+    assert repair_spikes(partial)[1] == []
