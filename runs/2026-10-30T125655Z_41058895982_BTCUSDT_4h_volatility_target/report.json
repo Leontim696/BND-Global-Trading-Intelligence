@@ -1,0 +1,125 @@
+{
+  "data": "backtest-reports/BTCUSDT-4h.csv",
+  "sha256": "5e094c7ec53092a0b91904e9904213c85c5469b2ac662b6235d375fb9748246d",
+  "candles": 17152,
+  "first_candle": "2019-01-01T00:00:00+00:00",
+  "last_candle": "2026-10-30T08:00:00+00:00",
+  "data_gaps": 4,
+  "first_gaps": [
+    [
+      "2019-03-12T00:00:00+00:00",
+      "2019-03-12T08:00:00+00:00"
+    ],
+    [
+      "2019-05-15T00:00:00+00:00",
+      "2019-05-15T12:00:00+00:00"
+    ],
+    [
+      "2019-08-15T00:00:00+00:00",
+      "2019-08-15T08:00:00+00:00"
+    ],
+    [
+      "2020-02-19T08:00:00+00:00",
+      "2020-02-19T16:00:00+00:00"
+    ]
+  ],
+  "strategy": "volatility_target",
+  "periods": {
+    "full": {
+      "start": "2019-01-01T00:00:00+00:00",
+      "end": "2026-10-30T08:00:00+00:00",
+      "strategy": {
+        "total_return_pct": 338.386,
+        "cagr_pct": 20.7841,
+        "max_drawdown_pct": 42.3613,
+        "sharpe": 0.7882,
+        "trades": 58,
+        "win_rate_pct": 13.7931,
+        "profit_factor": 3.0038,
+        "total_fees": 2444.4833,
+        "rejected_entries": 0,
+        "time_in_market_pct": 54.3435,
+        "avg_capital_exposure_pct": 43.3986,
+        "risk_gate": "disabled_research_only"
+      },
+      "buy_and_hold": {
+        "total_return_pct": 1989.4779,
+        "cagr_pct": 47.4553,
+        "max_drawdown_pct": 77.0434,
+        "sharpe": 0.9501,
+        "trades": 1,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "total_fees": 219.147,
+        "rejected_entries": 0,
+        "time_in_market_pct": 99.9942,
+        "avg_capital_exposure_pct": 99.9942,
+        "risk_gate": "disabled_research_only"
+      }
+    },
+    "in_sample": {
+      "start": "2019-01-01T00:00:00+00:00",
+      "end": "2024-06-24T16:00:00+00:00",
+      "strategy": {
+        "total_return_pct": 240.6098,
+        "cagr_pct": 25.0705,
+        "max_drawdown_pct": 42.3613,
+        "sharpe": 0.8902,
+        "trades": 35,
+        "win_rate_pct": 8.5714,
+        "profit_factor": 3.6594,
+        "total_fees": 942.9701,
+        "rejected_entries": 0,
+        "time_in_market_pct": 54.8059,
+        "avg_capital_exposure_pct": 41.3355,
+        "risk_gate": "disabled_research_only"
+      },
+      "buy_and_hold": {
+        "total_return_pct": 1501.4069,
+        "cagr_pct": 65.906,
+        "max_drawdown_pct": 77.0434,
+        "sharpe": 1.1053,
+        "trades": 1,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "total_fees": 170.291,
+        "rejected_entries": 0,
+        "time_in_market_pct": 99.9917,
+        "avg_capital_exposure_pct": 99.9917,
+        "risk_gate": "disabled_research_only"
+      }
+    },
+    "out_of_sample": {
+      "start": "2024-06-24T20:00:00+00:00",
+      "end": "2026-10-30T08:00:00+00:00",
+      "strategy": {
+        "total_return_pct": 28.3207,
+        "cagr_pct": 11.2038,
+        "max_drawdown_pct": 31.158,
+        "sharpe": 0.5238,
+        "trades": 24,
+        "win_rate_pct": 20.8333,
+        "profit_factor": 2.1295,
+        "total_fees": 459.4805,
+        "rejected_entries": 0,
+        "time_in_market_pct": 53.2647,
+        "avg_capital_exposure_pct": 48.2119,
+        "risk_gate": "disabled_research_only"
+      },
+      "buy_and_hold": {
+        "total_return_pct": 30.0868,
+        "cagr_pct": 11.8531,
+        "max_drawdown_pct": 53.4474,
+        "sharpe": 0.4738,
+        "trades": 1,
+        "win_rate_pct": 100.0,
+        "profit_factor": null,
+        "total_fees": 23.0117,
+        "rejected_entries": 0,
+        "time_in_market_pct": 100.0,
+        "avg_capital_exposure_pct": 100.0,
+        "risk_gate": "disabled_research_only"
+      }
+    }
+  }
+}

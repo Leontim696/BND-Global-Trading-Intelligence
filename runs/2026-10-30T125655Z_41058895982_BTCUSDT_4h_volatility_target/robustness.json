@@ -1,0 +1,141 @@
+{
+  "data": "backtest-reports/BTCUSDT-4h.csv",
+  "sha256": "5e094c7ec53092a0b91904e9904213c85c5469b2ac662b6235d375fb9748246d",
+  "candles": 17152,
+  "first_candle": "2019-01-01T00:00:00+00:00",
+  "last_candle": "2026-10-30T08:00:00+00:00",
+  "data_gaps": 4,
+  "first_gaps": [
+    [
+      "2019-03-12T00:00:00+00:00",
+      "2019-03-12T08:00:00+00:00"
+    ],
+    [
+      "2019-05-15T00:00:00+00:00",
+      "2019-05-15T12:00:00+00:00"
+    ],
+    [
+      "2019-08-15T00:00:00+00:00",
+      "2019-08-15T08:00:00+00:00"
+    ],
+    [
+      "2020-02-19T08:00:00+00:00",
+      "2020-02-19T16:00:00+00:00"
+    ]
+  ],
+  "strategy": "volatility_target",
+  "risk_gate": "disabled_research_only",
+  "out_of_sample_start": "2024-06-24T20:00:00+00:00",
+  "grid_summary": {
+    "in_sample": {
+      "combinations": 42,
+      "beat_buy_and_hold": 0,
+      "beat_buy_and_hold_pct": 0.0,
+      "profitable": 42,
+      "median_return_pct": 284.3722,
+      "best": {
+        "params": {
+          "target_vol": 80,
+          "lookback": 180
+        },
+        "total_return_pct": 341.1815,
+        "sharpe": 0.851,
+        "max_drawdown_pct": 60.2787,
+        "trades": 35,
+        "time_in_market_pct": 54.8059,
+        "avg_capital_exposure_pct": 53.5446
+      },
+      "buy_and_hold_return_pct": 1501.4069
+    },
+    "out_of_sample": {
+      "combinations": 42,
+      "beat_buy_and_hold": 3,
+      "beat_buy_and_hold_pct": 7.1429,
+      "profitable": 42,
+      "median_return_pct": 23.5465,
+      "best": {
+        "params": {
+          "target_vol": 40,
+          "lookback": 360
+        },
+        "total_return_pct": 34.7301,
+        "sharpe": 0.5985,
+        "max_drawdown_pct": 28.3684,
+        "trades": 24,
+        "time_in_market_pct": 53.2647,
+        "avg_capital_exposure_pct": 48.1675
+      },
+      "buy_and_hold_return_pct": 30.0868
+    }
+  },
+  "in_sample_selection": {
+    "params": {
+      "target_vol": 20,
+      "lookback": 240
+    },
+    "in_sample": {
+      "total_return_pct": 146.77,
+      "sharpe": 1.0927,
+      "max_drawdown_pct": 21.58,
+      "trades": 35,
+      "time_in_market_pct": 54.8059,
+      "avg_capital_exposure_pct": 21.8337
+    },
+    "out_of_sample": {
+      "total_return_pct": 20.5686,
+      "sharpe": 0.5941,
+      "max_drawdown_pct": 15.0319,
+      "trades": 24,
+      "time_in_market_pct": 53.2647,
+      "avg_capital_exposure_pct": 27.48
+    },
+    "out_of_sample_rank": 2,
+    "out_of_sample_combinations": 42
+  },
+  "permutation_test_out_of_sample": {
+    "actual_return_pct": 20.5686,
+    "permutations": 200,
+    "seed": 7,
+    "shuffled_median_return_pct": 4.9929,
+    "shuffled_p5_return_pct": -16.5112,
+    "shuffled_p95_return_pct": 43.6245,
+    "p_value": 0.2438
+  },
+  "cost_stress_out_of_sample": [
+    {
+      "cost_multiplier": 1.0,
+      "fee_pct": 0.1,
+      "slippage_pct": 0.05,
+      "total_return_pct": 20.5686,
+      "sharpe": 0.5941,
+      "max_drawdown_pct": 15.0319,
+      "trades": 24,
+      "time_in_market_pct": 53.2647,
+      "avg_capital_exposure_pct": 27.48
+    },
+    {
+      "cost_multiplier": 2.0,
+      "fee_pct": 0.2,
+      "slippage_pct": 0.1,
+      "total_return_pct": 16.3587,
+      "sharpe": 0.4957,
+      "max_drawdown_pct": 15.8003,
+      "trades": 24,
+      "time_in_market_pct": 53.2647,
+      "avg_capital_exposure_pct": 27.4759
+    },
+    {
+      "cost_multiplier": 3.0,
+      "fee_pct": 0.3,
+      "slippage_pct": 0.15,
+      "total_return_pct": 12.3024,
+      "sharpe": 0.3974,
+      "max_drawdown_pct": 16.5619,
+      "trades": 24,
+      "time_in_market_pct": 53.2647,
+      "avg_capital_exposure_pct": 27.4717
+    }
+  ],
+  "grid": null,
+  "note": "Parameters are chosen on in-sample data only. A p_value above 0.05 means the real timing is not distinguishable from shuffled timing of the same positions. No profitability is implied."
+}

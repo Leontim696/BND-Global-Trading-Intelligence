@@ -1,4 +1,4 @@
-Latest run: `runs/2026-10-30T124739Z_41057926902_BTCUSDT_4h_sma_crossover` (source a91c3ad, job success)
+Latest run: `runs/2026-10-30T125655Z_41058895982_BTCUSDT_4h_volatility_target` (source ec4bb0e, job success)
 
 # BND backtest summary
 
@@ -10,45 +10,47 @@ Latest run: `runs/2026-10-30T124739Z_41057926902_BTCUSDT_4h_sma_crossover` (sour
 ## Verdict
 **No evidence of an edge.** Failed: permutation p-value < 0.05. Treat any profit above as luck or overfitting.
 
-## Backtest: `sma_crossover`
+Out-of-sample, risk-adjusted: Sharpe 0.52 vs 0.47 for buy & hold; max drawdown 31.16% vs 53.45%; return 28.32% vs 30.09% with 48.21% average capital invested.
 
-**full** (2019-01-01T00:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: enforced)
+## Backtest: `volatility_target`
+
+**full** (2019-01-01T00:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: disabled_research_only)
 
 | Metric | Strategy | Buy & hold |
 | --- | ---: | ---: |
-| Return | 47.10% | 1,989.48% |
-| CAGR | 5.05% | 47.46% |
-| Max drawdown | 20.98% | 77.04% |
-| Sharpe | 0.63 | 0.95 |
-| Trades | 198 | 1 |
-| Time in market | 46.78% | 99.99% |
-| Avg capital exposure | 9.92% | 99.99% |
+| Return | 338.39% | 1,989.48% |
+| CAGR | 20.78% | 47.46% |
+| Max drawdown | 42.36% | 77.04% |
+| Sharpe | 0.79 | 0.95 |
+| Trades | 58 | 1 |
+| Time in market | 54.34% | 99.99% |
+| Avg capital exposure | 43.40% | 99.99% |
 | Entries vetoed by risk engine | 0 | 0 |
 
-**in_sample** (2019-01-01T00:00:00+00:00 → 2024-06-24T16:00:00+00:00, risk gate: enforced)
+**in_sample** (2019-01-01T00:00:00+00:00 → 2024-06-24T16:00:00+00:00, risk gate: disabled_research_only)
 
 | Metric | Strategy | Buy & hold |
 | --- | ---: | ---: |
-| Return | 45.39% | 1,501.41% |
-| CAGR | 7.07% | 65.91% |
-| Max drawdown | 20.98% | 77.04% |
-| Sharpe | 0.79 | 1.11 |
-| Trades | 138 | 1 |
-| Time in market | 45.36% | 99.99% |
-| Avg capital exposure | 9.73% | 99.99% |
+| Return | 240.61% | 1,501.41% |
+| CAGR | 25.07% | 65.91% |
+| Max drawdown | 42.36% | 77.04% |
+| Sharpe | 0.89 | 1.11 |
+| Trades | 35 | 1 |
+| Time in market | 54.81% | 99.99% |
+| Avg capital exposure | 41.34% | 99.99% |
 | Entries vetoed by risk engine | 0 | 0 |
 
-**out_of_sample** (2024-06-24T20:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: enforced)
+**out_of_sample** (2024-06-24T20:00:00+00:00 → 2026-10-30T08:00:00+00:00, risk gate: disabled_research_only)
 
 | Metric | Strategy | Buy & hold |
 | --- | ---: | ---: |
-| Return | 1.18% | 30.09% |
-| CAGR | 0.50% | 11.85% |
-| Max drawdown | 8.09% | 53.45% |
-| Sharpe | 0.11 | 0.47 |
-| Trades | 60 | 1 |
-| Time in market | 50.10% | 100.00% |
-| Avg capital exposure | 10.37% | 100.00% |
+| Return | 28.32% | 30.09% |
+| CAGR | 11.20% | 11.85% |
+| Max drawdown | 31.16% | 53.45% |
+| Sharpe | 0.52 | 0.47 |
+| Trades | 24 | 1 |
+| Time in market | 53.26% | 100.00% |
+| Avg capital exposure | 48.21% | 100.00% |
 | Entries vetoed by risk engine | 0 | 0 |
 
 ## Walk-forward (SMA long/flat, independent folds)
@@ -59,17 +61,17 @@ Latest run: `runs/2026-10-30T124739Z_41057926902_BTCUSDT_4h_sma_crossover` (sour
 
 | Period | Combos | Beat B&H | Profitable | Median return | B&H |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| in_sample | 34 | 0% | 34 | 104.47% | 1,501.41% |
-| out_of_sample | 34 | 0% | 30 | 6.25% | 30.09% |
+| in_sample | 42 | 0% | 42 | 284.37% | 1,501.41% |
+| out_of_sample | 42 | 7% | 42 | 23.55% | 30.09% |
 
-**In-sample choice** fast=30, slow=175: in-sample return 172.46% (Sharpe 1.55); out-of-sample return 5.95% (Sharpe 0.44), rank 19 of 34.
+**In-sample choice** target_vol=20, lookback=240: in-sample return 146.77% (Sharpe 1.09); out-of-sample return 20.57% (Sharpe 0.59), rank 2 of 42.
 
-**Permutation test** (out-of-sample, 200 shuffles): actual 5.95%, shuffled median 1.16%, 5–95% range -8.41% … 12.06%, p-value **0.244**.
+**Permutation test** (out-of-sample, 200 shuffles): actual 20.57%, shuffled median 4.99%, 5–95% range -16.51% … 43.62%, p-value **0.244**.
 
 | Cost multiplier | Return | Sharpe | Trades |
 | ---: | ---: | ---: | ---: |
-| ×1 | 5.95% | 0.44 | 21 |
-| ×2 | 4.52% | 0.34 | 21 |
-| ×3 | 3.31% | 0.26 | 21 |
+| ×1 | 20.57% | 0.59 | 24 |
+| ×2 | 16.36% | 0.50 | 24 |
+| ×3 | 12.30% | 0.40 | 24 |
 
 _Paper research only. Past results do not predict future returns._
