@@ -525,6 +525,64 @@ def stochastic_reversion(period: int = 14, smooth: int = 3,
     return _streaming(State)
 
 
+def regime_switch(window: int = 30, trend_level: float = 0.35,
+                  range_level: float = 0.2, min_bars: int = 10,
+                  trend_lookback: int = 60, band_window: int = 20,
+                  band_width: float = 2.0) -> Strategy:
+    """Dynamic selection: momentum in trending markets, Bollinger mean
+    reversion in ranging ones.
+
+    Regime from the Kaufman efficiency ratio over ``window`` candles:
+    |net change| / sum of |changes| (1 = straight line, 0 = noise). Above
+    ``trend_level`` the market is trending, below ``range_level`` it is
+    ranging; in between, and for at least ``min_bars`` after a switch,
+    the previous regime is kept, which stops rapid flip-flopping. Both
+    sub-strategies are updated on every candle so either can take over
+    at once.
+    """
+
+    _check_lengths(window=window, min_bars=min_bars)
+    if not 0 < range_level < trend_level < 1:
+        raise ValueError("Require 0 < range_level < trend_level < 1")
+    trend_strategy = momentum(trend_lookback)
+    range_strategy = bollinger_reversion(band_window, band_width)
+
+    class State:
+        def __init__(self):
+            self.closes = deque(maxlen=window + 1)
+            self.regime = None
+            self.held = 0
+            self.history = []
+            self.target = 0
+            self.switches = 0
+
+        def update(self, candle):
+            self.history.append(candle)
+            trend_signal = trend_strategy(self.history)
+            range_signal = range_strategy(self.history)
+            self.closes.append(candle.close)
+            self.held += 1
+            if len(self.closes) <= window:
+                return
+            closes = list(self.closes)
+            path = sum(abs(b - a) for a, b in zip(closes, closes[1:]))
+            efficiency = abs(closes[-1] - closes[0]) / path if path else 0.0
+            wanted = ("trend" if efficiency > trend_level
+                      else "range" if efficiency < range_level else self.regime)
+            if wanted != self.regime and (self.regime is None or self.held >= min_bars):
+                if self.regime is not None:
+                    self.switches += 1
+                self.regime, self.held = wanted, 0
+            if self.regime == "trend":
+                self.target = trend_signal
+            elif self.regime == "range":
+                self.target = range_signal
+            else:
+                self.target = 0
+
+    return _streaming(State)
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
     "sma_crossover": sma_crossover,
@@ -538,6 +596,7 @@ STRATEGIES = {
     "adx_trend": adx_trend,
     "keltner_breakout": keltner_breakout,
     "stochastic_reversion": stochastic_reversion,
+    "regime_switch": regime_switch,
 }
 
 # Default robustness ranges ("start:stop:step") for each strategy's
@@ -554,4 +613,5 @@ SWEEP_RANGES = {
     "adx_trend": {"period": "7:28:7", "threshold": "15:35:5"},
     "keltner_breakout": {"window": "10:50:10", "multiplier": "1:3:0.5"},
     "stochastic_reversion": {"period": "7:28:7", "oversold": "10:30:5"},
+    "regime_switch": {"window": "20:60:20", "trend_level": "0.3:0.5:0.1"},
 }

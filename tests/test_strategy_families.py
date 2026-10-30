@@ -455,3 +455,64 @@ def test_new_indicators_stream_like_full_recompute(make):
 def test_new_indicator_validation(make):
     with pytest.raises(ValueError):
         make()
+
+
+# Regime switching -------------------------------------------------------
+
+from src.bnd.strategies import regime_switch  # noqa: E402
+
+
+def regime_state(strategy, candles):
+    strategy(candles)
+    # The streaming closure keeps the state; reach it for inspection.
+    stream = strategy.__closure__[0].cell_contents
+    return stream.state
+
+
+def test_regime_switch_uses_momentum_in_a_trend():
+    up = closes_to_candles([100 * 1.01 ** i for i in range(150)])
+    strategy = regime_switch(window=30, trend_lookback=20)
+
+    target = strategy(up)
+
+    assert regime_state(regime_switch(window=30, trend_lookback=20), up).regime == "trend"
+    assert target == momentum(20)(up) == 1
+
+
+def test_regime_switch_uses_mean_reversion_in_a_range():
+    closes = [(100, 102, 100, 98)[i % 4] for i in range(120)] + [92.0]
+    candles = closes_to_candles(closes)
+
+    state = regime_state(regime_switch(window=30), candles)
+
+    assert state.regime == "range"
+    assert state.target == bollinger_reversion(20, 2.0)(candles) == 1
+
+
+def test_regime_switch_hysteresis_limits_flip_flopping():
+    # Alternating short trends and ranges every 12 candles.
+    closes, price = [], 100.0
+    for i in range(600):
+        price *= 1.02 if (i // 12) % 2 == 0 else (1.01 if i % 2 else 0.99)
+        closes.append(price)
+    candles = closes_to_candles(closes)
+
+    loose = regime_state(regime_switch(window=10, min_bars=1), candles)
+    strict = regime_state(regime_switch(window=10, min_bars=40), candles)
+
+    assert strict.switches < loose.switches
+    assert strict.switches <= len(candles) // 40
+
+
+def test_regime_switch_streams_like_full_recompute():
+    candles = random_walk(count=400)
+
+    def make():
+        return regime_switch(window=20, trend_lookback=30)
+
+    assert sequential(make(), candles) == fresh(make, candles)
+
+
+def test_regime_switch_validation():
+    with pytest.raises(ValueError):
+        regime_switch(trend_level=0.1, range_level=0.2)
