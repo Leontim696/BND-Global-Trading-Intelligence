@@ -251,6 +251,16 @@ rates, a one-day crash, a dollar spike or a crypto collapse (stylised,
 rounded moves per market and asset class), and whether that would trip
 the kill switch.
 
+## Decision registry
+
+`decision_registry.DecisionRegistry` stores every council decision with
+each agent's initial and final vote and confidence, the price and a
+horizon (default 5 days). `settle_from_candles` settles due decisions
+with the first close at or after the horizon; `scorebook()` turns the
+outcomes into an `AgentScorebook` (weights for the weighted rule) and
+`performance()` reports each agent's hit rate and Brier score and the
+council's own hit rate.
+
 ## Safety
 
 `safety.trading_mode()` is the single mode check: `BND_TRADING_MODE` may be
