@@ -201,7 +201,9 @@ exposure, net exposure per currency (forex pairs count on both sides,
 so long EURUSD is long EUR and short USD), risk per trade, daily loss,
 drawdown and gross leverage. The
 kill switch (daily loss, drawdown or margin below maintenance) closes
-everything, survives restarts and needs `reset_kill_switch("RESET-KILL-SWITCH")`.
+everything (at today's price where it is known, otherwise with a
+reduce-only order at that market's next open, so a gap is not skipped),
+survives restarts and needs `reset_kill_switch("RESET-KILL-SWITCH")`.
 An unexpected error rolls the bar back and trips it. `TradingMode.LIVE`
 is refused: no real orders exist in this system.
 

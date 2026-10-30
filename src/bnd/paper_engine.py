@@ -708,10 +708,29 @@ class PaperEngine:
             self._liquidate(f"Drawdown {drawdown:.2f}% reached the limit", time)
 
     def _liquidate(self, reason, time):
+        """Close everything: now where today's price is known, else at the next open.
+
+        Markets are fed one by one, so when one bar trips the switch another
+        market's bar for the same moment may not be processed yet. Selling
+        that market at its old mark would ignore a gap it is about to show;
+        a reduce-only order fills it at its own next open instead.
+        """
         for position in self.positions():
-            instrument = self.instrument(position["symbol"])
-            self._fill(position["symbol"], instrument, -position["quantity"],
-                       self._price(position["symbol"]), "kill_switch", time)
+            symbol = position["symbol"]
+            if self.mark(symbol)["time"] >= time:
+                self._fill(symbol, self.instrument(symbol), -position["quantity"],
+                           self._price(symbol), "kill_switch", time)
+                continue
+            order_id = f"kill-switch:{time}:{symbol}"
+            side = "SELL" if position["quantity"] > 0 else "BUY"
+            self._db.execute(
+                "INSERT OR IGNORE INTO orders (client_order_id, symbol, side, order_type,"
+                " quantity, reduce_only, source, status, reason, created_at, updated_at)"
+                " VALUES (?, ?, ?, 'MARKET', ?, 1, 'kill_switch', 'PENDING', ?, ?, ?)",
+                (order_id, symbol, side, abs(position["quantity"]),
+                 "Kill switch: close at the next open", time, time))
+            self._log("order_pending", {"client_order_id": order_id, "symbol": symbol,
+                                        "reason": "kill switch close at next open"}, time)
         self._trip(reason, time)
 
     def _trip(self, reason, time):
