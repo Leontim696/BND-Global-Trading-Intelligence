@@ -33,7 +33,7 @@ on the `backtest-results` branch).
 | 19 ([#63](../../../issues/63)) | AI cost management | PARTIAL | `cost_tracker.py`/`cost_storage.py` (daily/monthly budgets, reservations, reconciliation), overnight per-run/per-call caps, `review_budget.py` | Per-model budgets, cache, model choice by task, cost report, separate development and research budgets. |
 | 20 ([#64](../../../issues/64)) | Security and compliance | PARTIAL | Secrets only via Actions secrets, `permissions: contents: read` (write only in isolated publish jobs), paid-AI flags, `tests/test_workflow_flags.py`, actionlint + shellcheck in CI | Central MOCK/PAPER/LIVE mode guard, audit log, dependency audit, automated security scanning. |
 | 21 ([#65](../../../issues/65)) | 16-day paper-forward evaluation | MISSING · BLOCKED | – | Starts only after 1–5 are accepted; needs frozen configuration and confirmed virtual capital. |
-| 22 ([#66](../../../issues/66)) | Independent final audit | PARTIAL | 560 unit tests, reference-implementation tests for indicators, `docs/CLAUDE_AUDIT_REPORT_2026-10-30.md`, CI lint | Integration, end-to-end, restart, concurrency and extreme-risk tests for the paper engine; GPT-6 cross-audit. |
+| 22 ([#66](../../../issues/66)) | Independent final audit | PARTIAL | 560 unit tests, reference-implementation tests for indicators, `docs/CLAUDE_AUDIT_REPORT_2026-10-30.md`, CI lint | Done: end-to-end paper tests (`tests/test_paper_integration.py`: daily restarts equal one session, repeated runs are no-ops, missed days caught up in order, concurrent writers create one order and process a bar once). Remaining: extreme-risk end-to-end scenarios, GPT-6 cross-audit. |
 
 ## Order of work (phase A first)
 
