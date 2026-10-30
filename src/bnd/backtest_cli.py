@@ -14,7 +14,7 @@ import hashlib
 import json
 import os
 import sys
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .backtester import (
@@ -499,6 +499,38 @@ def _split_list(text):
     return [item.strip() for item in (text or "").split(",") if item.strip()]
 
 
+# Days re-downloaded and compared on an incremental update.
+UPDATE_OVERLAP_DAYS = 10
+# Larger differences in the overlap mean Yahoo re-adjusted the history
+# (a dividend or split): the stored file is then downloaded again in full.
+UPDATE_TOLERANCE = 5e-4
+
+
+def _fetch_market(market, path, start, end, update):
+    """Full download, or with ``update`` only the days after the stored file."""
+    if not update or not path.exists():
+        candles, report = fetch_yahoo_daily(market.symbol, start, end)
+        report["update"] = "full"
+        return candles, report
+    stored = [c for c in load_csv(path) if c.open_time >= start]
+    if not stored:
+        candles, report = fetch_yahoo_daily(market.symbol, start, end)
+        report["update"] = "full (stored file older than --start)"
+        return candles, report
+    since = stored[-1].open_time - timedelta(days=UPDATE_OVERLAP_DAYS)
+    fresh, report = fetch_yahoo_daily(market.symbol, since, end)
+    old = {c.open_time: c.close for c in stored}
+    overlap = [(old[c.open_time], c.close) for c in fresh if c.open_time in old]
+    if not overlap or any(abs(new / was - 1) > UPDATE_TOLERANCE for was, new in overlap):
+        candles, report = fetch_yahoo_daily(market.symbol, start, end)
+        report["update"] = "full (stored history changed)" if overlap else "full (no overlap)"
+        return candles, report
+    first_new = fresh[0].open_time
+    candles = [c for c in stored if c.open_time < first_new] + fresh
+    report["update"] = f"incremental (+{sum(c.open_time > stored[-1].open_time for c in fresh)})"
+    return candles, report
+
+
 def command_fetch_universe(args) -> int:
     """Download daily candles for every selected market; skip failures."""
     markets = select_markets(_split_list(args.markets), _split_list(args.classes), args.universe)
@@ -508,7 +540,8 @@ def command_fetch_universe(args) -> int:
     quality, failures = {}, {}
     for market in markets:
         try:
-            candles, report = fetch_yahoo_daily(market.symbol, _utc_date(args.start), end)
+            candles, report = _fetch_market(market, out / f"{market.name}.csv",
+                                            _utc_date(args.start), end, args.update)
             if not args.keep_spikes:
                 candles, repairs = repair_spikes(candles)
                 report["repaired_spikes"] = repairs
@@ -893,6 +926,9 @@ def build_parser() -> argparse.ArgumentParser:
     universe.add_argument("--universe", choices=["futures", "etf"], default="futures",
                           help="etf: tradable roll-free ETFs instead of futures/indices")
     universe.add_argument("--out-dir", required=True)
+    universe.add_argument("--update", action="store_true",
+                          help="only download days after the stored CSVs (full download "
+                               "again if the stored history no longer matches)")
     universe.add_argument("--keep-spikes", action="store_true",
                           help="do not repair one-day spikes that immediately revert")
     universe.set_defaults(handler=command_fetch_universe)

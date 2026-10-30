@@ -290,3 +290,60 @@ def test_portfolio_cross_momentum(tmp_path):
                             "--markets", "EURUSD,GOLD,SP500", "--strategy", "cross_momentum",
                             "--param", "colour=1"])
     assert code == 2 and "Invalid parameters for cross_momentum" in err
+
+
+class FakeYahoo:
+    """Serves one market's daily candles; records every requested start."""
+
+    def __init__(self, days, factor=1.0):
+        self.days, self.factor, self.starts = days, factor, []
+
+    def candles(self):
+        f = self.factor
+        return [Candle(START + timedelta(days=i), (100 + i) * f, (101 + i) * f, (99 + i) * f,
+                       (100 + i) * f, 1) for i in range(self.days)]
+
+    def __call__(self, symbol, start, end):
+        self.starts.append(start)
+        rows = [c for c in self.candles() if start <= c.open_time < end]
+        return rows, {"rows": len(rows)}
+
+
+def test_fetch_universe_update_downloads_only_new_days(tmp_path, monkeypatch):
+    from src.bnd import backtest_cli
+    from src.bnd.market_data import load_csv
+
+    server = FakeYahoo(100)
+    monkeypatch.setattr(backtest_cli, "fetch_yahoo_daily", server)
+    args = ["fetch-universe", "--markets", "GOLD", "--start", "2020-01-01",
+            "--end", "2021-01-01", "--out-dir", str(tmp_path), "--update", "--keep-spikes"]
+
+    assert run_cli(args)[0] == 0                       # no file yet: full download
+    assert server.starts == [START]
+
+    server.days = 105                                  # five new days
+    assert run_cli(args)[0] == 0
+    assert server.starts[-1] == START + timedelta(days=99 - 10)
+    stored = load_csv(tmp_path / "GOLD.csv")
+    assert stored == server.candles()
+    quality = json.loads((tmp_path / "quality.json").read_text())
+    assert quality["markets"]["GOLD"]["update"] == "incremental (+5)"
+
+
+def test_fetch_universe_update_redownloads_when_history_was_readjusted(tmp_path, monkeypatch):
+    from src.bnd import backtest_cli
+    from src.bnd.market_data import load_csv
+
+    server = FakeYahoo(100)
+    monkeypatch.setattr(backtest_cli, "fetch_yahoo_daily", server)
+    args = ["fetch-universe", "--markets", "GOLD", "--start", "2020-01-01",
+            "--end", "2021-01-01", "--out-dir", str(tmp_path), "--update", "--keep-spikes"]
+    run_cli(args)
+
+    server.days, server.factor = 102, 0.98             # a dividend re-adjusted every close
+    assert run_cli(args)[0] == 0
+
+    assert server.starts[-1] == START                  # full download again
+    assert load_csv(tmp_path / "GOLD.csv") == server.candles()
+    quality = json.loads((tmp_path / "quality.json").read_text())
+    assert quality["markets"]["GOLD"]["update"] == "full (stored history changed)"

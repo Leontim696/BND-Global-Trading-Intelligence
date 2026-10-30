@@ -66,11 +66,24 @@ jobs:
             echo "No paper account yet. Start one with a manual run and a virtual capital." \
               >> "$GITHUB_STEP_SUMMARY"
           fi
-      - name: Download recent daily candles
+      - name: Restore yesterday's candles
+        if: steps.restore.outputs.account != 'none'
+        uses: actions/cache/restore@v4
+        with:
+          path: data
+          key: paper-candles-${{ github.run_id }}
+          restore-keys: paper-candles-
+      - name: Download recent daily candles (only new days when cached)
         if: steps.restore.outputs.account != 'none'
         run: |
-          python -m src.bnd.backtest_cli fetch-universe --universe etf \
+          python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
             --start "$(date -u -d '-3 years' +%Y-%m-%d)" --out-dir data
+      - name: Keep the candles for tomorrow
+        if: steps.restore.outputs.account != 'none'
+        uses: actions/cache/save@v4
+        with:
+          path: data
+          key: paper-candles-${{ github.run_id }}
       - name: Daily paper step
         if: steps.restore.outputs.account != 'none'
         env:
