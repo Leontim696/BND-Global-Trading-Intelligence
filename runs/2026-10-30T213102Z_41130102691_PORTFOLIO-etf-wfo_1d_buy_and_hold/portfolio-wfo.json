@@ -1,0 +1,259 @@
+{
+  "train_days": 1460,
+  "test_days": 365,
+  "embargo_days": 5,
+  "folds": [
+    {
+      "train": [
+        "2010-01-01",
+        "2013-12-31"
+      ],
+      "test": [
+        "2014-01-05",
+        "2015-01-05"
+      ],
+      "params": {},
+      "train_sharpe": 0.6369,
+      "markets": 22,
+      "test_return_pct": -0.2436,
+      "test_sharpe": -0.0539,
+      "test_max_drawdown_pct": 5.1121,
+      "kill_switch_at": null,
+      "basket_return_pct": -5.2428,
+      "basket_sharpe": -1.057
+    },
+    {
+      "train": [
+        "2011-01-01",
+        "2014-12-31"
+      ],
+      "test": [
+        "2015-01-05",
+        "2016-01-05"
+      ],
+      "params": {},
+      "train_sharpe": 0.4704,
+      "markets": 22,
+      "test_return_pct": -4.9616,
+      "test_sharpe": -0.9625,
+      "test_max_drawdown_pct": 6.5805,
+      "kill_switch_at": null,
+      "basket_return_pct": -6.7769,
+      "basket_sharpe": -0.8333
+    },
+    {
+      "train": [
+        "2012-01-01",
+        "2015-12-31"
+      ],
+      "test": [
+        "2016-01-05",
+        "2017-01-04"
+      ],
+      "params": {},
+      "train_sharpe": 0.1558,
+      "markets": 22,
+      "test_return_pct": 3.1039,
+      "test_sharpe": 0.6162,
+      "test_max_drawdown_pct": 2.7893,
+      "kill_switch_at": null,
+      "basket_return_pct": 9.8351,
+      "basket_sharpe": 1.2052
+    },
+    {
+      "train": [
+        "2012-12-31",
+        "2016-12-30"
+      ],
+      "test": [
+        "2017-01-04",
+        "2018-01-04"
+      ],
+      "params": {},
+      "train_sharpe": 0.0212,
+      "markets": 22,
+      "test_return_pct": 15.1813,
+      "test_sharpe": 3.8357,
+      "test_max_drawdown_pct": 1.9179,
+      "kill_switch_at": null,
+      "basket_return_pct": 30.1661,
+      "basket_sharpe": 4.005
+    },
+    {
+      "train": [
+        "2013-12-31",
+        "2017-12-30"
+      ],
+      "test": [
+        "2018-01-04",
+        "2019-01-04"
+      ],
+      "params": {},
+      "train_sharpe": 0.7245,
+      "markets": 23,
+      "test_return_pct": -7.5311,
+      "test_sharpe": -1.316,
+      "test_max_drawdown_pct": 9.9303,
+      "kill_switch_at": null,
+      "basket_return_pct": -15.2192,
+      "basket_sharpe": -1.8063
+    },
+    {
+      "train": [
+        "2014-12-31",
+        "2018-12-30"
+      ],
+      "test": [
+        "2019-01-04",
+        "2020-01-04"
+      ],
+      "params": {},
+      "train_sharpe": 0.4156,
+      "markets": 23,
+      "test_return_pct": 7.5976,
+      "test_sharpe": 2.2293,
+      "test_max_drawdown_pct": 1.7548,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0925,
+      "basket_sharpe": 1.4189
+    },
+    {
+      "train": [
+        "2015-12-31",
+        "2019-12-30"
+      ],
+      "test": [
+        "2020-01-04",
+        "2021-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.9397,
+      "markets": 23,
+      "test_return_pct": 10.9614,
+      "test_sharpe": 1.1454,
+      "test_max_drawdown_pct": 12.5734,
+      "kill_switch_at": null,
+      "basket_return_pct": 25.5482,
+      "basket_sharpe": 1.3922
+    },
+    {
+      "train": [
+        "2016-12-30",
+        "2020-12-29"
+      ],
+      "test": [
+        "2021-01-03",
+        "2022-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.9361,
+      "markets": 23,
+      "test_return_pct": 8.5052,
+      "test_sharpe": 1.3173,
+      "test_max_drawdown_pct": 3.476,
+      "kill_switch_at": null,
+      "basket_return_pct": 22.6431,
+      "basket_sharpe": 1.5339
+    },
+    {
+      "train": [
+        "2017-12-30",
+        "2021-12-29"
+      ],
+      "test": [
+        "2022-01-03",
+        "2023-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.5483,
+      "markets": 23,
+      "test_return_pct": -5.5547,
+      "test_sharpe": -0.7564,
+      "test_max_drawdown_pct": 10.2784,
+      "kill_switch_at": null,
+      "basket_return_pct": -8.0939,
+      "basket_sharpe": -0.5999
+    },
+    {
+      "train": [
+        "2018-12-30",
+        "2022-12-29"
+      ],
+      "test": [
+        "2023-01-03",
+        "2024-01-03"
+      ],
+      "params": {},
+      "train_sharpe": 0.8056,
+      "markets": 23,
+      "test_return_pct": 7.1521,
+      "test_sharpe": 1.2963,
+      "test_max_drawdown_pct": 4.1023,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.0945,
+      "basket_sharpe": 1.3899
+    },
+    {
+      "train": [
+        "2019-12-30",
+        "2023-12-29"
+      ],
+      "test": [
+        "2024-01-03",
+        "2025-01-02"
+      ],
+      "params": {},
+      "train_sharpe": 0.6902,
+      "markets": 23,
+      "test_return_pct": 9.7489,
+      "test_sharpe": 1.5661,
+      "test_max_drawdown_pct": 4.9727,
+      "kill_switch_at": null,
+      "basket_return_pct": 13.3154,
+      "basket_sharpe": 1.2764
+    },
+    {
+      "train": [
+        "2020-12-29",
+        "2024-12-28"
+      ],
+      "test": [
+        "2025-01-02",
+        "2026-01-02"
+      ],
+      "params": {},
+      "train_sharpe": 0.5885,
+      "markets": 23,
+      "test_return_pct": 13.0041,
+      "test_sharpe": 1.8503,
+      "test_max_drawdown_pct": 6.3586,
+      "kill_switch_at": null,
+      "basket_return_pct": 16.0191,
+      "basket_sharpe": 1.3994
+    }
+  ],
+  "summary": {
+    "fold_count": 12,
+    "chained_test_return_pct": 69.275,
+    "chained_basket_return_pct": 154.7791,
+    "folds_beating_basket": 4,
+    "positive_folds": 8,
+    "folds_with_kill_switch": 0,
+    "mean_train_sharpe": 0.5777,
+    "mean_test_sharpe": 0.8973,
+    "mean_basket_sharpe": 0.777,
+    "parameter_change_rate": 0.0
+  },
+  "note": "Parameters are chosen on each training window only; each test window starts from fresh equity. A large gap between mean train and test Sharpe signals overfitting.",
+  "mode": "portfolio-wfo",
+  "strategy": "buy_and_hold",
+  "universe": "etf",
+  "ranges": {},
+  "skipped_missing": [],
+  "settings": {
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 1.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": false
+  }
+}
