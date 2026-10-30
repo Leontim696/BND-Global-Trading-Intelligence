@@ -60,7 +60,13 @@ class RunnerConfig:
 def instrument_for(market) -> Instrument:
     return Instrument(symbol=market.name, asset_class=market.asset_class,
                       fee_pct=market.fee_pct, slippage_pct=market.slippage_pct,
-                      carry_pct_annual=market.carry_pct_annual)
+                      carry_pct_annual=market.carry_pct_annual,
+                      currency_pair=market.name if _is_pair(market) else "")
+
+
+def _is_pair(market) -> bool:
+    name = market.name
+    return market.asset_class == "forex" and len(name) == 6 and name.isalpha() and name.isupper()
 
 
 def feed_new_candles(engine: PaperEngine, data: dict) -> int:
@@ -114,6 +120,25 @@ def fit_limits(engine: PaperEngine, weights: dict, margin: float) -> dict:
         if gross > allowed:
             for n in names:
                 fitted[n] *= allowed / gross
+    # Net exposure per currency: scale every pair that holds one over the cap.
+    account_currency = engine.account()["currency"]
+    allowed = limits.max_currency_pct / 100 * margin
+    for _ in range(3):
+        exposure: dict = {}
+        for name, w in fitted.items():
+            pair = engine.instrument(name).currency_pair
+            if pair:
+                exposure[pair[:3]] = exposure.get(pair[:3], 0.0) + w
+                exposure[pair[3:]] = exposure.get(pair[3:], 0.0) - w
+        over = {c: abs(v) for c, v in exposure.items()
+                if c != account_currency and abs(v) > allowed}
+        if not over:
+            break
+        for name in fitted:
+            pair = engine.instrument(name).currency_pair
+            hits = [over[c] for c in (pair[:3], pair[3:]) if pair and c in over]
+            if hits:
+                fitted[name] *= allowed / max(hits)
     gross = sum(abs(w) for w in fitted.values())
     allowed = limits.max_gross_leverage * margin
     if gross > allowed:

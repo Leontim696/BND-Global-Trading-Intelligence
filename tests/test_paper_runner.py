@@ -57,7 +57,7 @@ def factory():
 
 
 def engine_at(tmp_path, capital=10_000.0, **limits):
-    return PaperEngine.create(tmp_path / "paper.sqlite", capital,
+    return PaperEngine.create(tmp_path / "paper.sqlite", capital, currency="USD",
                               limits=EngineLimits(**limits), now=START)
 
 
@@ -288,3 +288,17 @@ def test_report_shows_stress_scenarios_once_positions_exist(tmp_path):
 
     assert {row["scenario"] for row in report["scenarios"]} >= {"crisis_2008", "covid_2020"}
     assert "Stress scenarios" in render_report(engine, report)
+
+
+def test_fit_limits_caps_net_currency_exposure(tmp_path):
+    engine = engine_at(tmp_path, max_currency_pct=50, max_sector_pct=500)
+    pairs = (Market("EURUSD", "EURUSD=X", "forex", 0.002, 0.005),
+             Market("EURGBP", "EURGBP=X", "forex", 0.002, 0.005))
+    for market in pairs:
+        engine.register_instrument(instrument_for(market))
+    assert engine.instrument("EURUSD").currency_pair == "EURUSD"
+
+    fitted = fit_limits(engine, {"EURUSD": 0.4, "EURGBP": 0.4}, margin=1.0)
+
+    # EUR would be +80%; both pairs hold EUR, so both shrink to fit 50%.
+    assert fitted["EURUSD"] + fitted["EURGBP"] == pytest.approx(0.5)

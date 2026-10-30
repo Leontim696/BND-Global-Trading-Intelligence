@@ -320,3 +320,49 @@ def test_stress_test_does_not_change_state(engine):
 
     assert shocked["shocked_equity"] == pytest.approx(engine.equity() - 1_000)
     assert engine.summary() == before
+
+
+def test_currency_limit_counts_both_sides_of_each_pair(tmp_path):
+    from src.bnd.paper_engine import EngineLimits, Instrument, OrderRequest, PaperEngine
+
+    eng = PaperEngine.create(tmp_path / "fx.sqlite", 10_000, currency="USD",
+                             limits=EngineLimits(max_currency_pct=60, max_risk_per_trade_pct=50,
+                                                 max_sector_pct=500),
+                             now=T0)
+    for pair in ("EURUSD", "EURGBP"):
+        eng.register_instrument(Instrument(pair, "forex", fee_pct=0, slippage_pct=0,
+                                           currency_pair=pair))
+        eng.on_bar(pair, bar(0, 1.0, 1.0, 1.0, 1.0))
+    now = T0 + timedelta(hours=1)
+
+    first = eng.submit_order(OrderRequest("a", "EURUSD", "BUY", 5_000, stop_loss=0.9), now)
+    eng.on_bar("EURUSD", bar(1, 1.0, 1.0, 1.0, 1.0))
+    assert first["status"] == "PENDING" and eng.currency_exposure() == {"EUR": 5_000, "USD": -5_000}
+
+    # Another 2,000 long EUR (via EURGBP) would make EUR 70% > 60%.
+    too_much = eng.submit_order(OrderRequest("b", "EURGBP", "BUY", 2_000, stop_loss=0.9), now)
+    assert too_much["status"] == "REJECTED" and "Currency limit 60" in too_much["reason"]
+    assert "EUR" in too_much["reason"]
+    # Short EURGBP lowers EUR exposure; GBP +4,000 = 40% stays inside.
+    hedge = eng.submit_order(OrderRequest("c", "EURGBP", "SELL", 4_000, stop_loss=1.1), now)
+    assert hedge["status"] == "PENDING"
+
+
+def test_currency_pair_must_be_six_capital_letters():
+    from src.bnd.paper_engine import Instrument, PaperEngineError
+
+    with pytest.raises(PaperEngineError):
+        Instrument("X", "forex", currency_pair="eurusd")
+
+
+def test_old_accounts_get_the_default_currency_limit(tmp_path):
+    import json
+
+    from src.bnd.paper_engine import PaperEngine
+
+    eng = PaperEngine.create(tmp_path / "old.sqlite", 1_000, now=T0)
+    data = json.loads(eng._db.execute("SELECT limits FROM account").fetchone()[0])
+    del data["max_currency_pct"]
+    eng._db.execute("UPDATE account SET limits = ?", (json.dumps(data),))
+
+    assert eng.limits().max_currency_pct == 100.0
