@@ -326,8 +326,11 @@ def _optimisation_lines(report: dict) -> list[str]:
     return [
         f"## Walk-forward optimisation ({report.get('mode')}, train {report.get('train')}, "
         f"test {report.get('test')}, embargo {report.get('embargo')})",
-        f"- Folds: {summary.get('fold_count')}, profitable: {summary.get('positive_folds')}",
-        f"- Chained out-of-sample return: {_fmt(summary.get('chained_test_return_pct'), '%')}; "
+        f"- Folds: {summary.get('fold_count')}, profitable: {summary.get('positive_folds')}, "
+        f"beating buy & hold: {summary.get('folds_beating_buy_and_hold')}",
+        f"- Chained out-of-sample return: {_fmt(summary.get('chained_test_return_pct'), '%')} "
+        f"vs buy & hold {_fmt(summary.get('chained_buy_and_hold_return_pct'), '%')} "
+        f"on the same windows; "
         f"with switch-off after poor folds: "
         f"{_fmt(summary.get('chained_return_with_switch_off_pct'), '%')} "
         f"({summary.get('folds_switched_off')} folds skipped)",
