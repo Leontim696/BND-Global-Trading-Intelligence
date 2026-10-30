@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm:
-        description: 'Type DELETE to remove every branch listed in .github/branch-cleanup.txt'
+        description: 'Type DELETE to remove every branch already fully merged into main'
         required: true
         type: string
 
@@ -25,21 +25,26 @@ jobs:
       REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@v4
-      - name: Delete listed branches (main is always kept)
+        with:
+          fetch-depth: 0
+      - name: Delete branches whose commits are all in main
         run: |
-          deleted=0; missing=0
-          while IFS= read -r branch; do
-            branch="${branch%%#*}"; branch="$(echo "$branch" | xargs)"
-            [ -z "$branch" ] && continue
-            if [ "$branch" = "main" ]; then
-              echo "::warning::Refusing to delete main"; continue
-            fi
-            if gh api "repos/$REPO/branches/$branch" --silent 2>/dev/null; then
+          set -euo pipefail
+          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+          deleted=0; kept=0
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+            branch="${ref#origin/}"
+            case "$branch" in
+              main|backtest-results|HEAD|origin) continue ;;
+            esac
+            if git merge-base --is-ancestor "$ref" origin/main; then
               gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
               echo "Deleted: $branch"; deleted=$((deleted + 1))
             else
-              echo "Already gone: $branch"; missing=$((missing + 1))
+              echo "Kept (not fully merged): $branch"; kept=$((kept + 1))
             fi
-          done < .github/branch-cleanup.txt
-          echo "## Branch cleanup" >> "$GITHUB_STEP_SUMMARY"
-          echo "Deleted $deleted, already gone $missing." >> "$GITHUB_STEP_SUMMARY"
+          done
+          {
+            echo "## Branch cleanup"
+            echo "Deleted $deleted fully merged branches; kept $kept with unmerged commits."
+          } >> "$GITHUB_STEP_SUMMARY"
