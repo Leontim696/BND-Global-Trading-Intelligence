@@ -171,14 +171,9 @@ def test_provider_agent_mismatch():
 
 
 def test_live_mode_is_blocked():
-    gateway = AIGateway(mode=GatewayMode.LIVE)
-    gateway.register("gpt", MockAIProvider("gpt"))
-
-    with pytest.raises(
-        ProviderUnavailable,
-        match="Live API integrations",
-    ):
-        gateway.analyze(make_request())
+    # LIVE cannot even be constructed without authorisation and budget storage.
+    with pytest.raises(ValueError, match="LiveAuthorization"):
+        AIGateway(mode=GatewayMode.LIVE)
 
 
 def test_invalid_response_agent():

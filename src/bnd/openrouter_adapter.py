@@ -78,6 +78,10 @@ class OpenRouterAdapter:
         if not 0 < self.timeout <= 120:
             raise ValueError("Timeout must be between 0 and 120")
 
+    def expected_model(self) -> str:
+        """Configured model ID, used to budget a call before sending it."""
+        return self._get_model()
+
     def _get_model(self) -> str:
         model = self.model
 
@@ -237,6 +241,7 @@ class OpenRouterAdapter:
                 "completion_tokens", 0
             )
 
+            provider = result.get("provider", "")
             return AIResponse(
                 agent=self.agent,
                 vote=vote,
@@ -245,6 +250,7 @@ class OpenRouterAdapter:
                 model=response_model,
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
+                provider=provider if isinstance(provider, str) else "",
             )
 
         except InvalidAIResponse:
