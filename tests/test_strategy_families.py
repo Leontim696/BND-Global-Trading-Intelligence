@@ -516,3 +516,24 @@ def test_regime_switch_streams_like_full_recompute():
 def test_regime_switch_validation():
     with pytest.raises(ValueError):
         regime_switch(trend_level=0.1, range_level=0.2)
+
+
+def test_combo_averages_member_signals():
+    from src.bnd.strategies import combo
+
+    candles = random_walk(count=300)
+    mixed = combo("sma_crossover, rsi_reversion")
+    trend, reversion = STRATEGIES["sma_crossover"](), STRATEGIES["rsi_reversion"]()
+
+    for end in range(1, len(candles) + 1):
+        history = candles[:end]
+        assert mixed(history) == (trend(history) + reversion(history)) / 2
+
+
+@pytest.mark.parametrize("members", ["sma_crossover", "macd,macd", "macd,nope",
+                                     "macd,combo", "macd,buy_and_hold"])
+def test_combo_rejects_bad_members(members):
+    from src.bnd.strategies import combo
+
+    with pytest.raises(ValueError):
+        combo(members)

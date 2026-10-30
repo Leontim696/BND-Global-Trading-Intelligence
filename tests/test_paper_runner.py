@@ -258,3 +258,18 @@ def test_cli_kill_switch_reset_needs_exact_confirmation(tmp_path, monkeypatch, c
     assert "RESET-KILL-SWITCH" in capsys.readouterr().err
     assert paper_runner.main(base + ["--reset-kill-switch", "RESET-KILL-SWITCH"]) == 0
     assert json.loads(capsys.readouterr().out)["kill_switch"] is False
+
+
+def test_cli_combo_members_are_stored(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(paper_runner, "select_markets", lambda *a: MARKETS)
+    write_data(tmp_path / "data", make_data())
+    base = ["--state", str(tmp_path / "paper.sqlite"), "--data-dir", str(tmp_path / "data")]
+
+    assert paper_runner.main(base + ["--capital", "1000", "--members", "macd,momentum"]) == 2
+    assert "only for --strategy combo" in capsys.readouterr().err
+    assert paper_runner.main(base + ["--capital", "1000", "--strategy", "combo",
+                                     "--members", "macd,momentum"]) == 0
+    capsys.readouterr()
+    assert paper_runner.main(base) == 0
+    settings = json.loads(capsys.readouterr().out)["settings"]
+    assert settings["strategy"] == "combo" and settings["members"] == "macd,momentum"

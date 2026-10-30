@@ -239,3 +239,21 @@ def test_portfolio_base_currency_eur(tmp_path):
     path = tmp_path / "portfolio.json"
     path.write_text(out)
     assert "**In EUR, unhedged**" in build_summary(portfolio=path)
+
+
+def test_portfolio_combo_reports_what_each_member_adds(tmp_path):
+    from src.bnd.backtest_summary import build_summary
+
+    write_markets(tmp_path, ["EURUSD", "GOLD", "SP500"])
+    code, out, _ = run_cli(["portfolio", "--permutations", "0", "--data-dir", str(tmp_path),
+                            "--markets", "EURUSD,GOLD,SP500", "--strategy", "combo",
+                            "--members", "macd,rsi_reversion,momentum"])
+
+    assert code == 0
+    report = json.loads(out)
+    rows = report["ranking"][0]["combo_attribution_out_of_sample"]
+    assert [r["strategy"] for r in rows] == ["macd", "rsi_reversion", "momentum"]
+    assert all("sharpe" in r["alone"] and "sharpe" in r["combo_without_it"] for r in rows)
+    path = tmp_path / "portfolio.json"
+    path.write_text(out)
+    assert "What each combo member adds" in build_summary(portfolio=path)
