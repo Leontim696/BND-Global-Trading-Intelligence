@@ -173,7 +173,8 @@ class OpenRouterAdapter:
         )
 
         try:
-            with urlopen(
+            # Reviewed: fixed https URL constant.
+            with urlopen(  # nosec B310
                 http_request,
                 timeout=self.timeout,
             ) as response:
