@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 8
     env:
-      BND_ALLOW_LIVE: "false"
-      BND_PAPER_ONLY: "true"
+      # Flags read by the code; live and paid AI stay off.
+      BND_ALLOW_LIVE_AI: "false"
       # Paid calls stay off unless the repository variable is set to true.
       BND_ALLOW_PAID_AI: ${{ vars.BND_ALLOW_PAID_AI || 'false' }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}

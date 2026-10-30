@@ -34,8 +34,8 @@ jobs:
     timeout-minutes: 15
     env:
       # Public market data only: no API keys, no paid AI, no orders.
-      BND_ALLOW_LIVE: "false"
-      BND_PAPER_ONLY: "true"
+      # Flags read by the code; live and paid AI stay off.
+      BND_ALLOW_LIVE_AI: "false"
       SYMBOL: ${{ inputs.symbol }}
       INTERVAL: ${{ inputs.interval }}
       START: ${{ inputs.start }}
@@ -53,11 +53,18 @@ jobs:
             --out "backtest-reports/$SYMBOL-$INTERVAL.csv"
       - name: Run backtest
         run: |
+          set -o pipefail  # tee must not hide a failed backtest
           # EXTRA_ARGS is split into separate arguments on purpose.
           python -m src.bnd.backtest_cli run \
             --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
             --strategy "$STRATEGY" $EXTRA_ARGS \
             | tee backtest-reports/report.json
+      - name: Walk-forward SMA folds
+        run: |
+          set -o pipefail
+          python -m src.bnd.backtest_cli walk-forward \
+            --data "backtest-reports/$SYMBOL-$INTERVAL.csv" \
+            | tee backtest-reports/walk-forward.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:

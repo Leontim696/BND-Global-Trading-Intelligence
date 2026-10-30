@@ -7,7 +7,7 @@ import argparse
 import json
 
 from .ai_gateway import AIRequest, AIProvider, MockAIProvider
-from .fusion_council import AGENTS, FusionCouncil, Vote
+from .fusion_council import AGENTS, FusionCouncil
 
 
 def run_round(market: str, symbol: str, context: str,

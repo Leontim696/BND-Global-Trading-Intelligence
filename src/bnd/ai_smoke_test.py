@@ -8,7 +8,6 @@ Run only in a trusted environment with a configured spending limit.
 """
 import argparse
 import json
-import os
 
 from .ai_gateway import AIRequest, ProviderUnavailable
 from .multi_ai_providers import CLOUD_AGENTS, configured_adapters, readiness

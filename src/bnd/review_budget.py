@@ -4,7 +4,7 @@ This is an estimate guard, not a provider-side hard spending cap.
 Live calls must additionally have a provider-enforced $0.50 key limit.
 """
 from dataclasses import dataclass
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 
 MAX_TEST_USD = Decimal("0.50")
 

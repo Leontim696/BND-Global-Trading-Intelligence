@@ -251,3 +251,41 @@ def test_cli_require_continuous_rejects_gaps(tmp_path, capsys):
 
     assert code == 2
     assert "gaps" in capsys.readouterr().err
+
+
+def test_to_bars_keeps_open_and_close():
+    from src.bnd.market_data import to_bars
+
+    series = candles(3)
+
+    bars = to_bars(series)
+
+    assert [(b.open, b.close) for b in bars] == [(c.open, c.close) for c in series]
+
+
+def test_cli_walk_forward_reports_folds_with_times(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    write_trend_csv(path, count=200)
+
+    code = main(["walk-forward", "--data", str(path), "--window", "10",
+                 "--train", "50", "--test", "50"])
+
+    assert code == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["summary"]["fold_count"] == 3
+    first = report["folds"][0]
+    assert first["test_start_time"] == (START + STEP * 50).isoformat()
+    assert first["test_end_time"] == (START + STEP * 99).isoformat()
+    # 4-hour candles -> about 2,192 periods per year.
+    assert report["summary"]["periods_per_year"] == 2192
+
+
+def test_cli_walk_forward_rejects_window_larger_than_train(tmp_path, capsys):
+    path = tmp_path / "btc.csv"
+    write_trend_csv(path, count=200)
+
+    code = main(["walk-forward", "--data", str(path), "--window", "60",
+                 "--train", "50", "--test", "50"])
+
+    assert code == 2
+    assert "window" in capsys.readouterr().err.lower()

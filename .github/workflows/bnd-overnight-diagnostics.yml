@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      BND_ALLOW_LIVE: "false"
-      BND_PAPER_ONLY: "true"
+      # Flags read by the code; live and paid AI stay off.
+      BND_ALLOW_LIVE_AI: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

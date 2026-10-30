@@ -31,7 +31,6 @@ jobs:
     env:
       # Paid calls ONLY for explicit manual dispatch with exact confirmation.
       # Push and schedule ALWAYS remain disabled.
-      BND_PAPER_ONLY: "true"
       BND_MAX_RUN_COST_USD: "0.25"
       BND_MAX_CALL_COST_USD: "0.05"
       BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT || 'openai/gpt-4o-mini' }}

@@ -104,6 +104,14 @@ def find_gaps(
     ]
 
 
+def to_bars(candles: Sequence[Candle]):
+    """Adapter from canonical candles to the quant_* walk-forward Bar."""
+
+    from .quant_backtest import Bar
+
+    return [Bar(candle.open, candle.close) for candle in candles]
+
+
 def save_csv(candles: Sequence[Candle], path) -> None:
     validate_series(candles)
     path = Path(path)

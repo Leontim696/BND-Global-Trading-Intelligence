@@ -17,6 +17,13 @@ are ever placed.
 | `market_data` | Validated OHLCV candles, CSV storage, Binance public-data download |
 | `backtester` | Next-open execution, fees, slippage, stop losses, risk-engine sizing, metrics |
 | `strategies` | Baselines: buy-and-hold, SMA crossover, Donchian breakout |
+| `quant_backtest`, `quant_evaluation`, `quant_metrics`, `quant_report` | Long/flat SMA walk-forward folds with risk-adjusted metrics versus buy-and-hold |
+| `council_orchestrator`, `council_round`, `live_council_bridge` | Five-agent research rounds; the paid live council stays disabled |
+| `code_review_loop`, `review_budget`, `manual_live_review` | GPT → Claude → GPT review with a fail-closed USD 0.50 preflight |
+| `ai_smoke_test`, `three_agents_live` | Manual, confirmed single-call connectivity checks |
+
+`market_data.Candle` is the canonical data format; `market_data.to_bars`
+adapts it for the `quant_*` modules.
 
 Not yet implemented: walk-forward optimisation, AI-agent strategies in
 backtests, and LIVE gateway mode.
@@ -39,6 +46,8 @@ python -m src.bnd.backtest_cli fetch --symbol BTCUSDT --interval 4h \
     --start 2019-01-01 --out data/BTCUSDT-4h.csv
 python -m src.bnd.backtest_cli run --data data/BTCUSDT-4h.csv \
     --strategy sma_crossover --stop-loss 5 --risk-per-trade 1
+python -m src.bnd.backtest_cli walk-forward --data data/BTCUSDT-4h.csv \
+    --window 50 --train 1000 --test 500
 ```
 
 Decisions use only past candles and fill at the next open, paying fees
@@ -52,3 +61,8 @@ The "BND Backtest (manual)" workflow runs the same steps on GitHub.
 All OpenRouter calls are opt-in. The workflows under `.github/workflows`
 that call paid models require manual dispatch with explicit confirmation
 inputs, and an `OPENROUTER_API_KEY` secret with a provider-side spending limit.
+
+Safety flags read by the code: `BND_ALLOW_LIVE_AI` (live provider adapters)
+and `BND_ALLOW_PAID_AI` (overnight scripts). Both default to off.
+`tests/test_workflow_flags.py` fails if a workflow sets a `BND_*` variable
+that no code reads.

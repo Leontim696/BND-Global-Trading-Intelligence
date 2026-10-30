@@ -4,7 +4,6 @@
 All providers are simulated. No network requests or trading orders.
 """
 
-from datetime import datetime, timezone
 from decimal import Decimal
 
 import pytest

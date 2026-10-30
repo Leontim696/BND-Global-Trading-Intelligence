@@ -9,14 +9,12 @@ before provider execution and actual token usage is recorded afterward.
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from decimal import Decimal
 from enum import Enum
 from math import isfinite
 from typing import Protocol
 
 from .cost_storage import SQLiteCostStorage
 from .cost_tracker import (
-    BudgetExceeded,
     CostTracker,
     ModelPricing,
     UsageRecord,

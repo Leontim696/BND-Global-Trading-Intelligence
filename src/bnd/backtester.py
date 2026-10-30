@@ -114,7 +114,7 @@ class _History(SequenceABC):
         return self._candles[index]
 
 
-def _bars_per_year(candles: Sequence[Candle]) -> float:
+def bars_per_year(candles: Sequence[Candle]) -> float:
     if len(candles) < 2:
         return 0.0
     steps = [
@@ -378,7 +378,7 @@ def run_backtest(
     metrics = compute_metrics(
         equity_curve,
         sim.trades,
-        _bars_per_year(candles),
+        bars_per_year(candles),
         config.initial_equity,
     )
     metrics["rejected_entries"] = sim.rejected_entries

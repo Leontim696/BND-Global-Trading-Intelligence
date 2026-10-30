@@ -14,14 +14,23 @@ import json
 import sys
 from datetime import datetime, timezone
 
-from .backtester import BacktestConfig, CostModel, run_backtest, split_index
+from .backtester import (
+    BacktestConfig,
+    CostModel,
+    bars_per_year,
+    run_backtest,
+    split_index,
+)
 from .market_data import (
     MarketDataError,
     fetch_binance_klines,
     find_gaps,
     load_csv,
     save_csv,
+    to_bars,
 )
+from .quant_backtest import BacktestConfig as QuantConfig
+from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
 from .strategies import STRATEGIES, buy_and_hold
 
@@ -152,6 +161,33 @@ def command_run(args) -> int:
     return 0
 
 
+def command_walk_forward(args) -> int:
+    """Independent train/test folds for a fixed SMA window (long/flat)."""
+    candles = load_csv(args.data)
+    gaps = find_gaps(candles)
+    if gaps and args.require_continuous:
+        raise MarketDataError(f"{len(gaps)} gaps in data")
+
+    report = evaluate_sma_report(
+        to_bars(candles),
+        window=args.window,
+        train_size=args.train,
+        test_size=args.test,
+        periods_per_year=round(bars_per_year(candles)),
+        # Same per-fill costs as `run`: percent -> basis points.
+        config=QuantConfig(fee_bps=args.fee * 100,
+                           slippage_bps=args.slippage * 100),
+    )
+    for fold in report["folds"]:
+        for key in ("train_start", "train_end", "test_start"):
+            fold[key + "_time"] = candles[fold[key]].open_time.isoformat()
+        fold["test_end_time"] = candles[fold["test_end"] - 1].open_time.isoformat()
+    report["data"] = args.data
+    report["data_gaps"] = len(gaps)
+    print(json.dumps(report, indent=2))
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="backtest_cli")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -191,6 +227,21 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--in-sample", type=float, default=70.0,
                      help="percent of data for in-sample; the rest is out-of-sample")
     run.set_defaults(handler=command_run)
+
+    walk = sub.add_parser(
+        "walk-forward",
+        help="SMA long/flat walk-forward folds versus buy-and-hold",
+    )
+    walk.add_argument("--data", required=True)
+    walk.add_argument("--window", type=int, default=50)
+    walk.add_argument("--train", type=int, default=1000,
+                      help="candles per training (warm-up) window")
+    walk.add_argument("--test", type=int, default=500,
+                      help="candles per out-of-sample test window")
+    walk.add_argument("--fee", type=float, default=0.10)
+    walk.add_argument("--slippage", type=float, default=0.05)
+    walk.add_argument("--require-continuous", action="store_true")
+    walk.set_defaults(handler=command_walk_forward)
 
     return parser
 

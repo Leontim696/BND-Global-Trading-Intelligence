@@ -15,8 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      BND_ALLOW_LIVE: "false"
-      BND_PAPER_ONLY: "true"
+      # Flags read by the code; live and paid AI stay off.
+      BND_ALLOW_LIVE_AI: "false"
 
     steps:
       - name: Checkout repository
