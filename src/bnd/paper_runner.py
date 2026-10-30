@@ -47,6 +47,7 @@ from .safety import SafetyError, trading_mode
 from .scenarios import run_scenarios
 from .signal_pipeline import average_true_range
 from .strategies import SWEEP_RANGES
+from .universe import esma_margin_pct
 from .universe import select as select_markets
 
 REDUCED = re.compile(r"allows at most ([0-9.]+) notional")
@@ -70,7 +71,8 @@ def instrument_for(market) -> Instrument:
     return Instrument(symbol=market.name, asset_class=market.asset_class,
                       fee_pct=market.fee_pct, slippage_pct=market.slippage_pct,
                       carry_pct_annual=market.carry_pct_annual,
-                      currency_pair=market.name if _is_pair(market) else "")
+                      currency_pair=market.name if _is_pair(market) else "",
+                      margin_pct=esma_margin_pct(market))
 
 
 def _is_pair(market) -> bool:
@@ -148,6 +150,10 @@ def fit_limits(engine: PaperEngine, weights: dict, margin: float) -> dict:
             hits = [over[c] for c in (pair[:3], pair[3:]) if pair and c in over]
             if hits:
                 fitted[name] *= allowed / max(hits)
+    # Broker margin: the positions together may not need more than equity.
+    needed = sum(abs(w) * engine.instrument(n).margin_pct / 100 for n, w in fitted.items())
+    if needed > margin:
+        fitted = {n: w * margin / needed for n, w in fitted.items()}
     gross = sum(abs(w) for w in fitted.values())
     allowed = limits.max_gross_leverage * margin
     if gross > allowed:

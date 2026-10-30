@@ -58,6 +58,8 @@ class Instrument:
     max_participation: float | None = None
     # Forex only: the pair as quoted, e.g. "EURUSD" (long = long EUR, short USD).
     currency_pair: str = ""
+    # Broker margin per unit of |notional|, in percent (3.33 = 30:1); 0 = none.
+    margin_pct: float = 0.0
 
     def __post_init__(self):
         if not self.symbol.strip() or not self.asset_class.strip():
@@ -67,6 +69,8 @@ class Instrument:
                 raise PaperEngineError("Costs must be finite and nonnegative")
         if self.max_participation is not None and not 0 < self.max_participation <= 1:
             raise PaperEngineError("max_participation must be in (0, 1]")
+        if not isfinite(self.margin_pct) or not 0 <= self.margin_pct <= 100:
+            raise PaperEngineError("margin_pct must be in [0, 100]")
         if self.currency_pair and not (len(self.currency_pair) == 6
                                        and self.currency_pair.isalpha()
                                        and self.currency_pair.isupper()):
@@ -89,6 +93,9 @@ class EngineLimits:
     max_data_age: timedelta = timedelta(days=4)
     max_gap_pct: float = 15.0            # no new risk on a bar gapping more
     maintenance_margin_pct: float = 10.0 # liquidate below this % of gross
+    # Broker close-out: liquidate when equity falls below this share of the
+    # margin the positions require (ESMA retail rule: 50%).
+    margin_closeout_pct: float = 50.0
     require_stop_loss: bool = True
     order_expiry_bars: int = 5
 
@@ -426,6 +433,12 @@ class PaperEngine:
         if sector_exposure / equity * 100 > limits.max_sector_pct + 1e-9:
             return f"Sector limit {limits.max_sector_pct}% of equity for {sector}"
 
+        if instrument.margin_pct:
+            required = self.margin_required({request.symbol: after * price})
+            if required > equity + 1e-9:
+                return (f"Margin: positions would need {required:.2f}, "
+                        f"equity is {equity:.2f}")
+
         if limits.max_portfolio_vol_pct:
             before_vol = self.portfolio_volatility()
             after_vol = self.portfolio_volatility({request.symbol: after * price})
@@ -495,6 +508,13 @@ class PaperEngine:
         self._db.execute(
             "DELETE FROM closes WHERE symbol = ? AND time NOT IN (SELECT time FROM closes"
             " WHERE symbol = ? ORDER BY time DESC LIMIT ?)", (symbol, symbol, keep))
+
+    def margin_required(self, override: dict | None = None) -> float:
+        """Broker margin the positions need: sum of |value| x margin_pct."""
+        values = {p["symbol"]: p["quantity"] * self._price(p["symbol"]) for p in self.positions()}
+        values.update(override or {})
+        return sum(abs(value) * self.instrument(symbol).margin_pct / 100
+                   for symbol, value in values.items())
 
     def portfolio_volatility(self, override: dict | None = None) -> float | None:
         """Annualised volatility of today's positions over recent joint returns.
@@ -758,6 +778,12 @@ class PaperEngine:
         gross = self.gross_exposure()
         if equity <= gross * limits.maintenance_margin_pct / 100:
             self._liquidate("Margin below maintenance: liquidation", time)
+            return
+        required = self.margin_required()
+        if required and equity < required * limits.margin_closeout_pct / 100:
+            self._liquidate(f"Broker margin close-out: equity {equity:.2f} below "
+                            f"{limits.margin_closeout_pct}% of required margin {required:.2f}",
+                            time)
             return
         daily_loss = 100 * max(0.0, account["day_start_equity"] - equity) / account["day_start_equity"]
         drawdown = 100 * (peak - equity) / peak if peak > 0 else 0.0
