@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 from .debate_engine import DebateEngine, DebateStatus
+from .decision_rules import DecisionRule, decide
 from .fusion_council import AGENTS, Vote
 from .risk_engine import (
     Portfolio,
@@ -35,8 +36,15 @@ def coordinate_trade(
     portfolio: Portfolio,
     limits: RiskLimits,
     proposal: TradeProposal | None,
+    rule: DecisionRule = DecisionRule.MAJORITY,
+    weights: dict | None = None,
 ) -> TradeOutcome:
-    """Evaluate a paper trade after debate and risk checks."""
+    """Evaluate a paper trade after debate and risk checks.
+
+    ``rule`` picks majority, weighted consensus or unanimity; any rule
+    returns NO_TRADE when the evidence is insufficient. The risk engine
+    can still reject or shrink every approved direction.
+    """
 
     if debate.status != DebateStatus.CLOSED:
         return TradeOutcome(
@@ -72,14 +80,20 @@ def coordinate_trade(
             "Missing final debate responses",
         )
 
-    decision = council.decision()
+    if rule == DecisionRule.MAJORITY and weights is None:
+        decision = council.decision()
+        uncertain_reason = "No valid council majority"
+    else:
+        result = decide(council, rule, weights)
+        decision = None if result.uncertain else result.vote
+        uncertain_reason = "; ".join(result.reasons)
 
     if decision is None:
         return TradeOutcome(
             TradeStatus.NO_TRADE,
             None,
             0.0,
-            "No valid council majority",
+            uncertain_reason,
         )
 
     if decision == Vote.HOLD:
