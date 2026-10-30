@@ -1,38 +1,28 @@
-Latest run: `runs/2026-10-30T180133Z_41102944352_PORTFOLIO-etf_1d_cross_momentum` (source b9624e4, job success)
+Latest run: `runs/2026-10-30T183830Z_41108221941_PORTFOLIO-etf-wfo_1d_regime_switch` (source e891e03, job success)
 
 # BND backtest summary
 
 ## Verdict
-**No evidence of an edge:** no strategy beat the simple equal-weight basket on out-of-sample Sharpe.
+**No evidence of an edge:** re-optimised every window, the strategy made 63.34% out of sample vs 154.78% for the basket, and beat it in 6 of 12 windows.
 
-## Multi-market portfolio
-- Markets: 23 (2 bond, 7 commodity, 2 crypto, 6 forex, 6 index)
-- Out-of-sample from 2022-01-24T00:00:00+00:00
-- Sizing volatility, portfolio volatility target 15.0%, max leverage 3.0x, financing 0.0%/yr, kill switch at 30.0% drawdown, shorts on
+## Portfolio walk-forward (regime_switch, train 1460 days, test 365 days)
+- Windows: 12, profitable: 8, beating the basket: 6, with kill switch: 0
+- Chained out-of-sample: 63.34% vs basket 154.78%
+- Mean Sharpe: train 0.78, test 0.35, basket 0.78; parameter change rate 0.27
 
-| # | Strategy | Return | CAGR | Sharpe | Max drawdown | Avg leverage | Fills | Financing | Kill switch | p-value (adjusted) |
-| ---: | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | ---: |
-| 1 | cross_momentum | 43.44% | 7.87% | 0.57 | 23.17% | 2.70x | 2317 | 636.26 | – | 1.000 (1.000) |
-| – | equal-weight basket (long, 1x) | 48.80% | 8.70% | 0.84 | 17.10% | 0.95x | 49 | – | – | – |
-
-**In EUR, unhedged** (a EUR investor; dollar moves included):
-
-| Strategy | Return | CAGR | Sharpe | Max drawdown |
-| --- | ---: | ---: | ---: | ---: |
-| cross_momentum | 45.83% | 8.24% | 0.53 | 31.95% |
-| equal-weight basket | 51.28% | 9.08% | 0.79 | 14.57% |
-
-**Largest daily moves (check for bad data):** ETHEREUM -42.3% on 2020-03-12 (35 days > 15%), BITCOIN -37.2% on 2020-03-12 (20 days > 15%), SILVER -28.5% on 2026-01-30 (2 days > 15%), CRUDE_OIL -25.3% on 2020-03-09 (5 days > 15%), NATURAL_GAS -24.9% on 2026-02-02 (7 days > 15%), COPPER -19.3% on 2025-07-30 (1 days > 15%)
-
-**Profit by market (out-of-sample):** BITCOIN 1,456, GOLD 1,203, SILVER 1,160, EMERGING 1,037, SP500 989, NASDAQ100 719, UK 387, AGRICULTURE 374, NATURAL_GAS 291, JAPAN 246, BROAD_COMMODITIES 231, USDJPY 140, EURUSD 85, GERMANY -50, AUDUSD -65, US20Y_BOND -152, GBPUSD -232, COPPER -306, USDCHF -356, CRUDE_OIL -361, ETHEREUM -408, USDCAD -460, US10Y_NOTE -949
-
-| Max leverage | Return | Sharpe | Max drawdown | Kill switch |
-| ---: | ---: | ---: | ---: | --- |
-| 1x | 16.54% | 0.55 | 11.19% | – |
-| 2x | 32.37% | 0.56 | 22.11% | – |
-| 3x | 43.44% | 0.57 | 23.17% | – |
-| 5x | 36.67% | 0.47 | 26.04% | – |
-
-Cost stress: ×2 → 25.26% (Sharpe 0.38); ×3 → 9.10% (Sharpe 0.20)
+| Test window | Parameters | Return | Sharpe | Max drawdown | Basket return | Kill switch |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| 2014-01-05 → 2015-01-05 | window=20, trend_level=0.5 | 8.26% | 0.77 | 6.74% | -5.24% | – |
+| 2015-01-05 → 2016-01-05 | window=20, trend_level=0.5 | -3.26% | -0.14 | 16.55% | -6.78% | – |
+| 2016-01-05 → 2017-01-04 | window=40, trend_level=0.3 | 10.51% | 0.75 | 14.33% | 9.84% | – |
+| 2017-01-04 → 2018-01-04 | window=40, trend_level=0.4 | -2.92% | -0.22 | 12.31% | 30.17% | – |
+| 2018-01-04 → 2019-01-04 | window=40, trend_level=0.4 | -7.72% | -0.49 | 15.50% | -15.22% | – |
+| 2019-01-04 → 2020-01-04 | window=20, trend_level=0.3 | 0.66% | 0.12 | 9.64% | 13.09% | – |
+| 2020-01-04 → 2021-01-03 | window=20, trend_level=0.3 | 10.02% | 0.67 | 19.46% | 25.55% | – |
+| 2021-01-03 → 2022-01-03 | window=20, trend_level=0.3 | 5.22% | 0.47 | 9.35% | 22.64% | – |
+| 2022-01-03 → 2023-01-03 | window=20, trend_level=0.3 | 18.98% | 1.15 | 16.33% | -8.09% | – |
+| 2023-01-03 → 2024-01-03 | window=20, trend_level=0.3 | 15.77% | 1.21 | 11.89% | 13.09% | – |
+| 2024-01-03 → 2025-01-02 | window=20, trend_level=0.3 | -6.77% | -0.57 | 19.80% | 13.32% | – |
+| 2025-01-02 → 2026-01-02 | window=20, trend_level=0.3 | 5.28% | 0.46 | 14.32% | 16.02% | – |
 
 _Paper research only. Past results do not predict future returns._
