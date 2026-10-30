@@ -1,18 +1,26 @@
 """Offline strategy evaluation helpers; no market connectivity or trading."""
 import csv
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .quant_backtest import Bar, BacktestConfig, backtest, walk_forward_splits
 
 
-def load_ohlc_csv(path: str | Path) -> list[Bar]:
+def load_ohlc_csv(path: str | Path, expected_interval_seconds: int | None = None) -> list[Bar]:
     """Read ordered bars from a CSV with timestamp,open,close columns.
 
     Parse ISO timestamps and compare in UTC, not lexicographic string order.
-    Date-only/naive ISO timestamps are interpreted as UTC. Callers must
-    validate source, interval consistency and market-specific adjustments.
+    Date-only/naive ISO timestamps are interpreted as UTC. When an expected
+    interval is supplied, reject missing or irregular bars (for 24/7 markets
+    such as crypto only; exchange session gaps need a market calendar).
+    Callers must still validate provenance and market-specific adjustments.
     """
+    if expected_interval_seconds is not None and (
+        type(expected_interval_seconds) is not int or expected_interval_seconds <= 0
+    ):
+        raise ValueError("Expected interval must be a positive integer of seconds")
+    expected_delta = (timedelta(seconds=expected_interval_seconds)
+                      if expected_interval_seconds is not None else None)
     bars = []
     previous = None
     with open(path, newline="", encoding="utf-8-sig") as stream:
@@ -30,8 +38,11 @@ def load_ohlc_csv(path: str | Path) -> list[Bar]:
             if parsed.tzinfo is None or parsed.utcoffset() is None:
                 parsed = parsed.replace(tzinfo=timezone.utc)
             instant = parsed.astimezone(timezone.utc)
-            if previous is not None and instant <= previous:
-                raise ValueError("Timestamps must be unique and strictly increasing in UTC")
+            if previous is not None:
+                if instant <= previous:
+                    raise ValueError("Timestamps must be unique and strictly increasing in UTC")
+                if expected_delta is not None and instant - previous != expected_delta:
+                    raise ValueError("Missing or irregular OHLC bar interval")
             previous = instant
             bars.append(Bar(float(row["open"]), float(row["close"])))
     if len(bars) < 2:
