@@ -191,14 +191,16 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
         current = held.get(name, 0.0)
         weight = weights.get(name, 0.0)
         now_weight = current * price / equity
-        flips = (weight > 0) != (now_weight > 0) or (weight < 0) != (now_weight < 0)
-        if not ((flips and (weight or now_weight)) or abs(weight - now_weight) >= threshold):
-            continue
         order_id = f"{candles[-1].open_time.date().isoformat()}:{name}"
+        # Orders from an earlier date are obsolete whatever today's signal is,
+        # also when no new order is needed (the position is already close enough).
         for old in engine.orders():
             if (old["symbol"] == name and old["status"] in ("PENDING", "PARTIAL")
                     and not old["client_order_id"].startswith(order_id)):
                 engine.cancel_order(old["client_order_id"], now)
+        flips = (weight > 0) != (now_weight > 0) or (weight < 0) != (now_weight < 0)
+        if not ((flips and (weight or now_weight)) or abs(weight - now_weight) >= threshold):
+            continue
         target = weight * equity / price
         delta = target - current
         side = "BUY" if delta > 0 else "SELL"
@@ -411,6 +413,7 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
         raise ValueError("No paper account yet: confirm the virtual starting capital "
                          "with --capital")
     settings = {**DEFAULTS, **given}
+    _config(settings)                                      # fail before creating
     _make_factory(settings, {})                            # fail before creating
     Path(args.state).parent.mkdir(parents=True, exist_ok=True)
     engine = PaperEngine.create(args.state, args.capital, currency=args.currency)

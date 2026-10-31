@@ -186,7 +186,7 @@ def proposal(data):
     return obj
 
 def request_body(model, payload):
-    body = json.dumps({"model": model, "temperature": 0, "max_tokens": 3000,
+    body = json.dumps({"model": model, "temperature": 0, "max_tokens": 6000,
                        # Thinking models spend the answer budget on thinking
                        # (DeepSeek and Claude stopped at "length"); keep it
                        # short and do not send the thinking text back (Grok's

@@ -332,3 +332,38 @@ def test_zero_atr_skips_the_market_instead_of_crashing(tmp_path, monkeypatch):
     assert skipped and all("ATR is zero" in o["reason"] for o in skipped)
     assert engine.orders() == []                      # nothing was submitted
     assert not report["kill_switch"]
+
+
+
+def test_obsolete_pending_order_is_cancelled_even_when_no_new_order_is_needed(tmp_path):
+    from src.bnd.paper_engine import OrderRequest
+    from src.bnd.paper_runner import rebalance
+
+    data = make_data()
+    engine = engine_at(tmp_path)
+    for market in MARKETS:
+        engine.register_instrument(instrument_for(market))
+    paper_runner.feed_new_candles(engine, data)
+    price = engine.mark("UP")["price"]
+    engine.submit_order(OrderRequest("2000-01-01:UP", "UP", "BUY", 5, stop_loss=price * 0.9),
+                        now_after(data))
+    cfg = paper_runner.RunnerConfig(portfolio=config().portfolio)
+
+    # No position and a zero target: nothing to trade, but yesterday's order is obsolete.
+    plans = rebalance(engine, data, {}, cfg, now_after(data))
+
+    assert plans == []
+    assert engine.order("2000-01-01:UP")["status"] == "CANCELLED"
+
+
+def test_invalid_settings_do_not_create_an_account(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(paper_runner, "select_markets", lambda *a: MARKETS)
+    write_data(tmp_path / "data", make_data())
+    state = tmp_path / "paper.sqlite"
+
+    for bad in (["--stop-atr", "-1"], ["--rebalance", "-5"], ["--max-leverage", "0"]):
+        code = paper_runner.main(["--state", str(state), "--data-dir", str(tmp_path / "data"),
+                                  "--capital", "1000", *bad])
+        assert code == 2, bad
+        assert not state.exists(), bad
+    capsys.readouterr()
