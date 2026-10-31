@@ -121,9 +121,10 @@ def audit_files(raw=None):
 
 
 def sources(files=None):
-    """Excerpts of the files to audit. Chosen files get 14,000 characters each;
-    the default whole-tree view keeps 1,800 per file."""
-    limit = 14000 if files is not None else 1800
+    """Excerpts of the files to audit. Chosen files share 58,000 characters
+    (one file gets up to 45,000, so a whole large module can be read; four
+    get 14,500 each); the default whole-tree view keeps 1,800 per file."""
+    limit = max(3000, min(45000, 58000 // len(files))) if files else 1800
     files = sorted(Path("src").rglob("*.py")) if files is None else files
     included, omitted, truncated = [], [], []
     used = 0
