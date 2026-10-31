@@ -1,11 +1,11 @@
 {
-  "generated": "2026-10-31T13:03+00:00",
+  "generated": "2026-10-31T13:30+00:00",
   "ok": true,
   "alerts": [],
   "accounts": {
     "paper": {
       "equity": 10000.0,
-      "currency": "EUR",
+      "currency": "USD",
       "return_pct": 0.0,
       "drawdown_pct": 0.0,
       "positions": 0,
