@@ -77,3 +77,17 @@ def test_dashboard_template_escapes_every_data_string():
                 assert match.group(1).lstrip().startswith("esc("), f"linia {number}: {match.group(0)}"
     assert 'class="v ${esc(v)}"' in html
     assert "</" not in "".join(re.findall(r"const DATA = (.*);", html))
+
+
+def test_branch_cleanup_protects_every_state_branch_and_has_write_only_in_its_job():
+    body = text(ROOT / ".github" / "workflows" / "branch-cleanup.yml")
+    assert re.search(r"^permissions:\n  contents: read", body, re.M)
+    for branch in ("backtest-results", "paper-trading", "crypto-trading", "ai-unificat",
+                   "consiliu-umbra", "status"):
+        assert body.count(branch) >= 2, branch              # în ambele liste de protecție
+    # Orice ramură de stare folosită de un workflow trebuie să fie protejată.
+    used = set()
+    for path in WORKFLOWS:
+        used |= set(re.findall(r"origin\s+(paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status|backtest-results)\b",
+                               text(path)))
+    assert all(branch in body for branch in used), used
