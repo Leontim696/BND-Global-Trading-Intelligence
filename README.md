@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-10-31T05:59:29.466740+00:00 | strategy `sma_crossover`
-- Equity: 10,000.00 EUR (start 10,000.00, +0.00%)
-- Gross leverage: 0.00x | candles processed: 0
+- Run: 2026-10-31T22:53:50.083213+00:00 | strategy `sma_crossover`
+- Equity: 10,000.00 USD (start 10,000.00, +0.00%)
+- Gross leverage: 0.00x | candles processed: 2
 - Kill switch: off
 
 ## Positions
@@ -25,6 +25,7 @@ No open positions.
 
 | Run | Equity |
 |---|---:|
+| 2026-10-31 | 10,000.00 |
 | 2026-10-31 | 10,000.00 |
 | 2026-10-31 | 10,000.00 |
 

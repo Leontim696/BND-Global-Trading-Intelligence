@@ -1,7 +1,7 @@
 {
-  "time": "2026-10-31T05:59:29.466740+00:00",
+  "time": "2026-10-31T22:53:50.083213+00:00",
   "strategy": "sma_crossover",
-  "candles_processed": 0,
+  "candles_processed": 2,
   "kill_switch": false,
   "kill_reason": null,
   "signals": {
@@ -202,7 +202,7 @@
   "gross_leverage": 0.0,
   "net_profit": 0.0,
   "initial_capital": 10000.0,
-  "currency": "EUR",
+  "currency": "USD",
   "settings": {
     "universe": "etf",
     "markets": null,
