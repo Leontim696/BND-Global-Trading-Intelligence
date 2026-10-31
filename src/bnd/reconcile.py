@@ -61,9 +61,14 @@ def reconcile(engine: PaperEngine) -> dict:
           not bad_orders, ", ".join(bad_orders[:5]))
 
     created = engine.journal("account_created")
-    check("o singură înregistrare de creare, cu capitalul și moneda contului",
+    # Moneda poate fi schimbată doar printr-o înregistrare explicită „currency_relabel” (doar
+    # eticheta, fără conversie), care apare în jurnal și în jurnalul de audit.
+    relabels = engine.journal("currency_relabel")
+    expected_currency = relabels[-1]["payload"]["to"] if relabels else (
+        created[0]["payload"]["currency"] if created else None)
+    check("o singură înregistrare de creare, cu capitalul și moneda contului (inclusiv schimbări de etichetă)",
           len(created) == 1 and _close(created[0]["payload"]["capital"], initial, initial)
-          and created[0]["payload"]["currency"] == account["currency"])
+          and expected_currency == account["currency"])
 
     ids = [o["client_order_id"] for o in engine.orders()]
     check("fără ordine duplicate", len(ids) == len(set(ids)))

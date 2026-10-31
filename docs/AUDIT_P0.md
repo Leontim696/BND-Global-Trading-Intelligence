@@ -29,7 +29,7 @@ Există **trei portofolii virtuale separate**, fără capital comun. Nu sunt tre
 
 | Cont | Ramură | Capital inițial | Monedă din cont | Decide | Rulează |
 |---|---|---|---|---|---|
-| Reguli matematice | `paper-trading` | 10.000 | EUR (etichetă) | strategia `regime_switch` | 23:23 ora Germaniei |
+| Reguli matematice | `paper-trading` | 10.000 | USD (era EUR până pe 31.10, vezi F-08) | strategia `regime_switch` | 23:23 ora Germaniei |
 | Cripto AI | `crypto-trading` | 11.183 | USD | voturile consiliului, 5 monede | 23:10 |
 | AI unificat | `ai-unificat` | 11.183 | USD | voturile consiliului, 13 piețe | 23:15 |
 
@@ -37,8 +37,8 @@ Cele 11.183 $ reprezintă 10.000 € la cursul EUR/USD 1,1183 din 30.10.2026 (va
 
 | ID | Sev. | Constatare | Dovadă | Stare |
 |---|---|---|---|---|
-| F-08 | RIDICAT | Contul „Reguli matematice” e etichetat EUR, dar toate prețurile sunt în USD și motorul **nu convertește nimic**: 10.000 „EUR” sunt de fapt 10.000 de unități evaluate cu prețuri în dolari. Procentele sunt corecte; valoarea absolută nu e în euro, iar efectul cursului EUR/USD asupra proprietarului nu e în rezultat. Același lucru e declarat în fiecare raport, dar rămâne o sursă de confuzie. Contul nu poate fi schimbat în timpul evaluării. | `account.currency = EUR`, `PaperEngine` fără conversii; `docs/CONTURI.md` | Deschis (decizie după 17.11: cont în USD sau conversie explicită) |
-| F-09 | MEDIU | Limita de expunere pe monedă ignoră moneda contului. La contul etichetat EUR se limitează expunerea la USD, la conturile în USD se limitează EUR: același risc economic, reguli oglindite. | `paper_engine.py`, `_pre_trade_check` | Deschis (nu se modifică limitele de risc fără aprobare) |
+| F-08 | RIDICAT (rezolvat prin decizia proprietarului) | Contul „Reguli matematice” e etichetat EUR, dar toate prețurile sunt în USD și motorul **nu convertește nimic**: 10.000 „EUR” sunt de fapt 10.000 de unități evaluate cu prețuri în dolari. Procentele sunt corecte; valoarea absolută nu e în euro, iar efectul cursului EUR/USD asupra proprietarului nu e în rezultat. Același lucru e declarat în fiecare raport, dar rămâne o sursă de confuzie. Proprietarul a decis să treacă eticheta în USD. | `account.currency = EUR`, `PaperEngine` fără conversii; `docs/CONTURI.md` | **Reparat pe 31.10, cont gol:** eticheta EUR → USD cu înregistrare auditată `currency_relabel` (`scripts/relabel_currency.py`); capitalul rămâne 10.000, fără conversie, deci procentele și comportamentul de dimensionare nu se schimbă. Efect asupra limitei pe monedă: vezi F-09. |
+| F-09 | MEDIU (efect al F-08) | Limita de expunere pe monedă ignoră moneda contului. La contul etichetat EUR se limitează expunerea la USD, la conturile în USD se limitează EUR: același risc economic, reguli oglindite. | `paper_engine.py`, `_pre_trade_check` | Acum contul „Reguli” se comportă ca celelalte două (limită pe EUR, JPY, CHF, CAD, nu pe USD). Pe 31.10 contul era gol, deci nicio poziție existentă nu a fost afectată; limita poate fi puțin mai largă decât cea pe USD pentru perechile USDxxx. Schimbare cerută de proprietar. |
 | F-10 | INFO | Dublă contabilizare: aplicația și rapoartele arată fiecare cont separat, niciun total agregat. Cele trei conturi trec reconcilierea independentă (`src/bnd/reconcile.py`) cu 0 diferențe la 31.10. | `python -m src.bnd.reconcile` pe cele 3 conturi | Verificat |
 
 ## A4. Contabilitate financiară
