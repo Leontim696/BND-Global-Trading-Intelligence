@@ -36,6 +36,8 @@ jobs:
   council:
     runs-on: ubuntu-latest
     timeout-minutes: 16
+    outputs:
+      confirmed: ${{ steps.gate.outputs.confirmed }}
     env:
       # Paid calls ONLY for explicit manual dispatch with exact confirmation.
       # Push and schedule ALWAYS remain disabled.
@@ -57,13 +59,19 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
+      - name: Check the paid-test confirmation
+        id: gate
+        env:
+          EVENT: ${{ github.event_name }}
+          CONFIRMATION: ${{ inputs.paid_test_confirmation }}
+        run: python scripts/confirm_paid_test.py
       - name: Offline safety tests (no paid calls)
         env:
           BND_ALLOW_PAID_AI: 'false'
           OPENROUTER_API_KEY: ''
         run: python -m unittest discover -s tests -p 'test_five_agent_council.py' -v
       - name: Generate independent agent proposals (manual opt-in only)
-        if: github.event_name == 'workflow_dispatch' && inputs.paid_test_confirmation == 'RUN-PAID-TEST'
+        if: steps.gate.outputs.confirmed == 'true'
         timeout-minutes: 14
         env:
           # The script itself stops starting new calls after 10 minutes.
@@ -76,12 +84,13 @@ jobs:
       - name: Say clearly whether the paid step ran
         if: always()
         env:
+          CONFIRMED: ${{ steps.gate.outputs.confirmed }}
           EVENT: ${{ github.event_name }}
           CONFIRMATION: ${{ inputs.paid_test_confirmation }}
           AGENTS_INPUT: ${{ inputs.agents }}
           FILES_INPUT: ${{ inputs.files }}
         run: |
-          if [ "$EVENT" = workflow_dispatch ] && [ "$CONFIRMATION" = "RUN-PAID-TEST" ]; then
+          if [ "$CONFIRMED" = true ]; then
             {
               echo "Pasul plătit a fost pornit (confirmare corectă)."
               echo "Agenți cerși: \`${AGENTS_INPUT:-toți}\`; fișiere: \`${FILES_INPUT:-toate, bucăți scurte}\`"
@@ -89,7 +98,7 @@ jobs:
           else
             {
               echo "**Pasul plătit NU a rulat și nu s-a cheltuit nimic.**"
-              echo "Pentru a-l porni: Run workflow, iar la paid_test_confirmation scrie exact RUN-PAID-TEST (litere mari, fără spații)."
+              echo "Pentru a-l porni: Run workflow, iar la paid_test_confirmation scrie exact RUN-PAID-TEST (se ignoră literele mari/mici, spațiile și ghilimelele; nimic altceva în câmp)."
               echo "Textul primit: \`${CONFIRMATION}\` (eveniment: ${EVENT})"
             } >> "$GITHUB_STEP_SUMMARY"
           fi
@@ -97,7 +106,7 @@ jobs:
         if: always()
         with:
           name: bnd-five-agent-review-${{ github.run_id }}
-          path: overnight-reports/five-agent-review.json
+          path: overnight-reports/
           if-no-files-found: warn
           retention-days: 7
 
@@ -105,7 +114,7 @@ jobs:
   # finished report to the backtest-results branch, only after a paid run.
   publish:
     needs: council
-    if: always() && github.event_name == 'workflow_dispatch' && inputs.paid_test_confirmation == 'RUN-PAID-TEST'
+    if: always() && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -123,8 +132,8 @@ jobs:
       - name: Commit the report to the backtest-results branch
         run: |
           set -euo pipefail
-          if [ ! -f report/five-agent-review.json ]; then
-            echo "::warning::No report to publish"; exit 0
+          if [ ! -f report/five-agent-review.json ] && [ ! -f report/gate.json ]; then
+            echo "::warning::Nothing to publish"; exit 0
           fi
           git init -q results
           cd results
@@ -135,7 +144,12 @@ jobs:
             git fetch -q --depth=1 origin backtest-results
             git checkout -q -f -B backtest-results FETCH_HEAD
             mkdir -p ai-rounds
-            cp ../report/five-agent-review.json "ai-rounds/${RUN_ID}.json"
+            if [ -f ../report/five-agent-review.json ]; then
+              cp ../report/five-agent-review.json "ai-rounds/${RUN_ID}.json"
+            fi
+            if [ -f ../report/gate.json ]; then
+              cp ../report/gate.json "ai-rounds/${RUN_ID}-gate.json"
+            fi
             git add -A
             git commit -q -m "Raport rundă AI cu 5 agenți, rularea ${RUN_ID}"
             if git push -q origin HEAD:refs/heads/backtest-results; then exit 0; fi
