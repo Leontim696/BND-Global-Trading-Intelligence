@@ -102,10 +102,22 @@ class AIResponse:
     output_tokens: int = 0
     # Upstream provider that served the model, when the router reports it.
     provider: str = ""
+    # Cost the router actually billed for this call (USD, as text), when it
+    # reports one. It includes hidden thinking tokens that the token counts miss.
+    cost_usd: str | None = None
+
+    def reported_cost(self) -> Decimal | None:
+        return None if self.cost_usd is None else money(self.cost_usd)
 
     def __post_init__(self):
         if self.agent not in AGENTS:
             raise InvalidAIResponse("Unknown AI agent")
+
+        if self.cost_usd is not None:
+            try:
+                money(self.cost_usd)
+            except (ValueError, ArithmeticError) as exc:
+                raise InvalidAIResponse("Invalid reported cost") from exc
 
         if not isinstance(self.vote, Vote):
             raise InvalidAIResponse("Invalid vote")
@@ -271,18 +283,21 @@ class AIGateway:
                 )
 
             if self.cost_storage is not None:
-                model_pricing = self.pricing.get(response.model)
+                actual_cost = response.reported_cost()
 
-                if model_pricing is None:
-                    raise GatewayError(
-                        "No pricing configured for response model"
+                if actual_cost is None:
+                    model_pricing = self.pricing.get(response.model)
+
+                    if model_pricing is None:
+                        raise GatewayError(
+                            "No pricing configured for response model"
+                        )
+
+                    actual_cost = CostTracker.estimate_cost(
+                        response.input_tokens,
+                        response.output_tokens,
+                        model_pricing,
                     )
-
-                actual_cost = CostTracker.estimate_cost(
-                    response.input_tokens,
-                    response.output_tokens,
-                    model_pricing,
-                )
 
                 record = UsageRecord(
                     agent=response.agent,
@@ -329,6 +344,9 @@ class AIGateway:
             self.estimated_input_tokens, self.estimated_output_tokens, pricing)
 
     def actual_cost(self, response: AIResponse) -> Decimal:
+        reported = response.reported_cost()
+        if reported is not None:
+            return reported
         pricing = self.pricing.get(response.model)
         if pricing is None:
             return Decimal("0")

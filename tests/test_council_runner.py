@@ -185,3 +185,22 @@ def test_expired_authorisation_blocks(monkeypatch, tmp_path):
     with pytest.raises(ProviderUnavailable, match="expired"):
         live.analyze(__import__("src.bnd.ai_gateway", fromlist=["AIRequest"]).AIRequest(
             "gpt", "forex", "EURUSD", "ctx"))
+
+
+def test_ledger_uses_the_billed_cost_when_the_router_reports_one(tmp_path):
+    class BilledProvider(ScriptedProvider):
+        def analyze(self, request):
+            answer = super().analyze(request)
+            # Hidden thinking tokens: billed 0.05, far more than the token counts imply.
+            return AIResponse(answer.agent, answer.vote, answer.reasoning, answer.confidence,
+                              answer.model, 1000, 500, "TestCloud", cost_usd="0.05")
+
+    storage = SQLiteCostStorage(tmp_path / "costs.db", BudgetLimits(Decimal("5"), Decimal("50")))
+    providers = {a: BilledProvider(a) for a in AGENTS}
+    runner = CouncilRunner(gateway(providers, storage), sleep=no_sleep)
+
+    result = runner.run_round("forex", "EURUSD", "ctx", "1")
+
+    assert Decimal(result["agents"]["claude"]["cost_usd"]) == Decimal("0.05")
+    assert Decimal(result["spent_usd"]) == Decimal("0.25")
+    assert storage.summary()["daily_committed_usd"] == Decimal("0.25")   # not 0.015

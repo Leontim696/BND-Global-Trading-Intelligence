@@ -19,6 +19,7 @@ from .ai_gateway import (
     InvalidAIResponse,
     ProviderUnavailable,
 )
+from .cost_tracker import money
 from .fusion_council import AGENTS, Vote
 
 
@@ -257,6 +258,14 @@ class OpenRouterAdapter:
             )
 
             provider = result.get("provider", "")
+            billed = usage.get("cost")
+            try:
+                # A cost that cannot be read is dropped, not a reason to throw
+                # away a paid answer: the token-based estimate is used instead.
+                billed = None if isinstance(billed, bool) or billed is None \
+                    else str(money(billed))
+            except (ValueError, ArithmeticError, TypeError):
+                billed = None
             return AIResponse(
                 agent=self.agent,
                 vote=vote,
@@ -266,6 +275,7 @@ class OpenRouterAdapter:
                 input_tokens=input_tokens,
                 output_tokens=output_tokens,
                 provider=provider if isinstance(provider, str) else "",
+                cost_usd=None if billed is None else str(billed),
             )
 
         except InvalidAIResponse:
