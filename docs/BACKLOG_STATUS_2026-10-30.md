@@ -45,3 +45,8 @@ on the `backtest-results` branch).
 
 The BND Command Center Dashboard belongs to GPT-6; Claude provides data
 and API contracts only.
+
+
+## Cripto (2026-10-31)
+
+Bot cripto virtual condus de consiliul AI cu date gratuite: `docs/CRIPTO.md`, `crypto_signals.py`, `cripto-ai.yml`, universul `crypto`. Contul se pornește manual de proprietar.

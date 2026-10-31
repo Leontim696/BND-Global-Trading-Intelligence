@@ -70,6 +70,12 @@ class DecisionRegistry:
             return db.execute("SELECT 1 FROM decisions WHERE id = ?",
                               (decision_id,)).fetchone() is not None
 
+    def meta(self, decision_id: str) -> dict | None:
+        """Datele însoțitoare ale unei decizii (None dacă nu există)."""
+        with self._db() as db:
+            row = db.execute("SELECT meta FROM decisions WHERE id = ?", (decision_id,)).fetchone()
+        return None if row is None else json.loads(row[0] or "{}")
+
     def record(self, decision_id: str, time: datetime, symbol: str, price: float,
                council: FusionCouncil, decision: CouncilDecision, horizon_days: int = 5,
                meta: dict | None = None) -> bool:

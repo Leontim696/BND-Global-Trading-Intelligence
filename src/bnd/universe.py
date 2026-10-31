@@ -114,7 +114,18 @@ STOCK_UNIVERSE = tuple(
     for ticker, sector in _STOCKS
 )
 
-UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE, "stocks": STOCK_UNIVERSE}
+# Cinci criptomonede mari, prețuri zilnice gratuite (Yahoo). Folosit de contul
+# virtual de cripto condus de consiliul AI; nu schimbă celelalte universuri.
+_CRYPTO = (
+    ("BITCOIN", "BTC-USD"), ("ETHEREUM", "ETH-USD"), ("SOLANA", "SOL-USD"),
+    ("BNB", "BNB-USD"), ("XRP", "XRP-USD"),
+)
+CRYPTO_UNIVERSE = tuple(
+    Market(name, symbol, "crypto", *CLASS_COSTS["crypto"]) for name, symbol in _CRYPTO
+)
+
+UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE, "stocks": STOCK_UNIVERSE,
+             "crypto": CRYPTO_UNIVERSE}
 
 
 def select(names=None, classes=None, universe: str = "futures") -> tuple[Market, ...]:

@@ -103,15 +103,20 @@ def feed_new_candles(engine: PaperEngine, data: dict) -> int:
     return len(pending)
 
 
-def latest_weights(data: dict, markets, factory, config: PortfolioConfig) -> tuple[dict, dict]:
+def latest_weights(data: dict, markets, factory, config: PortfolioConfig,
+                   given_signals: dict | None = None) -> tuple[dict, dict]:
     """Today's portfolio weights and raw signals, as the backtest computes them."""
     books, signals = [], {}
     for market in markets:
         candles = data[market.name]
-        strategy = strategy_for(factory, market)
-        signal = 0.0
-        for end in range(1, len(candles) + 1):
-            signal = strategy(_History(candles, end))
+        if given_signals is not None:
+            # Semnale venite din afară (consiliul AI); o piață fără semnal nu are poziție nouă.
+            strategy, signal = (lambda history: 0.0), float(given_signals.get(market.name, 0.0))
+        else:
+            strategy = strategy_for(factory, market)
+            signal = 0.0
+            for end in range(1, len(candles) + 1):
+                signal = strategy(_History(candles, end))
         signal = signal if (signal >= 0 or config.allow_short) else 0.0
         book = _Book(market, candles, strategy, signal=signal,
                      vol=_volatility(candles, len(candles), config.vol_lookback))
@@ -254,7 +259,8 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
 
 
 def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerConfig,
-              strategy: str, now: datetime | None = None) -> dict:
+              strategy: str, now: datetime | None = None,
+              given_signals: dict | None = None) -> dict:
     """One daily step; the result is also written to the engine's journal."""
     now = now or datetime.now(timezone.utc)
     for market in markets:
@@ -266,7 +272,17 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
               "kill_reason": account["kill_reason"], "signals": {}, "weights": {},
               "orders": []}
     if not account["kill_switch"]:
-        weights, signals = latest_weights(data, markets, factory, config.portfolio)
+        weights, signals = latest_weights(data, markets, factory, config.portfolio,
+                                          given_signals)
+        if given_signals is not None:
+            # Fără decizie azi pentru o piață: poziția rămâne cum e.
+            equity = engine.equity()
+            held = {p["symbol"]: p["quantity"] for p in engine.positions()}
+            for market in markets:
+                if market.name not in given_signals:
+                    mark = engine.mark(market.name)
+                    weights[market.name] = (held.get(market.name, 0.0) * mark["price"] / equity
+                                            if mark and equity > 0 else 0.0)
         weights = fit_limits(engine, weights, config.margin)
         report.update(signals=signals, weights=weights,
                       orders=rebalance(engine, data, weights, config, now))
@@ -357,6 +373,7 @@ DEFAULTS = {
     "strategy": "regime_switch", "members": None, "param": [], "portfolio_vol": 15.0,
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
+    "max_sector": None,
 }
 
 
@@ -376,11 +393,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--reset-kill-switch", metavar="CONFIRMATION",
                         help="restart after a kill switch; the text must be RESET-KILL-SWITCH")
     # Settings default to None so an explicit value can be told apart.
-    parser.add_argument("--universe", choices=["futures", "etf", "stocks"])
+    parser.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto"])
     parser.add_argument("--markets")
     parser.add_argument("--classes")
     parser.add_argument("--strategy",
-                        choices=["combo", "selector", "score_weighted", "cross_momentum"]
+                        choices=["combo", "selector", "score_weighted", "cross_momentum", "ai_council"]
                         + sorted(SWEEP_RANGES))
     parser.add_argument("--members", help="combo/selector: comma-separated strategies")
     parser.add_argument("--param", action="append", metavar="NAME=VALUE")
@@ -394,6 +411,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--financing", type=float,
                         help="annual %% on exposure above equity (margin loan), default 5; "
                              "applies when the account is created")
+    parser.add_argument("--max-sector", type=float,
+                        help="limita de expunere pe un sector/clasă, %% din cont (la crearea contului)")
+    parser.add_argument("--signals", help="fișier JSON cu semnale (strategia ai_council)")
     return parser
 
 
@@ -429,7 +449,9 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
     _make_factory(settings, {})                            # fail before creating
     Path(args.state).parent.mkdir(parents=True, exist_ok=True)
     engine = PaperEngine.create(args.state, args.capital, currency=args.currency,
-                                limits=EngineLimits(financing_pct_annual=settings["financing"]))
+                                limits=EngineLimits(financing_pct_annual=settings["financing"],
+                                        **({"max_sector_pct": settings["max_sector"]}
+                                           if settings.get("max_sector") else {})))
     engine.record("runner_settings", settings, datetime.now(timezone.utc))
     return engine, settings
 
@@ -444,6 +466,8 @@ def _params(settings) -> dict:
 
 
 def _make_factory(settings, data):
+    if settings["strategy"] == "ai_council":
+        return lambda: (lambda history: 0.0)          # semnalele vin din fișier
     params = _params(settings)
     if settings["strategy"] != "cross_momentum":
         factory = _factory(settings["strategy"], params)
@@ -466,6 +490,18 @@ def _config(settings) -> RunnerConfig:
         stop_atr=settings["stop_atr"])
 
 
+def _read_signals(path) -> dict:
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8"))
+        signals = payload["signals"]
+        values = {str(k): float(v) for k, v in signals.items()}
+    except (OSError, KeyError, TypeError, ValueError) as exc:
+        raise ValueError(f"Fișier de semnale invalid: {exc}") from exc
+    if any(not -1.0 <= v <= 1.0 for v in values.values()):
+        raise ValueError("Semnalele trebuie să fie între -1 și 1")
+    return values
+
+
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
     try:
@@ -485,7 +521,13 @@ def main(argv=None) -> int:
                 raise ValueError("No market data found in " + str(folder))
             data = {m.name: load_csv(folder / f"{m.name}.csv") for m in available}
             factory = _make_factory(settings, data)
-            report = run_daily(engine, data, available, factory, config, settings["strategy"])
+            given = None
+            if settings["strategy"] == "ai_council":
+                if not args.signals:
+                    raise ValueError("Strategia ai_council cere --signals")
+                given = _read_signals(args.signals)
+            report = run_daily(engine, data, available, factory, config, settings["strategy"],
+                               given_signals=given)
             report["settings"] = settings
             report["mode"] = mode
             if args.audit_log:

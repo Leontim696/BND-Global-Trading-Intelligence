@@ -49,3 +49,6 @@ Generat cu `python -m src.bnd.instruments`. Nu e o recomandare de produs sau bro
 | GS | stock | GS | – | GS (CFD pe acțiune) | 20.00% | 0.050% |
 | CAT | stock | CAT | – | CAT (CFD pe acțiune) | 20.00% | 0.050% |
 | BA | stock | BA | – | BA (CFD pe acțiune) | 20.00% | 0.050% |
+| SOLANA | crypto | SOL spot | SOL (CME) | SOLUSD | 50.00% | 0.150% |
+| BNB | crypto | BNB spot | – | BNBUSD | 50.00% | 0.150% |
+| XRP | crypto | XRP spot | XRP (CME) | XRPUSD | 50.00% | 0.150% |

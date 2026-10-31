@@ -952,7 +952,7 @@ def build_parser() -> argparse.ArgumentParser:
     universe.add_argument("--end")
     universe.add_argument("--markets", help="comma-separated names, default all")
     universe.add_argument("--classes", help="e.g. forex,commodity,index,bond,crypto")
-    universe.add_argument("--universe", choices=["futures", "etf", "stocks"], default="futures",
+    universe.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto"], default="futures",
                           help="etf: tradable roll-free ETFs instead of futures/indices")
     universe.add_argument("--out-dir", required=True)
     universe.add_argument("--update", action="store_true",
@@ -966,7 +966,7 @@ def build_parser() -> argparse.ArgumentParser:
     book.add_argument("--data-dir", required=True)
     book.add_argument("--markets")
     book.add_argument("--classes")
-    book.add_argument("--universe", choices=["futures", "etf", "stocks"], default="futures")
+    book.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto"], default="futures")
     book.add_argument("--skip-missing", action="store_true")
     book.add_argument("--members",
                       help="combo/selector: comma-separated strategies (combo default "
