@@ -690,3 +690,38 @@ def test_request_asks_for_short_thinking_and_more_output_when_configured(monkeyp
     for bad in (dict(max_tokens=10), dict(max_tokens=True), dict(reasoning_effort="max")):
         with pytest.raises(ValueError):
             adapter.OpenRouterAdapter("claude", model="m/x", **bad)
+
+
+def _reply_with_usage(monkeypatch, usage):
+    import io
+    import json
+
+    from src.bnd import openrouter_adapter as adapter
+    from src.bnd.ai_gateway import AIRequest
+
+    class Reply(io.BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    body = {"model": "m/x", "choices": [{"message": {"content": json.dumps(
+        {"vote": "SELL", "reasoning": "motiv", "confidence": 0.6})}}], "usage": usage}
+    monkeypatch.setattr(adapter, "urlopen", lambda request, timeout: Reply(json.dumps(body).encode()))
+    monkeypatch.setenv("OPENROUTER_API_KEY", "cheie-de-test")
+    return adapter.OpenRouterAdapter("gpt", model="m/x", allow_live=True).analyze(
+        AIRequest("gpt", "forex", "EURUSD", "context"))
+
+
+def test_the_billed_cost_is_kept_and_a_bad_cost_does_not_reject_the_answer(monkeypatch):
+    from decimal import Decimal
+
+    good = _reply_with_usage(monkeypatch, {"prompt_tokens": 10, "completion_tokens": 5,
+                                           "cost": 0.0415})
+    assert good.cost_usd == "0.0415" and good.reported_cost() == Decimal("0.0415")
+
+    for bad in ("abc", -1, True, None, [1]):
+        answer = _reply_with_usage(monkeypatch, {"prompt_tokens": 10, "completion_tokens": 5,
+                                                 "cost": bad})
+        assert answer.cost_usd is None and answer.vote.value == "SELL"

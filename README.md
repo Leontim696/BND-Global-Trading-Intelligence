@@ -294,7 +294,7 @@ direction, before costs). A market already decided today is not paid twice.
 
 Modes: `mock` (simulated agents, free) and `live` (OpenRouter; needs
 `BND_ALLOW_LIVE_AI=true`, a 3-hour authorisation, a per-round cap, a daily
-cap of 0.60 USD and a monthly cap of 5 USD kept in `costs.sqlite`; the daily
+cap of 0.80 USD and a monthly cap of 7 USD kept in `costs.sqlite`; the daily
 run also stops by itself after 2026-11-16). In the
 workflow a manual live run needs `RUN-PAID-TEST`; the daily run (21:40 UTC)
 does nothing unless the repository variable `BND_COUNCIL_DAILY` is `on`.

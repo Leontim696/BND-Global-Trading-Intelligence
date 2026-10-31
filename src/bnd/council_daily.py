@@ -50,9 +50,11 @@ ASSET_CLASS = {"SP500": "index", "NASDAQ100": "index", "GOLD": "commodity",
                "ETHEREUM": "crypto", "EURUSD": "forex", "USDJPY": "forex",
                "US10Y_NOTE": "bond"}
 DEFAULT_MODELS = {
-    # The flagship: a round measured at 0.018 USD per market with Sol, so the
-    # difference is small (set BND_MODEL_GPT to use another variant).
-    "gpt": "openai/gpt-6-astra",
+    # Sol, not the flagship Astra: a Sol round was billed exactly as counted
+    # (0.018 USD per market), while a round with Astra cost about twice what
+    # the token counts implied (its thinking is billed). Set BND_MODEL_GPT to
+    # try Astra on purpose.
+    "gpt": "openai/gpt-6.1-sol",
     "claude": "anthropic/claude-opus-5.5",
     "gemini": "google/gemini-4-argon",
     "grok": "x-ai/grok-4.7",

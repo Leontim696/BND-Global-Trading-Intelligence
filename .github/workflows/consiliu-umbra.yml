@@ -119,7 +119,7 @@ jobs:
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
-            --round-budget 0.60 --daily-budget 0.60 --monthly-budget 5 \
+            --round-budget 0.60 --daily-budget 0.80 --monthly-budget 7 \
             --report state/raport.md --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
