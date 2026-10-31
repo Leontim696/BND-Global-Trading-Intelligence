@@ -282,7 +282,8 @@ model catalogue with real prices to `backtest-results/models/LATEST.md`, so
 ## Council in shadow (`consiliu-umbra.yml`)
 
 `council_daily.py` asks the five agents, once a day, about a few markets
-(default S&P 500, gold, Bitcoin, EUR/USD). `council_context.py` turns real
+(default ten: S&P 500, Nasdaq 100, gold, silver, oil, Bitcoin, Ethereum, EUR/USD,
+USD/JPY and US 10-year bonds; about 0.02 USD per market with the five agents). `council_context.py` turns real
 closed candles into a short question (changes, volatility, moving averages,
 RSI, the rule-based bot's SMA signal; prices only, no news, and the agents are
 told so). Votes are independent, decided by majority, recorded in the

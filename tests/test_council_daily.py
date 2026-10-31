@@ -95,8 +95,8 @@ def test_pricing_comes_from_the_catalogue_and_unknown_models_are_refused():
 
     pricing = cd.pricing_from_catalogue(cd.DEFAULT_MODELS, catalogue)
 
-    assert pricing["openai/gpt-6.1-sol"].input_per_million == Decimal("2")
-    assert pricing["openai/gpt-6.1-sol"].output_per_million == Decimal("10")
+    assert pricing["openai/gpt-6-astra"].input_per_million == Decimal("2")
+    assert pricing["openai/gpt-6-astra"].output_per_million == Decimal("10")
     with pytest.raises(ValueError, match="negăsite"):
         cd.pricing_from_catalogue({**cd.DEFAULT_MODELS, "gpt": "openai/nu-exista"}, catalogue)
 
@@ -129,13 +129,13 @@ def test_live_gateway_is_authorised_for_a_short_time_and_never_calls_without_the
 
 
 def test_cli_mock_mode_writes_the_report_and_validates_input(tmp_path, capsys):
-    write_markets(tmp_path, list(MARKETS), days=300)
+    write_markets(tmp_path, list(cd.DEFAULT_MARKETS), days=300)
     base = ["--data-dir", str(tmp_path), "--registry", str(tmp_path / "r.sqlite")]
 
     assert cd.main(base + ["--report", str(tmp_path / "raport.md"),
                            "--json", str(tmp_path / "raport.json")]) == 0
     assert "# Consiliul AI" in (tmp_path / "raport.md").read_text(encoding="utf-8")
-    assert len(json.loads((tmp_path / "raport.json").read_text())["markets"]) == 4
+    assert len(json.loads((tmp_path / "raport.json").read_text())["markets"]) == 10
     capsys.readouterr()
 
     assert cd.main(base + ["--markets", "SP500,SP500"]) == 2
@@ -146,11 +146,29 @@ def test_cli_mock_mode_writes_the_report_and_validates_input(tmp_path, capsys):
     capsys.readouterr()
 
 
-def test_default_gpt_is_sol_and_the_variable_can_override(tmp_path, monkeypatch):
-    assert cd.DEFAULT_MODELS["gpt"] == "openai/gpt-6.1-sol"
+def test_default_gpt_is_astra_and_the_variable_can_override(tmp_path, monkeypatch):
+    assert cd.DEFAULT_MODELS["gpt"] == "openai/gpt-6-astra"
     monkeypatch.setenv("BND_MODEL_GPT", "openai/gpt-6-astra")
 
     models = {a: __import__("os").getenv(f"BND_MODEL_{a.upper()}", "").strip() or cd.DEFAULT_MODELS[a]
               for a in AGENTS}
 
     assert models["gpt"] == "openai/gpt-6-astra"
+
+
+def test_default_markets_all_exist_with_a_class_and_a_label():
+    from src.bnd.council_context import LABELS
+    from src.bnd.universe import select
+
+    universe = {m.name: m.asset_class for m in select(universe="etf")}
+
+    assert len(cd.DEFAULT_MARKETS) == 10 and len(set(cd.DEFAULT_MARKETS)) == 10
+    for name in cd.DEFAULT_MARKETS:
+        assert universe[name] == cd.ASSET_CLASS[name], name
+        assert name in LABELS, name
+
+
+def test_workflow_default_markets_match_the_code():
+    text = open(".github/workflows/consiliu-umbra.yml", encoding="utf-8").read()
+
+    assert ",".join(cd.DEFAULT_MARKETS) in text
