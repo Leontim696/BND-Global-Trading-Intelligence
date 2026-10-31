@@ -123,7 +123,7 @@ function account(a) {
       <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></div>`).join("")
     : `<p class="empty">Nicio comandă în așteptare.</p>`;
   return `${notice}<div class="hero"><div class="label">${esc(a.title)} · ${esc(a.currency)}${a.live ? '<span class="live">preț de acum</span>' : '<span class="live" style="color:var(--muted)">ultima închidere</span>'}</div>
-    <div class="big">${money(value, "")}</div>${euro(value, esc(a.currency))}<div class="delta ${cls}">${pct(ch)} față de start (${money(a.initial,"")})</div>
+    <div class="big">${money(value, "")}</div>${euro(value, a)}<div class="delta ${cls}">${pct(ch)} față de start (${money(a.initial,"")})</div>
     <div class="sub">${esc(a.subtitle)}</div></div>${spark(a.history, a.initial)}
     <div class="stats"><div><span class="label">Numerar</span><b>${money(a.cash,"")}</b></div>
     <div><span class="label">Leverage</span><b>${a.leverage == null ? "–" : money2(a.leverage) + "x"}</b></div>
@@ -134,7 +134,7 @@ function account(a) {
     <h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}`;
 }
 
-const euro = (v, cur) => DATA.fx && cur === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}</div>` : "";
+const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}</div>` : "";
 
 function summary() {
   const cards = DATA.accounts.map((a, i) => {
@@ -142,7 +142,7 @@ function summary() {
     if (!a.exists) return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}</div><div class="sub">Nu există încă.</div></button>`;
     const v = eq(a), ch = 100 * (v / a.initial - 1);
     return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
-      <div class="big">${money(v, "")}</div>${euro(v, esc(a.currency))}<div class="delta ${ch >= 0 ? "gain" : "loss"}">${pct(ch)} · ${a.positions.length} poziții · ${a.orders.length} comenzi</div></button>`;
+      <div class="big">${money(v, "")}</div>${euro(v, a)}<div class="delta ${ch >= 0 ? "gain" : "loss"}">${pct(ch)} · ${a.positions.length} poziții · ${a.orders.length} comenzi</div></button>`;
   }).join("");
   const c = DATA.council, cost = c.exists && c.costs ? `<div class="stats"><div><span class="label">Consiliu azi</span><b>${money2(c.costs.today)} $</b></div>
     <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : "";
