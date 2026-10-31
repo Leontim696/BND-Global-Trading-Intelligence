@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T22:07+00:00",
+  "generated": "2026-10-31T23:06+00:00",
   "ok": true,
   "alerts": [],
   "accounts": {
@@ -19,7 +19,7 @@
       "return_pct": 0.0,
       "drawdown_pct": 0.0,
       "positions": 0,
-      "orders": 0,
+      "orders": 4,
       "kill_switch": false,
       "reconciled": true
     },
@@ -29,11 +29,11 @@
       "return_pct": 0.0,
       "drawdown_pct": 0.0,
       "positions": 0,
-      "orders": 6,
+      "orders": 9,
       "kill_switch": false,
       "reconciled": true
     }
   },
-  "ai_balance_usd": 8.05,
-  "ai_spent_today_usd": 0.2838356
+  "ai_balance_usd": 7.96792671908,
+  "ai_spent_today_usd": 0.36590888092
 }
