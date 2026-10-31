@@ -24,6 +24,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from . import audit_log
+from .ai_budgets import BudgetSet
 from .ai_gateway import (
     AIGateway,
     AIResponse,
@@ -33,7 +34,6 @@ from .ai_gateway import (
 )
 from .council_context import HORIZON_DAYS, bot_signal, build_context
 from .council_runner import CouncilRunner
-from .cost_storage import SQLiteCostStorage
 from .cost_tracker import BudgetLimits, ModelPricing
 from .decision_registry import DecisionRegistry
 from .decision_rules import DecisionRule, decide
@@ -102,9 +102,14 @@ def pricing_from_catalogue(models: dict, catalogue: dict | None = None) -> dict:
 def live_gateway(models: dict, pricing: dict, costs_path, now: datetime,
                  round_budget: Decimal, daily_usd: Decimal, monthly_usd: Decimal) -> AIGateway:
     """Gateway plătit: autorizare cu termen de 3 ore, costuri păstrate între rulări."""
+    # The council is research: it spends from its own purpose budget, kept in
+    # the same file as before so earlier spending still counts.
+    costs_path = Path(costs_path)
+    storage = BudgetSet(costs_path.parent, {"research": BudgetLimits(daily_usd, monthly_usd)},
+                        files={"research": costs_path.name}).storage("research")
     gateway = AIGateway(
         GatewayMode.LIVE,
-        cost_storage=SQLiteCostStorage(costs_path, BudgetLimits(daily_usd, monthly_usd)),
+        cost_storage=storage,
         pricing=pricing,
         estimated_input_tokens=ESTIMATED_INPUT_TOKENS,
         estimated_output_tokens=ESTIMATED_OUTPUT_TOKENS,
