@@ -151,6 +151,15 @@ def request_body(model, payload):
         raise ValueError("Request too large")
     return body
 
+def finish_reason(data):
+    """Why the model stopped (stop, length, ...), or None if not reported."""
+    choices = data.get("choices") if isinstance(data, dict) else None
+    if isinstance(choices, list) and choices and isinstance(choices[0], dict):
+        reason = choices[0].get("finish_reason")
+        return reason if isinstance(reason, str) else None
+    return None
+
+
 def call(agent, model, key, body):
     if not enabled():
         return {"agent": agent, "model": model, "status": "skipped_disabled",
@@ -167,6 +176,7 @@ def call(agent, model, key, body):
         if len(raw) > 150000:
             raise ValueError("Response too large")
         data = json.loads(raw)
+        result["finish_reason"] = finish_reason(data)
         usage = data.get("usage") if isinstance(data, dict) else None
         amount = cost(usage.get("cost")) if isinstance(usage, dict) else None
         if amount is not None:
@@ -178,6 +188,10 @@ def call(agent, model, key, body):
         exc.close()
     except (URLError, TimeoutError, OSError, ValueError) as exc:
         result["error_type"] = type(exc).__name__
+        if isinstance(exc, ValueError):
+            # Our own validation messages, never model text: they tell why a
+            # billed answer was rejected (for example a truncated reply).
+            result["error_detail"] = str(exc)[:120]
     except Exception as exc:
         result["error_type"] = type(exc).__name__
     return result

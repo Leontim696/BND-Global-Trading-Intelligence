@@ -107,3 +107,30 @@ class ReviewSafetyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FailureDiagnosticsTests(unittest.TestCase):
+    def test_rejected_answer_keeps_reason_and_finish_reason(self):
+        import io
+        import json
+
+        body = json.dumps({"choices": [{"finish_reason": "length",
+                                         "message": {"content": "{\"finding\": null"}}],
+                           "usage": {"cost": 0.02}}).encode()
+
+        class Response(io.BytesIO):
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *exc):
+                return False
+
+        with patch.dict(os.environ, {"BND_ALLOW_PAID_AI": "true"}), \
+                patch.object(m, "urlopen", lambda *a, **k: Response(body)):
+            result = m.call("CLAUDE", "m/x", "key", b"{}")
+
+        self.assertEqual(result["status"], "failed")
+        self.assertEqual(result["billing"], "reported")
+        self.assertEqual(result["cost_usd"], "0.02")
+        self.assertEqual(result["finish_reason"], "length")
+        self.assertEqual(result["error_detail"], "Incomplete response")

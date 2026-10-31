@@ -49,3 +49,13 @@ def test_network_failure_is_a_clear_error(monkeypatch, capsys):
     monkeypatch.setattr(om, "fetch", down)
 
     assert om.main([]) == 2 and "Error" in capsys.readouterr().err
+
+
+def test_non_finite_prices_are_skipped_not_crashed():
+    payload = {"data": [
+        {"id": "openai/nan", "pricing": {"prompt": "NaN", "completion": "0.000001"}},
+        {"id": "openai/inf", "pricing": {"prompt": "Infinity", "completion": "0.000001"}},
+        {"id": "openai/ok", "pricing": {"prompt": "0.000001", "completion": "0.000001"}},
+    ]}
+
+    assert [r["id"] for r in om.parse(payload)] == ["openai/ok"]

@@ -24,9 +24,11 @@ TOKENS_IN, TOKENS_OUT = 3000, 600
 def per_million(value) -> Decimal | None:
     """OpenRouter quotes USD per token; convert to USD per million."""
     try:
-        return Decimal(str(value)) * 1_000_000
+        amount = Decimal(str(value)) * 1_000_000
     except (InvalidOperation, TypeError):
         return None
+    # NaN and infinity are not prices (NaN would also crash comparisons).
+    return amount if amount.is_finite() else None
 
 
 def parse(payload: dict, vendors=VENDORS, match: str = "") -> list[dict]:
