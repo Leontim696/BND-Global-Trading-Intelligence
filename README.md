@@ -250,6 +250,13 @@ has re-adjusted its history) and keeps the account and its status page
 (`README.md`) on the `paper-trading` branch. Until a manual run creates
 the account with a virtual capital, scheduled runs do nothing.
 
+`health-check.yml` runs every morning (05:47 UTC): `health_check.py`
+reports a stale account (no run for 50 hours), an active kill switch, a
+failed daily run or an unreadable account file. A problem opens or
+updates one issue, "Alertă: botul virtual are o problemă", which reaches
+the owner's phone through the GitHub app; it is closed again once a check
+passes. No account yet is not a problem.
+
 Each status page also shows `scenarios.py` stress tests: what the current
 positions would lose in an instant repeat of 2008, the 2020 crash, 2022
 rates, a one-day crash, a dollar spike or a crypto collapse (stylised,
