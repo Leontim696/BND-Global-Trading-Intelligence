@@ -40,9 +40,21 @@ def cost(raw):
         return None
     return value if value.is_finite() and value >= 0 else None
 
-def configuration():
+def selected_agents(raw=None):
+    """Agents to ask: all by default, or those named in BND_ONLY_AGENTS."""
+    raw = os.getenv("BND_ONLY_AGENTS", "") if raw is None else raw
+    wanted = [a.strip().upper() for a in raw.split(",") if a.strip()]
+    if not wanted:
+        return AGENTS
+    unknown = [a for a in wanted if a not in AGENTS]
+    if unknown or len(set(wanted)) != len(wanted):
+        raise ValueError("Invalid agent selection")
+    return tuple(a for a in AGENTS if a in wanted)
+
+
+def configuration(agents=AGENTS):
     models = {}
-    for agent in AGENTS:
+    for agent in agents:
         model = os.getenv("BND_MODEL_" + agent, "").strip()
         if not MODEL_RE.fullmatch(model):
             raise ValueError("Missing/invalid model for " + agent)
@@ -90,14 +102,35 @@ def validated_proposal(payload):
         raise ValueError("Expected JSON object")
     return raw.strip()
 
-def sources():
-    files = sorted(Path("src").rglob("*.py"))
+def audit_files(raw=None):
+    """Files named in BND_AUDIT_FILES (comma-separated, under src/), else None."""
+    raw = os.getenv("BND_AUDIT_FILES", "") if raw is None else raw
+    names = [n.strip() for n in raw.split(",") if n.strip()]
+    if not names:
+        return None
+    root = Path("src").resolve()
+    files = []
+    for name in names:
+        path = Path(name)
+        resolved = path.resolve()
+        if path.is_absolute() or root not in resolved.parents or resolved.suffix != ".py" \
+                or not resolved.is_file():
+            raise ValueError("Invalid audit file: " + name)
+        files.append(path)
+    return files
+
+
+def sources(files=None):
+    """Excerpts of the files to audit. Chosen files get 14,000 characters each;
+    the default whole-tree view keeps 1,800 per file."""
+    limit = 14000 if files is not None else 1800
+    files = sorted(Path("src").rglob("*.py")) if files is None else files
     included, omitted, truncated = [], [], []
     used = 0
     for path in files:
         content = path.read_text(encoding="utf-8", errors="replace")
-        item = {"path": path.as_posix(), "excerpt": content[:1800],
-                "truncated": len(content) > 1800, "total_chars": len(content)}
+        item = {"path": path.as_posix(), "excerpt": content[:limit],
+                "truncated": len(content) > limit, "total_chars": len(content)}
         size = len(json.dumps(item, ensure_ascii=False))
         if used + size > 60000:
             omitted.append(item["path"])
@@ -143,7 +176,7 @@ def proposal(data):
     return obj
 
 def request_body(model, payload):
-    body = json.dumps({"model": model, "temperature": 0, "max_tokens": 650,
+    body = json.dumps({"model": model, "temperature": 0, "max_tokens": 1500,
                        "messages": [{"role": "system", "content": SYSTEM},
                                     {"role": "user", "content": payload}]},
                       ensure_ascii=False).encode("utf-8")
@@ -196,10 +229,10 @@ def call(agent, model, key, body):
         result["error_type"] = type(exc).__name__
     return result
 
-def process_agents(models, bodies, call_fn, run_cap, call_cap):
+def process_agents(models, bodies, call_fn, run_cap, call_cap, agents=AGENTS):
     results, spent, halt = {}, Decimal("0"), None
     unknown, call_exceeded = False, False
-    for agent in AGENTS:
+    for agent in agents:
         if halt:
             results[agent] = {"status": "skipped_" + halt, "model": models[agent]}
             continue
@@ -233,10 +266,10 @@ def process_agents(models, bodies, call_fn, run_cap, call_cap):
                   and cost(r.get("cost_usd")) is not None for r in results.values())
     status = ("halted_billing_unknown" if unknown else
               "halted_budget" if halt in ("run_budget", "run_budget_exceeded", "call_budget_exceeded") else
-              "ok" if success == len(AGENTS) else
+              "ok" if success == len(agents) else
               "partial_success" if success else "no_successful_agent")
     return {"agents": results, "status": status, "halt_reason": halt,
-            "successful_agents": success, "total_agents": len(AGENTS),
+            "successful_agents": success, "total_agents": len(agents),
             "reported_cost_usd": str(spent), "cost_reporting_complete": not unknown,
             "call_cap_exceeded": call_exceeded, "budget_breach_detected": spent > run_cap}
 
@@ -253,20 +286,23 @@ def main():
         report["status"] = "skipped_paid_ai_disabled"
     else:
         try:
-            models, run_cap, call_cap, key = configuration()
-            included, coverage = sources()
+            agents = selected_agents()
+            models, run_cap, call_cap, key = configuration(agents)
+            included, coverage = sources(audit_files())
+            report["agents_asked"] = list(agents)
             report["source_coverage"] = coverage
             if not included:
                 raise ValueError("No source files")
             payload = json.dumps({"coverage": coverage, "sources": included},
                                  ensure_ascii=False)
-            bodies = {a: request_body(models[a], payload) for a in AGENTS}
+            bodies = {a: request_body(models[a], payload) for a in agents}
         except (ValueError, OSError) as exc:
             report.update(status="preflight_failed", error_type=type(exc).__name__)
         else:
             report.update(run_cap_usd=str(run_cap), call_cap_usd=str(call_cap))
             report.update(process_agents(models, bodies,
-                          lambda a, m, b: call(a, m, key, b), run_cap, call_cap))
+                          lambda a, m, b: call(a, m, key, b), run_cap, call_cap,
+                          agents))
     write_report(report)
     return report
 
