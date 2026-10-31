@@ -176,7 +176,13 @@ class TargetedRoundTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 m.audit_files(bad)
 
-        _, coverage = m.sources(files[:1])
-        included, _ = m.sources(files[:1])
-        self.assertEqual(len(included[0]["excerpt"]), min(14000, included[0]["total_chars"]))
+        included, coverage = m.sources(files[:1])
         self.assertEqual(coverage["included_files"], 1)
+        # One file may be read in full (up to 45,000 characters)...
+        self.assertEqual(len(included[0]["excerpt"]), min(45000, included[0]["total_chars"]))
+        self.assertFalse(included[0]["truncated"])
+        # ...two or more share the budget: 29,000 each, here a 42,000-character file is cut.
+        big = [Path("src/bnd/paper_engine.py"), Path("src/bnd/safety.py")]
+        included, _ = m.sources(big)
+        self.assertEqual(len(included[0]["excerpt"]), 29000)
+        self.assertTrue(included[0]["truncated"])

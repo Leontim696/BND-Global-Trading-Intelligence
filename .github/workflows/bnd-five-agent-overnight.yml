@@ -19,7 +19,7 @@ on:
         default: ''
         type: string
       files:
-        description: 'Optional: audit only these files under src/ with more text each, comma-separated (e.g. src/bnd/paper_engine.py,src/bnd/risk_engine.py); blank = every file, short excerpts'
+        description: 'Optional: audit only these files under src/ with more text each, comma-separated (one file is read in full, e.g. src/bnd/paper_engine.py); blank = every file, short excerpts'
         default: ''
         type: string
   schedule:

@@ -294,7 +294,8 @@ weekly updates for Actions and the test dependency.
 The five-agent audit round (`bnd-five-agent-overnight.yml`, manual, needs
 `RUN-PAID-TEST`) has two optional inputs: `agents` (ask only some agents,
 e.g. `claude,gemini`) and `files` (audit only the named files under `src/`,
-14,000 characters each instead of 1,800 for every file). The report lists
+one file is read in full up to 45,000 characters, several share 58,000,
+instead of 1,800 for every file). The report lists
 why a billed answer was rejected (`error_detail`, `finish_reason`). The
 first round cost 0.448 USD (0.18 of it on three rejected answers).
 
