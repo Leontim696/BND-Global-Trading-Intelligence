@@ -1,0 +1,113 @@
+{
+  "time": "2026-10-31T11:38:43.914164+00:00",
+  "strategy": "ai_council",
+  "candles_processed": 13,
+  "kill_switch": false,
+  "kill_reason": null,
+  "signals": {
+    "SP500": 0.0,
+    "NASDAQ100": 0.0,
+    "GOLD": 0.0,
+    "SILVER": 0.0,
+    "CRUDE_OIL": 0.0,
+    "BITCOIN": 0.0,
+    "ETHEREUM": 0.0,
+    "EURUSD": 0.0,
+    "USDJPY": 0.0,
+    "US10Y_NOTE": 0.0,
+    "SOLANA": 0.0,
+    "BNB": 0.0,
+    "XRP": 0.0
+  },
+  "weights": {
+    "SP500": 0.0,
+    "NASDAQ100": 0.0,
+    "GOLD": 0.0,
+    "SILVER": 0.0,
+    "CRUDE_OIL": 0.0,
+    "BITCOIN": 0.0,
+    "ETHEREUM": 0.0,
+    "EURUSD": 0.0,
+    "USDJPY": 0.0,
+    "US10Y_NOTE": 0.0,
+    "SOLANA": 0.0,
+    "BNB": 0.0,
+    "XRP": 0.0
+  },
+  "orders": [],
+  "scenarios": [
+    {
+      "scenario": "crisis_2008",
+      "description": "Global financial crisis, Sep-Nov 2008",
+      "change_pct": 0.0,
+      "shocked_equity": 11183.0,
+      "worst_market": null,
+      "beyond_kill_switch": false
+    },
+    {
+      "scenario": "covid_2020",
+      "description": "Covid crash, Feb-Mar 2020",
+      "change_pct": 0.0,
+      "shocked_equity": 11183.0,
+      "worst_market": null,
+      "beyond_kill_switch": false
+    },
+    {
+      "scenario": "rates_2022",
+      "description": "Inflation and rate hikes, Jan-Oct 2022",
+      "change_pct": 0.0,
+      "shocked_equity": 11183.0,
+      "worst_market": null,
+      "beyond_kill_switch": false
+    },
+    {
+      "scenario": "flash_crash",
+      "description": "One-day crash like October 1987",
+      "change_pct": 0.0,
+      "shocked_equity": 11183.0,
+      "worst_market": null,
+      "beyond_kill_switch": false
+    },
+    {
+      "scenario": "dollar_spike",
+      "description": "Sharp dollar rally",
+      "change_pct": 0.0,
+      "shocked_equity": 11183.0,
+      "worst_market": null,
+      "beyond_kill_switch": false
+    },
+    {
+      "scenario": "crypto_crash",
+      "description": "Crypto collapse within a week",
+      "change_pct": 0.0,
+      "shocked_equity": 11183.0,
+      "worst_market": null,
+      "beyond_kill_switch": false
+    }
+  ],
+  "equity": 11183.0,
+  "cash": 11183.0,
+  "gross_leverage": 0.0,
+  "net_profit": 0.0,
+  "initial_capital": 11183.0,
+  "currency": "USD",
+  "settings": {
+    "universe": "ai",
+    "markets": null,
+    "classes": null,
+    "strategy": "ai_council",
+    "members": null,
+    "param": [],
+    "portfolio_vol": 15.0,
+    "sizing_lookback": 60,
+    "max_leverage": 2.0,
+    "max_weight": 0.4,
+    "rebalance": 5.0,
+    "no_shorts": false,
+    "stop_atr": 3.0,
+    "financing": 5.0,
+    "max_sector": 60.0
+  },
+  "mode": "PAPER",
+  "missing_data": []
+}
