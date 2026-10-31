@@ -34,14 +34,17 @@ TASKS = {
 class BudgetSet:
     """One cost storage per purpose, each with its own limits."""
 
-    def __init__(self, folder, limits: dict):
+    def __init__(self, folder, limits: dict, files: dict | None = None):
+        """``files`` names a purpose's file when it must keep an older name."""
         unknown = set(limits) - set(PURPOSES)
         if unknown:
             raise ValueError("Unknown purpose: " + ", ".join(sorted(unknown)))
         folder = Path(folder)
         folder.mkdir(parents=True, exist_ok=True)
+        files = files or {}
         self._storages = {
-            purpose: SQLiteCostStorage(folder / f"ai-costs-{purpose}.sqlite", purpose_limits)
+            purpose: SQLiteCostStorage(folder / files.get(purpose, f"ai-costs-{purpose}.sqlite"),
+                                       purpose_limits)
             for purpose, purpose_limits in limits.items()
         }
 
@@ -63,6 +66,18 @@ class ModelOption:
     def __post_init__(self):
         if self.tier not in (1, 2, 3) or not self.model.strip():
             raise ValueError("Model needs a name and a tier of 1, 2 or 3")
+
+
+def ranked_models(task: str, options) -> list[tuple[str, Decimal]]:
+    """Models good enough for ``task``, cheapest first, with the estimated cost."""
+    if task not in TASKS:
+        raise ValueError(f"Unknown task {task!r}")
+    tier, tokens_in, tokens_out = TASKS[task]
+    ranked = sorted((CostTracker.estimate_cost(tokens_in, tokens_out, o.pricing), o.model)
+                    for o in options if o.tier >= tier)
+    if not ranked:
+        raise ValueError(f"No configured model reaches tier {tier} for {task}")
+    return [(model, cost) for cost, model in ranked]
 
 
 def choose_model(task: str, options) -> tuple[str, Decimal]:
