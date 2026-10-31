@@ -1,0 +1,87 @@
+name: BND verificare zilnică a botului virtual
+
+# Every morning: is the virtual account running, is its kill switch off,
+# did the last daily run succeed? Problems open (or update) one GitHub
+# issue, which reaches the owner's phone through the GitHub app; when all
+# is well again the issue is closed.
+
+on:
+  schedule:
+    - cron: '47 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Check the account and the last daily run
+        run: |
+          mkdir -p health
+          if git fetch -q --depth=1 origin paper-trading 2>/dev/null \
+              && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
+            git show FETCH_HEAD:paper.sqlite > health/paper.sqlite
+          fi
+          conclusion=$(gh run list -R "$REPO" --workflow paper-trading.yml -L 1 \
+            --json conclusion -q '.[0].conclusion // ""' 2>/dev/null || true)
+          python -m src.bnd.health_check --state health/paper.sqlite \
+            --last-run-conclusion "$conclusion" --json health/health.json > health/health.md
+          cat health/health.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bnd-health-${{ github.run_id }}
+          path: |
+            health/health.json
+            health/health.md
+          retention-days: 7
+
+  # Separate job: may write issues, never runs project code.
+  alert:
+    needs: check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      TITLE: "Alertă: botul virtual are o problemă"
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: bnd-health-${{ github.run_id }}
+          path: health
+      - name: Open, update or close the alert issue
+        run: |
+          set -euo pipefail
+          ok=$(jq -r '.ok' health/health.json)
+          open=$(gh api "repos/$REPO/issues?state=open&per_page=100" \
+            -q "[.[] | select(.title == \"$TITLE\") | .number][0] // empty")
+          if [ "$ok" = true ]; then
+            if [ -n "$open" ]; then
+              gh api -X POST "repos/$REPO/issues/$open/comments" \
+                -f body="Rezolvat: verificarea de azi este în regulă." > /dev/null
+              gh api -X PATCH "repos/$REPO/issues/$open" -f state=closed > /dev/null
+            fi
+            exit 0
+          fi
+          if [ -n "$open" ]; then
+            gh api -X POST "repos/$REPO/issues/$open/comments" \
+              -F body=@health/health.md > /dev/null
+          else
+            gh api -X POST "repos/$REPO/issues" -f title="$TITLE" \
+              -F body=@health/health.md > /dev/null
+          fi
