@@ -106,6 +106,12 @@ jobs:
         env:
           BND_ALLOW_LIVE_AI: 'true'
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          # Empty = the defaults in council_daily.py; a repository variable overrides.
+          BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT }}
+          BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE }}
+          BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI }}
+          BND_MODEL_GROK: ${{ vars.BND_MODEL_GROK }}
+          BND_MODEL_DEEPSEEK: ${{ vars.BND_MODEL_DEEPSEEK }}
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
