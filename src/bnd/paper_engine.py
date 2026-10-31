@@ -638,6 +638,10 @@ class PaperEngine:
         """Trade ``quantity`` (signed) at ``raw_price`` plus slippage and fee."""
         slip = instrument.slippage_pct / 100
         price = raw_price * (1 + slip) if quantity > 0 else raw_price * (1 - slip)
+        if order and order["order_type"] == "LIMIT" and order["limit_price"]:
+            # A limit order never fills worse than its limit, slippage included.
+            limit = order["limit_price"]
+            price = min(price, limit) if quantity > 0 else max(price, limit)
         fee = abs(quantity) * price * instrument.fee_pct / 100
         self._add_cash(-quantity * price - fee)
         position = self._position(symbol)
@@ -785,7 +789,8 @@ class PaperEngine:
                             f"{limits.margin_closeout_pct}% of required margin {required:.2f}",
                             time)
             return
-        daily_loss = 100 * max(0.0, account["day_start_equity"] - equity) / account["day_start_equity"]
+        day_start = account["day_start_equity"]
+        daily_loss = 100 * max(0.0, day_start - equity) / day_start if day_start > 0 else 0.0
         drawdown = 100 * (peak - equity) / peak if peak > 0 else 0.0
         if daily_loss >= limits.max_daily_loss_pct:
             self._liquidate(f"Daily loss {daily_loss:.2f}% reached the limit", time)
