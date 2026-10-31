@@ -12,3 +12,7 @@
 - Mai târziu, dacă e cazul: funding/date on-chain (`funding.py` există, dar Binance poate fi blocat din SUA).
 
 Un rezultat bun în 16 zile nu dovedește un avantaj: cu puține decizii diferențele pot fi noroc.
+
+## Cont unic AI pe toate piețele
+
+`bot-ai-unificat.yml` (cont pe ramura `ai-unificat`, 22:15 UTC) face același lucru pe **toate cele 13 piețe** ale consiliului (indici, aur, argint, petrol, forex, obligațiuni, crypto), într-un singur cont: banii se duc unde sunt semnale. Limite: leverage 2x, maxim 40% într-o piață și 60% într-o clasă. Conturile existente (regulile matematice și criptoul) rămân pornite ca termen de comparație până pe 16.11; după aceea se poate păstra doar contul unic.
