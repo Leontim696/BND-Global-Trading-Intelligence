@@ -86,6 +86,10 @@ class EngineLimits:
     # Annual volatility of the whole book from recent joint returns, so
     # markets that move together count together (0 disables).
     max_portfolio_vol_pct: float = 40.0
+    # Annual rate charged each calendar day on exposure above equity (a
+    # margin loan, as for leveraged ETFs); 0 = none. Charged from the
+    # previous closes when a new day starts.
+    financing_pct_annual: float = 0.0
     vol_lookback: int = 60
     max_daily_loss_pct: float = 5.0      # kill switch trigger
     max_drawdown_pct: float = 25.0       # kill switch trigger
@@ -623,9 +627,24 @@ class PaperEngine:
         day = when.astimezone(timezone.utc).date().isoformat()
         account = self.account()
         if account["day"] != day:
+            self._charge_financing(account["day"], day, when)
             # Day starts from the previous marks, so overnight gaps count.
             self._db.execute("UPDATE account SET day = ?, day_start_equity = ?",
                              (day, self.equity()))
+
+    def _charge_financing(self, previous_day, day, when) -> None:
+        """Interest on the borrowed part of the book for the days that passed."""
+        rate = self.limits().financing_pct_annual
+        if not rate or previous_day is None:
+            return
+        days = (datetime.fromisoformat(day) - datetime.fromisoformat(previous_day)).days
+        borrowed = self.gross_exposure() - self.equity()
+        if days <= 0 or borrowed <= 0:
+            return
+        interest = borrowed * rate / 100 * days / 365.25
+        self._add_cash(-interest)
+        self._log("financing", {"amount": interest, "borrowed": borrowed, "days": days},
+                  _iso(when))
 
     def _position(self, symbol):
         row = self._db.execute("SELECT * FROM positions WHERE symbol = ?", (symbol,)).fetchone()

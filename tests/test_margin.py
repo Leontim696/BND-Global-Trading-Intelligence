@@ -81,3 +81,54 @@ def test_margin_must_be_a_percentage():
 
     with pytest.raises(PaperEngineError):
         Instrument("X", "crypto", margin_pct=150)
+
+
+def test_borrowed_part_of_the_book_pays_interest_each_day(tmp_path):
+    eng = PaperEngine.create(tmp_path / "f.sqlite", 10_000, currency="USD",
+                             limits=EngineLimits(**LOOSE, financing_pct_annual=5), now=T0)
+    eng.register_instrument(Instrument("X", "index", fee_pct=0, slippage_pct=0))
+    eng.on_bar("X", Candle(T0, 100, 100, 100, 100, 1e9))
+    # 150 units = 15,000 on 10,000 of equity: 5,000 borrowed (1.5x).
+    eng.submit_order(OrderRequest("lev", "X", "BUY", 150, stop_loss=60), T0 + timedelta(hours=1))
+    eng.on_bar("X", Candle(T0 + timedelta(days=1), 100, 100, 100, 100, 1e9))
+    assert eng.positions()
+    cash_before = eng.account()["cash"]
+
+    eng.on_bar("X", Candle(T0 + timedelta(days=3), 100, 100, 100, 100, 1e9))
+
+    interest = 5_000 * 0.05 * 2 / 365.25
+    assert cash_before - eng.account()["cash"] == pytest.approx(interest)
+    assert eng.journal("financing")[-1]["payload"]["days"] == 2
+
+
+def test_no_interest_without_leverage_or_without_a_rate(tmp_path):
+    for rate, quantity in ((5, 80), (0, 150)):         # 0.8x with a rate; 1.5x without one
+        eng = PaperEngine.create(tmp_path / f"n{rate}.sqlite", 10_000, currency="USD",
+                                 limits=EngineLimits(**LOOSE, financing_pct_annual=rate), now=T0)
+        eng.register_instrument(Instrument("X", "index", fee_pct=0, slippage_pct=0))
+        eng.on_bar("X", Candle(T0, 100, 100, 100, 100, 1e9))
+        eng.submit_order(OrderRequest("o", "X", "BUY", quantity, stop_loss=60),
+                         T0 + timedelta(hours=1))
+        eng.on_bar("X", Candle(T0 + timedelta(days=1), 100, 100, 100, 100, 1e9))
+        eng.on_bar("X", Candle(T0 + timedelta(days=5), 100, 100, 100, 100, 1e9))
+
+        assert eng.journal("financing") == []
+
+
+def test_runner_stores_the_financing_rate_in_a_new_account(tmp_path, monkeypatch, capsys):
+    import json
+
+    from src.bnd import paper_runner
+    from tests.test_paper_runner import MARKETS, make_data, write_data
+
+    monkeypatch.setattr(paper_runner, "select_markets", lambda *a: MARKETS)
+    write_data(tmp_path / "data", make_data())
+    state = tmp_path / "paper.sqlite"
+    base = ["--state", str(state), "--data-dir", str(tmp_path / "data")]
+
+    assert paper_runner.main(base + ["--capital", "1000", "--financing", "3.5"]) == 0
+    capsys.readouterr()
+
+    assert PaperEngine.open(state).limits().financing_pct_annual == 3.5
+    assert paper_runner.main(base + ["--financing", "4"]) == 2     # settings are frozen
+    assert "financing" in capsys.readouterr().err
