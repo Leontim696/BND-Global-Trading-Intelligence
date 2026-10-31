@@ -1,0 +1,9 @@
+[Unit]
+Description=Pas zilnic BND, după închiderea piețelor SUA
+
+[Timer]
+OnCalendar=*-*-* 22:23:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
