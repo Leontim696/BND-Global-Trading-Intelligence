@@ -33,7 +33,13 @@ from pathlib import Path
 from .backtest_cli import _factory, _pairs, _split_list
 from .cross_sectional import cross_momentum_factory
 from .market_data import MarketDataError, load_csv
-from .paper_engine import Instrument, OrderRequest, PaperEngine, PaperEngineError
+from .paper_engine import (
+    EngineLimits,
+    Instrument,
+    OrderRequest,
+    PaperEngine,
+    PaperEngineError,
+)
 from .portfolio import (
     PortfolioConfig,
     _Book,
@@ -349,7 +355,7 @@ DEFAULTS = {
     "universe": "etf", "markets": None, "classes": None,
     "strategy": "regime_switch", "members": None, "param": [], "portfolio_vol": 15.0,
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
-    "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0,
+    "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
 }
 
 
@@ -382,6 +388,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rebalance", type=float)
     parser.add_argument("--no-shorts", action="store_const", const=True)
     parser.add_argument("--stop-atr", type=float)
+    parser.add_argument("--financing", type=float,
+                        help="annual %% on exposure above equity (margin loan), default 5; "
+                             "applies when the account is created")
     return parser
 
 
@@ -416,7 +425,8 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
     _config(settings)                                      # fail before creating
     _make_factory(settings, {})                            # fail before creating
     Path(args.state).parent.mkdir(parents=True, exist_ok=True)
-    engine = PaperEngine.create(args.state, args.capital, currency=args.currency)
+    engine = PaperEngine.create(args.state, args.capital, currency=args.currency,
+                                limits=EngineLimits(financing_pct_annual=settings["financing"]))
     engine.record("runner_settings", settings, datetime.now(timezone.utc))
     return engine, settings
 

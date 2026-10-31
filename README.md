@@ -215,7 +215,9 @@ broker margin per market (`Instrument.margin_pct`; the paper runner uses
 the ESMA retail CFD minimums from `universe.esma_margin_pct`: major forex
 3.33%, gold and major indices 5%, other commodities and indices 10%,
 bonds 20%, crypto 50%) with a close-out when equity falls below half the
-required margin, risk per trade, daily loss, drawdown and gross leverage. The
+required margin, risk per trade, daily loss, drawdown and gross leverage. Exposure above equity (a margin loan) pays
+`financing_pct_annual` per calendar day (the paper runner's `--financing`,
+default 5%, set when the account is created). The
 kill switch (daily loss, drawdown or margin below maintenance) closes
 everything (at today's price where it is known, otherwise with a
 reduce-only order at that market's next open, so a gap is not skipped),
