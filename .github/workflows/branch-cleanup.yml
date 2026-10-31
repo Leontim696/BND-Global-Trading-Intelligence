@@ -8,12 +8,12 @@ on:
         required: true
         type: string
       also_delete:
-        description: 'Optional: extra branches to delete even if not merged, comma-separated (never main, backtest-results or paper-trading)'
+        description: 'Optional: extra branches to delete even if not merged, comma-separated (never main or a state branch: backtest-results, paper-trading, crypto-trading, ai-unificat, consiliu-umbra, status)'
         default: ''
         type: string
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: bnd-branch-cleanup
@@ -24,6 +24,8 @@ jobs:
     if: inputs.confirm == 'DELETE'
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: write
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
@@ -41,7 +43,7 @@ jobs:
             branch="${ref#origin/}"
             case "$branch" in
               # paper-trading holds the virtual account: never touched.
-              main|backtest-results|paper-trading|HEAD|origin) continue ;;
+              main|backtest-results|paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status|HEAD|origin) continue ;;
             esac
             if git merge-base --is-ancestor "$ref" origin/main; then
               gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
@@ -54,7 +56,7 @@ jobs:
           for branch in "${extra[@]}"; do
             branch="${branch//[[:space:]]/}"
             case "$branch" in
-              ""|main|backtest-results|paper-trading) continue ;;
+              ""|main|backtest-results|paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status) continue ;;
             esac
             if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
               gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
