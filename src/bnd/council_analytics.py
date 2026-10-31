@@ -143,13 +143,45 @@ def strategy_comparison(decisions: dict) -> dict:
     return result
 
 
-def analyse(path) -> dict:
+def cost_to_value(decisions: dict, cost_per_agent: dict | None = None) -> dict:
+    """Ce aduc 5, 3 sau 1 agenți, din aceleași voturi salvate (fără apeluri noi).
+
+    Pentru fiecare grup de agenți se ia „înclinația” (BUY minus SELL, HOLD ignorat) a
+    grupului și se măsoară rata și câștigul mediu la 5 zile, plus costul pe decizie din
+    costurile medii ale agenților. Grupul de 3 = cei trei cu cea mai bună rată proprie
+    (alegere pe aceleași date: orientativ, nu out-of-sample). Doar citire.
+    """
+    cost_per_agent = cost_per_agent or {}
+    board = agent_scoreboard(decisions)
+    agents = sorted(board)
+    ranked = sorted(agents, key=lambda a: (board[a]["hit_rate"] if board[a]["hit_rate"] is not None else -1),
+                    reverse=True)
+    groups = {"toți": agents, "primii 3": ranked[:3], **{f"doar {a}": [a] for a in agents}}
+    result = {}
+    for name, members in groups.items():
+        calls = []
+        for d in decisions.values():
+            if d["outcome"] == 0:
+                continue
+            net = sum(SIDE[d["votes"][a]["initial"][0]] for a in members
+                      if a in d["votes"] and "initial" in d["votes"][a])
+            if net:
+                calls.append((1 if net > 0 else -1, d["outcome"]))
+        result[name] = {"agents": members, "calls": len(calls),
+                        "hit_rate": _rate(sum(s * o > 0 for s, o in calls), len(calls)),
+                        "mean_return_pct": 100 * sum(s * o for s, o in calls) / len(calls) if calls else None,
+                        "cost_per_decision_usd": sum(cost_per_agent.get(a, 0.0) for a in members)}
+    return result
+
+
+def analyse(path, cost_per_agent: dict | None = None) -> dict:
     decisions = _rows(path)
     return {"settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
             "note": None if len(decisions) >= MIN_SAMPLE else
             f"Doar {len(decisions)} decizii încheiate (sub {MIN_SAMPLE}): rezultatele sunt orientative, nu concluzii.",
             "agents": agent_scoreboard(decisions), "disagreement": disagreement(decisions),
-            "strategies": strategy_comparison(decisions)}
+            "strategies": strategy_comparison(decisions),
+            "cost_to_value": cost_to_value(decisions, cost_per_agent)}
 
 
 def main(argv=None) -> int:

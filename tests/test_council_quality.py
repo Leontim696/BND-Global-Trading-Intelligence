@@ -198,3 +198,20 @@ def test_model_registry_combines_config_costs_and_traces(tmp_path, series):
     assert gpt["total_cost_usd"] == 0.02 and gpt["paid_calls"] == 1
     assert gpt["availability"] == 1.0 and gpt["traced_calls"] == len(MARKETS)
     assert "| gpt | OpenAI |" in model_registry.render(result)
+
+
+def test_cost_to_value_compares_the_whole_council_with_smaller_groups(tmp_path):
+    path = make_registry(tmp_path, [
+        ("SP500", {"gpt": ("BUY", .8), "claude": ("BUY", .8), "gemini": ("SELL", .8),
+                   "grok": ("HOLD", .5), "deepseek": ("HOLD", .5)}, "BUY", 0.02, 1),
+        ("GOLD", {"gpt": ("SELL", .8), "claude": ("BUY", .8), "gemini": ("SELL", .8),
+                  "grok": ("SELL", .5), "deepseek": ("HOLD", .5)}, "SELL", -0.01, -1),
+    ])
+
+    report = ca.analyse(path, {"gpt": 0.03, "claude": 0.04, "gemini": 0.02, "grok": 0.01, "deepseek": 0.01})
+
+    value = report["cost_to_value"]
+    assert value["toți"]["cost_per_decision_usd"] == pytest.approx(0.11)
+    assert value["toți"]["calls"] == 2 and value["toți"]["hit_rate"] == 1.0
+    assert value["doar gemini"]["calls"] == 2 and value["doar gemini"]["hit_rate"] == 0.5
+    assert len(value["primii 3"]["agents"]) == 3
