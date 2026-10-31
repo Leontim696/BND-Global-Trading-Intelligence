@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-31",
+  "signals": {
+    "BITCOIN": 0.0,
+    "ETHEREUM": 0.0
+  },
+  "missing": [
+    "SOLANA",
+    "BNB",
+    "XRP"
+  ]
+}
