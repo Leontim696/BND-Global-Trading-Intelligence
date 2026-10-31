@@ -347,3 +347,27 @@ def test_fetch_universe_update_redownloads_when_history_was_readjusted(tmp_path,
     assert load_csv(tmp_path / "GOLD.csv") == server.candles()
     quality = json.loads((tmp_path / "quality.json").read_text())
     assert quality["markets"]["GOLD"]["update"] == "full (stored history changed)"
+
+
+def test_portfolio_reports_results_by_market_regime(tmp_path):
+    from src.bnd.backtest_summary import build_summary
+
+    write_markets(tmp_path, ["EURUSD", "GOLD", "SP500"], days=900)
+    code, out, err = run_cli(["portfolio", "--permutations", "0", "--data-dir", str(tmp_path),
+                              "--markets", "EURUSD,GOLD,SP500", "--strategy", "macd",
+                              "--in-sample", "40"])
+
+    assert code == 0, err
+    report = json.loads(out)
+    regimes = report["ranking"][0]["regimes_out_of_sample"]
+    assert report["regime_market"] == "SP500" and set(regimes) == {
+        "urcare calmă", "urcare agitată", "scădere calmă", "scădere agitată"}
+    assert sum(r["days"] for r in regimes.values()) > 100
+    assert set(report["equal_weight_basket_regimes"]) == set(regimes)
+    path = tmp_path / "portfolio.json"
+    path.write_text(out)
+    assert "**Pe regimuri de piață**" in build_summary(portfolio=path)
+
+    code, out, _ = run_cli(["portfolio", "--permutations", "0", "--data-dir", str(tmp_path),
+                            "--markets", "EURUSD,GOLD", "--strategy", "macd"])
+    assert code == 0 and json.loads(out)["regime_market"] is None     # fără piața de referință

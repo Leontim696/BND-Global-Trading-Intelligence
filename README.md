@@ -172,6 +172,15 @@ followed; if none scored above `min_score` (default 0) the market stays
 flat until the next choice. Members default to `regime_switch, momentum,
 sma_crossover, donchian_breakout, bollinger_reversion, rsi_reversion`.
 
+`--strategy score_weighted` is the smooth cousin of `selector`: the members'
+signals are averaged with weights proportional to each member's positive
+trailing Sharpe (refreshed every `hold` candles); if none is positive the
+market stays flat. `regimes.py` labels each day as rising/falling and
+calm/wild (trend against the 200-day average; 20-day volatility against the
+median of all earlier ones, known only at the previous close), and the
+single-strategy `portfolio` report splits the out-of-sample result and the
+"buy and hold" basket by regime (`--regime-market`, default SP500).
+
 `--strategy cross_momentum` ranks markets against each other: each day
 every market is scored by its return over `lookback` candles (default
 252) skipping the last `skip` (21); the top `fraction` (1/3) is long, the
