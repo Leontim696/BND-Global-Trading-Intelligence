@@ -105,7 +105,12 @@ def build(paper=None, crypto=None, ai=None, council=None, now: datetime | None =
     folders = {"paper": paper, "crypto": crypto, "ai": ai}
     fx = data.get("fx")
     rate = fx["eurusd"] if fx else None
-    lines = ["Peste noapte:"] if rate is None else [f"Curs EUR/USD: {rate:.4f} (1 € = {rate:.2f} $)", "Peste noapte:"]
+    lines = ["Peste noapte:"]
+    if rate is not None:
+        header = f"Curs EUR/USD: {rate:.4f} (1 € = {rate:.2f} $)"
+        if fx.get("eurron"):
+            header += f"; EUR/RON: {fx['eurron']:.4f}; USD/RON: {fx['usdron']:.4f}"
+        lines = [header, "Peste noapte:"]
     for account in data["accounts"]:
         if not account["exists"]:
             lines.append(f"- {account['title']}: nu există încă.")
@@ -119,6 +124,8 @@ def build(paper=None, crypto=None, ai=None, council=None, now: datetime | None =
             shown = [f"{'cumpărat' if f['quantity'] > 0 else 'vândut'} {f['symbol']}" for f in fills[:4]]
             executed = "; executat: " + ", ".join(shown) + (f" (+{len(fills) - 4})" if len(fills) > 4 else "")
         euro = f" ≈ {value / rate:,.0f} €," if rate and account["currency"] == "USD" else ""
+        if rate and fx.get("usdron") and account["currency"] == "USD":
+            euro += f" ≈ {value * fx['usdron']:,.0f} lei,"
         lines.append(f"- {account['title']}: {value:,.0f} {account['currency']}{euro} "
                      f"({100 * (value / account['initial'] - 1):+.2f}% de la start{move}), "
                      f"{len(account['positions'])} poziții, {len(account['orders'])} comenzi în așteptare{executed}")

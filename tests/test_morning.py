@@ -67,3 +67,19 @@ def test_exchange_rate_and_euro_equivalents_are_shown(tmp_path):
     assert "Curs EUR/USD: 1.1200" in result["message"]
     assert "≈ 8" in result["message"] or "≈ 9" in result["message"] or "≈ 10" in result["message"]
     assert "€," in result["message"]
+
+
+def test_ron_rates_and_lei_equivalents_are_shown_when_available(tmp_path):
+    account_with_overnight_fill(tmp_path)
+    quotes = {"time": NOW.isoformat(), "quotes": {"EURUSD": [1.12, NOW.isoformat()],
+                                                  "EURRON": [4.98, NOW.isoformat()]}}
+
+    text = morning.build(tmp_path, None, None, None, NOW, quotes=quotes)["message"]
+
+    assert "EUR/RON: 4.9800" in text and "USD/RON: 4.4464" in text and "lei," in text
+
+
+def test_snapshot_includes_the_eur_ron_rate_for_display():
+    from src.bnd import quotes_snapshot
+    result = quotes_snapshot.snapshot(lambda symbol: (4.98 if symbol == "EURRON=X" else 1.0, NOW))
+    assert result["quotes"]["EURRON"][0] == 4.98

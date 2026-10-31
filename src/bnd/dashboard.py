@@ -202,7 +202,11 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     if costs and costs["remaining"] < LOW_BALANCE_USD:
         alerts.append(f"Soldul cheii AI e mic: au mai rămas {costs['remaining']:.2f} $. Reîncarc-o.")
     eurusd = prices.get("EURUSD")
+    eurron = prices.get("EURRON")
     fx = {"eurusd": float(eurusd[0]), "time": eurusd[1]} if eurusd and eurusd[0] > 0 else None
+    if fx and eurron and eurron[0] > 0:
+        fx["eurron"] = float(eurron[0])
+        fx["usdron"] = fx["eurron"] / fx["eurusd"]
     return {"generated": now.isoformat(timespec="minutes"), "fx": fx,
             "quotes_time": quotes_time,
             "accounts": accounts, "council": council, "alerts": alerts}

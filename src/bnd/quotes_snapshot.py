@@ -13,13 +13,21 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from .report_card import quotes_for
+from .report_card import fetch_quote, quotes_for
 from .universe import CRYPTO_UNIVERSE, ETF_UNIVERSE
+
+
+# Cursuri doar de afișat (euro și lei în aplicație și în rezumat); nu fac parte din niciun cont.
+DISPLAY_RATES = {"EURRON": "EURRON=X"}
 
 
 def snapshot(fetch=None) -> dict:
     extra = {} if fetch is None else {"fetch": fetch}
     found = {}
+    for name, symbol in DISPLAY_RATES.items():
+        quote = (fetch or fetch_quote)(symbol)
+        if quote is not None:
+            found[name] = quote
     for universe, markets in (("etf", ETF_UNIVERSE), ("crypto", CRYPTO_UNIVERSE)):
         found.update(quotes_for([m.name for m in markets], universe=universe, **extra))
     return {"time": datetime.now(timezone.utc).isoformat(timespec="minutes"),

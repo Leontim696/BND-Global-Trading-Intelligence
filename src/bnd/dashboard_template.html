@@ -134,7 +134,7 @@ function account(a) {
     <h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}`;
 }
 
-const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}</div>` : "";
+const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}${DATA.fx.usdron ? " · " + money(v * DATA.fx.usdron, "lei") : ""}</div>` : "";
 
 function summary() {
   const cards = DATA.accounts.map((a, i) => {
@@ -146,7 +146,7 @@ function summary() {
   }).join("");
   const c = DATA.council, cost = c.exists && c.costs ? `<div class="stats"><div><span class="label">Consiliu azi</span><b>${money2(c.costs.today)} $</b></div>
     <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : "";
-  const rate = DATA.fx ? `<p class="sub">Curs EUR/USD: <b>${DATA.fx.eurusd.toFixed(4)}</b> (1 € = ${DATA.fx.eurusd.toFixed(2)} $), la ${when(DATA.fx.time)}.</p>` : "";
+  const rate = DATA.fx ? `<p class="sub">Curs EUR/USD: <b>${DATA.fx.eurusd.toFixed(4)}</b> (1 € = ${DATA.fx.eurusd.toFixed(2)} $)${DATA.fx.eurron ? " · EUR/RON: <b>" + DATA.fx.eurron.toFixed(4) + "</b>" : ""}, la ${when(DATA.fx.time)}.</p>` : "";
   return `${rate}<div class="cards">${cards}</div>${cost}<p class="sub">Atinge un cont pentru detalii. Cele trei conturi sunt separate: pierderea unuia nu o afectează pe a celorlalte.</p>`;
 }
 
