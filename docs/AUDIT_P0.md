@@ -22,3 +22,31 @@ Testele negative sunt în `tests/test_paper_only.py` (34 de teste): valori greș
 |---|---|---|---|
 | F-06 | INFO | Nicio cale din cod nu poate trimite ordine reale: nu există client de broker, endpoint de ordine sau de retragere; singurele gazde externe sunt date (Yahoo, Binance public), AI (OpenRouter), notificări (ntfy) și GitHub. | Verificat prin test |
 | F-07 | INFO | Cuvântul „live” apare și în „consiliu AI live” (apeluri AI plătite). E altă axă decât tranzacționarea: nu atinge `BND_TRADING_MODE`. Confuzia de nume rămâne un risc de citire. | Documentat |
+
+## A3. Reconcilierea conturilor virtuale
+
+Există **trei portofolii virtuale separate**, fără capital comun. Nu sunt trei reprezentări ale aceluiași capital și nu se adună între ele.
+
+| Cont | Ramură | Capital inițial | Monedă din cont | Decide | Rulează |
+|---|---|---|---|---|---|
+| Reguli matematice | `paper-trading` | 10.000 | EUR (etichetă) | strategia `regime_switch` | 23:23 ora Germaniei |
+| Cripto AI | `crypto-trading` | 11.183 | USD | voturile consiliului, 5 monede | 00:10 |
+| AI unificat | `ai-unificat` | 11.183 | USD | voturile consiliului, 13 piețe | 00:15 |
+
+Cele 11.183 $ reprezintă 10.000 € la cursul EUR/USD 1,1183 din 30.10.2026 (valoare folosită o singură dată, la creare).
+
+| ID | Sev. | Constatare | Dovadă | Stare |
+|---|---|---|---|---|
+| F-08 | RIDICAT | Contul „Reguli matematice” e etichetat EUR, dar toate prețurile sunt în USD și motorul **nu convertește nimic**: 10.000 „EUR” sunt de fapt 10.000 de unități evaluate cu prețuri în dolari. Procentele sunt corecte; valoarea absolută nu e în euro, iar efectul cursului EUR/USD asupra proprietarului nu e în rezultat. Același lucru e declarat în fiecare raport, dar rămâne o sursă de confuzie. Contul nu poate fi schimbat în timpul evaluării. | `account.currency = EUR`, `PaperEngine` fără conversii; `docs/CONTURI.md` | Deschis (decizie după 17.11: cont în USD sau conversie explicită) |
+| F-09 | MEDIU | Limita de expunere pe monedă ignoră moneda contului. La contul etichetat EUR se limitează expunerea la USD, la conturile în USD se limitează EUR: același risc economic, reguli oglindite. | `paper_engine.py`, `_pre_trade_check` | Deschis (nu se modifică limitele de risc fără aprobare) |
+| F-10 | INFO | Dublă contabilizare: aplicația și rapoartele arată fiecare cont separat, niciun total agregat. Cele trei conturi trec reconcilierea independentă (`src/bnd/reconcile.py`) cu 0 diferențe la 31.10. | `python -m src.bnd.reconcile` pe cele 3 conturi | Verificat |
+
+## A4. Contabilitate financiară
+
+Verificat cu rezultate calculate de mână (`tests/test_accounting.py`): rundă completă long cu comision și slippage pe ambele părți, short, carry pe fracțiune de an, finanțare doar pe partea împrumutată pe zile calendaristice, plus reconcilierea independentă (numerar = capital + tranzacții − comisioane − carry − finanțare; poziții = suma tranzacțiilor; ordine fără umpleri peste cantitate; o singură înregistrare de creare). Reconcilierea detectează un sold modificat și o poziție fără tranzacții.
+
+| ID | Sev. | Constatare | Stare |
+|---|---|---|---|
+| F-11 | MEDIU | Nu există conversie valutară (vezi F-08): P&L în valuta contului nu include efectul EUR/USD. | Deschis |
+| F-12 | SCĂZUT | Spread-ul și slippage-ul sunt un singur parametru (`slippage_pct`), deci spread-ul nu e modelat separat. Costurile reale pot fi mai mari la piețe subțiri sau în afara programului. | Limitare cunoscută |
+| F-13 | SCĂZUT | Slippage-ul nu se vede separat în tranzacții (prețul salvat îl include), așa că „P&L brut înainte de costuri” din reconciliere conține slippage-ul ca parte din preț. Comisioanele, carry-ul și finanțarea sunt separate. | Limitare cunoscută |
