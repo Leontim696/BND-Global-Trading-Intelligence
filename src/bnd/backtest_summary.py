@@ -290,6 +290,15 @@ def _portfolio_lines(report: dict) -> list[str]:
             + (f" ({d['days_over_15pct']} days > 15%)" if d["days_over_15pct"] else "")
             for d in diagnostics[:6])]
     ranking = report.get("ranking", [])
+    if len(ranking) == 1 and ranking[0].get("vs_basket_bootstrap"):
+        bs = ranking[0]["vs_basket_bootstrap"]
+        verdict = ("diferența față de „cumperi și ții” poate fi noroc"
+                   if bs["p_not_better"] > 0.05 or bs["ci95_low_pct_annual"] <= 0
+                   else "strategia bate „cumperi și ții” chiar și după verificarea statistică")
+        lines += ["", f"**Verificare statistică (bootstrap pe blocuri, {bs['days']} zile):** "
+                      f"diferență medie {_fmt(bs['mean_difference_pct_annual'], '%')} pe an, interval 95% "
+                      f"[{_fmt(bs['ci95_low_pct_annual'], '%')}; {_fmt(bs['ci95_high_pct_annual'], '%')}], "
+                      f"p = {_fmt(bs['p_not_better'], digits=3)}: {verdict}."]
     if len(ranking) == 1 and ranking[0].get("regimes_out_of_sample"):
         theirs, basket_regimes = ranking[0]["regimes_out_of_sample"], report.get(
             "equal_weight_basket_regimes") or {}

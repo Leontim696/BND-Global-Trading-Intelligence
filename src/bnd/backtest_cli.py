@@ -44,6 +44,7 @@ from .portfolio import (
 )
 from .portfolio_walk_forward import portfolio_walk_forward
 from .regimes import label_regimes, regime_breakdown
+from .significance import bootstrap_difference
 from .quant_backtest import BacktestConfig as QuantConfig
 from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
@@ -760,6 +761,11 @@ def command_portfolio(args) -> int:
             "in_sample": _portfolio_metrics(in_sample),
             "out_of_sample": _portfolio_metrics(out_of_sample),
         }
+        try:
+            row["vs_basket_bootstrap"] = bootstrap_difference(
+                out_of_sample["equity_curve"], basket_oos["equity_curve"])
+        except ValueError:
+            row["vs_basket_bootstrap"] = None
         if labels:
             row["regimes_out_of_sample"] = regime_breakdown(out_of_sample["equity_curve"], labels)
         if fx is not None:
