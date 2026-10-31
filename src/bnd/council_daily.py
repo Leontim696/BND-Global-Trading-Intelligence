@@ -50,11 +50,10 @@ ASSET_CLASS = {"SP500": "index", "NASDAQ100": "index", "GOLD": "commodity",
                "ETHEREUM": "crypto", "EURUSD": "forex", "USDJPY": "forex",
                "US10Y_NOTE": "bond"}
 DEFAULT_MODELS = {
-    # Sol, not the flagship Astra: a Sol round was billed exactly as counted
-    # (0.018 USD per market), while a round with Astra cost about twice what
-    # the token counts implied (its thinking is billed). Set BND_MODEL_GPT to
-    # try Astra on purpose.
-    "gpt": "openai/gpt-6.1-sol",
+    # The flagship, as the owner chose. Measured: a nine-market round with Astra
+    # was counted at 0.27 USD in total, and the owner's key total matched the
+    # ledger exactly. The ledger now uses the cost OpenRouter actually billed.
+    "gpt": "openai/gpt-6-astra",
     "claude": "anthropic/claude-opus-5.5",
     "gemini": "google/gemini-4-argon",
     "grok": "x-ai/grok-4.7",
