@@ -58,7 +58,11 @@ jobs:
           mkdir -p state data
           run=true; live=false
           if [ "$EVENT" = schedule ]; then
-            if [ "$DAILY_SWITCH" = on ]; then live=true; else run=false; fi
+            # The 16-day test ends on 2026-11-16: a forgotten switch must not keep spending.
+            if [ "$(date -u +%Y-%m-%d)" \> "2026-11-16" ]; then
+              run=false
+              echo "Testul de 16 zile s-a încheiat (16.11.2026): nu mai rulează nimic zilnic." >> "$GITHUB_STEP_SUMMARY"
+            elif [ "$DAILY_SWITCH" = on ]; then live=true; else run=false; fi
           elif [ "$MODE_INPUT" = live ]; then
             GITHUB_OUTPUT=gate.txt python scripts/confirm_paid_test.py > /dev/null
             if grep -q '^confirmed=true' gate.txt; then live=true; else run=false; fi
@@ -115,7 +119,7 @@ jobs:
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
-            --round-budget 0.60 --daily-budget 1.60 --monthly-budget 12 \
+            --round-budget 0.60 --daily-budget 0.60 --monthly-budget 5 \
             --report state/raport.md --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
