@@ -20,6 +20,7 @@ from urllib.request import Request, urlopen
 from .health_check import check
 from .market_data import YAHOO_CHART_URL
 from .paper_engine import PaperEngine, PaperEngineError
+from .calendars import open_sessions
 from .scenarios import run_scenarios
 from .universe import select as select_markets
 
@@ -94,6 +95,7 @@ def build(state_path, now: datetime, quotes: dict | None = None) -> dict:
                                 "quantity": o["quantity"]} for o in summary["open_orders"]],
             "fills_24h": [{"market": f["symbol"], "quantity": f["quantity"], "price": f["price"],
                            "reason": f["reason"]} for f in fills],
+            "open_sessions": open_sessions(now),
             "kill_switch": summary["kill_switch"], "kill_reason": summary["kill_reason"],
             "last_run": runs[-1]["payload"]["time"] if runs else None,
             "runs": len(runs), "financing_paid": financing,
@@ -138,6 +140,7 @@ def render(report: dict) -> str:
         f"- La ultima închidere: {_money(close, c)}; bani liberi: {_money(report['cash'], c)}",
         f"- Poziții deschise: {len(report['positions'])}; ordine pregătite pentru mâine: "
         f"{len(report['pending_orders'])}",
+        "- Piețe deschise acum: " + (", ".join(report["open_sessions"]) or "niciuna"),
         "- Oprirea de siguranță: " + (f"**ACTIVĂ** ({report['kill_reason']})" if report["kill_switch"]
                                      else "oprită (totul în regulă)"),
         "- Ultima rulare a botului: " + (report["last_run"][:16].replace("T", " ") + " UTC"
