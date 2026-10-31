@@ -40,6 +40,8 @@ def build_signals(registry: DecisionRegistry, coins, day: str) -> dict:
         if meta is None:
             missing.append(coin)
         else:
+            if "net" not in meta and "lean" not in meta:   # decizii făcute înainte de aceste câmpuri
+                meta = {**meta, "net": registry.net_votes(f"{day}:{coin}")}
             signals[coin] = signal_from_meta(meta)
     return {"date": day, "signals": signals, "missing": missing}
 
