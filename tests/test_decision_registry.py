@@ -139,3 +139,32 @@ def test_has_and_old_registries_get_the_meta_column(tmp_path):
     assert not registry.has("a")
     assert registry.record("a", T0, "X", 1.0, c, decide(c), meta={"bot_signal": 1})
     assert registry.has("a")
+
+
+def test_lean_ignores_hold_and_is_read_from_the_saved_votes(tmp_path):
+    from src.bnd.fusion_council import AGENTS, FusionCouncil, Opinion
+
+    def split(buys, sells):
+        c = FusionCouncil()
+        for i, agent in enumerate(AGENTS):
+            vote = Vote.BUY if i < buys else Vote.SELL if i < buys + sells else Vote.HOLD
+            c.submit(Opinion(agent, vote, "motiv", 0.7))
+        return c
+
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    # 1 BUY + 4 HOLD (fără majoritate, dar înclină spre cumpărare, iar prețul urcă);
+    # 2 SELL + 3 HOLD (înclină spre vânzare, prețul urcă: greșit); 5 HOLD (fără înclinație).
+    for i, (buys, sells, outcome) in enumerate([(1, 0, +0.05), (0, 2, +0.03), (0, 0, +0.02)]):
+        c = split(buys, sells)
+        registry.record(f"d{i}", T0 + timedelta(days=2 * i), "X", 100.0, c, decide(c),
+                        horizon_days=1)
+    registry.settle_from_candles(
+        {"X": [Candle(T0 + timedelta(days=2 * i + 1), 100 * (1 + o), 100 * (1 + o), 100 * (1 + o),
+                      100 * (1 + o), 1) for i, o in enumerate([0.05, 0.03, 0.02])]},
+        T0 + timedelta(days=30))
+
+    comparison = registry.comparison()
+
+    assert comparison["council"]["calls"] == 0                 # nicio majoritate clară
+    assert comparison["lean"]["calls"] == 2                    # a treia nu înclină nicăieri
+    assert comparison["lean"]["hit_rate"] == 0.5
