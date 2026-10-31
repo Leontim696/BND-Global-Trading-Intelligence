@@ -251,13 +251,14 @@ has re-adjusted its history) and keeps the account and its status page
 (`README.md`) on the `paper-trading` branch. Until a manual run creates
 the account with a virtual capital, scheduled runs do nothing.
 
-`rapoarte-bot.yml` writes a report in Romanian five times a day (08:00,
-11:30, 15:30, 19:00 and 00:50 Romanian time) for the 16-day forward test:
-account value now (live Yahoo prices for open positions), positions,
-pending orders, fills, risk. Each report is saved on the `paper-trading`
-branch (`rapoarte/`, `rapoarte/LATEST.md`) and posted as a comment on the
-issue "Rapoarte bot virtual (test de 16 zile)", which reaches the phone
-through the GitHub app. Nothing is posted after day 17 of the account.
+`rapoarte-bot.yml` writes a report in Romanian every hour for the 16-day
+forward test: account value now (live Yahoo prices for open positions),
+positions, pending orders, fills, risk. Each report is saved on the
+`paper-trading` branch (`rapoarte/`, `rapoarte/LATEST.md`) and posted as a
+comment on that day's issue "Rapoarte bot virtual AAAA-LL-ZZ" (earlier days'
+issues are closed), which reaches the phone through the GitHub app. Nothing is
+posted after day 17 of the account. `report_html.py` turns reports into HTML
+so they can be uploaded to Google Drive as documents, one per batch.
 
 `health-check.yml` runs every morning (05:47 UTC): `health_check.py`
 reports a stale account (no run for 50 hours), an active kill switch, a

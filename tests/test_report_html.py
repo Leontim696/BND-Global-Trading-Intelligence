@@ -47,3 +47,20 @@ def test_cli(tmp_path, capsys):
 
     assert main([str(path)]) == 0 and "<h1>" in capsys.readouterr().out
     assert main([]) == 2
+
+
+def test_several_reports_in_one_document_keep_their_order(tmp_path, capsys):
+    from src.bnd.report_html import to_html_many
+
+    out = to_html_many(["# Primul\n- a", "# Al doilea\n- b"])
+
+    assert out.index("Primul") < out.index("<hr>") < out.index("Al doilea")
+    assert out.count("<html>") == 1
+    files = []
+    for name, text in (("a.md", "# Unu"), ("b.md", "# Doi")):
+        path = tmp_path / name
+        path.write_text(text, encoding="utf-8")
+        files.append(str(path))
+    assert main(files) == 0
+    shown = capsys.readouterr().out
+    assert shown.index("Unu") < shown.index("Doi")
