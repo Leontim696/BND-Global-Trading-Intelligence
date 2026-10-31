@@ -301,6 +301,18 @@ Research results so far, in Romanian: `docs/REZULTATE_CERCETARE.md`.
 model catalogue with real prices to `backtest-results/models/LATEST.md`, so
 `BND_MODEL_*` values are exact and a council round can be priced.
 
+## Data tools
+
+`intraday.py` fetches hourly or minute candles for non-crypto markets from
+Yahoo (5/15/30 minutes up to 60 days, 1 hour up to 730 days; the forming candle
+is dropped). `calendars.py` knows when the US exchange (with 2026-27 holidays and
+daylight saving), Frankfurt, London, Tokyo, forex and crypto are open; the
+hourly report shows which markets are open now. `funding.py` reads Binance's
+funding-rate history and annualises it, to check the 10%/yr assumption.
+`rolls.py` finds roll jumps in continuous futures series and back-adjusts them
+when the roll dates are known (the ETF universe avoids the problem).
+Spreads are part of the per-class slippage in `universe.CLASS_COSTS`.
+
 ## Phone alerts and audit log
 
 `notify.py` sends push notifications through ntfy (no account): install the
