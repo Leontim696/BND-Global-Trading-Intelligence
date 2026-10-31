@@ -177,9 +177,12 @@ def render(report: dict) -> str:
                      else "; nu ar declanșa oprirea de siguranță.")]
     if not report["health"]["ok"]:
         lines += ["", "## Atenție", ""] + [f"- {p}" for p in report["health"]["problems"]]
-    lines += ["", "_Bani virtuali. Prețurile sunt în dolari, iar contul ține socoteala în unități "
-                  "etichetate în euro: procentele sunt corecte, dar nu includ cursul EUR/USD. "
-                  "Un rezultat bun într-un test nu garantează profit în viitor._", ""]
+    if report["currency"] == "EUR":
+        note = ("Bani virtuali. Prețurile sunt în dolari, iar contul ține socoteala în unități "
+                "etichetate în euro: procentele sunt corecte, dar nu includ cursul EUR/USD. ")
+    else:
+        note = f"Bani virtuali, în {report['currency']} (prețurile piețelor sunt în dolari). "
+    lines += ["", "_" + note + "Un rezultat bun într-un test nu garantează profit în viitor._", ""]
     return "\n".join(lines)
 
 

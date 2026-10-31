@@ -118,3 +118,30 @@ def test_a_fresh_account_reconciles_and_reports_costs_split(tmp_path):
 
     assert result["ok"] and result["net_profit"] == 0
     assert result["costs"]["total"] == 0 and result["initial"] == 10_000
+
+
+def test_relabelling_the_currency_is_audited_refused_with_positions_and_keeps_reconciliation(tmp_path):
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location(
+        "relabel_currency", Path(__file__).resolve().parents[1] / "scripts" / "relabel_currency.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    engine = PaperEngine.create(tmp_path / "a.sqlite", 10_000.0, currency="EUR", now=T0)
+    engine.register_instrument(Instrument("AAA", "index", fee_pct=0, slippage_pct=0))
+    assert module.relabel(engine, "USD", "prețurile sunt în dolari", T0) == {
+        "from": "EUR", "to": "USD", "capital": 10_000.0}
+    assert engine.account()["currency"] == "USD" and engine.account()["initial_capital"] == 10_000.0
+    assert reconcile(engine)["ok"]
+    assert engine.journal("currency_relabel")[0]["payload"]["from"] == "EUR"
+    with pytest.raises(Exception):
+        module.relabel(engine, "USD", "din nou", T0)             # fără schimbare
+    with pytest.raises(Exception):
+        module.relabel(engine, "usd", "cod greșit", T0)
+
+    engine.on_bar("AAA", bar(0, 100))
+    engine.submit_order(OrderRequest("buy", "AAA", "BUY", 10, stop_loss=99), T0 + DAY / 2)
+    engine.on_bar("AAA", bar(1, 100, c=100))
+    with pytest.raises(Exception):
+        module.relabel(engine, "EUR", "cu poziție", T0)           # poziție deschisă
