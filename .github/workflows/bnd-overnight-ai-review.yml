@@ -1,4 +1,4 @@
-name: BND Overnight AI Review
+name: Review AI GPT+Claude (plătit)
 on:
   workflow_dispatch:
   schedule:

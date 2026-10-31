@@ -1,4 +1,4 @@
-name: BND lista de modele OpenRouter (gratuit, fără cheie)
+name: Lista modele OpenRouter (gratis)
 
 # Reads OpenRouter's public model catalogue (no API key, no cost) and
 # publishes it with real prices, so BND_MODEL_* values are exact.

@@ -1,4 +1,4 @@
-name: BND Overnight Validation
+name: Validare nocturnă (gratis)
 
 on:
   workflow_dispatch:

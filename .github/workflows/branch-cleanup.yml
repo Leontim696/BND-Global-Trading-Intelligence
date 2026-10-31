@@ -1,4 +1,4 @@
-name: BND Branch Cleanup (manual)
+name: Curățenie ramuri
 
 on:
   workflow_dispatch:

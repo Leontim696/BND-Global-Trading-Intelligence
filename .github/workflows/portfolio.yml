@@ -1,4 +1,4 @@
-name: BND Multi-Market Portfolio (manual)
+name: Backtest portofoliu
 
 on:
   workflow_dispatch:

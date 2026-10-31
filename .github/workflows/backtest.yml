@@ -1,4 +1,4 @@
-name: BND Backtest (manual)
+name: Backtest o piață
 
 on:
   workflow_dispatch:

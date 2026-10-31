@@ -148,8 +148,7 @@ kill switch (`--max-drawdown`, default 30%) closes everything and stops
 trading. Reports compare each strategy with an equal-weight long basket
 (1x), sweep leverage (1x, 2x, 3x, 5x) and stress costs. Caveats: Yahoo
 futures (`=F`) are not roll-adjusted, indices stand in for futures/CFDs,
-and portfolio p-values compare strategies on one dataset only. The "BND
-Multi-Market Portfolio (manual)" workflow runs this on GitHub.
+and portfolio p-values compare strategies on one dataset only. The "Backtest portofoliu" workflow runs this on GitHub.
 
 Leverage in single-market runs: `--leverage 3` (risk-engine cap
 `--max-leverage`). Losses scale with leverage; an account can be wiped out.
