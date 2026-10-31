@@ -1,0 +1,166 @@
+{
+  "strategy": "SMA long/flat (fixed window)",
+  "folds": [
+    {
+      "train_start": 0,
+      "train_end": 1000,
+      "test_start": 1000,
+      "test_end": 1500,
+      "strategy": {
+        "net_return_pct": 495.8554988901088,
+        "cagr_pct": 268.00430118408445,
+        "annualized_sharpe": 2.5548141833385034,
+        "max_drawdown_pct": 25.17484619719531,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "benchmark": {
+        "net_return_pct": 309.90477320633136,
+        "cagr_pct": 180.0648285648167,
+        "annualized_sharpe": 1.7338982543811754,
+        "max_drawdown_pct": 53.141407786079434,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "excess_net_return_pct": 185.95072568377742,
+      "excess_cagr_pct_points": 87.93947261926775,
+      "strategy_execution_count": 19,
+      "strategy_fees_paid": 927.0074653512651,
+      "benchmark_execution_count": 1,
+      "benchmark_fees_paid": 9.990009990009991,
+      "train_start_time": "2018-01-01T00:00:00+00:00",
+      "train_end_time": "2020-09-27T00:00:00+00:00",
+      "test_start_time": "2020-09-27T00:00:00+00:00",
+      "test_end_time": "2022-02-08T00:00:00+00:00"
+    },
+    {
+      "train_start": 500,
+      "train_end": 1500,
+      "test_start": 1500,
+      "test_end": 2000,
+      "strategy": {
+        "net_return_pct": -19.065819476149002,
+        "cagr_pct": -14.30877707188718,
+        "annualized_sharpe": -0.2699038267705584,
+        "max_drawdown_pct": 51.15434286072511,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "benchmark": {
+        "net_return_pct": -30.425899921909348,
+        "cagr_pct": -23.26619285842876,
+        "annualized_sharpe": -0.14274601913691773,
+        "max_drawdown_pct": 66.73056490171773,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "excess_net_return_pct": 11.360080445760346,
+      "excess_cagr_pct_points": 8.95741578654158,
+      "strategy_execution_count": 29,
+      "strategy_fees_paid": 208.13666697719168,
+      "benchmark_execution_count": 1,
+      "benchmark_fees_paid": 9.990009990009991,
+      "train_start_time": "2019-05-16T00:00:00+00:00",
+      "train_end_time": "2022-02-09T00:00:00+00:00",
+      "test_start_time": "2022-02-09T00:00:00+00:00",
+      "test_end_time": "2023-06-23T00:00:00+00:00"
+    },
+    {
+      "train_start": 1000,
+      "train_end": 2000,
+      "test_start": 2000,
+      "test_end": 2500,
+      "strategy": {
+        "net_return_pct": 83.29402275809387,
+        "cagr_pct": 55.63177155111241,
+        "annualized_sharpe": 1.3573254025841808,
+        "max_drawdown_pct": 26.7890515956414,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "benchmark": {
+        "net_return_pct": 120.76129989833349,
+        "cagr_pct": 78.26404139760056,
+        "annualized_sharpe": 1.4540278870238854,
+        "max_drawdown_pct": 26.15137505386781,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "excess_net_return_pct": -37.46727714023962,
+      "excess_cagr_pct_points": -22.632269846488157,
+      "strategy_execution_count": 27,
+      "strategy_fees_paid": 397.29646407382904,
+      "benchmark_execution_count": 1,
+      "benchmark_fees_paid": 9.990009990009991,
+      "train_start_time": "2020-09-27T00:00:00+00:00",
+      "train_end_time": "2023-06-24T00:00:00+00:00",
+      "test_start_time": "2023-06-24T00:00:00+00:00",
+      "test_end_time": "2024-11-04T00:00:00+00:00"
+    },
+    {
+      "train_start": 1500,
+      "train_end": 2500,
+      "test_start": 2500,
+      "test_end": 3000,
+      "strategy": {
+        "net_return_pct": 34.19441228086117,
+        "cagr_pct": 23.949887183449658,
+        "annualized_sharpe": 0.8844663934576132,
+        "max_drawdown_pct": 21.302566433896075,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "benchmark": {
+        "net_return_pct": 2.911152476641665,
+        "cagr_pct": 2.116890643297298,
+        "annualized_sharpe": 0.27863080416442326,
+        "max_drawdown_pct": 49.53425573570811,
+        "period_count": 500,
+        "periods_per_year": 365,
+        "risk_free_rate_annual": 0.0,
+        "note": "Equally spaced equity marks assumed; no statistical significance implied"
+      },
+      "excess_net_return_pct": 31.283259804219508,
+      "excess_cagr_pct_points": 21.832996540152358,
+      "strategy_execution_count": 31,
+      "strategy_fees_paid": 434.5885370682562,
+      "benchmark_execution_count": 1,
+      "benchmark_fees_paid": 9.990009990009991,
+      "train_start_time": "2022-02-09T00:00:00+00:00",
+      "train_end_time": "2024-11-05T00:00:00+00:00",
+      "test_start_time": "2024-11-05T00:00:00+00:00",
+      "test_end_time": "2026-03-19T00:00:00+00:00"
+    }
+  ],
+  "summary": {
+    "fold_count": 4,
+    "mean_excess_net_return_pct": 47.78169719837941,
+    "median_excess_net_return_pct": 21.32167012498993,
+    "outperforming_fold_count": 3,
+    "periods_per_year": 365,
+    "note": "Independent test folds with reset capital. Mean/median fold returns are not compounded portfolio performance; no parameter optimization or statistical significance implied."
+  },
+  "dataset": {
+    "data": "backtest-reports/BTCUSDT-1d.csv",
+    "sha256": "8a0870a4a8f2fefdab6815b63541fbfa9525796e187e6017627cada068382256",
+    "candles": 3225,
+    "first_candle": "2018-01-01T00:00:00+00:00",
+    "last_candle": "2026-10-30T00:00:00+00:00",
+    "data_gaps": 0,
+    "first_gaps": []
+  }
+}
