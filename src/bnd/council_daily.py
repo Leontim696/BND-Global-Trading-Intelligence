@@ -45,7 +45,9 @@ DEFAULT_MARKETS = ("SP500", "GOLD", "BITCOIN", "EURUSD")
 ASSET_CLASS = {"SP500": "index", "NASDAQ100": "index", "GOLD": "commodity",
                "BITCOIN": "crypto", "ETHEREUM": "crypto", "EURUSD": "forex"}
 DEFAULT_MODELS = {
-    "gpt": "openai/gpt-6-astra",
+    # Sol, not the flagship Astra: no sign yet that it predicts prices better,
+    # and a round costs about a third (set BND_MODEL_GPT to switch back).
+    "gpt": "openai/gpt-6.1-sol",
     "claude": "anthropic/claude-opus-5.5",
     "gemini": "google/gemini-4-argon",
     "grok": "x-ai/grok-4.7",
