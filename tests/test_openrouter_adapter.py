@@ -644,3 +644,49 @@ def test_nonempty_invalid_json_remains_rejected(monkeypatch):
             agent="claude",
             allow_live=True,
         ).analyze(make_request("claude"))
+
+
+def test_request_asks_for_short_thinking_and_more_output_when_configured(monkeypatch):
+    import io
+    import json
+
+    from src.bnd import openrouter_adapter as adapter
+    from src.bnd.ai_gateway import AIRequest
+
+    seen = {}
+
+    class Reply(io.BytesIO):
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *exc):
+            return False
+
+    def fake_urlopen(request, timeout):
+        seen["payload"] = json.loads(request.data)
+        seen["timeout"] = timeout
+        body = {"model": "m/x", "choices": [{"message": {"content": json.dumps(
+            {"vote": "BUY", "reasoning": "motiv", "confidence": 0.7})}}],
+            "usage": {"prompt_tokens": 100, "completion_tokens": 20}}
+        return Reply(json.dumps(body).encode())
+
+    monkeypatch.setattr(adapter, "urlopen", fake_urlopen)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "cheie-de-test")
+
+    plain = adapter.OpenRouterAdapter("claude", model="m/x", allow_live=True)
+    tuned = adapter.OpenRouterAdapter("claude", model="m/x", allow_live=True, timeout=100,
+                                      max_tokens=4000, reasoning_effort="low")
+    request = AIRequest("claude", "forex", "EURUSD", "context")
+
+    plain.analyze(request)
+    assert seen["payload"]["max_tokens"] == adapter.MAX_OUTPUT_TOKENS
+    assert "reasoning" not in seen["payload"]
+
+    answer = tuned.analyze(request)
+    assert seen["payload"]["max_tokens"] == 4000 and seen["timeout"] == 100
+    assert seen["payload"]["reasoning"] == {"effort": "low", "exclude": True}
+    assert answer.vote.value == "BUY" and answer.input_tokens == 100
+
+    for bad in (dict(max_tokens=10), dict(max_tokens=True), dict(reasoning_effort="max")):
+        with pytest.raises(ValueError):
+            adapter.OpenRouterAdapter("claude", model="m/x", **bad)

@@ -279,6 +279,26 @@ Research results so far, in Romanian: `docs/REZULTATE_CERCETARE.md`.
 model catalogue with real prices to `backtest-results/models/LATEST.md`, so
 `BND_MODEL_*` values are exact and a council round can be priced.
 
+## Council in shadow (`consiliu-umbra.yml`)
+
+`council_daily.py` asks the five agents, once a day, about a few markets
+(default S&P 500, gold, Bitcoin, EUR/USD). `council_context.py` turns real
+closed candles into a short question (changes, volatility, moving averages,
+RSI, the rule-based bot's SMA signal; prices only, no news, and the agents are
+told so). Votes are independent, decided by majority, recorded in the
+decision registry and **nothing is traded**. After 5 days each decision is
+settled with the real price, and the report compares the council with the
+rule-based bot and with "always buy" (hit rate and mean move in the chosen
+direction, before costs). A market already decided today is not paid twice.
+
+Modes: `mock` (simulated agents, free) and `live` (OpenRouter; needs
+`BND_ALLOW_LIVE_AI=true`, a 3-hour authorisation, a per-round cap, a daily
+cap of 1.60 USD and a monthly cap of 12 USD kept in `costs.sqlite`). In the
+workflow a manual live run needs `RUN-PAID-TEST`; the daily run (21:40 UTC)
+does nothing unless the repository variable `BND_COUNCIL_DAILY` is `on`.
+State (`registry.sqlite`, `costs.sqlite`, `consiliu/`) lives on the
+`consiliu-umbra` branch.
+
 ## Decision registry
 
 `decision_registry.DecisionRegistry` stores every council decision with

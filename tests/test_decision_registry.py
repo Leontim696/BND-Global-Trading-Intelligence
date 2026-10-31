@@ -85,3 +85,57 @@ def test_validation(tmp_path):
         registry.record("x", T0, "GOLD", 0, c, decide(c))
     with pytest.raises(ValueError):
         registry.record("x", datetime(2026, 1, 1), "GOLD", 1, c, decide(c))
+
+
+def _majority_of(up):
+    """O decizie de consiliu pentru test: BUY dacă urcă, altfel SELL."""
+    from src.bnd.decision_rules import CouncilDecision, DecisionRule
+
+    vote = Vote.BUY if up else Vote.SELL
+    return CouncilDecision(vote, DecisionRule.MAJORITY, {}, (), (), False, ())
+
+
+def test_comparison_counts_council_bot_and_always_long(tmp_path):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    # (rezultat după orizont, semnalul botului): consiliul are de fiecare dată dreptate.
+    cases = [(+0.05, +1), (-0.04, -1), (+0.02, -1), (-0.03, 0)]
+    prices = [100.0]
+    for outcome, _ in cases:
+        prices.append(prices[-1] * (1 + outcome))
+    for i, (outcome, bot) in enumerate(cases):
+        registry.record(f"d{i}", T0 + timedelta(days=2 * i), "X", prices[i], council(outcome > 0),
+                        _majority_of(outcome > 0), horizon_days=1, meta={"bot_signal": bot})
+
+    registry.settle_from_candles(
+        {"X": [Candle(T0 + timedelta(days=2 * i + 1), p, p, p, p, 1)
+               for i, p in enumerate(prices[1:])]},
+        T0 + timedelta(days=30))
+    comparison = registry.comparison()
+
+    assert comparison["settled_decisions"] == 4
+    assert comparison["always_long"]["calls"] == 4
+    assert comparison["always_long"]["hit_rate"] == 0.5          # 2 urcări din 4
+    assert comparison["bot"]["calls"] == 3                        # semnalul 0 nu e un apel
+    assert comparison["bot"]["hit_rate"] == pytest.approx(2 / 3)
+    assert comparison["council"]["calls"] == 4 and comparison["council"]["hit_rate"] == 1.0
+    assert comparison["council"]["mean_return_pct"] == pytest.approx(3.5, abs=0.01)
+
+
+def test_has_and_old_registries_get_the_meta_column(tmp_path):
+    import sqlite3
+
+    path = tmp_path / "old.sqlite"
+    db = sqlite3.connect(path)
+    db.executescript("""CREATE TABLE decisions (id TEXT PRIMARY KEY, time TEXT NOT NULL,
+        symbol TEXT NOT NULL, price REAL NOT NULL, horizon_days INTEGER NOT NULL,
+        vote TEXT NOT NULL, rule TEXT NOT NULL, uncertain INTEGER NOT NULL,
+        settled_at TEXT, outcome_price REAL, outcome_return REAL);""")
+    db.commit()
+    db.close()
+
+    registry = DecisionRegistry(path)
+    c = council(up=True)
+
+    assert not registry.has("a")
+    assert registry.record("a", T0, "X", 1.0, c, decide(c), meta={"bot_signal": 1})
+    assert registry.has("a")

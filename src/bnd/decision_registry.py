@@ -8,6 +8,7 @@ calls), so the weighted decision rule learns from real paper outcomes
 instead of fixed weights. Read-only analysis; nothing here trades.
 """
 
+import json
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
@@ -21,7 +22,7 @@ CREATE TABLE IF NOT EXISTS decisions (
     id TEXT PRIMARY KEY, time TEXT NOT NULL, symbol TEXT NOT NULL,
     price REAL NOT NULL, horizon_days INTEGER NOT NULL, vote TEXT NOT NULL,
     rule TEXT NOT NULL, uncertain INTEGER NOT NULL,
-    settled_at TEXT, outcome_price REAL, outcome_return REAL
+    settled_at TEXT, outcome_price REAL, outcome_return REAL, meta TEXT
 );
 CREATE TABLE IF NOT EXISTS votes (
     decision_id TEXT NOT NULL, agent TEXT NOT NULL, stage TEXT NOT NULL,
@@ -43,6 +44,10 @@ class DecisionRegistry:
         db = sqlite3.connect(self.path, timeout=30)
         try:
             db.executescript(SCHEMA)
+            columns = {row[1] for row in db.execute("PRAGMA table_info(decisions)")}
+            if "meta" not in columns:      # registry created before ``meta`` existed
+                db.execute("ALTER TABLE decisions ADD COLUMN meta TEXT")
+                db.commit()
         finally:
             db.close()
 
@@ -60,18 +65,28 @@ class DecisionRegistry:
         finally:
             db.close()
 
+    def has(self, decision_id: str) -> bool:
+        with self._db() as db:
+            return db.execute("SELECT 1 FROM decisions WHERE id = ?",
+                              (decision_id,)).fetchone() is not None
+
     def record(self, decision_id: str, time: datetime, symbol: str, price: float,
-               council: FusionCouncil, decision: CouncilDecision, horizon_days: int = 5) -> bool:
-        """Store a decision once; False if this id was already recorded."""
+               council: FusionCouncil, decision: CouncilDecision, horizon_days: int = 5,
+               meta: dict | None = None) -> bool:
+        """Store a decision once; False if this id was already recorded.
+
+        ``meta`` is free-form context kept with it (for example the signal of
+        the rule-based bot at that moment, used for comparisons)."""
         if price <= 0 or horizon_days < 1:
             raise ValueError("price must be positive and horizon_days >= 1")
         with self._db() as db:
             if db.execute("SELECT 1 FROM decisions WHERE id = ?", (decision_id,)).fetchone():
                 return False
             db.execute("INSERT INTO decisions (id, time, symbol, price, horizon_days, vote, rule,"
-                       " uncertain) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                       " uncertain, meta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                        (decision_id, _iso(time), symbol, price, horizon_days,
-                        decision.vote.value, decision.rule.value, int(decision.uncertain)))
+                        decision.vote.value, decision.rule.value, int(decision.uncertain),
+                        json.dumps(meta or {})))
             for stage, opinions in (("initial", council.initial_opinions),
                                     ("final", council.current_opinions())):
                 for agent, opinion in opinions.items():
@@ -144,3 +159,34 @@ class DecisionRegistry:
         hits = sum((vote == Vote.BUY.value) == (outcome > 0) for vote, outcome in rows)
         return {"agents": agents, "weights": self.scorebook(stage).weights(),
                 "council": {"calls": len(rows), "hit_rate": hits / len(rows) if rows else None}}
+
+    def comparison(self) -> dict:
+        """Council vs rule-based bot vs always-long on the settled decisions.
+
+        For each, ``calls`` is how many times it took a side, ``hit_rate`` the
+        share of those calls that went the right way, and ``mean_return_pct``
+        the average price move in the direction it chose (a rough profit per
+        call, before any trading costs). Decisions whose price did not move are
+        left out.
+        """
+        with self._db() as db:
+            rows = db.execute("SELECT vote, uncertain, outcome_return, meta FROM decisions"
+                              " WHERE settled_at IS NOT NULL AND outcome_return != 0").fetchall()
+        sides = {"council": [], "bot": [], "always_long": []}
+        for vote, uncertain, outcome, meta in rows:
+            if vote != Vote.HOLD.value and not uncertain:
+                sides["council"].append((1 if vote == Vote.BUY.value else -1, outcome))
+            bot = (json.loads(meta or "{}")).get("bot_signal")
+            if isinstance(bot, (int, float)) and bot != 0:
+                sides["bot"].append((1 if bot > 0 else -1, outcome))
+            sides["always_long"].append((1, outcome))
+        report = {"settled_decisions": len(rows)}
+        for name, calls in sides.items():
+            hits = sum(side * outcome > 0 for side, outcome in calls)
+            report[name] = {
+                "calls": len(calls),
+                "hit_rate": hits / len(calls) if calls else None,
+                "mean_return_pct": 100 * sum(side * outcome for side, outcome in calls) / len(calls)
+                if calls else None,
+            }
+        return report
