@@ -2,15 +2,15 @@
   "date": "2026-10-31",
   "signals": {
     "SP500": 0.0,
-    "NASDAQ100": 0.0,
-    "GOLD": 0.0,
+    "NASDAQ100": 0.5,
+    "GOLD": -0.5,
     "SILVER": 0.0,
-    "CRUDE_OIL": 0.0,
-    "BITCOIN": 0.0,
+    "CRUDE_OIL": -0.5,
+    "BITCOIN": -1.0,
     "ETHEREUM": 0.0,
-    "EURUSD": 0.0,
+    "EURUSD": -1.0,
     "USDJPY": 0.0,
-    "US10Y_NOTE": 0.0
+    "US10Y_NOTE": -1.0
   },
   "missing": [
     "SOLANA",
