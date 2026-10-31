@@ -1,0 +1,140 @@
+<title>BND Trading</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;600;800&display=swap">
+<style>
+/* Layout: o coloană îngustă pentru telefon, rezumat sus, file pentru conturi și consiliu. */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --line:#d9dfdc; --fg:#14201c; --muted:#5d6b66;
+  --accent:#0f6b5c; --accent-soft:#dcefe9; --gain:#16794a; --loss:#b3332b; --warn:#9a6a00;
+  --font-display:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-body:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0e1513; --surface:#161f1c; --line:#26332f; --fg:#e6eeea; --muted:#8fa09a;
+  --accent:#4cc3a8; --accent-soft:#17352d; --gain:#4cc98a; --loss:#ee7a70; --warn:#e0b04a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1513; --surface:#161f1c; --line:#26332f; --fg:#e6eeea; --muted:#8fa09a;
+  --accent:#4cc3a8; --accent-soft:#17352d; --gain:#4cc98a; --loss:#ee7a70; --warn:#e0b04a; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:15px/1.45 var(--font-body);
+  padding-block:0 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:640px;margin:0 auto}
+header{padding-block:18px 10px}
+h1{font:800 26px/1.1 var(--font-display);letter-spacing:-.02em;margin:0}
+.stamp{color:var(--muted);font:400 12px var(--font-data);margin-top:6px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-block:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--fg);
+  font:600 14px var(--font-body);padding:9px 14px;border-radius:999px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+nav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hero{padding-block:14px 4px}
+.label{color:var(--muted);font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase}
+.big{font:500 38px/1.1 var(--font-data);font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:4px}
+.delta{font:500 15px var(--font-data);margin-top:4px}
+.gain{color:var(--gain)}.loss{color:var(--loss)}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.chart{margin-block:14px 6px}
+.chart svg{display:block;width:100%;height:auto}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden;margin-block:14px}
+.stats div{background:var(--surface);padding:12px 14px;min-width:0}
+.stats b{display:block;font:500 17px var(--font-data);font-variant-numeric:tabular-nums;margin-top:3px}
+h2{font:800 17px var(--font-display);margin:24px 0 8px}
+.row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.row .name{font-weight:600}.row .num{font:500 14px var(--font-data);font-variant-numeric:tabular-nums;text-align:right}
+.row .meta{color:var(--muted);font-size:12.5px}
+.pill{display:inline-block;font:600 11px var(--font-body);letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:1px}
+.pill.short{background:transparent;border:1px solid var(--loss);color:var(--loss)}
+.notice{border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:12px 14px;margin-block:14px}
+.empty{color:var(--muted);padding:18px 0}
+.votes{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.v{font:500 11.5px var(--font-data);padding:3px 7px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.v.BUY{color:var(--gain);border-color:var(--gain)}.v.SELL{color:var(--loss);border-color:var(--loss)}
+.foot{color:var(--muted);font-size:12px;margin-top:28px}
+@media (prefers-reduced-motion:no-preference){.big{transition:opacity .2s}}
+</style>
+<main>
+  <header>
+    <h1>BND Trading</h1>
+    <div class="stamp" id="stamp"></div>
+  </header>
+  <nav id="tabs" role="tablist" aria-label="Conturi"></nav>
+  <section id="view"></section>
+  <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj.</p>
+</main>
+<script>
+const DATA = /*DATA*/null;
+const view = document.getElementById("view"), tabs = document.getElementById("tabs");
+const names = {reguli:"paper", cripto:"crypto", ai:"ai"};
+const money = (v, c) => ((v == null ? "–" : new Intl.NumberFormat("ro-RO",{maximumFractionDigits:0}).format(v)) + " " + (c || "")).trim();
+const money2 = v => new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(v);
+const pct = v => (v >= 0 ? "+" : "") + new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(v) + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const when = iso => new Intl.DateTimeFormat("ro-RO",{timeZone:"Europe/Berlin",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));
+document.getElementById("stamp").textContent = "Actualizat " + when(DATA.generated) + " (ora Germaniei)";
+
+const TABS = [["reguli","Reguli"],["cripto","Cripto AI"],["ai","AI unificat"],["consiliu","Consiliul"]];
+tabs.innerHTML = TABS.map(([id,t]) => `<button role="tab" data-id="${id}" id="tab-${id}">${t}</button>`).join("");
+tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; } });
+
+function spark(history, initial) {
+  const pts = history.map(h => h.equity); if (initial != null) pts.unshift(initial);
+  if (pts.length < 2 || Math.max(...pts) === Math.min(...pts))
+    return `<p class="sub" style="margin-block:12px">Graficul apare când valoarea contului începe să se miște.</p>`;
+  const W = 320, H = 90, P = 6, lo = Math.min(...pts), hi = Math.max(...pts), span = (hi - lo) || 1;
+  const x = i => P + i * (W - 2*P) / (pts.length - 1), y = v => H - P - (v - lo) / span * (H - 2*P);
+  const line = pts.map((v,i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+  const up = pts[pts.length-1] >= pts[0];
+  const col = up ? "var(--gain)" : "var(--loss)";
+  return `<div class="chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Valoarea contului în timp">
+    <line x1="${P}" x2="${W-P}" y1="${y(pts[0])}" y2="${y(pts[0])}" stroke="var(--line)" stroke-dasharray="3 4"/>
+    <path d="${line} L${x(pts.length-1)} ${H-P} L${x(0)} ${H-P} Z" fill="${col}" opacity=".10"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
+    <circle cx="${x(pts.length-1)}" cy="${y(pts[pts.length-1])}" r="3.5" fill="${col}"/></svg></div>`;
+}
+
+function account(a) {
+  if (!a.exists) return `<p class="empty">Contul „${esc(a.title)}” nu există încă.</p>`;
+  const ch = 100 * (a.equity / a.initial - 1), cls = ch >= 0 ? "gain" : "loss";
+  const notice = a.kill_switch ? `<div class="notice"><b>Oprire de siguranță activă.</b> ${esc(a.kill_reason || "")}</div>` : "";
+  const pos = a.positions.length ? a.positions.map(p => {
+    const side = p.quantity < 0 ? "short" : "long";
+    return `<div class="row"><div><span class="name">${esc(p.symbol)}</span><span class="pill ${side}">${side}</span>
+      <div class="meta">intrare ${money2(p.avg)} · acum ${money2(p.last)}${p.stop ? " · stop " + money2(p.stop) : ""}</div></div>
+      <div class="num">${money(p.value, "")}<div class="${p.pnl >= 0 ? "gain" : "loss"}">${p.pnl >= 0 ? "+" : ""}${money2(p.pnl)}</div></div></div>`;
+  }).join("") : `<p class="empty">Nicio poziție deschisă: banii stau în numerar.</p>`;
+  const ord = a.orders.length ? a.orders.map(o => `<div class="row"><div><span class="name">${esc(o.symbol)}</span><span class="pill ${o.side==="SELL"?"short":""}">${o.side==="BUY"?"cumpără":"vinde"}</span>
+      <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></div>`).join("")
+    : `<p class="empty">Nicio comandă în așteptare.</p>`;
+  return `${notice}<div class="hero"><div class="label">${esc(a.title)} · ${esc(a.currency)}</div>
+    <div class="big">${money(a.equity, "")}</div><div class="delta ${cls}">${pct(ch)} față de start (${money(a.initial,"")})</div>
+    <div class="sub">${esc(a.subtitle)}</div></div>${spark(a.history, a.initial)}
+    <div class="stats"><div><span class="label">Numerar</span><b>${money(a.cash,"")}</b></div>
+    <div><span class="label">Leverage</span><b>${a.leverage == null ? "–" : money2(a.leverage) + "x"}</b></div>
+    <div><span class="label">Poziții</span><b>${a.positions.length}</b></div>
+    <div><span class="label">Tranzacții</span><b>${a.fills}</b></div></div>
+    <h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}`;
+}
+
+function council(c) {
+  if (!c.exists || !c.day) return `<p class="empty">Consiliul nu a votat încă.</p>`;
+  const rows = c.markets.map(m => {
+    const votes = Object.entries(m.votes).map(([a,v]) => `<span class="v ${v}">${esc(a)} ${v}</span>`).join("");
+    return `<div class="row" style="grid-template-columns:1fr"><div><span class="name">${esc(m.symbol)}</span>
+      <span class="pill ${m.decision==="SELL"?"short":""}">${m.decision==="HOLD"?"nu tranzacționa":m.decision==="BUY"?"cumpără":"vinde"}</span>
+      <div class="votes">${votes}</div></div></div>`;
+  }).join("");
+  return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
+    <div class="big">${c.markets.length} piețe</div>
+    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${rows}`;
+}
+
+function show() {
+  const id = (location.hash || "#reguli").slice(1);
+  const key = TABS.some(t => t[0] === id) ? id : "reguli";
+  tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.id === key)));
+  view.innerHTML = key === "consiliu" ? council(DATA.council)
+    : account(DATA.accounts.find(a => a.key === names[key]));
+}
+addEventListener("hashchange", show); show();
+</script>
