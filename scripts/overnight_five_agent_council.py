@@ -41,8 +41,9 @@ def cost(raw):
     return value if value.is_finite() and value >= 0 else None
 
 def _clean(text):
-    """A typed or pasted list item without spaces, quotes or backticks."""
-    return text.strip().strip("`'\"").strip()
+    """A typed or pasted list item without spaces, quotes or backticks
+    (straight or the curly ones phone keyboards substitute)."""
+    return text.strip().strip("`'\"\u2018\u2019\u201c\u201d").strip()
 
 
 def selected_agents(raw=None):
@@ -110,7 +111,9 @@ def validated_proposal(payload):
 def audit_files(raw=None):
     """Files named in BND_AUDIT_FILES (comma-separated, under src/), else None."""
     raw = os.getenv("BND_AUDIT_FILES", "") if raw is None else raw
-    names = [_clean(n).removeprefix("./") for n in raw.split(",") if _clean(n)]
+    # Lower case: phone keyboards capitalise the first letter ("Src/..."), and
+    # every file under src/ has a lower-case name.
+    names = [_clean(n).lower().removeprefix("./") for n in raw.split(",") if _clean(n)]
     if not names:
         return None
     root = Path("src").resolve()

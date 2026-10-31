@@ -10,16 +10,16 @@ on:
   workflow_dispatch:
     inputs:
       paid_test_confirmation:
-        description: 'Type RUN-PAID-TEST to authorize one manual OpenRouter test (local cap, not provider guarantee)'
+        description: 'Scrie exact RUN-PAID-TEST ca să pornești un test plătit (șterge NO)'
         required: true
         type: string
         default: 'NO'
       agents:
-        description: 'Optional: ask only these agents, comma-separated (deepseek,gpt,claude,gemini,grok); blank = all five'
+        description: 'Opțional: doar acești agenți, cu virgulă (deepseek,gpt,claude,gemini,grok). Gol = toți cinci'
         default: ''
         type: string
       files:
-        description: 'Optional: audit only these files under src/ with more text each, comma-separated (one file is read in full, e.g. src/bnd/paper_engine.py); blank = every file, short excerpts'
+        description: 'Opțional: fișiere de auditat, ex. src/bnd/paper_engine.py (un fișier se citește întreg). Gol = toate, pe scurt'
         default: ''
         type: string
   schedule:
