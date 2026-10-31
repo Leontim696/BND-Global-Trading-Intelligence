@@ -89,3 +89,16 @@ def test_ai_universe_covers_every_council_market():
     names = [m.name for m in select(universe="ai")]
     assert set(DEFAULT_MARKETS) <= set(names)
     assert names == list(dict.fromkeys(names)) and len(names) == 13
+
+
+def test_old_decisions_without_net_use_the_saved_votes(tmp_path):
+    from src.bnd.fusion_council import Opinion
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    council = FusionCouncil()
+    council.submit(Opinion("deepseek", Vote.BUY, "test", 0.55))
+    decision = CouncilDecision(Vote.HOLD, DecisionRule.MAJORITY, {}, (), (), False, ())
+    now = datetime(2026, 11, 1, 21, 40, tzinfo=timezone.utc)
+    registry.record("2026-11-01:NASDAQ100", now, "NASDAQ100", 690.0, council, decision,
+                    meta={"bot_signal": 1})
+
+    assert build_signals(registry, ["NASDAQ100"], "2026-11-01")["signals"] == {"NASDAQ100": 0.5}

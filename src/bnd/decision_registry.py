@@ -76,6 +76,13 @@ class DecisionRegistry:
             row = db.execute("SELECT meta FROM decisions WHERE id = ?", (decision_id,)).fetchone()
         return None if row is None else json.loads(row[0] or "{}")
 
+    def net_votes(self, decision_id: str) -> int:
+        """Voturi finale BUY minus SELL ale unei decizii (HOLD nu contează)."""
+        with self._db() as db:
+            rows = db.execute("SELECT vote FROM votes WHERE decision_id = ? AND stage = 'final'",
+                              (decision_id,)).fetchall()
+        return sum({"BUY": 1, "SELL": -1}.get(vote, 0) for (vote,) in rows)
+
     def record(self, decision_id: str, time: datetime, symbol: str, price: float,
                council: FusionCouncil, decision: CouncilDecision, horizon_days: int = 5,
                meta: dict | None = None) -> bool:
