@@ -17,7 +17,9 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
+from . import model_registry
 from .paper_engine import PaperEngine, PaperEngineError
+from .reconcile import reconcile
 
 ACCOUNTS = (("paper", "Reguli matematice", "Strategie: regime_switch, piețe ETF/forex/crypto"),
             ("crypto", "Cripto (AI)", "Consiliul AI pe 5 monede"),
@@ -47,6 +49,8 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
         return {**base, "exists": False}
     try:
         summary = engine.summary()
+        account_row = engine.account()
+        checked = reconcile(engine)
         history = [{"t": e["payload"]["time"], "equity": e["payload"]["equity"]}
                    for e in engine.journal("daily_run")]
         positions, live_equity, live_used = [], summary["equity"], 0
@@ -73,6 +77,11 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                 "kill_reason": summary["kill_reason"], "fills": summary["fills"],
                 "history": history[-60:], "positions": positions, "orders": orders,
                 "live_equity": live_equity, "live": bool(live_used),
+                "peak": account_row["peak_equity"],
+                "drawdown_pct": 100 * (1 - live_equity / account_row["peak_equity"])
+                if account_row["peak_equity"] > 0 and live_equity < account_row["peak_equity"] else 0.0,
+                "reconciled": checked["ok"],
+                "costs_total": checked["costs"]["total"],
                 "last_run": history[-1]["t"] if history else None}
     finally:
         engine.close()
@@ -105,7 +114,33 @@ def read_council(folder) -> dict:
     registry = DecisionRegistry(path)
     return {"exists": True, "day": day, "markets": markets, "settled": settled,
             "decisions": total, "comparison": registry.comparison(),
-            "agents": registry.performance()["agents"], "costs": read_costs(folder)}
+            "agents": registry.performance()["agents"], "costs": read_costs(folder),
+            "models": model_registry.build(path, Path(folder) / "costs.sqlite")["agents"],
+            "last_round": last_round(path)}
+
+
+def last_round(path) -> dict:
+    """Starea fiecărui agent în ultima zi analizată: ok/failed și latența, din urma analizelor."""
+    db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        rows = db.execute("SELECT id, meta FROM decisions ORDER BY id DESC LIMIT 60").fetchall()
+    finally:
+        db.close()
+    if not rows:
+        return {}
+    day = rows[0][0][:10]
+    state: dict = {}
+    for decision_id, meta in rows:
+        if decision_id[:10] != day:
+            continue
+        for agent, a in (json.loads(meta or "{}").get("trace") or {}).get("agents", {}).items():
+            cell = state.setdefault(agent, {"ok": 0, "failed": 0, "latency": []})
+            cell["ok" if a.get("status") == "ok" else "failed"] += 1
+            if a.get("latency_s") is not None:
+                cell["latency"].append(a["latency_s"])
+    return {"day": day, "agents": {k: {"ok": v["ok"], "failed": v["failed"],
+                                         "mean_latency_s": sum(v["latency"]) / len(v["latency"]) if v["latency"] else None}
+                                   for k, v in state.items()}}
 
 
 def read_costs(folder) -> dict | None:
@@ -132,6 +167,8 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
     for a in accounts:
         if not a.get("exists"):
             continue
+        if a.get("reconciled") is False:
+            found.append(f"{a['title']}: discrepanță contabilă (reconcilierea independentă nu se potrivește)")
         if a["kill_switch"]:
             found.append(f"{a['title']}: oprire de siguranță activă ({a['kill_reason']})")
         last = a.get("last_run")
@@ -155,12 +192,36 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
     council = read_council(council)
     alerts = alerts_from(accounts, runs, now)
+    quotes_time = (quotes or {}).get("time")
+    if quotes_time and now - datetime.fromisoformat(quotes_time) > timedelta(hours=6):
+        alerts.append("Prețurile de acum sunt mai vechi de 6 ore (feed întârziat)")
+    for agent, cell in (council.get("last_round") or {}).get("agents", {}).items() if council.get("exists") else []:
+        if cell["failed"]:
+            alerts.append(f"Agentul {agent} a eșuat la {cell['failed']} piețe în ultima rundă")
     costs = council.get("costs") if council.get("exists") else None
     if costs and costs["remaining"] < LOW_BALANCE_USD:
         alerts.append(f"Soldul cheii AI e mic: au mai rămas {costs['remaining']:.2f} $. Reîncarc-o.")
     return {"generated": now.isoformat(timespec="minutes"),
-            "quotes_time": (quotes or {}).get("time"),
+            "quotes_time": quotes_time,
             "accounts": accounts, "council": council, "alerts": alerts}
+
+
+def status_summary(data: dict) -> dict:
+    """JSON mic, plat, pentru senzori (de exemplu Home Assistant): o valoare simplă pe cont."""
+    accounts = {}
+    for a in data["accounts"]:
+        if not a.get("exists"):
+            continue
+        value = a["live_equity"] if a["live"] else a["equity"]
+        accounts[a["key"]] = {"equity": round(value, 2), "currency": a["currency"],
+                              "return_pct": round(100 * (value / a["initial"] - 1), 3),
+                              "drawdown_pct": round(a["drawdown_pct"], 3),
+                              "positions": len(a["positions"]), "orders": len(a["orders"]),
+                              "kill_switch": a["kill_switch"], "reconciled": a["reconciled"]}
+    costs = (data["council"] or {}).get("costs") or {}
+    return {"generated": data["generated"], "ok": not data["alerts"], "alerts": data["alerts"],
+            "accounts": accounts, "ai_balance_usd": costs.get("remaining"),
+            "ai_spent_today_usd": costs.get("today")}
 
 
 def render(data: dict, template: str) -> str:
@@ -178,6 +239,7 @@ def main(argv=None) -> int:
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
     parser.add_argument("--template", required=True)
     parser.add_argument("--out", required=True)
+    parser.add_argument("--status-json", help="scrie și un JSON mic pentru senzori (Home Assistant)")
     args = parser.parse_args(argv)
     try:
         quotes = json.loads(Path(args.quotes).read_text()) if args.quotes and Path(args.quotes).exists() else None
@@ -188,6 +250,9 @@ def main(argv=None) -> int:
         print("Error:", exc, file=sys.stderr)
         return 2
     Path(args.out).write_text(html, encoding="utf-8")
+    if args.status_json:
+        Path(args.status_json).write_text(json.dumps(status_summary(data), indent=2,
+                                                     ensure_ascii=False), encoding="utf-8")
     return 0
 
 

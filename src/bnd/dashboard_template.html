@@ -128,7 +128,9 @@ function account(a) {
     <div class="stats"><div><span class="label">Numerar</span><b>${money(a.cash,"")}</b></div>
     <div><span class="label">Leverage</span><b>${a.leverage == null ? "–" : money2(a.leverage) + "x"}</b></div>
     <div><span class="label">Poziții</span><b>${a.positions.length}</b></div>
-    <div><span class="label">Tranzacții</span><b>${a.fills}</b></div></div>
+    <div><span class="label">Tranzacții</span><b>${a.fills}</b></div>
+    <div><span class="label">Drawdown</span><b>${a.drawdown_pct ? "−" + money2(a.drawdown_pct) + "%" : "0,00%"}</b></div>
+    <div><span class="label">Costuri plătite</span><b>${money2(a.costs_total)}</b></div></div>
     <h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}`;
 }
 
@@ -156,6 +158,16 @@ function comparison(c) {
     <h2>Pe agenți</h2><div class="scroll"><table><tr><th>Agent</th><th>Păreri</th><th>Bine</th><th>Brier</th></tr>${ag}</table></div>`;
 }
 
+function agentsPanel(c) {
+  const rows = Object.entries(c.models || {}).map(([name, m]) => {
+    const r = ((c.last_round || {}).agents || {})[name];
+    const state = !r ? "–" : r.failed ? `<span class="loss">${r.failed} eșecuri</span>` : `<span class="gain">ok</span>`;
+    const lat = r && r.mean_latency_s != null ? r.mean_latency_s.toFixed(1) + " s" : "–";
+    return `<tr><td>${esc(name)}</td><td>${state}</td><td>${lat}</td><td>${money2(m.total_cost_usd)}</td></tr>`;
+  }).join("");
+  return rows ? `<h2>Cei cinci agenți</h2><div class="scroll"><table><tr><th>Agent</th><th>Ultima rundă</th><th>Latență</th><th>Cost $</th></tr>${rows}</table></div>` : "";
+}
+
 function council(c) {
   if (!c.exists || !c.day) return `<p class="empty">Consiliul nu a votat încă.</p>`;
   const rows = c.markets.map(m => {
@@ -166,7 +178,7 @@ function council(c) {
   }).join("");
   return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
     <div class="big">${c.markets.length} piețe</div>
-    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : ""}${rows}${comparison(c)}`;
+    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : ""}${agentsPanel(c)}${rows}${comparison(c)}`;
 }
 
 function show() {
