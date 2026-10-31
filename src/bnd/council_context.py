@@ -15,7 +15,9 @@ from .strategies import sma_crossover
 
 HORIZON_DAYS = 5
 LABELS = {"SP500": "S&P 500 (ETF)", "GOLD": "aur (ETF)", "BITCOIN": "Bitcoin",
-          "EURUSD": "curs EUR/USD", "NASDAQ100": "Nasdaq 100 (ETF)", "ETHEREUM": "Ethereum"}
+          "EURUSD": "curs EUR/USD", "NASDAQ100": "Nasdaq 100 (ETF)", "ETHEREUM": "Ethereum",
+          "SILVER": "argint (ETF)", "CRUDE_OIL": "petrol (ETF)", "USDJPY": "curs USD/JPY",
+          "US10Y_NOTE": "obligațiuni americane pe 10 ani (ETF)"}
 
 
 def _change(candles: Sequence[Candle], days: int) -> float | None:

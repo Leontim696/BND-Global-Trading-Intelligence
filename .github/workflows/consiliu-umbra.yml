@@ -24,7 +24,7 @@ on:
         type: string
       markets:
         description: 'Piețele, cu virgulă (litere mari)'
-        default: 'SP500,GOLD,BITCOIN,EURUSD'
+        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE'
         type: string
 
 permissions:
@@ -46,7 +46,7 @@ jobs:
       MODE_INPUT: ${{ inputs.mode }}
       CONFIRMATION: ${{ inputs.paid_test_confirmation }}
       DAILY_SWITCH: ${{ vars.BND_COUNCIL_DAILY }}
-      MARKETS: ${{ inputs.markets || 'SP500,GOLD,BITCOIN,EURUSD' }}
+      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v7

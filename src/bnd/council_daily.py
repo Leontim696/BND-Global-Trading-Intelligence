@@ -41,13 +41,18 @@ from .market_data import MarketDataError, load_csv
 from .openrouter_adapter import OpenRouterAdapter
 from .openrouter_models import fetch, parse
 
-DEFAULT_MARKETS = ("SP500", "GOLD", "BITCOIN", "EURUSD")
+# Ten markets from five asset classes: a round costs about 0.02 USD per market,
+# and more markets give more decisions to compare in 16 days.
+DEFAULT_MARKETS = ("SP500", "NASDAQ100", "GOLD", "SILVER", "CRUDE_OIL", "BITCOIN",
+                   "ETHEREUM", "EURUSD", "USDJPY", "US10Y_NOTE")
 ASSET_CLASS = {"SP500": "index", "NASDAQ100": "index", "GOLD": "commodity",
-               "BITCOIN": "crypto", "ETHEREUM": "crypto", "EURUSD": "forex"}
+               "SILVER": "commodity", "CRUDE_OIL": "commodity", "BITCOIN": "crypto",
+               "ETHEREUM": "crypto", "EURUSD": "forex", "USDJPY": "forex",
+               "US10Y_NOTE": "bond"}
 DEFAULT_MODELS = {
-    # Sol, not the flagship Astra: no sign yet that it predicts prices better,
-    # and a round costs about a third (set BND_MODEL_GPT to switch back).
-    "gpt": "openai/gpt-6.1-sol",
+    # The flagship: a round measured at 0.018 USD per market with Sol, so the
+    # difference is small (set BND_MODEL_GPT to use another variant).
+    "gpt": "openai/gpt-6-astra",
     "claude": "anthropic/claude-opus-5.5",
     "gemini": "google/gemini-4-argon",
     "grok": "x-ai/grok-4.7",
