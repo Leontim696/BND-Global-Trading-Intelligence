@@ -38,3 +38,44 @@ def test_render_puts_data_in_the_template_and_escapes_script_ends():
 def test_real_template_has_the_data_slot():
     from pathlib import Path
     assert "/*DATA*/null" in (Path(dashboard.__file__).parent / "dashboard_template.html").read_text(encoding="utf-8")
+
+
+def test_live_prices_change_the_valuation_and_alerts_are_listed(tmp_path):
+    from datetime import timedelta
+    from src.bnd.paper_engine import Instrument, OrderRequest
+    from src.bnd.market_data import Candle
+
+    def candle(time, o, h, l, c):
+        return Candle(time, o, h, l, c, 1000)
+
+    engine = PaperEngine.create(tmp_path / "paper.sqlite", 10_000.0, currency="USD", now=NOW)
+    engine.register_instrument(Instrument(symbol="AAA", asset_class="index", fee_pct=0, slippage_pct=0))
+    engine.on_bar("AAA", candle(NOW - timedelta(days=1), 100, 101, 99, 100))
+    engine.submit_order(OrderRequest("o1", "AAA", "BUY", 10, stop_loss=90), NOW)
+    engine.on_bar("AAA", candle(NOW, 100, 101, 99, 100))
+    engine.record("daily_run", {"time": (NOW - timedelta(hours=50)).isoformat(), "equity": 10_000.0}, NOW)
+    engine.close()
+
+    data = dashboard.collect(tmp_path, None, None, None, NOW,
+                             quotes={"time": NOW.isoformat(), "quotes": {"AAA": [110.0, NOW.isoformat()]}},
+                             runs=[{"workflowName": "Bot virtual zilnic", "event": "schedule",
+                                    "conclusion": "failure", "createdAt": "2026-10-31T05:00:00Z"}])
+
+    account = data["accounts"][0]
+    assert account["live"] and account["live_equity"] > account["equity"]
+    assert any("mai veche" in a for a in data["alerts"])
+    assert any("a eșuat" in a for a in data["alerts"])
+
+
+def test_quotes_snapshot_collects_names_and_times():
+    from src.bnd import quotes_snapshot
+    seen = []
+
+    def fetch(symbol):
+        seen.append(symbol)
+        return 12.5, NOW
+
+    result = quotes_snapshot.snapshot(fetch)
+
+    assert result["quotes"]["BITCOIN"] == [12.5, NOW.isoformat()]
+    assert "SPY" in seen and "SOL-USD" in seen
