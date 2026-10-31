@@ -134,3 +134,49 @@ class FailureDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result["cost_usd"], "0.02")
         self.assertEqual(result["finish_reason"], "length")
         self.assertEqual(result["error_detail"], "Incomplete response")
+
+
+class TargetedRoundTests(unittest.TestCase):
+    def test_agent_selection(self):
+        self.assertEqual(m.selected_agents(""), m.AGENTS)
+        self.assertEqual(m.selected_agents("gemini, claude"), ("CLAUDE", "GEMINI"))
+        for bad in ("nobody", "claude,claude", "claude,llama"):
+            with self.assertRaises(ValueError):
+                m.selected_agents(bad)
+
+    def test_configuration_needs_models_only_for_chosen_agents(self):
+        env = {"BND_MODEL_CLAUDE": "anthropic/claude-opus-5.5", "OPENROUTER_API_KEY": "k",
+               "BND_MAX_RUN_COST_USD": "0.5", "BND_MAX_CALL_COST_USD": "0.2"}
+        with patch.dict(os.environ, env, clear=True):
+            models, run, per, _ = m.configuration(("CLAUDE",))
+            self.assertEqual(models, {"CLAUDE": "anthropic/claude-opus-5.5"})
+            with self.assertRaises(ValueError):
+                m.configuration(m.AGENTS)
+
+    def test_only_chosen_agents_are_called(self):
+        calls = []
+
+        def fake(agent, model, body):
+            calls.append(agent)
+            return {"status": "ok", "billing": "reported", "cost_usd": "0.01", "model": model}
+
+        chosen = ("CLAUDE", "GEMINI")
+        result = m.process_agents({a: "v/m" for a in chosen}, {a: b"{}" for a in chosen}, fake,
+                                  Decimal("0.5"), Decimal("0.2"), chosen)
+
+        self.assertEqual(calls, ["CLAUDE", "GEMINI"])
+        self.assertEqual((result["status"], result["total_agents"]), ("ok", 2))
+
+    def test_audit_files_are_checked_and_get_more_text(self):
+        files = m.audit_files("src/bnd/paper_engine.py, src/bnd/safety.py")
+        self.assertEqual([f.name for f in files], ["paper_engine.py", "safety.py"])
+        self.assertIsNone(m.audit_files(""))
+        for bad in ("/etc/passwd", "src/../README.md", "src/bnd/missing.py", "README.md",
+                    "src/bnd"):
+            with self.assertRaises(ValueError):
+                m.audit_files(bad)
+
+        _, coverage = m.sources(files[:1])
+        included, _ = m.sources(files[:1])
+        self.assertEqual(len(included[0]["excerpt"]), min(14000, included[0]["total_chars"]))
+        self.assertEqual(coverage["included_files"], 1)

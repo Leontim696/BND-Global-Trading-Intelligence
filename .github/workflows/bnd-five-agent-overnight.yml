@@ -14,6 +14,14 @@ on:
         required: true
         type: string
         default: 'NO'
+      agents:
+        description: 'Optional: ask only these agents, comma-separated (deepseek,gpt,claude,gemini,grok); blank = all five'
+        default: ''
+        type: string
+      files:
+        description: 'Optional: audit only these files under src/ with more text each, comma-separated (e.g. src/bnd/paper_engine.py,src/bnd/risk_engine.py); blank = every file, short excerpts'
+        default: ''
+        type: string
   schedule:
     - cron: "20 20 * * *"
 
@@ -59,6 +67,8 @@ jobs:
         timeout-minutes: 5
         env:
           BND_ALLOW_PAID_AI: 'true'
+          BND_ONLY_AGENTS: ${{ inputs.agents }}
+          BND_AUDIT_FILES: ${{ inputs.files }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python scripts/overnight_five_agent_council.py
       - name: Say clearly whether the paid step ran
