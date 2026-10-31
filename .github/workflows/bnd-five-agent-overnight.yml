@@ -31,13 +31,19 @@ jobs:
     env:
       # Paid calls ONLY for explicit manual dispatch with exact confirmation.
       # Push and schedule ALWAYS remain disabled.
-      BND_MAX_RUN_COST_USD: "0.25"
-      BND_MAX_CALL_COST_USD: "0.05"
-      BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT || 'openai/gpt-4o-mini' }}
-      BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE || 'anthropic/claude-haiku-4.5' }}
-      BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI || 'google/gemini-2.5-flash-lite' }}
-      BND_MODEL_GROK: ${{ vars.BND_MODEL_GROK || 'x-ai/grok-4.5' }}
-      BND_MODEL_DEEPSEEK: ${{ vars.BND_MODEL_DEEPSEEK || 'deepseek/deepseek-chat' }}
+      # Owner approved up to 1 USD per round. The prompt is the project's
+      # source (about 15,000 tokens), so one Opus call costs about 0.07 USD:
+      # a 0.05 call cap would stop the round after the second agent. Real
+      # cost of the five approved models is about 0.21 USD; the run cap
+      # keeps the worst case at 0.50 USD. A repository variable
+      # BND_MODEL_<AGENT> overrides the model.
+      BND_MAX_RUN_COST_USD: "0.50"
+      BND_MAX_CALL_COST_USD: "0.15"
+      BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT || 'openai/gpt-6.1-sol' }}
+      BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE || 'anthropic/claude-opus-5.5' }}
+      BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI || 'google/gemini-3.1-pro-preview' }}
+      BND_MODEL_GROK: ${{ vars.BND_MODEL_GROK || 'x-ai/grok-4.7' }}
+      BND_MODEL_DEEPSEEK: ${{ vars.BND_MODEL_DEEPSEEK || 'deepseek/deepseek-v4-pro' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v7
