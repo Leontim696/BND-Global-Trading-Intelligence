@@ -1,0 +1,30 @@
+name: Test notificare telefon
+
+# Trimite o singură notificare de probă pe telefon (aplicația ntfy), ca să verifici
+# că secretul NTFY_TOPIC e corect. Nu face nimic altceva: nu tranzacționează, nu cheamă AI.
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Send the test notification
+        run: |
+          if [ -z "$NTFY_TOPIC" ]; then
+            echo "Secretul NTFY_TOPIC nu există încă: adaugă-l în Settings > Secrets and variables > Actions." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          python -m src.bnd.notify --title "BND: test" --message "Dacă vezi asta, notificările merg." --priority default
+          echo "Notificarea de probă a fost trimisă." >> "$GITHUB_STEP_SUMMARY"
