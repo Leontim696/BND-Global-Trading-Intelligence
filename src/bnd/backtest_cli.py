@@ -595,6 +595,7 @@ def _portfolio_config(args, **overrides) -> PortfolioConfig:
         vol_lookback=args.sizing_lookback,
         max_leverage=args.max_leverage,
         max_weight=args.max_weight,
+        max_group_weight=args.max_group_weight,
         rebalance_threshold=args.rebalance / 100,
         financing_pct_annual=_financing(args),
         cash_rate_pct_annual=args.cash_rate,
@@ -945,7 +946,7 @@ def build_parser() -> argparse.ArgumentParser:
     universe.add_argument("--end")
     universe.add_argument("--markets", help="comma-separated names, default all")
     universe.add_argument("--classes", help="e.g. forex,commodity,index,bond,crypto")
-    universe.add_argument("--universe", choices=["futures", "etf"], default="futures",
+    universe.add_argument("--universe", choices=["futures", "etf", "stocks"], default="futures",
                           help="etf: tradable roll-free ETFs instead of futures/indices")
     universe.add_argument("--out-dir", required=True)
     universe.add_argument("--update", action="store_true",
@@ -959,7 +960,7 @@ def build_parser() -> argparse.ArgumentParser:
     book.add_argument("--data-dir", required=True)
     book.add_argument("--markets")
     book.add_argument("--classes")
-    book.add_argument("--universe", choices=["futures", "etf"], default="futures")
+    book.add_argument("--universe", choices=["futures", "etf", "stocks"], default="futures")
     book.add_argument("--skip-missing", action="store_true")
     book.add_argument("--members",
                       help="combo/selector: comma-separated strategies (combo default "
@@ -972,6 +973,9 @@ def build_parser() -> argparse.ArgumentParser:
     book.add_argument("--max-leverage", type=float, default=3.0)
     book.add_argument("--max-weight", type=float, default=1.0,
                       help="largest |weight| for one market")
+    book.add_argument("--max-group-weight", type=float,
+                      help="largest total |weight| of one sector (shares) or asset class, "
+                           "as a share of equity (e.g. 0.4); default: no limit")
     book.add_argument("--rebalance", type=float, default=5.0,
                       help="resize when a weight moves this many points")
     book.add_argument("--financing", type=float,
