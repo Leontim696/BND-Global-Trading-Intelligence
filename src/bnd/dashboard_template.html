@@ -141,7 +141,7 @@ function summary() {
       <div class="big">${money(v, "")}</div><div class="delta ${ch >= 0 ? "gain" : "loss"}">${pct(ch)} · ${a.positions.length} poziții · ${a.orders.length} comenzi</div></button>`;
   }).join("");
   const c = DATA.council, cost = c.exists && c.costs ? `<div class="stats"><div><span class="label">Consiliu azi</span><b>${money2(c.costs.today)} $</b></div>
-    <div><span class="label">Rămas din cheie (est.)</span><b>${money2(c.costs.remaining)} $</b></div></div>` : "";
+    <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : "";
   return `<div class="cards">${cards}</div>${cost}<p class="sub">Atinge un cont pentru detalii. Cele trei conturi sunt separate: pierderea unuia nu o afectează pe a celorlalte.</p>`;
 }
 
@@ -166,7 +166,7 @@ function council(c) {
   }).join("");
   return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
     <div class="big">${c.markets.length} piețe</div>
-    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din ${c.costs.limit} $ (est.)</span><b>${money2(c.costs.remaining)} $</b></div></div>` : ""}${rows}${comparison(c)}`;
+    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : ""}${rows}${comparison(c)}`;
 }
 
 function show() {
