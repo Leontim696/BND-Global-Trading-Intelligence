@@ -318,3 +318,17 @@ def test_cli_cross_momentum_account(tmp_path, monkeypatch, capsys):
                                      "--sizing-lookback", "20"]) == 0
     report = json.loads(capsys.readouterr().out)
     assert report["signals"] == {"UP": 1, "DOWN": -1, "FX": 0}
+
+
+
+def test_zero_atr_skips_the_market_instead_of_crashing(tmp_path, monkeypatch):
+    data = make_data()
+    engine = engine_at(tmp_path)
+    monkeypatch.setattr(paper_runner, "average_true_range", lambda candles, period: 0.0)
+
+    report = run_daily(engine, data, MARKETS, factory, config(), "sma", now_after(data))
+
+    skipped = [o for o in report["orders"] if o["status"] == "SKIPPED"]
+    assert skipped and all("ATR is zero" in o["reason"] for o in skipped)
+    assert engine.orders() == []                      # nothing was submitted
+    assert not report["kill_switch"]

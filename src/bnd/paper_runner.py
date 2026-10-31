@@ -215,6 +215,10 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
                 plans.append(plan)
                 continue
             distance = config.stop_atr * average_true_range(candles, config.atr_period)
+            if not distance > 0:
+                plan.update(status="SKIPPED", reason="ATR is zero: no stop distance")
+                plans.append(plan)
+                continue
             stop = price - distance if delta > 0 else price + distance
             if stop <= 0:
                 plan.update(status="SKIPPED", reason="Stop would be at or below zero")
