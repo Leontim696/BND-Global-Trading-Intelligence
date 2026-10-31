@@ -4,6 +4,7 @@ Suportă ce folosesc rapoartele: titluri (#, ##), liste cu «- », tabele cu «|
 **aldin** și _cursiv_. Textul este escapat.
 
     python -m src.bnd.report_html rapoarte/2026-10-31_0821.md > raport.html
+    python -m src.bnd.report_html a.md b.md c.md > lot.html     # mai multe, separate prin linie
 """
 
 import html
@@ -22,7 +23,7 @@ def _cells(line: str) -> list[str]:
     return [cell.strip() for cell in line.strip().strip("|").split("|")]
 
 
-def to_html(markdown: str) -> str:
+def body(markdown: str) -> str:
     out, bullets, table = [], False, []
 
     def close():
@@ -61,15 +62,25 @@ def to_html(markdown: str) -> str:
         elif line.strip():
             out.append(f"<p>{_inline(line)}</p>")
     close()
-    return "<html><body>" + "".join(out) + "</body></html>"
+    return "".join(out)
+
+
+def to_html(markdown: str) -> str:
+    return "<html><body>" + body(markdown) + "</body></html>"
+
+
+def to_html_many(markdowns: list[str]) -> str:
+    """Mai multe rapoarte într-un singur document, în ordinea dată, separate prin linie."""
+    return "<html><body>" + "<hr>".join(body(m) for m in markdowns) + "</body></html>"
 
 
 def main(argv=None) -> int:
     args = sys.argv[1:] if argv is None else argv
-    if len(args) != 1 or not Path(args[0]).is_file():
-        print("Folosire: python -m src.bnd.report_html raport.md", file=sys.stderr)
+    if not args or not all(Path(a).is_file() for a in args):
+        print("Folosire: python -m src.bnd.report_html raport.md [alt_raport.md ...]",
+              file=sys.stderr)
         return 2
-    sys.stdout.write(to_html(Path(args[0]).read_text(encoding="utf-8")))
+    sys.stdout.write(to_html_many([Path(a).read_text(encoding="utf-8") for a in args]))
     return 0
 
 

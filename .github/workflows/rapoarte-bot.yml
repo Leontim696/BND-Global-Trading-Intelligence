@@ -1,20 +1,15 @@
 name: Raport bot virtual (de 5 ori pe zi)
 
-# Five reports a day for the 16-day forward test: account value now (live
+# An hourly report for the 16-day forward test: account value now (live
 # prices for open positions), positions, orders, risk. Saved on the
-# paper-trading branch (rapoarte/) and posted as a comment on one issue,
-# which reaches the owner's phone through the GitHub app. After the test
-# period (16 days from the account's creation) nothing more is posted.
+# paper-trading branch (rapoarte/) and posted as a comment on one issue per
+# day, which reaches the owner's phone through the GitHub app. After the
+# test period (16 days from the account's creation) nothing more is posted.
 
 on:
   schedule:
-    # UTC. Romania (UTC+2): 08:00, 11:30, 15:30, 19:00, 00:50 (after the
-    # daily paper step at 22:23 UTC).
-    - cron: '0 6 * * *'
-    - cron: '30 9 * * *'
-    - cron: '30 13 * * *'
-    - cron: '0 17 * * *'
-    - cron: '50 22 * * *'
+    # Every hour, on the hour (GitHub may delay a run by a few minutes).
+    - cron: '0 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -77,7 +72,6 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
-      TITLE: "Rapoarte bot virtual (test de 16 zile)"
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -103,14 +97,20 @@ jobs:
             if git push -q origin HEAD:refs/heads/paper-trading; then break; fi
             sleep $((attempt * 5))
           done
-      - name: Post the report on the reports issue
+      - name: Post the report on today's reports issue
         run: |
           set -euo pipefail
+          title="Rapoarte bot virtual $(date -u +%Y-%m-%d)"
           number=$(gh api "repos/$REPO/issues?state=open&per_page=100" \
-            -q "[.[] | select(.title == \"$TITLE\") | .number][0] // empty")
+            -q "[.[] | select(.title == \"$title\") | .number][0] // empty")
           if [ -z "$number" ]; then
-            number=$(gh api -X POST "repos/$REPO/issues" -f title="$TITLE" \
-              -f body="Aici apar rapoartele botului virtual, de 5 ori pe zi, timp de 16 zile. Ultimul raport este și în fișierul rapoarte/LATEST.md de pe ramura paper-trading." \
+            number=$(gh api -X POST "repos/$REPO/issues" -f title="$title" \
+              -f body="Rapoartele orare ale botului virtual pentru ziua de azi (ora UTC). Ultimul raport este și în rapoarte/LATEST.md de pe ramura paper-trading." \
               -q .number)
           fi
           gh api -X POST "repos/$REPO/issues/$number/comments" -F body=@raport/raport.md > /dev/null
+          # Close the earlier days' report issues, so only today's stays open.
+          for old in $(gh api "repos/$REPO/issues?state=open&per_page=100" \
+              -q ".[] | select((.title | startswith(\"Rapoarte bot virtual \")) and .title != \"$title\") | .number"); do
+            gh api -X PATCH "repos/$REPO/issues/$old" -f state=closed > /dev/null
+          done

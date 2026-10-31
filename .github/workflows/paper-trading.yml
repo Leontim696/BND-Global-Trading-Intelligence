@@ -144,18 +144,23 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
-          if git fetch -q --depth=1 origin paper-trading 2>/dev/null; then
-            git checkout -q -f -B paper-trading FETCH_HEAD
-          else
-            git checkout -q --orphan paper-trading
-          fi
-          cp ../state/paper.sqlite .
-          mkdir -p runs
-          if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
-          if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
-          git add -A
-          git commit -q -m "Paper step $day, run $RUN_ID ($RESULT, source ${SOURCE_SHA:0:7})"
-          # Runs are serialised by the concurrency group, so a plain push
-          # fails loudly instead of overwriting a newer account.
-          git push -q origin HEAD:refs/heads/paper-trading
+          # The hourly report job also writes to this branch (only rapoarte/),
+          # so a rejected push is retried from the newest tip; the account
+          # file is never touched by the reports.
+          for attempt in 1 2 3 4; do
+            if git fetch -q --depth=1 origin paper-trading 2>/dev/null; then
+              git checkout -q -f -B paper-trading FETCH_HEAD
+            else
+              git checkout -q --orphan paper-trading 2>/dev/null || true
+            fi
+            cp ../state/paper.sqlite .
+            mkdir -p runs
+            if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
+            if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
+            git add -A
+            git commit -q -m "Paper step $day, run $RUN_ID ($RESULT, source ${SOURCE_SHA:0:7})" || true
+            if git push -q origin HEAD:refs/heads/paper-trading; then break; fi
+            if [ "$attempt" = 4 ]; then echo "::error::Could not save the account"; exit 1; fi
+            sleep $((attempt * 5))
+          done
           echo "Saved to the paper-trading branch" >> "$GITHUB_STEP_SUMMARY"
