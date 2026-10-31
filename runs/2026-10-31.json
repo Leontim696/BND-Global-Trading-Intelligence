@@ -1,24 +1,77 @@
 {
-  "time": "2026-10-31T11:27:51.800258+00:00",
+  "time": "2026-10-31T22:39:15.174325+00:00",
   "strategy": "ai_council",
-  "candles_processed": 5,
+  "candles_processed": 0,
   "kill_switch": false,
   "kill_reason": null,
   "signals": {
-    "BITCOIN": 0.0,
+    "BITCOIN": -1.0,
     "ETHEREUM": 0.0,
-    "SOLANA": 0.0,
-    "BNB": 0.0,
-    "XRP": 0.0
+    "SOLANA": -0.5,
+    "BNB": -1.0,
+    "XRP": -1.0
   },
   "weights": {
-    "BITCOIN": 0.0,
+    "BITCOIN": -0.26168455460483186,
     "ETHEREUM": 0.0,
-    "SOLANA": 0.0,
-    "BNB": 0.0,
-    "XRP": 0.0
+    "SOLANA": -0.08621097623281443,
+    "BNB": -0.22169851564383491,
+    "XRP": -0.15565347879265085
   },
-  "orders": [],
+  "orders": [
+    {
+      "market": "BITCOIN",
+      "weight_from": 0.0,
+      "weight_to": -0.26168455460483186,
+      "side": "SELL",
+      "quantity": 0.03433741181432628,
+      "price": 77198.2109375,
+      "stop_loss": 83581.53421140356,
+      "risk_capped": true,
+      "client_order_id": "2026-10-30:BITCOIN",
+      "status": "PENDING",
+      "reason": null
+    },
+    {
+      "market": "SOLANA",
+      "weight_from": 0.0,
+      "weight_to": -0.08621097623281443,
+      "side": "SELL",
+      "quantity": 10.019848218420927,
+      "price": 96.21875762939453,
+      "stop_loss": 108.83343622151423,
+      "risk_capped": false,
+      "client_order_id": "2026-10-30:SOLANA",
+      "status": "PENDING",
+      "reason": null
+    },
+    {
+      "market": "BNB",
+      "weight_from": 0.0,
+      "weight_to": -0.22169851564383491,
+      "side": "SELL",
+      "quantity": 3.173890003716727,
+      "price": 703.3541259765625,
+      "stop_loss": 772.4134820800587,
+      "risk_capped": true,
+      "client_order_id": "2026-10-30:BNB",
+      "status": "PENDING",
+      "reason": null
+    },
+    {
+      "market": "XRP",
+      "weight_from": 0.0,
+      "weight_to": -0.15565347879265085,
+      "side": "SELL",
+      "quantity": 1348.9406753337348,
+      "price": 1.2544089555740356,
+      "stop_loss": 1.4168970501270242,
+      "risk_capped": true,
+      "client_order_id": "2026-10-30:XRP",
+      "status": "PENDING",
+      "reason": null
+    }
+  ],
   "scenarios": [
     {
       "scenario": "crisis_2008",
