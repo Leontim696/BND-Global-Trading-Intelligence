@@ -113,7 +113,7 @@ jobs:
           done
           python -m src.bnd.backtest_summary "${args[@]}" > backtest-reports/summary.md
           cat backtest-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: bnd-backtest-${{ github.run_id }}

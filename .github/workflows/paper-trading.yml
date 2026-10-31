@@ -102,7 +102,7 @@ jobs:
           python -m src.bnd.paper_runner --state state/paper.sqlite --data-dir data \
             --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
           cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         # Also after a failure: a safe stop (kill switch) must be kept.
         if: always() && steps.restore.outputs.account != 'none'
         with:
