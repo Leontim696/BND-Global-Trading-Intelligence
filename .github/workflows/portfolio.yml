@@ -130,7 +130,7 @@ jobs:
       INTERVAL: 1d
       STRATEGY: ${{ inputs.strategy }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: bnd-portfolio-${{ github.run_id }}
           path: reports
