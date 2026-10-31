@@ -42,11 +42,11 @@ jobs:
       # Owner approved up to 1 USD per round. The prompt is the project's
       # source (about 15,000-17,000 tokens). Per call at that size: GPT-6
       # Astra about 0.20 USD, Claude Opus 5.5 about 0.08, the others 0.03-0.04;
-      # the round about 0.37 USD. Caps: 0.30 per call, 0.80 per run (the run
+      # the round about 0.37 USD. Caps: 0.40 per call, 0.90 per run (the run
       # stops before a call that could pass it). A repository variable
       # BND_MODEL_<AGENT> overrides the model.
-      BND_MAX_RUN_COST_USD: "0.80"
-      BND_MAX_CALL_COST_USD: "0.30"
+      BND_MAX_RUN_COST_USD: "0.90"
+      BND_MAX_CALL_COST_USD: "0.40"
       BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT || 'openai/gpt-6-astra' }}
       BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE || 'anthropic/claude-opus-5.5' }}
       BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI || 'google/gemini-4-argon' }}

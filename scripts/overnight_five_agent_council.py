@@ -185,7 +185,12 @@ def proposal(data):
     return obj
 
 def request_body(model, payload):
-    body = json.dumps({"model": model, "temperature": 0, "max_tokens": 1500,
+    body = json.dumps({"model": model, "temperature": 0, "max_tokens": 3000,
+                       # Thinking models spend the answer budget on thinking
+                       # (DeepSeek and Claude stopped at "length"); keep it
+                       # short and do not send the thinking text back (Grok's
+                       # reply passed 150 KB).
+                       "reasoning": {"effort": "low", "exclude": True},
                        "messages": [{"role": "system", "content": SYSTEM},
                                     {"role": "user", "content": payload}]},
                       ensure_ascii=False).encode("utf-8")
@@ -214,8 +219,8 @@ def call(agent, model, key, body):
     try:
         # Reviewed: fixed https URL constant.
         with urlopen(req, timeout=35) as response:  # nosec B310
-            raw = response.read(150001)
-        if len(raw) > 150000:
+            raw = response.read(600001)
+        if len(raw) > 600000:
             raise ValueError("Response too large")
         data = json.loads(raw)
         result["finish_reason"] = finish_reason(data)

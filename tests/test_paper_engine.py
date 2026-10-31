@@ -366,3 +366,37 @@ def test_old_accounts_get_the_default_currency_limit(tmp_path):
     eng._db.execute("UPDATE account SET limits = ?", (json.dumps(data),))
 
     assert eng.limits().max_currency_pct == 100.0
+
+
+
+def test_limit_orders_never_fill_worse_than_their_limit(tmp_path):
+    from src.bnd.paper_engine import EngineLimits, Instrument, OrderRequest, PaperEngine
+
+    eng = PaperEngine.create(tmp_path / "lim.sqlite", 10_000, currency="USD",
+                             limits=EngineLimits(max_portfolio_vol_pct=0), now=T0)
+    eng.register_instrument(Instrument("X", "index"))          # default slippage 0.05%
+    eng.on_bar("X", bar(0, 100, 100, 100, 100))
+    later = T0 + timedelta(hours=1)
+    eng.submit_order(OrderRequest("buy", "X", "BUY", 10, order_type="LIMIT", limit_price=100,
+                                  stop_loss=90), later)
+    eng.submit_order(OrderRequest("market", "X", "BUY", 5, stop_loss=90), later)
+
+    eng.on_bar("X", bar(1, 100, 101, 99, 100))
+
+    fills = {f["client_order_id"]: f["price"] for f in eng.fills()}
+    assert fills["buy"] == 100.0                         # not 100.05
+    assert fills["market"] == pytest.approx(100.05)      # market orders still slip
+
+
+def test_zero_day_start_equity_does_not_crash_the_bar(tmp_path):
+    from src.bnd.paper_engine import Instrument, PaperEngine
+
+    eng = PaperEngine.create(tmp_path / "zero.sqlite", 10_000, currency="USD", now=T0)
+    eng.register_instrument(Instrument("X", "index"))
+    eng.on_bar("X", bar(0, 100, 100, 100, 100))
+    eng._db.execute("UPDATE account SET day_start_equity = 0")
+
+    eng.on_bar("X", bar(0, 100, 100, 100, 100).__class__(T0 + timedelta(hours=2),
+                                                         100, 100, 100, 100, 1e9))
+
+    assert not eng.account()["kill_switch"]
