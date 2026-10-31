@@ -265,6 +265,10 @@ the kill switch.
 
 Research results so far, in Romanian: `docs/REZULTATE_CERCETARE.md`.
 
+`openrouter-models.yml` (manual, free, no key) publishes OpenRouter's public
+model catalogue with real prices to `backtest-results/models/LATEST.md`, so
+`BND_MODEL_*` values are exact and a council round can be priced.
+
 ## Decision registry
 
 `decision_registry.DecisionRegistry` stores every council decision with
