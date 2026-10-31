@@ -1,0 +1,39 @@
+{
+  "generated": "2026-10-31T13:03+00:00",
+  "ok": true,
+  "alerts": [],
+  "accounts": {
+    "paper": {
+      "equity": 10000.0,
+      "currency": "EUR",
+      "return_pct": 0.0,
+      "drawdown_pct": 0.0,
+      "positions": 0,
+      "orders": 7,
+      "kill_switch": false,
+      "reconciled": true
+    },
+    "crypto": {
+      "equity": 11183.0,
+      "currency": "USD",
+      "return_pct": 0.0,
+      "drawdown_pct": 0.0,
+      "positions": 0,
+      "orders": 0,
+      "kill_switch": false,
+      "reconciled": true
+    },
+    "ai": {
+      "equity": 11183.0,
+      "currency": "USD",
+      "return_pct": 0.0,
+      "drawdown_pct": 0.0,
+      "positions": 0,
+      "orders": 6,
+      "kill_switch": false,
+      "reconciled": true
+    }
+  },
+  "ai_balance_usd": 8.05,
+  "ai_spent_today_usd": 0.2838356
+}
