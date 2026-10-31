@@ -1,10 +1,10 @@
-# Raport bot virtual, 2026-10-31 12:26 UTC
+# Raport bot virtual, 2026-10-31 13:36 UTC
 
 **Ziua 1 din 16** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **10 000.00 EUR** (+0,00% față de start, 10 000.00 EUR)
-- La ultima închidere: 10 000.00 EUR; bani liberi: 10 000.00 EUR
+- Valoarea contului acum: **10 000.00 USD** (+0,00% față de start, 10 000.00 USD)
+- La ultima închidere: 10 000.00 USD; bani liberi: 10 000.00 USD
 - Poziții deschise: 0; ordine pregătite pentru mâine: 7
 - Piețe deschise acum: crypto
 - Oprirea de siguranță: oprită (totul în regulă)
@@ -24,4 +24,4 @@ Nicio poziție deschisă: banii stau în numerar.
 - buy USDCHF, 2553.87 bucăți
 - buy USDJPY, 10.78 bucăți
 
-_Bani virtuali. Prețurile sunt în dolari, iar contul ține socoteala în unități etichetate în euro: procentele sunt corecte, dar nu includ cursul EUR/USD. Un rezultat bun într-un test nu garantează profit în viitor._
+_Bani virtuali, în USD (prețurile piețelor sunt în dolari). Un rezultat bun într-un test nu garantează profit în viitor._
