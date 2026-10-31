@@ -279,6 +279,17 @@ Research results so far, in Romanian: `docs/REZULTATE_CERCETARE.md`.
 model catalogue with real prices to `backtest-results/models/LATEST.md`, so
 `BND_MODEL_*` values are exact and a council round can be priced.
 
+## Phone alerts and audit log
+
+`notify.py` sends push notifications through ntfy (no account): install the
+ntfy app, subscribe to a hard-to-guess topic and store it as the GitHub secret
+`NTFY_TOPIC` (treat it as a password). The morning health check sends a
+high-priority alert when something is wrong; without the secret nothing is
+sent. `audit_log.py` keeps a hash-chained journal (`audit.jsonl` on the
+`paper-trading` and `consiliu-umbra` branches): each daily run and each
+council run adds a line, and `python -m src.bnd.audit_log verify audit.jsonl`
+shows exactly where a line was edited, removed or moved.
+
 ## Council in shadow (`consiliu-umbra.yml`)
 
 `council_daily.py` asks the five agents, once a day, about a few markets

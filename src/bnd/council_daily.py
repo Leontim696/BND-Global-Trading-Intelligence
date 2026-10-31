@@ -23,6 +23,7 @@ from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 from pathlib import Path
 
+from . import audit_log
 from .ai_gateway import (
     AIGateway,
     AIResponse,
@@ -241,6 +242,7 @@ def main(argv=None) -> int:
     parser.add_argument("--monthly-budget", default="12")
     parser.add_argument("--report")
     parser.add_argument("--json")
+    parser.add_argument("--audit-log", help="append a hash-chained audit entry here")
     args = parser.parse_args(argv)
     now = datetime.now(timezone.utc)
     try:
@@ -272,6 +274,13 @@ def main(argv=None) -> int:
     except (MarketDataError, ValueError, OSError) as exc:
         print("Error:", exc, file=sys.stderr)
         return 2
+    if args.audit_log:
+        audit_log.append(args.audit_log, "council_run", {
+            "mode": args.mode, "markets": markets,
+            "decided": sum(m["status"] != "deja_facut" for m in report["markets"]),
+            "incomplete": sum(m["status"] == "incomplet" for m in report["markets"]),
+            "cost_usd": str(sum(Decimal(m.get("cost_usd") or "0") for m in report["markets"])),
+            "settled": report["settled_today"]}, now)
     text = render(report)
     if args.report:
         Path(args.report).write_text(text, encoding="utf-8")
