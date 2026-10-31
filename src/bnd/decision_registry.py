@@ -163,20 +163,32 @@ class DecisionRegistry:
     def comparison(self) -> dict:
         """Council vs rule-based bot vs always-long on the settled decisions.
 
-        For each, ``calls`` is how many times it took a side, ``hit_rate`` the
+        ``council`` needs a clear majority; ``lean`` is the direction of the
+        non-HOLD votes whenever there is one (HOLD votes ignored), so it acts
+        far more often. For each, ``calls`` is how many times it took a side, ``hit_rate`` the
         share of those calls that went the right way, and ``mean_return_pct``
         the average price move in the direction it chose (a rough profit per
         call, before any trading costs). Decisions whose price did not move are
         left out.
         """
         with self._db() as db:
-            rows = db.execute("SELECT vote, uncertain, outcome_return, meta FROM decisions"
+            rows = db.execute("SELECT id, vote, uncertain, outcome_return, meta FROM decisions"
                               " WHERE settled_at IS NOT NULL AND outcome_return != 0").fetchall()
-        sides = {"council": [], "bot": [], "always_long": []}
-        for vote, uncertain, outcome, meta in rows:
+            tally = {}
+            for decision_id, vote in db.execute(
+                    "SELECT decision_id, vote FROM votes WHERE stage = 'final'"):
+                tally[decision_id] = tally.get(decision_id, 0) + {"BUY": 1, "SELL": -1}.get(vote, 0)
+        sides = {"council": [], "lean": [], "bot": [], "always_long": []}
+        for decision_id, vote, uncertain, outcome, meta in rows:
             if vote != Vote.HOLD.value and not uncertain:
                 sides["council"].append((1 if vote == Vote.BUY.value else -1, outcome))
-            bot = (json.loads(meta or "{}")).get("bot_signal")
+            info = json.loads(meta or "{}")
+            # Lean = more BUY than SELL votes (or the reverse), HOLD ignored; read
+            # from the saved votes, so older decisions are covered too.
+            lean = tally.get(decision_id, 0)
+            if lean != 0:
+                sides["lean"].append((1 if lean > 0 else -1, outcome))
+            bot = info.get("bot_signal")
             if isinstance(bot, (int, float)) and bot != 0:
                 sides["bot"].append((1 if bot > 0 else -1, outcome))
             sides["always_long"].append((1, outcome))

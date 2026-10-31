@@ -172,3 +172,24 @@ def test_workflow_default_markets_match_the_code():
     text = open(".github/workflows/consiliu-umbra.yml", encoding="utf-8").read()
 
     assert ",".join(cd.DEFAULT_MARKETS) in text
+
+
+def test_lean_is_the_direction_of_the_non_hold_votes_and_is_compared_after_settling(
+        tmp_path, series):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    first_day = series["SP500"][699].open_time + timedelta(days=1)
+    report = cd.run_markets(upto(series, 700), MARKETS, cd.simulated_gateway(), registry,
+                            first_day, Decimal("0.6"))
+
+    for market in report["markets"]:
+        votes = [a["vote"] for a in market["agents"].values()]
+        expected = (votes.count("BUY") > votes.count("SELL")) - (votes.count("SELL") > votes.count("BUY"))
+        assert market["lean"] == expected
+    later = cd.run_markets(upto(series, 710), MARKETS, cd.simulated_gateway(), registry,
+                           first_day + timedelta(days=7), Decimal("0.6"))
+
+    leans = later["comparison"]["lean"]
+    assert leans["calls"] == sum(m["lean"] != 0 for m in report["markets"])
+    text = cd.render(later)
+    assert "Înclinația consiliului" in text and "## Pe agenți" in text
+    assert "înclină spre" in text or "fără înclinație" in text

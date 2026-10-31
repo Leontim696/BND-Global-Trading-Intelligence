@@ -137,15 +137,20 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
         council = outcome["council"]
         majority = decide(council, DecisionRule.MAJORITY)
         weighted = decide(council, DecisionRule.WEIGHTED, weights)
+        opinions = council.current_opinions().values()
+        buys = sum(o.vote == Vote.BUY for o in opinions)
+        sells = sum(o.vote == Vote.SELL for o in opinions)
+        lean = (buys > sells) - (sells > buys)       # +1 / -1 / 0, HOLD votes ignored
         registry.record(decision_id, now, market, candles[-1].close, council, majority,
                         horizon_days, meta={"bot_signal": bot_signal(candles),
+                                            "lean": lean,
                                             "weighted": weighted.vote.value,
                                             "weighted_uncertain": weighted.uncertain,
                                             "complete": outcome["complete"]})
         results.append({
             "market": market, "status": "ok" if outcome["complete"] else "incomplet",
             "price": candles[-1].close, "last_candle": candles[-1].open_time.date().isoformat(),
-            "decision": majority.vote.value, "uncertain": majority.uncertain,
+            "decision": majority.vote.value, "uncertain": majority.uncertain, "lean": lean,
             "reasons": list(majority.reasons), "weighted": weighted.vote.value,
             "bot_signal": bot_signal(candles), "cost_usd": outcome["spent_usd"],
             "agents": {a: {"status": r.get("status"), "vote": (council.current_opinions().get(a).vote.value
@@ -173,7 +178,8 @@ def render(report: dict) -> str:
             continue
         verdict = LABEL[Vote(m["decision"])]
         note = "" if m["status"] == "ok" else " (rundă incompletă: cineva nu a răspuns)"
-        lines += ["", f"## {m['market']}: **{verdict}**{note}",
+        tilt = {1: "înclină spre cumpărare", -1: "înclină spre vânzare", 0: "fără înclinație"}[m["lean"]]
+        lines += ["", f"## {m['market']}: **{verdict}** ({tilt})" + note,
                   f"Preț {m['price']:.4f} (închidere {m['last_candle']}); regula simplă a botului: "
                   + {1: "cumpără", -1: "vinde", 0: "nimic"}[m["bot_signal"]]
                   + f"; cost {Decimal(m['cost_usd']):.3f} $.", "",
@@ -188,14 +194,24 @@ def render(report: dict) -> str:
     if comparison["settled_decisions"]:
         lines += ["## Cine a ghicit mai des (decizii încheiate)", "",
                   "| | Apeluri | Au ieșit bine | Câștig mediu pe apel |", "|---|---:|---:|---:|"]
-        for name, label in (("council", "Consiliul AI"), ("bot", "Regula simplă a botului"),
-                            ("always_long", "Doar cumpără")):
+        for name, label in (("council", "Consiliul AI (majoritate clară)"),
+                            ("lean", "Înclinația consiliului (fără voturile HOLD)"),
+                            ("bot", "Regula simplă a botului"), ("always_long", "Doar cumpără")):
             c = comparison[name]
             hit = "–" if c["hit_rate"] is None else f"{100 * c['hit_rate']:.0f}%"
             mean = "–" if c["mean_return_pct"] is None else f"{c['mean_return_pct']:+.2f}%"
             lines.append(f"| {label} | {c['calls']} | {hit} | {mean} |")
         lines += ["", "_Câștigul mediu e mișcarea prețului în direcția aleasă, fără costuri. "
                       "Cu puține decizii, diferențele pot fi noroc._", ""]
+        agents = report["performance"]["agents"]
+        if any(a["calls"] for a in agents.values()):
+            lines += ["## Pe agenți (doar când au votat BUY sau SELL)", "",
+                      "| Agent | Păreri | Au ieșit bine | Eroare medie (Brier) |", "|---|---:|---:|---:|"]
+            for name, a in agents.items():
+                hit = "–" if a["hit_rate"] is None else f"{100 * a['hit_rate']:.0f}%"
+                brier = "–" if a["mean_brier"] is None else f"{a['mean_brier']:.2f}"
+                lines.append(f"| {name} | {a['calls']} | {hit} | {brier} |")
+            lines.append("")
     else:
         lines += ["_Nicio decizie încheiată încă: prima se închide după "
                   f"{HORIZON_DAYS} zile._", ""]
