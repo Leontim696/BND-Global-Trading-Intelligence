@@ -1,0 +1,185 @@
+name: Consiliul AI în umbră
+
+# One council round a day on a few markets: the five agents vote independently,
+# the votes are recorded, and after 5 days they are compared with what the
+# market did, with the rule-based bot and with "always buy". Nothing is traded.
+#
+# Paid calls: a manual run needs mode=live and the exact words RUN-PAID-TEST;
+# the daily schedule runs only while the repository variable BND_COUNCIL_DAILY
+# is "on" (the owner switches it). mode=mock uses simulated agents: free.
+
+on:
+  schedule:
+    - cron: '40 21 * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'mock = agenți simulați (gratis); live = agenți reali (plătit, cere confirmarea)'
+        default: 'mock'
+        type: choice
+        options: [mock, live]
+      paid_test_confirmation:
+        description: 'Doar pentru live: scrie RUN-PAID-TEST (șterge NO)'
+        default: 'NO'
+        type: string
+      markets:
+        description: 'Piețele, cu virgulă (litere mari)'
+        default: 'SP500,GOLD,BITCOIN,EURUSD'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-council
+  cancel-in-progress: false
+
+jobs:
+  council:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      run: ${{ steps.mode.outputs.run }}
+      live: ${{ steps.mode.outputs.live }}
+    env:
+      EVENT: ${{ github.event_name }}
+      MODE_INPUT: ${{ inputs.mode }}
+      CONFIRMATION: ${{ inputs.paid_test_confirmation }}
+      DAILY_SWITCH: ${{ vars.BND_COUNCIL_DAILY }}
+      MARKETS: ${{ inputs.markets || 'SP500,GOLD,BITCOIN,EURUSD' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Decide whether to run, and whether the agents are real
+        id: mode
+        run: |
+          mkdir -p state data
+          run=true; live=false
+          if [ "$EVENT" = schedule ]; then
+            if [ "$DAILY_SWITCH" = on ]; then live=true; else run=false; fi
+          elif [ "$MODE_INPUT" = live ]; then
+            GITHUB_OUTPUT=gate.txt python scripts/confirm_paid_test.py > /dev/null
+            if grep -q '^confirmed=true' gate.txt; then live=true; else run=false; fi
+          fi
+          {
+            echo "run=$run"; echo "live=$live"
+          } >> "$GITHUB_OUTPUT"
+          if [ "$run" = false ]; then
+            echo "Nu s-a rulat nimic și nu s-a cheltuit nimic: pentru live scrie exact RUN-PAID-TEST, iar rularea zilnică cere variabila BND_COUNCIL_DAILY = on." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Restore the registry and the costs
+        if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live == 'true'
+        run: |
+          if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
+            for f in registry.sqlite costs.sqlite; do
+              if git cat-file -e "FETCH_HEAD:$f" 2>/dev/null; then git show "FETCH_HEAD:$f" > "state/$f"; fi
+            done
+          fi
+      - name: Restore yesterday's candles
+        if: steps.mode.outputs.run == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: data
+          key: council-candles-${{ github.run_id }}
+          restore-keys: council-candles-
+      - name: Download the candles (only new days when cached)
+        if: steps.mode.outputs.run == 'true'
+        run: |
+          python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
+            --markets "$MARKETS" --start "$(date -u -d '-2 years' +%Y-%m-%d)" --out-dir data
+      - name: Keep the candles for tomorrow
+        if: steps.mode.outputs.run == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: data
+          key: council-candles-${{ github.run_id }}
+      - name: Simulated agents (free)
+        if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live != 'true'
+        run: |
+          python -m src.bnd.council_daily --mode mock --data-dir data --markets "$MARKETS" \
+            --registry state/mock-registry.sqlite --report state/raport.md --json state/raport.json > /dev/null
+          cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Real agents (paid, capped)
+        if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live == 'true'
+        env:
+          BND_ALLOW_LIVE_AI: 'true'
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
+            --registry state/registry.sqlite --costs state/costs.sqlite \
+            --round-budget 0.60 --daily-budget 1.60 --monthly-budget 12 \
+            --report state/raport.md --json state/raport.json > /dev/null
+          cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v7
+        if: always() && steps.mode.outputs.run == 'true'
+        with:
+          name: bnd-council-${{ github.run_id }}
+          path: state/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Separate job: the write token never runs project code.
+  publish:
+    needs: council
+    if: always() && needs.council.outputs.run == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+      LIVE: ${{ needs.council.outputs.live }}
+    steps:
+      - uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          name: bnd-council-${{ github.run_id }}
+          path: state
+      - name: Save the state and the report on the consiliu-umbra branch
+        run: |
+          set -euo pipefail
+          if [ ! -f state/raport.md ]; then echo "::warning::No report"; exit 0; fi
+          day=$(date -u +%Y-%m-%d)
+          git init -q out
+          cd out
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          for attempt in 1 2 3 4; do
+            if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
+              git checkout -q -f -B consiliu-umbra FETCH_HEAD
+            else
+              git checkout -q --orphan consiliu-umbra 2>/dev/null || true
+            fi
+            mkdir -p consiliu
+            if [ "$LIVE" = true ]; then
+              cp ../state/registry.sqlite ../state/costs.sqlite .
+              cp ../state/raport.md "consiliu/${day}.md"
+              cp ../state/raport.md consiliu/LATEST.md
+            else
+              cp ../state/raport.md consiliu/mock-LATEST.md
+            fi
+            git add -A
+            git commit -q -m "Consiliul AI ${day}, rularea ${RUN_ID} (live=${LIVE})" || true
+            if git push -q origin HEAD:refs/heads/consiliu-umbra; then break; fi
+            if [ "$attempt" = 4 ]; then echo "::error::Could not save"; exit 1; fi
+            sleep $((attempt * 5))
+          done
+      - name: Post the live report on today's reports issue
+        if: env.LIVE == 'true'
+        run: |
+          set -euo pipefail
+          [ -f state/raport.md ] || exit 0
+          title="Rapoarte bot virtual $(date -u +%Y-%m-%d)"
+          number=$(gh api "repos/$REPO/issues?state=open&per_page=100" \
+            -q "[.[] | select(.title == \"$title\") | .number][0] // empty")
+          if [ -z "$number" ]; then
+            number=$(gh api -X POST "repos/$REPO/issues" -f title="$title" \
+              -f body="Rapoartele orare ale botului virtual pentru ziua de azi (ora UTC)." -q .number)
+          fi
+          gh api -X POST "repos/$REPO/issues/$number/comments" -F body=@state/raport.md > /dev/null

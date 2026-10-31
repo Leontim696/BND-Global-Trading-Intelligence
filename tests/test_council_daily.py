@@ -1,0 +1,146 @@
+"""Consiliul AI în umbră: rulare completă cu agenți simulați, fără rețea și fără bani."""
+
+import json
+from datetime import timedelta
+from decimal import Decimal
+
+import pytest
+
+from src.bnd import council_daily as cd
+from src.bnd.ai_gateway import AIGateway, GatewayMode
+from src.bnd.decision_registry import DecisionRegistry
+from src.bnd.fusion_council import AGENTS
+from src.bnd.market_data import load_csv
+from tests.test_multi_market_cli import START, run_cli, write_markets  # noqa: F401
+
+MARKETS = ("SP500", "GOLD", "BITCOIN", "EURUSD")
+
+
+@pytest.fixture
+def series(tmp_path):
+    write_markets(tmp_path, list(MARKETS), days=800)
+    return {m: load_csv(tmp_path / f"{m}.csv") for m in MARKETS}
+
+
+def upto(series, count):
+    return {m: candles[:count] for m, candles in series.items()}
+
+
+def test_simulated_round_records_every_market_once(tmp_path, series):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    data = upto(series, 700)
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+
+    first = cd.run_markets(data, MARKETS, cd.simulated_gateway(), registry, now, Decimal("0.6"))
+    again = cd.run_markets(data, MARKETS, cd.simulated_gateway(), registry, now, Decimal("0.6"))
+
+    assert [m["status"] for m in first["markets"]] == ["ok"] * 4
+    assert all(set(m["agents"]) == set(AGENTS) for m in first["markets"])
+    assert [m["status"] for m in again["markets"]] == ["deja_facut"] * 4
+    assert all(registry.has(f"{now.date().isoformat()}:{m}") for m in MARKETS)
+
+
+def test_decisions_are_settled_and_compared_after_the_horizon(tmp_path, series):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    first_day = series["SP500"][699].open_time + timedelta(days=1)
+    cd.run_markets(upto(series, 700), MARKETS, cd.simulated_gateway(), registry, first_day,
+                   Decimal("0.6"))
+
+    later = first_day + timedelta(days=7)
+    report = cd.run_markets(upto(series, 710), MARKETS, cd.simulated_gateway(), registry, later,
+                            Decimal("0.6"))
+
+    assert report["settled_today"] == 4
+    comparison = report["comparison"]
+    assert comparison["settled_decisions"] > 0
+    assert comparison["always_long"]["calls"] == comparison["settled_decisions"]
+    assert 0 <= comparison["council"]["calls"] <= comparison["settled_decisions"]
+    text = cd.render(report)
+    assert "## Cine a ghicit mai des" in text and "Consiliul AI" in text
+
+
+def test_a_missing_agent_makes_the_round_incomplete_and_no_trade(tmp_path, series):
+    gateway = AIGateway(GatewayMode.MOCK)
+    for agent in AGENTS[:4]:
+        gateway.register(agent, cd.SimulatedProvider(agent))
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    data = upto(series, 700)
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+
+    report = cd.run_markets(data, ("GOLD",), gateway, registry, now, Decimal("0.6"),
+                            sleep=lambda _: None)
+
+    market = report["markets"][0]
+    assert market["status"] == "incomplet" and market["decision"] == "HOLD" and market["uncertain"]
+    assert "incompletă" in cd.render(report)
+
+
+def test_report_is_in_romanian_with_votes_and_cost(tmp_path, series):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    data = upto(series, 700)
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+
+    text = cd.render(cd.run_markets(data, MARKETS, cd.simulated_gateway(), registry, now,
+                                    Decimal("0.6")))
+
+    for part in ("# Consiliul AI în umbră", "nu se tranzacționează nimic", "## SP500",
+                 "| Agent | Vot | Încredere | Motiv |", "Cost total azi", "Nicio decizie încheiată"):
+        assert part in text
+
+
+def test_pricing_comes_from_the_catalogue_and_unknown_models_are_refused():
+    catalogue = {"data": [
+        {"id": m, "pricing": {"prompt": "0.000002", "completion": "0.00001"}}
+        for m in cd.DEFAULT_MODELS.values()]}
+
+    pricing = cd.pricing_from_catalogue(cd.DEFAULT_MODELS, catalogue)
+
+    assert pricing["openai/gpt-6-astra"].input_per_million == Decimal("2")
+    assert pricing["openai/gpt-6-astra"].output_per_million == Decimal("10")
+    with pytest.raises(ValueError, match="negăsite"):
+        cd.pricing_from_catalogue({**cd.DEFAULT_MODELS, "gpt": "openai/nu-exista"}, catalogue)
+
+
+def test_live_gateway_is_authorised_for_a_short_time_and_never_calls_without_the_flag(
+        tmp_path, series, monkeypatch):
+    from src.bnd import openrouter_adapter
+
+    def forbidden(*args, **kwargs):
+        raise AssertionError("niciun apel către rețea fără BND_ALLOW_LIVE_AI")
+
+    monkeypatch.setattr(openrouter_adapter, "urlopen", forbidden)
+    monkeypatch.delenv("BND_ALLOW_LIVE_AI", raising=False)
+    monkeypatch.setenv("OPENROUTER_API_KEY", "cheie-de-test")
+    data = upto(series, 700)
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+    catalogue = {"data": [{"id": m, "pricing": {"prompt": "0.000002", "completion": "0.00001"}}
+                          for m in cd.DEFAULT_MODELS.values()]}
+    gateway = cd.live_gateway(cd.DEFAULT_MODELS, cd.pricing_from_catalogue(cd.DEFAULT_MODELS, catalogue),
+                              tmp_path / "costs.sqlite", now, Decimal("0.6"), Decimal("1.6"),
+                              Decimal("12"))
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+
+    assert gateway.live_authorization.expires_at - now == timedelta(hours=3)
+    report = cd.run_markets(data, ("GOLD",), gateway, registry, now, Decimal("0.6"),
+                            sleep=lambda _: None)
+
+    assert report["markets"][0]["status"] == "incomplet"
+    assert Decimal(report["markets"][0]["cost_usd"]) == 0
+
+
+def test_cli_mock_mode_writes_the_report_and_validates_input(tmp_path, capsys):
+    write_markets(tmp_path, list(MARKETS), days=300)
+    base = ["--data-dir", str(tmp_path), "--registry", str(tmp_path / "r.sqlite")]
+
+    assert cd.main(base + ["--report", str(tmp_path / "raport.md"),
+                           "--json", str(tmp_path / "raport.json")]) == 0
+    assert "# Consiliul AI" in (tmp_path / "raport.md").read_text(encoding="utf-8")
+    assert len(json.loads((tmp_path / "raport.json").read_text())["markets"]) == 4
+    capsys.readouterr()
+
+    assert cd.main(base + ["--markets", "SP500,SP500"]) == 2
+    assert cd.main(base + ["--markets", "NEEXISTA"]) == 2
+    assert cd.main(base + ["--markets", "../SP500"]) == 2          # nume care ies din folder
+    assert cd.main(base + ["--mode", "live"]) == 2          # lipsește --costs
+    assert cd.main(base + ["--round-budget", "-1"]) == 2
+    capsys.readouterr()

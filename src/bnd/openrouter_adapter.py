@@ -67,6 +67,10 @@ class OpenRouterAdapter:
     model: str | None = None
     timeout: float = 30.0
     allow_live: bool = False
+    # Thinking models spend the answer budget on thinking: allow more output
+    # and ask for short thinking that is not sent back (it is still billed).
+    max_tokens: int = MAX_OUTPUT_TOKENS
+    reasoning_effort: str | None = None
 
     def __post_init__(self):
         if self.agent not in AGENTS:
@@ -77,6 +81,13 @@ class OpenRouterAdapter:
 
         if not 0 < self.timeout <= 120:
             raise ValueError("Timeout must be between 0 and 120")
+
+        if (not isinstance(self.max_tokens, int) or isinstance(self.max_tokens, bool)
+                or not 100 <= self.max_tokens <= 16000):
+            raise ValueError("max_tokens must be an integer between 100 and 16000")
+
+        if self.reasoning_effort not in (None, "low", "medium", "high"):
+            raise ValueError("reasoning_effort must be low, medium, high or None")
 
     def expected_model(self) -> str:
         """Configured model ID, used to budget a call before sending it."""
@@ -147,7 +158,7 @@ class OpenRouterAdapter:
         payload = {
             "model": model,
             "temperature": 0,
-            "max_tokens": MAX_OUTPUT_TOKENS,
+            "max_tokens": self.max_tokens,
             "messages": [
                 {
                     "role": "system",
@@ -159,6 +170,9 @@ class OpenRouterAdapter:
                 },
             ],
         }
+
+        if self.reasoning_effort:
+            payload["reasoning"] = {"effort": self.reasoning_effort, "exclude": True}
 
         encoded = json.dumps(payload).encode("utf-8")
 
