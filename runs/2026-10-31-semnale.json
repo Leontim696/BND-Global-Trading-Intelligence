@@ -10,11 +10,10 @@
     "ETHEREUM": 0.0,
     "EURUSD": -1.0,
     "USDJPY": 0.0,
-    "US10Y_NOTE": -1.0
+    "US10Y_NOTE": -1.0,
+    "SOLANA": -0.5,
+    "BNB": -1.0,
+    "XRP": -1.0
   },
-  "missing": [
-    "SOLANA",
-    "BNB",
-    "XRP"
-  ]
+  "missing": []
 }
