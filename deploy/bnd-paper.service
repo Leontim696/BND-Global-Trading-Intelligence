@@ -1,0 +1,11 @@
+[Unit]
+Description=BND pas zilnic cont virtual (PAPER)
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/bnd
+Environment=BND_TRADING_MODE=PAPER BND_ALLOW_LIVE_AI=false
+ExecStart=/usr/bin/python3 -m src.bnd.paper_runner --state /var/lib/bnd/paper.sqlite --data-dir /var/lib/bnd/candles --audit-log /var/lib/bnd/audit.jsonl --report /var/lib/bnd/REPORT.md --json /var/lib/bnd/last_run.json
+User=bnd
+StateDirectory=bnd
