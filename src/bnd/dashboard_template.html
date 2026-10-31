@@ -159,7 +159,7 @@ function comparison(c) {
 function council(c) {
   if (!c.exists || !c.day) return `<p class="empty">Consiliul nu a votat încă.</p>`;
   const rows = c.markets.map(m => {
-    const votes = Object.entries(m.votes).map(([a,v]) => `<span class="v ${v}">${esc(a)} ${v}</span>`).join("");
+    const votes = Object.entries(m.votes).map(([a,v]) => `<span class="v ${esc(v)}">${esc(a)} ${esc(v)}</span>`).join("");
     return `<div class="row" style="grid-template-columns:1fr"><div><span class="name">${esc(m.symbol)}</span>
       <span class="pill ${m.decision==="SELL"?"short":""}">${m.decision==="HOLD"?"nu tranzacționa":m.decision==="BUY"?"cumpără":"vinde"}</span>
       <div class="votes">${votes}</div></div></div>`;

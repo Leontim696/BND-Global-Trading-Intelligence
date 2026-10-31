@@ -60,3 +60,16 @@ Teste noi în `tests/test_persistence.py`: scrieri simultane în jurnalul de aud
 | F-14 | RIDICAT | Jurnalul de audit (`audit_log.append`) nu avea blocare: două rulări simultane puteau bifurca lanțul, iar un rând rupt de o oprire bruscă făcea ca orice adăugare următoare să arunce excepție (iar rularea zilnică, care adaugă în jurnal la sfârșit, ar fi eșuat după ce contul era deja salvat local, dar înainte de raport). | analiza codului + testele noi | **Reparat**: blocare pe fișier, continuare de la ultimul rând valid, flush + fsync; rândul rupt rămâne vizibil la `verify` |
 | F-15 | MEDIU | Jurnalul de audit e un fișier text în ramură, nu în baza de date: două ramuri sau două conturi folosesc fișiere separate. Nu există un jurnal comun al sistemului. | structura workflow-urilor | Deschis (acceptabil: fiecare cont își are lanțul) |
 | F-16 | INFO | Contul SQLite e publicat ca fișier singur după `close()`; la oprire bruscă tranzacțiile neterminate se anulează (SQLite). Verificat cu `SIGKILL`. | `test_killed_process…` | Verificat |
+
+## A6. Securitate
+
+Verificat prin `tests/test_workflow_security.py` (inclusiv un test negativ făcut pe loc: o permisiune de scriere dată jobului cu secret a picat testul): permisiuni declarate la nivel de workflow, scriere doar în joburi separate fără secrete, secretele doar în workflow-urile așteptate (`OPENROUTER_API_KEY` în cele 6 de AI, `NTFY_TOPIC` în verificarea zilnică), fără `pull_request_target` sau `workflow_run`, nicio expresie din intrări/evenimente în comenzi shell, doar acțiuni oficiale `actions/*`, dependențe de rulare zero (doar biblioteca standard), Dependabot activ, pagina aplicației cu toate șirurile din date trecute prin `esc()`.
+
+| ID | Sev. | Constatare | Stare |
+|---|---|---|---|
+| F-17 | MEDIU | Acțiunile sunt fixate pe etichete (`@v4`, `@v7`), nu pe hash de commit. Etichetele pot fi mutate de autorul acțiunii. Atenuare: doar acțiuni oficiale `actions/*` și Dependabot. | Deschis (se poate fixa pe hash la cerere) |
+| F-18 | MEDIU | `branch-cleanup.yml` are `contents: write` pe tot workflow-ul și rulează o comandă de ștergere de ramuri, la pornire manuală. Fără secrete, dar cu putere de ștergere; protejează ramurile de stare (`paper-trading` etc.). | Deschis (acceptabil: manual, protejat; de mutat permisiunea la nivel de job) |
+| F-19 | MEDIU | Intrarea `settings` din `paper-trading.yml` se desparte în argumente (intenționat) și poate transmite orice opțiune runnerului. Doar cine poate porni manual workflow-ul (colaboratori cu scriere) o poate folosi; opțiunile se validează în `paper_runner`. | Risc acceptat |
+| F-20 | SCĂZUT | Pagina aplicației punea valoarea unui vot direct într-un atribut `class` fără `esc()`. Date din registrul propriu, deci risc scăzut, dar nu apărare în profunzime. | **Reparat** (+ test care cere `esc()` pe orice câmp-șir) |
+| F-21 | INFO | Aplicația de pe telefon e statică, privată (vizibilă doar contului proprietarului), fără formulare, fără apeluri de rețea și fără chei; nu are endpointuri de atacat. Datele din ea sunt cele din ramurile depozitului, la ora ultimei reîmprospătări. | Verificat |
+| F-22 | INFO | `pip-audit` nu e rulat: runtime-ul are zero dependențe externe, iar singura dependență de dezvoltare (`pytest`) e actualizată de Dependabot. | Documentat |
