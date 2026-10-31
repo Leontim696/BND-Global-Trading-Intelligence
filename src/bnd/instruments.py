@@ -44,6 +44,9 @@ INSTRUMENTS = {
     "USDCAD": ("USD/CAD spot", "6C (CME, invers)", "USDCAD"),
     "BITCOIN": ("BTC spot (sau un ETF spot pe Bitcoin)", "BTC (CME)", "BTCUSD"),
     "ETHEREUM": ("ETH spot (sau un ETF spot pe Ethereum)", "ETH (CME)", "ETHUSD"),
+    "SOLANA": ("SOL spot", "SOL (CME)", "SOLUSD"),
+    "BNB": ("BNB spot", "–", "BNBUSD"),
+    "XRP": ("XRP spot", "XRP (CME)", "XRPUSD"),
 }
 
 
@@ -59,7 +62,7 @@ def instrument(name: str) -> tuple[str, str, str]:
 
 def table() -> str:
     seen, rows = set(), []
-    for universe in ("etf", "futures", "stocks"):
+    for universe in ("etf", "futures", "stocks", "crypto"):
         for market in UNIVERSES[universe]:
             if market.name in seen:
                 continue

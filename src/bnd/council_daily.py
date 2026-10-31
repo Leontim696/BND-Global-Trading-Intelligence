@@ -49,7 +49,7 @@ DEFAULT_MARKETS = ("SP500", "NASDAQ100", "GOLD", "SILVER", "CRUDE_OIL", "BITCOIN
 ASSET_CLASS = {"SP500": "index", "NASDAQ100": "index", "GOLD": "commodity",
                "SILVER": "commodity", "CRUDE_OIL": "commodity", "BITCOIN": "crypto",
                "ETHEREUM": "crypto", "EURUSD": "forex", "USDJPY": "forex",
-               "US10Y_NOTE": "bond"}
+               "US10Y_NOTE": "bond", "SOLANA": "crypto", "BNB": "crypto", "XRP": "crypto"}
 DEFAULT_MODELS = {
     # The flagship, as the owner chose. Measured: a nine-market round with Astra
     # was counted at 0.27 USD in total, and the owner's key total matched the
@@ -151,6 +151,8 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
         registry.record(decision_id, now, market, candles[-1].close, council, majority,
                         horizon_days, meta={"bot_signal": bot_signal(candles),
                                             "lean": lean,
+                                            "net": buys - sells,
+                                            "voters": len(opinions),
                                             "weighted": weighted.vote.value,
                                             "weighted_uncertain": weighted.uncertain,
                                             "complete": outcome["complete"]})

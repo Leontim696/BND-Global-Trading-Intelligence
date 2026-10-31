@@ -24,7 +24,7 @@ on:
         type: string
       markets:
         description: 'Piețele, cu virgulă (litere mari)'
-        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE'
+        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP'
         type: string
 
 permissions:
@@ -46,7 +46,7 @@ jobs:
       MODE_INPUT: ${{ inputs.mode }}
       CONFIRMATION: ${{ inputs.paid_test_confirmation }}
       DAILY_SWITCH: ${{ vars.BND_COUNCIL_DAILY }}
-      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE' }}
+      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v7
@@ -91,8 +91,15 @@ jobs:
       - name: Download the candles (only new days when cached)
         if: steps.mode.outputs.run == 'true'
         run: |
+          # Piețele din universul ETF/forex, apoi monedele crypto în plus (hrănesc și contul de cripto).
+          etf_markets=$(echo "$MARKETS" | tr ',' '\n' | grep -vxE 'SOLANA|BNB|XRP' | paste -sd, -)
           python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
-            --markets "$MARKETS" --start "$(date -u -d '-2 years' +%Y-%m-%d)" --out-dir data
+            --markets "$etf_markets" --start "$(date -u -d '-2 years' +%Y-%m-%d)" --out-dir data
+          crypto_markets=$(echo "$MARKETS" | tr ',' '\n' | grep -xE 'SOLANA|BNB|XRP' | paste -sd, - || true)
+          if [ -n "$crypto_markets" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe crypto --update \
+              --markets "$crypto_markets" --start "$(date -u -d '-2 years' +%Y-%m-%d)" --out-dir data
+          fi
       - name: Keep the candles for tomorrow
         if: steps.mode.outputs.run == 'true'
         uses: actions/cache/save@v4
