@@ -25,6 +25,7 @@ ACCOUNTS = (("paper", "Reguli matematice", "Strategie: regime_switch, piețe ETF
 
 
 STALE_AFTER = timedelta(hours=36)
+LOW_BALANCE_USD = 2.0
 KEY_LIMIT_USD = 10.0
 # Ancora confirmată de proprietar pe 2026-10-31: din cheie mai rămâneau 8,05 $,
 # când registrul consiliului arăta 0,2838356 $ cheltuiți. De aici, rămasul scade
@@ -86,7 +87,7 @@ def read_council(folder) -> dict:
         days = [r[0] for r in db.execute(
             "SELECT DISTINCT substr(id, 1, 10) d FROM decisions ORDER BY d DESC LIMIT 1")]
         if not days:
-            return {"exists": True, "day": None, "markets": []}
+            return {"exists": True, "day": None, "markets": [], "costs": read_costs(folder)}
         day = days[0]
         markets = []
         for decision_id, symbol, vote, price in db.execute(
@@ -152,10 +153,14 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     folders = {"paper": paper, "crypto": crypto, "ai": ai}
     prices = (quotes or {}).get("quotes", {})
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
+    council = read_council(council)
+    alerts = alerts_from(accounts, runs, now)
+    costs = council.get("costs") if council.get("exists") else None
+    if costs and costs["remaining"] < LOW_BALANCE_USD:
+        alerts.append(f"Soldul cheii AI e mic: au mai rămas {costs['remaining']:.2f} $. Reîncarc-o.")
     return {"generated": now.isoformat(timespec="minutes"),
             "quotes_time": (quotes or {}).get("time"),
-            "accounts": accounts, "council": read_council(council),
-            "alerts": alerts_from(accounts, runs, now)}
+            "accounts": accounts, "council": council, "alerts": alerts}
 
 
 def render(data: dict, template: str) -> str:

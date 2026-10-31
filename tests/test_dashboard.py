@@ -93,3 +93,20 @@ def test_remaining_budget_starts_at_the_owners_confirmed_figure(tmp_path):
     db.commit()
     db.close()
     assert dashboard.read_costs(tmp_path)["remaining"] == pytest.approx(7.80)
+
+
+def test_low_key_balance_raises_an_alert(tmp_path):
+    import sqlite3
+    (tmp_path / "registry.sqlite").write_bytes(b"")
+    from src.bnd.decision_registry import DecisionRegistry
+    (tmp_path / "registry.sqlite").unlink()
+    DecisionRegistry(tmp_path / "registry.sqlite")
+    db = sqlite3.connect(tmp_path / "costs.sqlite")
+    db.execute("CREATE TABLE usage_records (id INTEGER PRIMARY KEY, agent TEXT, model TEXT,"
+               " input_tokens INT, output_tokens INT, cost_usd TEXT, timestamp TEXT)")
+    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('7', '2026-11-10T09:00:00+00:00')")
+    db.commit(); db.close()
+
+    data = dashboard.collect(None, None, None, tmp_path, NOW)
+
+    assert any("Soldul cheii" in a for a in data["alerts"])
