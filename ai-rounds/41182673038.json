@@ -1,0 +1,97 @@
+{
+  "created_at": "2026-10-31T07:58:24.949276+00:00",
+  "mode": "proposals_only",
+  "paid_ai_enabled": true,
+  "agents": {
+    "DEEPSEEK": {
+      "agent": "DEEPSEEK",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": "failed",
+      "billing": "reported",
+      "cost_usd": "0.016068",
+      "finish_reason": "length",
+      "error_type": "ValueError",
+      "error_detail": "Incomplete response"
+    },
+    "GPT": {
+      "agent": "GPT",
+      "model": "openai/gpt-6-astra",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.088555",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "Stale pending orders are not canceled when the current position is already within the rebalance threshold of the new target.",
+        "evidence": "In src/bnd/paper_runner.py, rebalance() executes the threshold-based `continue` before inspecting and canceling older PENDING or PARTIAL orders. For example, if both the current position and new target are zero, the function skips cancellation even if an older pending buy remains.",
+        "risk": "medium",
+        "suggested_patch": "Move the existing order_id construction and stale-order cancellation loop above the threshold-based early continue. Preserve the same-date order exclusion for idempotency. This lets the runner cancel obsolete orders even when no replacement order is needed."
+      }
+    },
+    "CLAUDE": {
+      "agent": "CLAUDE",
+      "model": "anthropic/claude-opus-5.5",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.05422",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": null,
+        "evidence": null,
+        "risk": "none",
+        "suggested_patch": null
+      }
+    },
+    "GEMINI": {
+      "agent": "GEMINI",
+      "model": "google/gemini-4-argon",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.017992",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "Account creation does not validate runner and portfolio configuration parameters before persisting the SQLite database file, allowing invalid CLI values (such as `--stop-atr -1`, `--rebalance -5`, or `--max-leverage 0`) to create a permanently broken account file that fails on the first run and blocks subsequent retries with `Account already exists; --capital is only for a new one`.",
+        "evidence": "In `src/bnd/paper_runner.py`, `_open_account(args)` calls `_make_factory(settings, {})` (line 346) and then immediately creates the SQLite file and records `runner_settings` via `PaperEngine.create(args.state, args.capital, currency=args.currency)` (lines 348-349). However, `_config(settings)`—which constructs `PortfolioConfig` and `RunnerConfig` and validates `stop_atr`, `portfolio_vol`, `sizing_lookback`, `max_leverage`, `max_weight`, and `rebalance`—is only called later inside `main()` (line 386) after the SQLite file has already been created on disk.",
+        "risk": "low",
+        "suggested_patch": "--- a/src/bnd/paper_runner.py\n+++ b/src/bnd/paper_runner.py\n@@ -344,6 +344,7 @@ def _open_account(args) -> tuple[PaperEngine, dict]:\n         raise ValueError(\"No paper account yet: confirm the virtual starting capital \"\n                          \"with --capital\")\n     settings = {**DEFAULTS, **given}\n+    _config(settings)                                      # fail before creating\n     _make_factory(settings, {})                            # fail before creating\n     Path(args.state).parent.mkdir(parents=True, exist_ok=True)\n     engine = PaperEngine.create(args.state, args.capital, currency=args.currency)\n"
+      }
+    },
+    "GROK": {
+      "agent": "GROK",
+      "model": "x-ai/grok-4.7",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.029134",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "Same-day reruns are not idempotent after a limit rejection: _submit retries under client_order_id + ':reduced', but rebalance only suppresses ids that do not start with '<date>:<market>', so the base id is submitted again while the reduced order can still be pending.",
+        "evidence": "REDUCED retry uses request.client_order_id + ':reduced'. rebalance sets order_id to f\"{candles[-1].open_time.date().isoformat()}:{name}\" and cancels only pending/partial orders whose client_order_id does not start with that prefix, then always submit_order(order_id). A pending 'date:market:reduced' order is kept and a second 'date:market' order is sent.",
+        "risk": "medium",
+        "suggested_patch": "Before building a new request, if any order for that symbol has client_order_id equal to order_id or starting with order_id + ':', skip submission (still cancel other symbols' stale pending ids). On the reduced retry, do not mint a second live id for the same candle date."
+      }
+    }
+  },
+  "agents_asked": [
+    "DEEPSEEK",
+    "GPT",
+    "CLAUDE",
+    "GEMINI",
+    "GROK"
+  ],
+  "source_coverage": {
+    "total_files": 1,
+    "included_files": 1,
+    "omitted_files": [],
+    "truncated_files": [],
+    "all_text_included": true
+  },
+  "run_cap_usd": "0.90",
+  "call_cap_usd": "0.40",
+  "status": "partial_success",
+  "halt_reason": null,
+  "successful_agents": 4,
+  "total_agents": 5,
+  "reported_cost_usd": "0.205969",
+  "cost_reporting_complete": true,
+  "call_cap_exceeded": false,
+  "budget_breach_detected": false
+}
