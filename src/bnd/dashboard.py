@@ -26,7 +26,11 @@ ACCOUNTS = (("paper", "Reguli matematice", "Strategie: regime_switch, piețe ETF
 
 STALE_AFTER = timedelta(hours=36)
 KEY_LIMIT_USD = 10.0
-OWN_KEY_TESTS_USD = 0.34         # testele proprietarului la activarea cheii (nu sunt în registru)
+# Ancora confirmată de proprietar pe 2026-10-31: din cheie mai rămâneau 8,05 $,
+# când registrul consiliului arăta 0,2838356 $ cheltuiți. De aici, rămasul scade
+# cu ce se adaugă în registru după acel moment.
+ANCHOR_REMAINING_USD = Decimal("8.05")
+ANCHOR_LEDGER_USD = Decimal("0.2838356")
 WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Bot virtual zilnic": "botul pe reguli",
            "Bot cripto virtual (AI)": "botul de cripto", "Bot AI unificat (virtual)": "botul AI unificat"}
 
@@ -116,7 +120,7 @@ def read_costs(folder) -> dict | None:
     spent = sum(Decimal(cost) for cost, _ in rows)
     today = datetime.now(timezone.utc).date().isoformat()
     spent_today = sum(Decimal(cost) for cost, stamp in rows if stamp[:10] == today)
-    remaining = Decimal(str(KEY_LIMIT_USD)) - spent - Decimal(str(OWN_KEY_TESTS_USD))
+    remaining = ANCHOR_REMAINING_USD - (spent - ANCHOR_LEDGER_USD)
     return {"spent": float(spent), "today": float(spent_today), "limit": KEY_LIMIT_USD,
             "remaining": float(remaining)}
 
