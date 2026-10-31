@@ -1,0 +1,8 @@
+{
+  "created_at": "2026-10-31T06:59:48.543412+00:00",
+  "mode": "proposals_only",
+  "paid_ai_enabled": true,
+  "agents": {},
+  "status": "preflight_failed",
+  "error_type": "ValueError"
+}
