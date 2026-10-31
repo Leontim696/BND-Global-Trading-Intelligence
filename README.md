@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-10-31T05:57:39.094922+00:00 | strategy `sma_crossover`
+- Run: 2026-10-31T05:59:29.466740+00:00 | strategy `sma_crossover`
 - Equity: 10,000.00 EUR (start 10,000.00, +0.00%)
-- Gross leverage: 0.00x | candles processed: 23
+- Gross leverage: 0.00x | candles processed: 0
 - Kill switch: off
 
 ## Positions
@@ -20,5 +20,12 @@ No open positions.
 | USDJPY | BUY | +0.0% -> +17.0% | PENDING |  |
 | USDCHF | BUY | +0.0% -> +21.0% | PENDING |  |
 | USDCAD | BUY | +0.0% -> +29.6% | PENDING |  |
+
+## Equity, last runs
+
+| Run | Equity |
+|---|---:|
+| 2026-10-31 | 10,000.00 |
+| 2026-10-31 | 10,000.00 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
