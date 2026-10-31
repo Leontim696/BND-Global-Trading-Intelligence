@@ -42,6 +42,9 @@ class PortfolioConfig:
     vol_lookback: int = 60
     max_leverage: float = 3.0
     max_weight: float = 1.0
+    # Largest total |weight| of one sector (shares) or asset class, as a share
+    # of equity; None = no limit. Applied before the leverage cap.
+    max_group_weight: float | None = None
     rebalance_threshold: float = 0.05
     # Extra financing on gross exposure above equity (margin loans, CFDs);
     # futures need only margin, so the default is none.
@@ -68,6 +71,9 @@ class PortfolioConfig:
         for value in (self.financing_pct_annual, self.cash_rate_pct_annual):
             if not isfinite(value) or not 0 <= value <= 100:
                 raise ValueError("Annual rates must be in [0, 100] percent")
+        if self.max_group_weight is not None and not (
+                isfinite(self.max_group_weight) and 0 < self.max_group_weight <= 20):
+            raise ValueError("Group weight limit out of range")
         if type(self.vol_lookback) is not int or self.vol_lookback < 5:
             raise ValueError("Volatility lookback must be an integer >= 5")
         if self.max_drawdown_pct is not None and not 0 < self.max_drawdown_pct < 100:
@@ -188,6 +194,14 @@ def target_weights(books, config: PortfolioConfig, recent_times) -> dict:
         raw = {name: weight * factor for name, weight in raw.items()}
     weights = {name: max(-config.max_weight, min(config.max_weight, weight))
                for name, weight in raw.items()}
+    if config.max_group_weight is not None:
+        group_of = {b.market.name: b.market.sector or b.market.asset_class for b in books}
+        totals: dict = {}
+        for name, weight in weights.items():
+            totals[group_of[name]] = totals.get(group_of[name], 0.0) + abs(weight)
+        weights = {name: weight * (min(1.0, config.max_group_weight / totals[group_of[name]])
+                                   if totals[group_of[name]] > 0 else 1.0)
+                   for name, weight in weights.items()}
     gross = sum(abs(w) for w in weights.values())
     scale = config.max_leverage / gross if gross > config.max_leverage else 1.0
     return {name: weight * scale for name, weight in weights.items()}

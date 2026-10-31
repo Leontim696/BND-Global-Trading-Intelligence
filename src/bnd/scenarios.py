@@ -17,7 +17,7 @@ from .paper_engine import PaperEngine
 SCENARIOS = {
     "crisis_2008": {
         "description": "Global financial crisis, Sep-Nov 2008",
-        "classes": {"index": -40, "bond": 8, "commodity": -40, "forex": 0, "crypto": -70},
+        "classes": {"index": -40, "bond": 8, "commodity": -40, "forex": 0, "crypto": -70, "stock": -45},
         "markets": {
             "EMERGING": -55, "US20Y_BOND": 20, "GOLD": -15, "SILVER": -45,
             "CRUDE_OIL": -65, "COPPER": -60, "NATURAL_GAS": -45,
@@ -27,7 +27,7 @@ SCENARIOS = {
     },
     "covid_2020": {
         "description": "Covid crash, Feb-Mar 2020",
-        "classes": {"index": -33, "bond": 5, "commodity": -25, "forex": 0, "crypto": -50},
+        "classes": {"index": -33, "bond": 5, "commodity": -25, "forex": 0, "crypto": -50, "stock": -35},
         "markets": {
             "NASDAQ100": -28, "GERMANY": -38, "DAX": -38, "GOLD": -5, "SILVER": -30,
             "CRUDE_OIL": -70, "US20Y_BOND": 10, "ETHEREUM": -60,
@@ -36,7 +36,7 @@ SCENARIOS = {
     },
     "rates_2022": {
         "description": "Inflation and rate hikes, Jan-Oct 2022",
-        "classes": {"index": -25, "bond": -15, "commodity": 10, "forex": 0, "crypto": -70},
+        "classes": {"index": -25, "bond": -15, "commodity": 10, "forex": 0, "crypto": -70, "stock": -28},
         "markets": {
             "NASDAQ100": -35, "EMERGING": -35, "US20Y_BOND": -35, "GOLD": -15,
             "SILVER": -20, "COPPER": -20, "NATURAL_GAS": 60, "CRUDE_OIL": 30,
@@ -46,12 +46,12 @@ SCENARIOS = {
     },
     "flash_crash": {
         "description": "One-day crash like October 1987",
-        "classes": {"index": -20, "bond": 3, "commodity": -10, "forex": 0, "crypto": -30},
+        "classes": {"index": -20, "bond": 3, "commodity": -10, "forex": 0, "crypto": -30, "stock": -22},
         "markets": {"GOLD": -3, "USDJPY": -5, "AUDUSD": -8},
     },
     "dollar_spike": {
         "description": "Sharp dollar rally",
-        "classes": {"index": -5, "bond": 0, "commodity": -8, "forex": 0, "crypto": -10},
+        "classes": {"index": -5, "bond": 0, "commodity": -8, "forex": 0, "crypto": -10, "stock": -6},
         "markets": {
             "EMERGING": -12, "GOLD": -8, "SILVER": -12, "EURUSD": -10, "GBPUSD": -10,
             "AUDUSD": -12, "USDJPY": 10, "USDCHF": 8, "USDCAD": 8,
@@ -59,7 +59,7 @@ SCENARIOS = {
     },
     "crypto_crash": {
         "description": "Crypto collapse within a week",
-        "classes": {"index": -3, "bond": 0, "commodity": 0, "forex": 0, "crypto": -50},
+        "classes": {"index": -3, "bond": 0, "commodity": 0, "forex": 0, "crypto": -50, "stock": -4},
         "markets": {"ETHEREUM": -60},
     },
 }

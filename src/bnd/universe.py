@@ -28,6 +28,8 @@ class Market:
     slippage_pct: float
     # Annual carry charged on |notional| while a position is open.
     carry_pct_annual: float = 0.0
+    # Optional group for concentration limits (for shares: the sector).
+    sector: str = ""
 
 
 # Per-fill costs by asset class (fee %, slippage %, annual carry %).
@@ -37,6 +39,7 @@ CLASS_COSTS = {
     "bond": (0.005, 0.01, 0.0),
     "commodity": (0.02, 0.05, 0.0),
     "crypto": (0.10, 0.05, 10.0),
+    "stock": (0.02, 0.03, 0.0),
 }
 
 _DEFAULT = (
@@ -97,7 +100,21 @@ ETF_UNIVERSE = tuple(
     for name, symbol, asset_class in _ETF
 ) + tuple(m for m in DEFAULT_UNIVERSE if m.asset_class in ("forex", "crypto"))
 
-UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE}
+# Large US shares across six sectors (Yahoo prices are adjusted for splits and
+# dividends). Sixteen names is a sample for testing, not a recommendation.
+_STOCKS = (
+    ("AAPL", "tehnologie"), ("MSFT", "tehnologie"), ("NVDA", "tehnologie"),
+    ("GOOGL", "tehnologie"), ("AMZN", "consum"), ("WMT", "consum"), ("KO", "consum"),
+    ("PG", "consum"), ("JNJ", "sănătate"), ("UNH", "sănătate"), ("XOM", "energie"),
+    ("CVX", "energie"), ("JPM", "financiar"), ("GS", "financiar"), ("CAT", "industrie"),
+    ("BA", "industrie"),
+)
+STOCK_UNIVERSE = tuple(
+    Market(ticker, ticker, "stock", *CLASS_COSTS["stock"], sector=sector)
+    for ticker, sector in _STOCKS
+)
+
+UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE, "stocks": STOCK_UNIVERSE}
 
 
 def select(names=None, classes=None, universe: str = "futures") -> tuple[Market, ...]:
