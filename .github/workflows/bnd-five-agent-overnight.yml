@@ -61,6 +61,21 @@ jobs:
           BND_ALLOW_PAID_AI: 'true'
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python scripts/overnight_five_agent_council.py
+      - name: Say clearly whether the paid step ran
+        if: always()
+        env:
+          EVENT: ${{ github.event_name }}
+          CONFIRMATION: ${{ inputs.paid_test_confirmation }}
+        run: |
+          if [ "$EVENT" = workflow_dispatch ] && [ "$CONFIRMATION" = "RUN-PAID-TEST" ]; then
+            echo "Pasul plătit a fost pornit (confirmare corectă)." >> "$GITHUB_STEP_SUMMARY"
+          else
+            {
+              echo "**Pasul plătit NU a rulat și nu s-a cheltuit nimic.**"
+              echo "Pentru a-l porni: Run workflow, iar la paid_test_confirmation scrie exact RUN-PAID-TEST (litere mari, fără spații)."
+              echo "Textul primit: \`${CONFIRMATION}\` (eveniment: ${EVENT})"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/upload-artifact@v7
         if: always()
         with:
@@ -68,3 +83,46 @@ jobs:
           path: overnight-reports/five-agent-review.json
           if-no-files-found: warn
           retention-days: 7
+
+  # Separate job: the write token never runs project code. It copies the
+  # finished report to the backtest-results branch, only after a paid run.
+  publish:
+    needs: council
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.paid_test_confirmation == 'RUN-PAID-TEST'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/download-artifact@v8
+        continue-on-error: true
+        with:
+          name: bnd-five-agent-review-${{ github.run_id }}
+          path: report
+      - name: Commit the report to the backtest-results branch
+        run: |
+          set -euo pipefail
+          if [ ! -f report/five-agent-review.json ]; then
+            echo "::warning::No report to publish"; exit 0
+          fi
+          git init -q results
+          cd results
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          for attempt in 1 2 3; do
+            git fetch -q --depth=1 origin backtest-results
+            git checkout -q -f -B backtest-results FETCH_HEAD
+            mkdir -p ai-rounds
+            cp ../report/five-agent-review.json "ai-rounds/${RUN_ID}.json"
+            git add -A
+            git commit -q -m "Raport rundă AI cu 5 agenți, rularea ${RUN_ID}"
+            if git push -q origin HEAD:refs/heads/backtest-results; then exit 0; fi
+            sleep $((attempt * 5))
+          done
+          echo "::error::Nu am putut salva raportul"
+          exit 1
