@@ -186,3 +186,23 @@ class TargetedRoundTests(unittest.TestCase):
         included, _ = m.sources(big)
         self.assertEqual(len(included[0]["excerpt"]), 29000)
         self.assertTrue(included[0]["truncated"])
+
+
+class PastedInputTests(unittest.TestCase):
+    def test_quotes_backticks_and_dot_slash_are_accepted(self):
+        self.assertEqual(m.selected_agents("`claude`, 'gemini'"), ("CLAUDE", "GEMINI"))
+        files = m.audit_files('`src/bnd/paper_engine.py`, "./src/bnd/safety.py"')
+        self.assertEqual([f.as_posix() for f in files],
+                         ["src/bnd/paper_engine.py", "src/bnd/safety.py"])
+
+    def test_preflight_failure_says_why(self):
+        env = {"BND_ALLOW_PAID_AI": "true", "BND_AUDIT_FILES": "src/bnd/nu_exista.py",
+               "OPENROUTER_API_KEY": "k", "BND_MAX_RUN_COST_USD": "0.5",
+               "BND_MAX_CALL_COST_USD": "0.2",
+               **{"BND_MODEL_" + a: "vendor/model" for a in m.AGENTS}}
+        with patch.dict(os.environ, env, clear=True), \
+                patch.object(m, "write_report", lambda report: None):
+            report = m.main()
+
+        self.assertEqual(report["status"], "preflight_failed")
+        self.assertEqual(report["error_detail"], "Invalid audit file: src/bnd/nu_exista.py")

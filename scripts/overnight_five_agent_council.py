@@ -40,10 +40,15 @@ def cost(raw):
         return None
     return value if value.is_finite() and value >= 0 else None
 
+def _clean(text):
+    """A typed or pasted list item without spaces, quotes or backticks."""
+    return text.strip().strip("`'\"").strip()
+
+
 def selected_agents(raw=None):
     """Agents to ask: all by default, or those named in BND_ONLY_AGENTS."""
     raw = os.getenv("BND_ONLY_AGENTS", "") if raw is None else raw
-    wanted = [a.strip().upper() for a in raw.split(",") if a.strip()]
+    wanted = [_clean(a).upper() for a in raw.split(",") if _clean(a)]
     if not wanted:
         return AGENTS
     unknown = [a for a in wanted if a not in AGENTS]
@@ -105,7 +110,7 @@ def validated_proposal(payload):
 def audit_files(raw=None):
     """Files named in BND_AUDIT_FILES (comma-separated, under src/), else None."""
     raw = os.getenv("BND_AUDIT_FILES", "") if raw is None else raw
-    names = [n.strip() for n in raw.split(",") if n.strip()]
+    names = [_clean(n).removeprefix("./") for n in raw.split(",") if _clean(n)]
     if not names:
         return None
     root = Path("src").resolve()
@@ -298,7 +303,10 @@ def main():
                                  ensure_ascii=False)
             bodies = {a: request_body(models[a], payload) for a in agents}
         except (ValueError, OSError) as exc:
-            report.update(status="preflight_failed", error_type=type(exc).__name__)
+            # Our own validation message (it may quote what the owner typed
+            # in the manual inputs); never model text.
+            report.update(status="preflight_failed", error_type=type(exc).__name__,
+                          error_detail=str(exc)[:200])
         else:
             report.update(run_cap_usd=str(run_cap), call_cap_usd=str(call_cap))
             report.update(process_agents(models, bodies,

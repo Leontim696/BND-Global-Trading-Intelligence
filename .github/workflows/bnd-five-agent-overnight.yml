@@ -76,9 +76,14 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           CONFIRMATION: ${{ inputs.paid_test_confirmation }}
+          AGENTS_INPUT: ${{ inputs.agents }}
+          FILES_INPUT: ${{ inputs.files }}
         run: |
           if [ "$EVENT" = workflow_dispatch ] && [ "$CONFIRMATION" = "RUN-PAID-TEST" ]; then
-            echo "Pasul plătit a fost pornit (confirmare corectă)." >> "$GITHUB_STEP_SUMMARY"
+            {
+              echo "Pasul plătit a fost pornit (confirmare corectă)."
+              echo "Agenți cerși: \`${AGENTS_INPUT:-toți}\`; fișiere: \`${FILES_INPUT:-toate, bucăți scurte}\`"
+            } >> "$GITHUB_STEP_SUMMARY"
           else
             {
               echo "**Pasul plătit NU a rulat și nu s-a cheltuit nimic.**"
