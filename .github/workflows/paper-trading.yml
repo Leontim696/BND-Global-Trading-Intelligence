@@ -1,4 +1,4 @@
-name: BND Paper Trading (virtual money, daily)
+name: Bot virtual zilnic
 
 # One daily step of the virtual account: fill yesterday's orders at the
 # new opens, apply stops and limits, then place orders for the next open.

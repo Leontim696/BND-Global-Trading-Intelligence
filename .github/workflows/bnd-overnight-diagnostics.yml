@@ -1,4 +1,4 @@
-name: BND Overnight Diagnostics
+name: Diagnostic nocturn (gratis)
 on:
   workflow_dispatch:
   schedule:

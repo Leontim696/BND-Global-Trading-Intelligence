@@ -1,4 +1,4 @@
-name: BND verificare zilnică a botului virtual
+name: Verificare bot (dimineața)
 
 # Every morning: is the virtual account running, is its kill switch off,
 # did the last daily run succeed? Problems open (or update) one GitHub

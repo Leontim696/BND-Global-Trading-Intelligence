@@ -1,4 +1,4 @@
-name: BND Gemini DeepSeek Grok Live (manual)
+name: Test conexiune Gemini+DeepSeek+Grok (plătit)
 
 on:
   workflow_dispatch:

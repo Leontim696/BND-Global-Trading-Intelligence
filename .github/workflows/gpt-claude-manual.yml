@@ -1,4 +1,4 @@
-name: BND GPT-Claude Live Connectivity (manual)
+name: Test conexiune GPT+Claude (plătit)
 
 on:
   workflow_dispatch:

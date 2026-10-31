@@ -1,5 +1,5 @@
 
-name: BND Python Tests
+name: Teste automate
 
 on:
   push:
