@@ -1,0 +1,55 @@
+name: Rezumat de dimineață
+
+# În fiecare dimineață, la 05:05 ora Germaniei (04:05 UTC iarna), trimite pe telefon prin ntfy
+# un rezumat: ce s-a întâmplat peste noapte (consiliu, ordine executate, valoarea conturilor,
+# alerte, costul AI) și planurile zilei. Fără apeluri AI plătite; nu tranzacționează. Se oprește
+# singur după 2026-11-17.
+
+on:
+  schedule:
+    - cron: '5 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-dimineata
+  cancel-in-progress: false
+
+jobs:
+  rezumat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    env:
+      BND_ALLOW_LIVE_AI: "false"
+      GH_TOKEN: ${{ github.token }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Build and send the morning summary
+        run: |
+          if [ "$(date -u +%Y-%m-%d)" \> "2026-11-17" ]; then
+            echo "Testul s-a încheiat: nu se mai trimite rezumatul." >> "$GITHUB_STEP_SUMMARY"; exit 0
+          fi
+          mkdir -p out/p out/c out/a out/k
+          grab() { # ramură fișier destinație
+            if git fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
+              git show "FETCH_HEAD:$2" > "$3"
+            fi
+          }
+          grab paper-trading paper.sqlite out/p/paper.sqlite
+          grab paper-trading rapoarte/quotes.json out/quotes.json
+          grab crypto-trading paper.sqlite out/c/paper.sqlite
+          grab ai-unificat paper.sqlite out/a/paper.sqlite
+          grab consiliu-umbra registry.sqlite out/k/registry.sqlite
+          grab consiliu-umbra costs.sqlite out/k/costs.sqlite
+          gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
+          python -m src.bnd.morning --paper out/p --crypto out/c --ai out/a --council out/k \
+            --quotes out/quotes.json --runs out/runs.json --send | tee -a "$GITHUB_STEP_SUMMARY"

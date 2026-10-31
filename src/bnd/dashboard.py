@@ -201,7 +201,9 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     costs = council.get("costs") if council.get("exists") else None
     if costs and costs["remaining"] < LOW_BALANCE_USD:
         alerts.append(f"Soldul cheii AI e mic: au mai rămas {costs['remaining']:.2f} $. Reîncarc-o.")
-    return {"generated": now.isoformat(timespec="minutes"),
+    eurusd = prices.get("EURUSD")
+    fx = {"eurusd": float(eurusd[0]), "time": eurusd[1]} if eurusd and eurusd[0] > 0 else None
+    return {"generated": now.isoformat(timespec="minutes"), "fx": fx,
             "quotes_time": quotes_time,
             "accounts": accounts, "council": council, "alerts": alerts}
 
