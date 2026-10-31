@@ -52,12 +52,15 @@ jobs:
           else
             echo "post=false" >> "$GITHUB_OUTPUT"
           fi
+      - name: Current prices for the phone app
+        run: python -m src.bnd.quotes_snapshot --out raport/quotes.json || true
       - uses: actions/upload-artifact@v7
         with:
           name: bnd-raport-${{ github.run_id }}
           path: |
             raport/raport.md
             raport/raport.json
+            raport/quotes.json
           retention-days: 14
 
   # Separate job: the write token never runs project code.
@@ -92,6 +95,7 @@ jobs:
             mkdir -p rapoarte
             cp ../raport/raport.md "rapoarte/${stamp}.md"
             cp ../raport/raport.md rapoarte/LATEST.md
+            if [ -f ../raport/quotes.json ]; then cp ../raport/quotes.json rapoarte/quotes.json; fi
             git add -A
             git commit -q -m "Raport ${stamp}"
             if git push -q origin HEAD:refs/heads/paper-trading; then break; fi
