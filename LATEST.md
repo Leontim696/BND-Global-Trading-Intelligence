@@ -1,28 +1,84 @@
-Latest run: `runs/2026-10-30T215755Z_41131788992_PORTFOLIO-etf-wfo_1d_sma_crossover` (source 500a496, job success)
+Latest run: `runs/2026-10-31T010029Z_41153106565_BTCUSDT_1d_sma_crossover` (source 0b0d70c, job failure)
 
 # BND backtest summary
 
+## Dataset
+- File: `backtest-reports/BTCUSDT-1d.csv` (1399 candles, 0 gaps)
+- Range: 2023-01-01T00:00:00+00:00 → 2026-10-30T00:00:00+00:00
+- SHA-256: `22294bcb5f983928aa967609c99d8139b674c03cf749ece482503f107ab70951`
+
 ## Verdict
-**No evidence of an edge:** re-optimised every window, the strategy made 124.51% out of sample vs 154.78% for the basket, and beat it in 6 of 12 windows.
+No robustness report: no conclusion about an edge is possible.
 
-## Portfolio walk-forward (sma_crossover, train 1460 days, test 365 days)
-- Windows: 12, profitable: 9, beating the basket: 6, with kill switch: 1
-- Chained out-of-sample: 124.51% vs basket 154.78%
-- Mean Sharpe: train 0.72, test 0.57, basket 0.78; parameter change rate 0.45
+Out-of-sample, risk-adjusted: Sharpe 0.30 vs -0.51 for buy & hold; max drawdown 28.98% vs 52.97%; return 5.26% vs -30.29% with 51.67% average capital invested.
 
-| Test window | Parameters | Return | Sharpe | Max drawdown | Basket return | Kill switch |
-| --- | --- | ---: | ---: | ---: | ---: | --- |
-| 2014-01-05 → 2015-01-05 | fast=40; slow=150 | 12.95% | 1.03 | 11.18% | -5.24% | – |
-| 2015-01-05 → 2016-01-05 | fast=40; slow=75 | -20.35% | -1.26 | 22.86% | -6.78% | – |
-| 2016-01-05 → 2017-01-04 | fast=40; slow=50 | 30.58% | 1.74 | 7.22% | 9.84% | – |
-| 2017-01-04 → 2018-01-04 | fast=40; slow=50 | 34.40% | 2.27 | 6.44% | 30.17% | – |
-| 2018-01-04 → 2019-01-04 | fast=40; slow=50 | -18.83% | -1.09 | 28.55% | -15.22% | – |
-| 2019-01-04 → 2020-01-04 | fast=40; slow=50 | 15.19% | 1.08 | 9.52% | 13.09% | – |
-| 2020-01-04 → 2021-01-03 | fast=40; slow=50 | 32.26% | 1.70 | 17.59% | 25.55% | – |
-| 2021-01-03 → 2022-01-03 | fast=40; slow=50 | 16.26% | 0.93 | 12.43% | 22.64% | – |
-| 2022-01-03 → 2023-01-03 | fast=40; slow=50 | -23.24% | -1.31 | 30.19% | -8.09% | 2022-11-28 |
-| 2023-01-03 → 2024-01-03 | fast=10; slow=150 | 2.60% | 0.24 | 12.30% | 13.09% | – |
-| 2024-01-03 → 2025-01-02 | fast=20; slow=50 | 14.65% | 0.93 | 14.88% | 13.32% | – |
-| 2025-01-02 → 2026-01-02 | fast=40; slow=150 | 9.54% | 0.58 | 20.18% | 16.02% | – |
+## Backtest: `sma_crossover`
+Costs per fill: fee 0.1%, slippage 0.05%; funding 0.0%/yr on open positions; cash interest 0.0%/yr; shorts off.
+
+**full** (2023-01-01T00:00:00+00:00 → 2026-10-30T00:00:00+00:00, risk gate: disabled_research_only)
+
+| Metric | Strategy | Buy & hold |
+| --- | ---: | ---: |
+| Net profit | 9,119.09 | 36,420.07 |
+| Return | 91.19% | 364.20% |
+| CAGR | 18.44% | 49.30% |
+| Max drawdown | 38.71% | 52.97% |
+| Volatility | 33.30% | 46.16% |
+| Sharpe | 0.67 | 1.10 |
+| Sortino | 1.05 | 1.71 |
+| Calmar | 0.48 | 0.93 |
+| Expectancy per trade | 569.94 | 36,420.07 |
+| Turnover (x equity / yr) | 8.26 | 0.36 |
+| Trades | 16 | 1 |
+| Time in market | 57.04% | 99.93% |
+| Avg capital exposure | 57.04% | 99.93% |
+| Funding paid | 0.00 | 0.00 |
+| Interest earned | 0.00 | 0.00 |
+| Entries vetoed by risk engine | 0 | 0 |
+
+**in_sample** (2023-01-01T00:00:00+00:00 → 2025-09-05T00:00:00+00:00, risk gate: disabled_research_only)
+
+| Metric | Strategy | Buy & hold |
+| --- | ---: | ---: |
+| Net profit | 8,164.06 | 56,394.28 |
+| Return | 81.64% | 563.94% |
+| CAGR | 24.94% | 102.64% |
+| Max drawdown | 38.71% | 28.10% |
+| Volatility | 35.45% | 47.38% |
+| Sharpe | 0.80 | 1.73 |
+| Sortino | 1.26 | 2.81 |
+| Calmar | 0.64 | 3.65 |
+| Expectancy per trade | 742.19 | 56,394.28 |
+| Turnover (x equity / yr) | 8.15 | 0.78 |
+| Trades | 11 | 1 |
+| Time in market | 59.35% | 99.90% |
+| Avg capital exposure | 59.35% | 99.90% |
+| Funding paid | 0.00 | 0.00 |
+| Interest earned | 0.00 | 0.00 |
+| Entries vetoed by risk engine | 0 | 0 |
+
+**out_of_sample** (2025-09-06T00:00:00+00:00 → 2026-10-30T00:00:00+00:00, risk gate: disabled_research_only)
+
+| Metric | Strategy | Buy & hold |
+| --- | ---: | ---: |
+| Net profit | 525.78 | -3,029.37 |
+| Return | 5.26% | -30.29% |
+| CAGR | 4.56% | -26.94% |
+| Max drawdown | 28.98% | 52.97% |
+| Volatility | 27.69% | 43.02% |
+| Sharpe | 0.30 | -0.51 |
+| Sortino | 0.45 | -0.72 |
+| Calmar | 0.16 | -0.51 |
+| Expectancy per trade | 105.16 | -3,029.37 |
+| Turnover (x equity / yr) | 8.44 | 1.99 |
+| Trades | 5 | 1 |
+| Time in market | 51.67% | 100.00% |
+| Avg capital exposure | 51.67% | 100.00% |
+| Funding paid | 0.00 | 0.00 |
+| Interest earned | 0.00 | 0.00 |
+| Entries vetoed by risk engine | 0 | 0 |
+
+## Missing reports
+- `backtest-reports/walk-forward.json`: JSONDecodeError
 
 _Paper research only. Past results do not predict future returns._
