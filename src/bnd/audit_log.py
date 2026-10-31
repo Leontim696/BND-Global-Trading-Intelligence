@@ -8,8 +8,10 @@ importante (rulări, costuri, opriri).
     python -m src.bnd.audit_log verify audit.jsonl
 """
 
+import fcntl
 import hashlib
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -22,17 +24,39 @@ def _digest(previous: str, body: dict) -> str:
     return hashlib.sha256((previous + payload).encode("utf-8")).hexdigest()
 
 
+def _last_valid_hash(text: str) -> str:
+    """Hash-ul ultimului rând citibil (un rând rupt de o oprire bruscă se sare)."""
+    for line in reversed(text.splitlines()):
+        try:
+            return json.loads(line)["hash"]
+        except (ValueError, KeyError, TypeError):
+            continue
+    return GENESIS
+
+
 def append(path, kind: str, data: dict, now: datetime | None = None) -> dict:
-    """Adaugă un eveniment; întoarce rândul scris."""
+    """Adaugă un eveniment; întoarce rândul scris.
+
+    Sigur la rulări simultane (blocare pe fișier), la un rând rupt de o oprire
+    bruscă (lanțul continuă de la ultimul rând valid; ``verify`` arată în
+    continuare rândul stricat) și scrie durabil (flush + fsync).
+    """
     path = Path(path)
-    previous = GENESIS
-    if path.exists() and path.stat().st_size:
-        previous = json.loads(path.read_text(encoding="utf-8").splitlines()[-1])["hash"]
     body = {"time": (now or datetime.now(timezone.utc)).isoformat(), "kind": kind,
             "data": data}
-    row = {**body, "previous": previous, "hash": _digest(previous, body)}
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+    with path.open("a+", encoding="utf-8") as handle:
+        fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            handle.seek(0)
+            text = handle.read()
+            previous = _last_valid_hash(text)
+            row = {**body, "previous": previous, "hash": _digest(previous, body)}
+            prefix = "" if not text or text.endswith("\n") else "\n"
+            handle.write(prefix + json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        finally:
+            fcntl.flock(handle, fcntl.LOCK_UN)
     return row
 
 

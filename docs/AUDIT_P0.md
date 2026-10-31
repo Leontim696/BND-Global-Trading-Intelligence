@@ -50,3 +50,13 @@ Verificat cu rezultate calculate de mână (`tests/test_accounting.py`): rundă 
 | F-11 | MEDIU | Nu există conversie valutară (vezi F-08): P&L în valuta contului nu include efectul EUR/USD. | Deschis |
 | F-12 | SCĂZUT | Spread-ul și slippage-ul sunt un singur parametru (`slippage_pct`), deci spread-ul nu e modelat separat. Costurile reale pot fi mai mari la piețe subțiri sau în afara programului. | Limitare cunoscută |
 | F-13 | SCĂZUT | Slippage-ul nu se vede separat în tranzacții (prețul salvat îl include), așa că „P&L brut înainte de costuri” din reconciliere conține slippage-ul ca parte din preț. Comisioanele, carry-ul și finanțarea sunt separate. | Limitare cunoscută |
+
+## A5. Persistență și recuperare
+
+Teste noi în `tests/test_persistence.py`: scrieri simultane în jurnalul de audit (4 procese, 40 de rânduri, lanț valid), rând rupt de o oprire bruscă, modificare retroactivă detectată, proces ucis cu `SIGKILL` în mijlocul unei tranzacții (contul rămâne neschimbat și reconciliat) și fișierul contului publicabil ca un singur fișier. Deja existau teste pentru: repornire zilnică = sesiune continuă, rulare dublă fără efect, zile ratate recuperate în ordine, ordin trimis simultan creat o singură dată, bară procesată o singură dată, eroare în bară cu oprire sigură.
+
+| ID | Sev. | Constatare | Dovadă | Stare |
+|---|---|---|---|---|
+| F-14 | RIDICAT | Jurnalul de audit (`audit_log.append`) nu avea blocare: două rulări simultane puteau bifurca lanțul, iar un rând rupt de o oprire bruscă făcea ca orice adăugare următoare să arunce excepție (iar rularea zilnică, care adaugă în jurnal la sfârșit, ar fi eșuat după ce contul era deja salvat local, dar înainte de raport). | analiza codului + testele noi | **Reparat**: blocare pe fișier, continuare de la ultimul rând valid, flush + fsync; rândul rupt rămâne vizibil la `verify` |
+| F-15 | MEDIU | Jurnalul de audit e un fișier text în ramură, nu în baza de date: două ramuri sau două conturi folosesc fișiere separate. Nu există un jurnal comun al sistemului. | structura workflow-urilor | Deschis (acceptabil: fiecare cont își are lanțul) |
+| F-16 | INFO | Contul SQLite e publicat ca fișier singur după `close()`; la oprire bruscă tranzacțiile neterminate se anulează (SQLite). Verificat cu `SIGKILL`. | `test_killed_process…` | Verificat |
