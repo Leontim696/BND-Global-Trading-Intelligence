@@ -663,10 +663,54 @@ def selector(members=DEFAULT_SELECTOR, lookback: int = 252, hold: int = 21,
     return strategy
 
 
+def score_weighted(members=DEFAULT_SELECTOR, lookback: int = 252, hold: int = 21) -> Strategy:
+    """Average of the members' signals weighted by how well each did recently.
+
+    Same scoring as ``selector`` (trailing Sharpe of each member's own paper
+    returns, no costs), but instead of following one member the weights are
+    proportional to the positive scores; members with a score of zero or less
+    get nothing, and if none is positive the market stays flat. Weights are
+    refreshed every ``hold`` candles. A smoother alternative to ``selector``.
+    """
+
+    names = _names(members)
+    if lookback < 20 or hold < 1:
+        raise ValueError("Require lookback >= 20 and hold >= 1")
+    parts = [STRATEGIES[name]() for name in names]
+    returns = [deque(maxlen=lookback) for _ in parts]
+    state = {"previous": None, "signals": [0.0] * len(parts), "weights": [0.0] * len(parts),
+             "age": 0}
+
+    def score(window) -> float:
+        if len(window) < lookback:
+            return 0.0
+        mean = sum(window) / lookback
+        variance = sum((r - mean) ** 2 for r in window) / (lookback - 1)
+        return mean / sqrt(variance) if variance > 0 else 0.0
+
+    def strategy(history: Sequence[Candle]) -> float:
+        close = history[-1].close
+        if state["previous"] is not None:
+            change = log(close / state["previous"])
+            for window, signal in zip(returns, state["signals"]):
+                window.append(signal * change)
+        state["previous"] = close
+        state["signals"] = [part(history) for part in parts]
+        if state["age"] % hold == 0:
+            positive = [max(0.0, score(window)) for window in returns]
+            total = sum(positive)
+            state["weights"] = [x / total for x in positive] if total > 0 else [0.0] * len(parts)
+        state["age"] += 1
+        return sum(w * x for w, x in zip(state["weights"], state["signals"]))
+
+    return strategy
+
+
 STRATEGIES = {
     "buy_and_hold": buy_and_hold,
     "combo": combo,
     "selector": selector,
+    "score_weighted": score_weighted,
     "sma_crossover": sma_crossover,
     "donchian_breakout": donchian_breakout,
     "volatility_target": volatility_target,
@@ -681,7 +725,7 @@ STRATEGIES = {
     "regime_switch": regime_switch,
 }
 
-META_STRATEGIES = ("buy_and_hold", "combo", "selector")
+META_STRATEGIES = ("buy_and_hold", "combo", "selector", "score_weighted")
 
 # Default robustness ranges ("start:stop:step") for each strategy's
 # swept parameters. Other parameters stay at their given values.

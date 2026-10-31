@@ -290,6 +290,18 @@ def _portfolio_lines(report: dict) -> list[str]:
             + (f" ({d['days_over_15pct']} days > 15%)" if d["days_over_15pct"] else "")
             for d in diagnostics[:6])]
     ranking = report.get("ranking", [])
+    if len(ranking) == 1 and ranking[0].get("regimes_out_of_sample"):
+        theirs, basket_regimes = ranking[0]["regimes_out_of_sample"], report.get(
+            "equal_weight_basket_regimes") or {}
+        lines += ["", f"**Pe regimuri de piață** (după {report.get('regime_market')}; "
+                      "regimul se știe la închiderea zilei de dinainte):", "",
+                  "| Regim | Zile | Strategia | Sharpe | „Cumperi și ții” | Sharpe |",
+                  "| --- | ---: | ---: | ---: | ---: | ---: |"]
+        for name, r in theirs.items():
+            base = basket_regimes.get(name, {})
+            lines.append(f"| {name} | {r['days']} | {_fmt(r['return_pct'], '%')} | "
+                         f"{_fmt(r['sharpe'])} | {_fmt(base.get('return_pct'), '%')} | "
+                         f"{_fmt(base.get('sharpe'))} |")
     if len(ranking) == 1:
         row = ranking[0]
         markets = row.get("per_market_out_of_sample", [])

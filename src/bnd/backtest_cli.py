@@ -43,6 +43,7 @@ from .portfolio import (
     run_portfolio,
 )
 from .portfolio_walk_forward import portfolio_walk_forward
+from .regimes import label_regimes, regime_breakdown
 from .quant_backtest import BacktestConfig as QuantConfig
 from .quant_report import evaluate_sma_report
 from .risk_engine import RiskLimits
@@ -724,7 +725,7 @@ def command_portfolio(args) -> int:
     names = (sorted(SWEEP_RANGES) + ["cross_momentum"] if args.strategy == "all"
              else [args.strategy])
     params = {} if args.strategy == "all" else _strategy_params(args)
-    if args.strategy in ("combo", "selector") and args.members:
+    if args.strategy in ("combo", "selector", "score_weighted") and args.members:
         params["members"] = tuple(_split_list(args.members))
 
     def make(name, frame):
@@ -747,6 +748,9 @@ def command_portfolio(args) -> int:
     workers = max(1, min(4, os.cpu_count() or 1))
 
     basket_oos = run_portfolio(data, markets, buy_and_hold, basket, trade_from=cut)
+    # Market regimes (rising/falling, calm/wild) from one reference market.
+    reference = data.get(args.regime_market)
+    labels = label_regimes(reference) if reference else {}
     rows = []
     for name in names:
         factory, in_sample, out_of_sample, signals = periods(name, config)
@@ -755,6 +759,8 @@ def command_portfolio(args) -> int:
             "in_sample": _portfolio_metrics(in_sample),
             "out_of_sample": _portfolio_metrics(out_of_sample),
         }
+        if labels:
+            row["regimes_out_of_sample"] = regime_breakdown(out_of_sample["equity_curve"], labels)
         if fx is not None:
             row["out_of_sample_base_currency"] = currency_metrics(
                 out_of_sample["equity_curve"], fx, config.initial_equity)
@@ -808,6 +814,9 @@ def command_portfolio(args) -> int:
             "allow_short": config.allow_short, "params": params,
         },
         "equal_weight_basket_out_of_sample": _portfolio_metrics(basket_oos),
+        "regime_market": args.regime_market if labels else None,
+        "equal_weight_basket_regimes": regime_breakdown(basket_oos["equity_curve"], labels)
+        if labels else None,
         "base_currency": args.base_currency,
         "equal_weight_basket_out_of_sample_base_currency": (
             currency_metrics(basket_oos["equity_curve"], fx, basket.initial_equity)
@@ -977,11 +986,14 @@ def build_parser() -> argparse.ArgumentParser:
     port = sub.add_parser("portfolio", parents=[book],
                           help="Trade every market in one leveraged account")
     port.add_argument("--strategy",
-                      choices=["all", "combo", "selector", "cross_momentum"] + sorted(SWEEP_RANGES),
+                      choices=["all", "combo", "selector", "score_weighted", "cross_momentum"]
+                      + sorted(SWEEP_RANGES),
                       default="all")
     port.add_argument("--base-currency", choices=["USD", "EUR", "GBP", "AUD"], default="USD",
                       help="also report results in this currency, unhedged (needs e.g. EURUSD.csv)")
     port.add_argument("--in-sample", type=float, default=70.0)
+    port.add_argument("--regime-market", default="SP500",
+                      help="market whose trend and volatility define the regimes (if present)")
     port.add_argument("--permutations", type=int, default=40,
                       help="timing shuffles per strategy (0 disables)")
     port.add_argument("--seed", type=int, default=7)

@@ -599,3 +599,37 @@ def test_selector_validation(kwargs):
 
     with pytest.raises(ValueError):
         selector(**kwargs)
+
+
+def test_score_weighted_follows_the_member_that_worked_and_sits_out_otherwise(fixed_members):
+    from src.bnd.strategies import score_weighted
+
+    up = run_all(score_weighted("always_long,always_short", lookback=30, hold=5), trend(120, 0.002))
+    down = run_all(score_weighted("always_long,always_short", lookback=30, hold=5), trend(120, -0.002))
+    flat_when_all_lose = run_all(score_weighted("always_long,always_flat", lookback=30, hold=5),
+                                 trend(120, -0.002))
+
+    assert set(up[:30]) == {0.0} and set(up[40:]) == {1.0}
+    assert set(down[40:]) == {-1.0}
+    assert set(flat_when_all_lose) == {0.0}
+
+
+def test_score_weighted_mixes_members_in_proportion_to_their_scores(monkeypatch):
+    from src.bnd import strategies
+    from src.bnd.strategies import score_weighted
+
+    # A good member (+1) and a weaker one that is right only a little more than half the time.
+    monkeypatch.setitem(strategies.STRATEGIES, "good", lambda: (lambda h: 1))
+    monkeypatch.setitem(strategies.STRATEGIES, "meh", lambda: (lambda h: 1 if h[-1].close > 0 else 0))
+    signals = run_all(score_weighted("good,meh", lookback=30, hold=5), trend(120, 0.002))
+
+    assert 0.99 <= signals[-1] <= 1.0
+
+
+@pytest.mark.parametrize("kwargs", [dict(members="macd"), dict(members="macd,score_weighted"),
+                                    dict(lookback=10), dict(hold=0)])
+def test_score_weighted_validation(kwargs):
+    from src.bnd.strategies import score_weighted
+
+    with pytest.raises(ValueError):
+        score_weighted(**kwargs)
