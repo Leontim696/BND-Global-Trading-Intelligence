@@ -41,8 +41,8 @@ jobs:
       CAPITAL: ${{ inputs.capital }}
       RESET: ${{ inputs.reset_kill_switch }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
       - name: Restore the account from the ai-unificat branch
@@ -91,7 +91,7 @@ jobs:
             --signals state/semnale.json --audit-log state/audit.jsonl \
             --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
           cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always() && steps.restore.outputs.account != 'none'
         with:
           name: bnd-ai-${{ github.run_id }}
@@ -113,7 +113,7 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       RESULT: ${{ needs.step.result }}
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         continue-on-error: true
         with:
           name: bnd-ai-${{ github.run_id }}
