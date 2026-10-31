@@ -1,0 +1,104 @@
+name: Stare sistem (JSON și alerte)
+
+# O dată pe oră, după raportul orar: citește conturile virtuale, registrul consiliului și
+# prețurile de acum, calculează starea sistemului (reconciliere contabilă, drawdown, costuri
+# AI, starea agenților, rulări eșuate) și o salvează ca status.json pe ramura `status`.
+# Senzorii (de exemplu Home Assistant, cu un token de citire) citesc acel fișier. Alertele
+# noi (fără repetiții, pauză 12 ore) merg pe telefon prin ntfy, dacă secretul NTFY_TOPIC
+# există. Nu tranzacționează și nu cheamă AI plătit.
+
+on:
+  schedule:
+    - cron: '35 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-status
+  cancel-in-progress: false
+
+jobs:
+  compute:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    env:
+      BND_ALLOW_LIVE_AI: "false"
+      GH_TOKEN: ${{ github.token }}
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+      - name: Read the accounts, the council and the prices
+        run: |
+          mkdir -p out/p out/c out/a out/k
+          grab() { # ramură fișier destinație
+            if git fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
+              git show "FETCH_HEAD:$2" > "$3"
+            fi
+          }
+          grab paper-trading paper.sqlite out/p/paper.sqlite
+          grab paper-trading rapoarte/quotes.json out/quotes.json
+          grab crypto-trading paper.sqlite out/c/paper.sqlite
+          grab ai-unificat paper.sqlite out/a/paper.sqlite
+          grab consiliu-umbra registry.sqlite out/k/registry.sqlite
+          grab consiliu-umbra costs.sqlite out/k/costs.sqlite
+          grab status alerts.json out/alerts.json
+          gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
+      - name: Build the status
+        run: |
+          python -m src.bnd.dashboard --paper out/p --crypto out/c --ai out/a --council out/k \
+            --quotes out/quotes.json --runs out/runs.json \
+            --template src/bnd/dashboard_template.html --out out/app.html --status-json out/status.json
+          cat out/status.json >> "$GITHUB_STEP_SUMMARY"
+      - name: New alerts to the phone (no repeats)
+        run: python -m src.bnd.alerting --status out/status.json --state out/alerts.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: bnd-status-${{ github.run_id }}
+          path: |
+            out/status.json
+            out/alerts.json
+          retention-days: 3
+
+  # Separate job: the write token never runs project code.
+  publish:
+    needs: compute
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: bnd-status-${{ github.run_id }}
+          path: out
+      - name: Save status.json on the status branch
+        run: |
+          set -euo pipefail
+          git init -q s && cd s
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          for attempt in 1 2 3; do
+            if git fetch -q --depth=1 origin status 2>/dev/null; then
+              git checkout -q -f -B status FETCH_HEAD
+            else
+              git checkout -q --orphan status 2>/dev/null || true
+            fi
+            cp ../out/status.json status.json
+            if [ -f ../out/alerts.json ]; then cp ../out/alerts.json alerts.json; fi
+            git add -A
+            git commit -q -m "Stare $(date -u +%Y-%m-%dT%H:%MZ)" || true
+            if git push -q origin HEAD:refs/heads/status; then break; fi
+            sleep $((attempt * 5))
+          done

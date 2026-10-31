@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import pytest
 
 from src.bnd import dashboard
+from src.bnd.decision_registry import DecisionRegistry
 from src.bnd.paper_engine import PaperEngine
 
 NOW = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
@@ -110,3 +111,43 @@ def test_low_key_balance_raises_an_alert(tmp_path):
     data = dashboard.collect(None, None, None, tmp_path, NOW)
 
     assert any("Soldul cheii" in a for a in data["alerts"])
+
+
+def test_status_json_is_flat_and_safe_for_sensors(tmp_path):
+    PaperEngine.create(tmp_path / "paper.sqlite", 5_000.0, currency="USD", now=NOW).close()
+
+    status = dashboard.status_summary(dashboard.collect(tmp_path, None, None, None, NOW))
+
+    assert status["ok"] is True and status["alerts"] == []
+    assert status["accounts"]["paper"] == {"equity": 5000.0, "currency": "USD", "return_pct": 0.0,
+                                           "drawdown_pct": 0.0, "positions": 0, "orders": 0,
+                                           "kill_switch": False, "reconciled": True}
+
+
+def test_accounting_mismatch_and_failed_agent_raise_alerts(tmp_path, series_for_alerts):
+    engine = PaperEngine.open(tmp_path / "paper.sqlite")
+    engine._db.execute("UPDATE account SET cash = cash + 7")
+    engine.close()
+
+    data = dashboard.collect(tmp_path, None, None, tmp_path, NOW)
+
+    assert any("discrepanță contabilă" in a for a in data["alerts"])
+    assert any("Agentul grok a eșuat" in a for a in data["alerts"])
+    assert data["council"]["last_round"]["agents"]["grok"]["failed"] == 1
+    assert data["council"]["models"]["gpt"]["model"]
+
+
+import pytest as _pytest
+
+
+@_pytest.fixture
+def series_for_alerts(tmp_path):
+    from src.bnd.decision_rules import CouncilDecision, DecisionRule
+    from src.bnd.fusion_council import FusionCouncil, Vote
+    PaperEngine.create(tmp_path / "paper.sqlite", 5_000.0, currency="USD", now=NOW).close()
+    registry = DecisionRegistry(tmp_path / "registry.sqlite")
+    trace = {"agents": {"grok": {"status": "failed", "latency_s": None},
+                        "gpt": {"status": "ok", "latency_s": 3.0}}}
+    registry.record("2026-10-31:X", NOW, "X", 10.0, FusionCouncil(),
+                    CouncilDecision(Vote.HOLD, DecisionRule.MAJORITY, {}, (), (), True, ()),
+                    meta={"trace": trace})
