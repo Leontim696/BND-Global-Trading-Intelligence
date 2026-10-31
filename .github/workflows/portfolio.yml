@@ -56,8 +56,8 @@ jobs:
       STRATEGY: ${{ inputs.strategy }}
       EXTRA_ARGS: ${{ inputs.extra_args }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
       - name: Download every market (failures are recorded, not fatal)
@@ -102,7 +102,7 @@ jobs:
           fi
           python -m src.bnd.backtest_summary "${args[@]}" > backtest-reports/summary.md
           cat backtest-reports/summary.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()
         with:
           name: bnd-portfolio-${{ github.run_id }}
@@ -130,7 +130,7 @@ jobs:
       INTERVAL: 1d
       STRATEGY: ${{ inputs.strategy }}
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: bnd-portfolio-${{ github.run_id }}
           path: reports

@@ -91,3 +91,11 @@ def test_branch_cleanup_protects_every_state_branch_and_has_write_only_in_its_jo
         used |= set(re.findall(r"origin\s+(paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status|backtest-results)\b",
                                text(path)))
     assert all(branch in body for branch in used), used
+
+
+def test_every_action_is_pinned_to_a_full_commit_hash_with_its_version_in_a_comment():
+    for path in WORKFLOWS:
+        for number, line in enumerate(text(path).splitlines(), 1):
+            if "uses:" in line and "@" in line:
+                assert re.search(r"uses:\s*actions/[\w-]+(/[\w-]+)?@[0-9a-f]{40}\s+#\s*v\d+\s*$", line), \
+                    f"{path.name}:{number}: {line.strip()}"

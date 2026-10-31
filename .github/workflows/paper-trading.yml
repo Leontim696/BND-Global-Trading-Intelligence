@@ -47,8 +47,8 @@ jobs:
       SETTINGS: ${{ inputs.settings }}
       RESET: ${{ inputs.reset_kill_switch }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
       - name: Restore the account from the paper-trading branch
@@ -69,7 +69,7 @@ jobs:
           fi
       - name: Restore yesterday's candles
         if: steps.restore.outputs.account != 'none'
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: data
           key: paper-candles-${{ github.run_id }}
@@ -81,7 +81,7 @@ jobs:
             --start "$(date -u -d '-3 years' +%Y-%m-%d)" --out-dir data
       - name: Keep the candles for tomorrow
         if: steps.restore.outputs.account != 'none'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: data
           key: paper-candles-${{ github.run_id }}
@@ -103,7 +103,7 @@ jobs:
           python -m src.bnd.paper_runner --state state/paper.sqlite --data-dir data \
             --audit-log state/audit.jsonl --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
           cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         # Also after a failure: a safe stop (kill switch) must be kept.
         if: always() && steps.restore.outputs.account != 'none'
         with:
@@ -128,7 +128,7 @@ jobs:
       SOURCE_SHA: ${{ github.sha }}
       RESULT: ${{ needs.step.result }}
     steps:
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         continue-on-error: true
         with:
           name: bnd-paper-${{ github.run_id }}
