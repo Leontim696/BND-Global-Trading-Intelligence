@@ -206,3 +206,14 @@ class PastedInputTests(unittest.TestCase):
 
         self.assertEqual(report["status"], "preflight_failed")
         self.assertEqual(report["error_detail"], "Invalid audit file: src/bnd/nu_exista.py")
+
+
+class PhoneKeyboardTests(unittest.TestCase):
+    def test_capitalised_path_and_curly_quotes_are_accepted(self):
+        files = m.audit_files("Src/bnd/Paper_engine.py")
+        self.assertEqual([f.as_posix() for f in files], ["src/bnd/paper_engine.py"])
+        files = m.audit_files("\u201csrc/bnd/safety.py\u201d")
+        self.assertEqual([f.as_posix() for f in files], ["src/bnd/safety.py"])
+        self.assertEqual(m.selected_agents("\u2018Claude\u2019, GEMINI"), ("CLAUDE", "GEMINI"))
+        with self.assertRaises(ValueError):
+            m.audit_files("Src/../README.md")
