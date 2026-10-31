@@ -217,3 +217,41 @@ class PhoneKeyboardTests(unittest.TestCase):
         self.assertEqual(m.selected_agents("\u2018Claude\u2019, GEMINI"), ("CLAUDE", "GEMINI"))
         with self.assertRaises(ValueError):
             m.audit_files("Src/../README.md")
+
+
+class TimeAndPartialReportTests(unittest.TestCase):
+    def test_progress_is_reported_after_every_agent(self):
+        seen = []
+
+        def fake(agent, model, body):
+            return {"status": "ok", "billing": "reported", "cost_usd": "0.01", "model": model}
+
+        m.process_agents({a: "v/m" for a in m.AGENTS}, {a: b"{}" for a in m.AGENTS}, fake,
+                         Decimal("0.5"), Decimal("0.1"),
+                         on_progress=lambda results, spent: seen.append((len(results), spent)))
+
+        self.assertEqual(seen, [(i, Decimal("0.01") * i) for i in range(1, 6)])
+
+    def test_round_stops_starting_calls_after_the_time_limit(self):
+        ticks = iter([0, 1, 2, 500, 501, 502, 503, 504])
+        calls = []
+
+        def fake(agent, model, body):
+            calls.append(agent)
+            return {"status": "ok", "billing": "reported", "cost_usd": "0.01", "model": model}
+
+        result = m.process_agents({a: "v/m" for a in m.AGENTS}, {a: b"{}" for a in m.AGENTS},
+                                  fake, Decimal("0.5"), Decimal("0.1"), deadline=100,
+                                  clock=lambda: next(ticks))
+
+        self.assertEqual(calls, list(m.AGENTS)[:2])
+        self.assertEqual(result["status"], "halted_time")
+        self.assertEqual(result["agents"][m.AGENTS[2]]["status"], "skipped_time_limit")
+
+    def test_deadline_setting_is_bounded(self):
+        with patch.dict(os.environ, {"BND_DEADLINE_SECONDS": "5"}):
+            self.assertEqual(m.deadline_seconds(), 600.0)
+        with patch.dict(os.environ, {"BND_DEADLINE_SECONDS": "abc"}):
+            self.assertEqual(m.deadline_seconds(), 600.0)
+        with patch.dict(os.environ, {"BND_DEADLINE_SECONDS": "300"}):
+            self.assertEqual(m.deadline_seconds(), 300.0)

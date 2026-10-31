@@ -7,6 +7,7 @@ import json
 import os
 import re
 import sys
+import time
 from datetime import datetime, timezone
 from decimal import Decimal, InvalidOperation
 from pathlib import Path
@@ -218,7 +219,7 @@ def call(agent, model, key, body):
                            "Content-Type": "application/json"})
     try:
         # Reviewed: fixed https URL constant.
-        with urlopen(req, timeout=35) as response:  # nosec B310
+        with urlopen(req, timeout=100) as response:  # nosec B310
             raw = response.read(600001)
         if len(raw) > 600000:
             raise ValueError("Response too large")
@@ -243,10 +244,27 @@ def call(agent, model, key, body):
         result["error_type"] = type(exc).__name__
     return result
 
-def process_agents(models, bodies, call_fn, run_cap, call_cap, agents=AGENTS):
+def deadline_seconds():
+    """Wall-clock budget for the whole round (BND_DEADLINE_SECONDS, default 600)."""
+    try:
+        value = float(os.getenv("BND_DEADLINE_SECONDS", "600"))
+    except ValueError:
+        return 600.0
+    return value if 30 <= value <= 3000 else 600.0
+
+
+def process_agents(models, bodies, call_fn, run_cap, call_cap, agents=AGENTS,
+                   on_progress=None, deadline=None, clock=time.monotonic):
+    """Ask the agents in order. ``on_progress(results, spent)`` is called after
+    every agent, so a partial report exists even if the job is killed.
+    Before each call the round stops if the budget or the time limit would be
+    passed."""
     results, spent, halt = {}, Decimal("0"), None
     unknown, call_exceeded = False, False
+    started = clock()
     for agent in agents:
+        if halt is None and deadline is not None and clock() - started > deadline:
+            halt = "time_limit"
         if halt:
             results[agent] = {"status": "skipped_" + halt, "model": models[agent]}
             continue
@@ -262,6 +280,8 @@ def process_agents(models, bodies, call_fn, run_cap, call_cap, agents=AGENTS):
         if not isinstance(result, dict):
             result = {"status": "failed", "billing": "unknown"}
         results[agent] = result
+        if on_progress is not None:
+            on_progress(dict(results), spent + (cost(result.get("cost_usd")) or Decimal("0")))
         if result.get("billing") == "not_attempted":
             halt = "disabled"
             continue
@@ -280,6 +300,7 @@ def process_agents(models, bodies, call_fn, run_cap, call_cap, agents=AGENTS):
                   and cost(r.get("cost_usd")) is not None for r in results.values())
     status = ("halted_billing_unknown" if unknown else
               "halted_budget" if halt in ("run_budget", "run_budget_exceeded", "call_budget_exceeded") else
+              "halted_time" if halt == "time_limit" else
               "ok" if success == len(agents) else
               "partial_success" if success else "no_successful_agent")
     return {"agents": results, "status": status, "halt_reason": halt,
@@ -317,9 +338,13 @@ def main():
                           error_detail=str(exc)[:200])
         else:
             report.update(run_cap_usd=str(run_cap), call_cap_usd=str(call_cap))
+            def partial(results, spent):
+                write_report({**report, "status": "in_progress", "agents": results,
+                              "reported_cost_usd": str(spent)})
+
             report.update(process_agents(models, bodies,
                           lambda a, m, b: call(a, m, key, b), run_cap, call_cap,
-                          agents))
+                          agents, partial, deadline_seconds()))
     write_report(report)
     return report
 

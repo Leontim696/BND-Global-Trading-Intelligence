@@ -35,7 +35,7 @@ concurrency:
 jobs:
   council:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 16
     env:
       # Paid calls ONLY for explicit manual dispatch with exact confirmation.
       # Push and schedule ALWAYS remain disabled.
@@ -64,8 +64,10 @@ jobs:
         run: python -m unittest discover -s tests -p 'test_five_agent_council.py' -v
       - name: Generate independent agent proposals (manual opt-in only)
         if: github.event_name == 'workflow_dispatch' && inputs.paid_test_confirmation == 'RUN-PAID-TEST'
-        timeout-minutes: 5
+        timeout-minutes: 14
         env:
+          # The script itself stops starting new calls after 10 minutes.
+          BND_DEADLINE_SECONDS: "600"
           BND_ALLOW_PAID_AI: 'true'
           BND_ONLY_AGENTS: ${{ inputs.agents }}
           BND_AUDIT_FILES: ${{ inputs.files }}
