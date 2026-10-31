@@ -1,0 +1,119 @@
+{
+  "created_at": "2026-10-31T06:37:45.402584+00:00",
+  "mode": "proposals_only",
+  "paid_ai_enabled": true,
+  "agents": {
+    "DEEPSEEK": {
+      "agent": "DEEPSEEK",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": "failed",
+      "billing": "reported",
+      "cost_usd": "0.0163551",
+      "error_type": "ValueError"
+    },
+    "GPT": {
+      "agent": "GPT",
+      "model": "openai/gpt-6-astra",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.214055",
+      "proposal": {
+        "finding": "Non-finite catalogue prices can crash model-price parsing instead of being skipped.",
+        "evidence": "In src/bnd/openrouter_models.py, per_million('NaN') returns Decimal('NaN'). The visible parse() code then evaluates price_in < 0 (or price_out < 0), which raises decimal.InvalidOperation under the default decimal context. The conversion helper's exception handler does not cover this later comparison.",
+        "risk": "low",
+        "suggested_patch": "In per_million(), replace the direct return inside the existing try block with:\namount = Decimal(str(value)) * 1_000_000\nreturn amount if amount.is_finite() and amount >= 0 else None\nThis lets parse() skip non-finite prices using its existing None check."
+      }
+    },
+    "CLAUDE": {
+      "agent": "CLAUDE",
+      "model": "anthropic/claude-opus-5.5",
+      "status": "failed",
+      "billing": "reported",
+      "cost_usd": "0.121",
+      "error_type": "ValueError"
+    },
+    "GEMINI": {
+      "agent": "GEMINI",
+      "model": "google/gemini-4-argon",
+      "status": "failed",
+      "billing": "reported",
+      "cost_usd": "0.04122",
+      "error_type": "ValueError"
+    },
+    "GROK": {
+      "agent": "GROK",
+      "model": "x-ai/grok-4.7",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.055374",
+      "proposal": {
+        "finding": null,
+        "evidence": null,
+        "risk": "none",
+        "suggested_patch": null
+      }
+    }
+  },
+  "source_coverage": {
+    "total_files": 48,
+    "included_files": 32,
+    "omitted_files": [
+      "src/bnd/portfolio.py",
+      "src/bnd/portfolio_walk_forward.py",
+      "src/bnd/quant_backtest.py",
+      "src/bnd/quant_evaluation.py",
+      "src/bnd/quant_metrics.py",
+      "src/bnd/quant_report.py",
+      "src/bnd/review_budget.py",
+      "src/bnd/risk_engine.py",
+      "src/bnd/robustness.py",
+      "src/bnd/scenarios.py",
+      "src/bnd/signal_pipeline.py",
+      "src/bnd/strategies.py",
+      "src/bnd/three_agents_live.py",
+      "src/bnd/trade_coordinator.py",
+      "src/bnd/universe.py",
+      "src/bnd/walk_forward.py"
+    ],
+    "truncated_files": [
+      "src/bnd/ai_budgets.py",
+      "src/bnd/ai_cache.py",
+      "src/bnd/ai_gateway.py",
+      "src/bnd/ai_smoke_test.py",
+      "src/bnd/backtest_cli.py",
+      "src/bnd/backtest_summary.py",
+      "src/bnd/backtester.py",
+      "src/bnd/compare_wfo.py",
+      "src/bnd/cost_report.py",
+      "src/bnd/cost_storage.py",
+      "src/bnd/cost_tracker.py",
+      "src/bnd/council_round.py",
+      "src/bnd/council_runner.py",
+      "src/bnd/cross_sectional.py",
+      "src/bnd/debate_engine.py",
+      "src/bnd/decision_registry.py",
+      "src/bnd/decision_rules.py",
+      "src/bnd/fusion_council.py",
+      "src/bnd/health_check.py",
+      "src/bnd/live_council_bridge.py",
+      "src/bnd/manual_live_review.py",
+      "src/bnd/market_data.py",
+      "src/bnd/openrouter_adapter.py",
+      "src/bnd/openrouter_models.py",
+      "src/bnd/paper_demo.py",
+      "src/bnd/paper_engine.py",
+      "src/bnd/paper_runner.py"
+    ],
+    "all_text_included": false
+  },
+  "run_cap_usd": "0.80",
+  "call_cap_usd": "0.30",
+  "status": "partial_success",
+  "halt_reason": null,
+  "successful_agents": 2,
+  "total_agents": 5,
+  "reported_cost_usd": "0.4480041",
+  "cost_reporting_complete": true,
+  "call_cap_exceeded": false,
+  "budget_breach_detected": false
+}
