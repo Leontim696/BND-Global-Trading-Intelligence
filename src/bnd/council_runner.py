@@ -128,7 +128,9 @@ class CouncilRunner:
                     record["attempts"].append({"route": route, "model": model,
                                                "error": type(exc).__name__})
                     return record, None
-                except GatewayError as exc:
+                except Exception as exc:    # GatewayError sau o eroare neașteptată a unui adaptor
+                    # Un singur agent defect nu poate opri runda: se notează și se merge mai departe,
+                    # fără să se inventeze un vot.
                     budget.settle(model, estimate, Decimal("0"))
                     health.failures += 1
                     health.consecutive_failures += 1

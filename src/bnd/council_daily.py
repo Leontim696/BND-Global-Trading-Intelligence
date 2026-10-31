@@ -145,6 +145,17 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
         majority = decide(council, DecisionRule.MAJORITY)
         weighted = decide(council, DecisionRule.WEIGHTED, weights)
         opinions = council.current_opinions().values()
+        trace = {
+            # Metadate pentru audit; nu intră în nicio decizie.
+            "at": now.isoformat(), "data_through": candles[-1].open_time.isoformat(),
+            "context_sha256": hashlib.sha256(context.encode("utf-8")).hexdigest(),
+            "agents": {a: {"status": r.get("status"), "model": r.get("model"),
+                           "provider": r.get("provider"), "latency_s": r.get("latency_s"),
+                           "cost_usd": r.get("cost_usd"), "attempts": len(r.get("attempts", [])),
+                           "input_tokens": r.get("input_tokens"),
+                           "output_tokens": r.get("output_tokens"),
+                           "request_sha256": r.get("request_sha256")}
+                       for a, r in outcome["agents"].items()}}
         buys = sum(o.vote == Vote.BUY for o in opinions)
         sells = sum(o.vote == Vote.SELL for o in opinions)
         lean = (buys > sells) - (sells > buys)       # +1 / -1 / 0, HOLD votes ignored
@@ -155,7 +166,8 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
                                             "voters": len(opinions),
                                             "weighted": weighted.vote.value,
                                             "weighted_uncertain": weighted.uncertain,
-                                            "complete": outcome["complete"]})
+                                            "complete": outcome["complete"],
+                                            "trace": trace})
         results.append({
             "market": market, "status": "ok" if outcome["complete"] else "incomplet",
             "price": candles[-1].close, "last_candle": candles[-1].open_time.date().isoformat(),
