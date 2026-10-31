@@ -1,0 +1,88 @@
+{
+  "created_at": "2026-10-31T07:07:55.784388+00:00",
+  "mode": "proposals_only",
+  "paid_ai_enabled": true,
+  "agents": {
+    "DEEPSEEK": {
+      "agent": "DEEPSEEK",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": "failed",
+      "billing": "reported",
+      "cost_usd": "0.0127269",
+      "finish_reason": "length",
+      "error_type": "ValueError",
+      "error_detail": "Incomplete response"
+    },
+    "GPT": {
+      "agent": "GPT",
+      "model": "openai/gpt-6-astra",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.15033",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "LIMIT orders can execute at prices worse than their limit because slippage is applied after the limit-price constraint.",
+        "evidence": "In src/bnd/paper_engine.py, _fill_orders sets raw = min(candle.open, limit) for buys or max(candle.open, limit) for sells. _fill then applies adverse slippage without enforcing the limit again. A buy with limit_price=100, candle.open=100, and the default slippage_pct=0.05 therefore fills at 100.05, excluding fees.",
+        "risk": "medium",
+        "suggested_patch": "In _fill, immediately after calculating price and before calculating fee, constrain LIMIT execution prices:\nif order is not None and order[\"order_type\"] == \"LIMIT\":\n    limit = order[\"limit_price\"]\n    price = min(price, limit) if quantity > 0 else max(price, limit)"
+      }
+    },
+    "CLAUDE": {
+      "agent": "CLAUDE",
+      "model": "anthropic/claude-opus-5.5",
+      "status": "failed",
+      "billing": "reported",
+      "cost_usd": "0.101284",
+      "finish_reason": "length",
+      "error_type": "ValueError",
+      "error_detail": "Incomplete response"
+    },
+    "GEMINI": {
+      "agent": "GEMINI",
+      "model": "google/gemini-4-argon",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.028644",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "Division by zero or erroneous daily loss percentage in _after_mark when day_start_equity is zero or negative.",
+        "evidence": "In `src/bnd/paper_engine.py`, `_after_mark` computes `daily_loss = 100 * max(0.0, account[\"day_start_equity\"] - equity) / account[\"day_start_equity\"]` without guarding `account[\"day_start_equity\"] > 0` (unlike `drawdown` on the next line, which checks `if peak > 0 else 0.0`). If an account's equity drops to 0.0 or below (e.g., after an extreme gap or fee/carry charge) and is subsequently reset via `reset_kill_switch` or rolls into a new UTC day via `_new_day`, `day_start_equity` becomes `<= 0`, causing a `ZeroDivisionError` (which rolls back the bar and trips the kill switch) or a negative `daily_loss` percentage.",
+        "risk": "low",
+        "suggested_patch": "--- a/src/bnd/paper_engine.py\n+++ b/src/bnd/paper_engine.py\n@@ -579,7 +579,8 @@\n                             f\"{limits.margin_closeout_pct}% of required margin {required:.2f}\",\n                             time)\n             return\n-        daily_loss = 100 * max(0.0, account[\"day_start_equity\"] - equity) / account[\"day_start_equity\"]\n+        day_start = account[\"day_start_equity\"]\n+        daily_loss = 100 * max(0.0, day_start - equity) / day_start if day_start > 0 else 0.0\n         drawdown = 100 * (peak - equity) / peak if peak > 0 else 0.0\n         if daily_loss >= limits.max_daily_loss_pct:\n             self._liquidate(f\"Daily loss {daily_loss:.2f}% reached the limit\", time)\n"
+      }
+    },
+    "GROK": {
+      "agent": "GROK",
+      "model": "x-ai/grok-4.7",
+      "status": "failed",
+      "billing": "unknown",
+      "cost_usd": null,
+      "error_type": "ValueError",
+      "error_detail": "Response too large"
+    }
+  },
+  "agents_asked": [
+    "DEEPSEEK",
+    "GPT",
+    "CLAUDE",
+    "GEMINI",
+    "GROK"
+  ],
+  "source_coverage": {
+    "total_files": 1,
+    "included_files": 1,
+    "omitted_files": [],
+    "truncated_files": [],
+    "all_text_included": true
+  },
+  "run_cap_usd": "0.80",
+  "call_cap_usd": "0.30",
+  "status": "halted_billing_unknown",
+  "halt_reason": "billing_unknown",
+  "successful_agents": 2,
+  "total_agents": 5,
+  "reported_cost_usd": "0.2929849",
+  "cost_reporting_complete": false,
+  "call_cap_exceeded": false,
+  "budget_breach_detected": false
+}
