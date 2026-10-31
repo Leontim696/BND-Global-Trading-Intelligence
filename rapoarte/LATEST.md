@@ -1,4 +1,4 @@
-# Raport bot virtual, 2026-10-31 10:23 UTC
+# Raport bot virtual, 2026-10-31 11:21 UTC
 
 **Ziua 1 din 16** de test în timp real, cu bani virtuali.
 
@@ -6,6 +6,7 @@
 - Valoarea contului acum: **10 000.00 EUR** (+0,00% față de start, 10 000.00 EUR)
 - La ultima închidere: 10 000.00 EUR; bani liberi: 10 000.00 EUR
 - Poziții deschise: 0; ordine pregătite pentru mâine: 7
+- Piețe deschise acum: crypto
 - Oprirea de siguranță: oprită (totul în regulă)
 - Ultima rulare a botului: 2026-10-31 05:59 UTC
 
