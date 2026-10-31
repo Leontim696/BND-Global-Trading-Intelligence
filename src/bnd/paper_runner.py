@@ -30,6 +30,7 @@ from datetime import datetime, timezone
 from math import log
 from pathlib import Path
 
+from . import audit_log
 from .backtest_cli import _factory, _pairs, _split_list
 from .cross_sectional import cross_momentum_factory
 from .market_data import MarketDataError, load_csv
@@ -371,6 +372,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--data-dir", required=True, help="CSV per market (fetch-universe)")
     parser.add_argument("--report", help="write the Markdown status page here")
     parser.add_argument("--json", help="write this run's result here")
+    parser.add_argument("--audit-log", help="append a hash-chained audit entry here")
     parser.add_argument("--reset-kill-switch", metavar="CONFIRMATION",
                         help="restart after a kill switch; the text must be RESET-KILL-SWITCH")
     # Settings default to None so an explicit value can be told apart.
@@ -485,6 +487,12 @@ def main(argv=None) -> int:
             report = run_daily(engine, data, available, factory, config, settings["strategy"])
             report["settings"] = settings
             report["mode"] = mode
+            if args.audit_log:
+                audit_log.append(args.audit_log, "daily_run", {
+                    "mode": mode, "strategy": settings["strategy"],
+                    "equity": report["equity"], "orders": len(report["orders"]),
+                    "kill_switch": report["kill_switch"],
+                    "candles_processed": report["candles_processed"]})
             report["missing_data"] = [m.name for m in markets if m not in available]
             if args.report:
                 Path(args.report).write_text(render_report(engine, report))

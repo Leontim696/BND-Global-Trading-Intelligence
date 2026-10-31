@@ -58,6 +58,7 @@ jobs:
           if git fetch -q --depth=1 origin paper-trading 2>/dev/null \
               && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
             git show FETCH_HEAD:paper.sqlite > state/paper.sqlite
+            git show FETCH_HEAD:audit.jsonl > state/audit.jsonl 2>/dev/null || true
             echo "account=existing" >> "$GITHUB_OUTPUT"
           elif [ -n "$CAPITAL" ]; then
             echo "account=new" >> "$GITHUB_OUTPUT"
@@ -100,7 +101,7 @@ jobs:
             args+=(--reset-kill-switch "$RESET")
           fi
           python -m src.bnd.paper_runner --state state/paper.sqlite --data-dir data \
-            --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
+            --audit-log state/audit.jsonl --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
           cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         # Also after a failure: a safe stop (kill switch) must be kept.
@@ -154,6 +155,7 @@ jobs:
               git checkout -q --orphan paper-trading 2>/dev/null || true
             fi
             cp ../state/paper.sqlite .
+            if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
             mkdir -p runs
             if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
             if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi

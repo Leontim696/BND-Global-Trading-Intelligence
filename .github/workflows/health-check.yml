@@ -40,6 +40,14 @@ jobs:
           python -m src.bnd.health_check --state health/paper.sqlite \
             --last-run-conclusion "$conclusion" --json health/health.json > health/health.md
           cat health/health.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Phone alert through ntfy (only when something is wrong)
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          if [ -f health/health.json ] && [ "$(jq -r .ok health/health.json)" != true ]; then
+            python -m src.bnd.notify --title "BND: botul virtual are o problemă" \
+              --message "$(head -c 900 health/health.md)" --priority high
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: bnd-health-${{ github.run_id }}

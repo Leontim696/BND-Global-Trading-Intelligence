@@ -77,7 +77,7 @@ jobs:
         if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live == 'true'
         run: |
           if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
-            for f in registry.sqlite costs.sqlite; do
+            for f in registry.sqlite costs.sqlite audit.jsonl; do
               if git cat-file -e "FETCH_HEAD:$f" 2>/dev/null; then git show "FETCH_HEAD:$f" > "state/$f"; fi
             done
           fi
@@ -120,7 +120,7 @@ jobs:
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
             --round-budget 0.60 --daily-budget 0.80 --monthly-budget 7 \
-            --report state/raport.md --json state/raport.json > /dev/null
+            --audit-log state/audit.jsonl --report state/raport.md --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v7
         if: always() && steps.mode.outputs.run == 'true'
@@ -169,6 +169,7 @@ jobs:
             mkdir -p consiliu
             if [ "$LIVE" = true ]; then
               cp ../state/registry.sqlite ../state/costs.sqlite .
+              if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
               cp ../state/raport.md "consiliu/${day}.md"
               cp ../state/raport.md consiliu/LATEST.md
             else
