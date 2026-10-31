@@ -82,3 +82,10 @@ def test_cli_writes_the_signals_file(tmp_path):
     assert crypto_signals.main(["--registry", str(tmp_path / "lipsa.sqlite"), "--out", str(out),
                                 "--day", "2026-11-01"]) == 0
     assert json.loads(out.read_text())["signals"] == {}
+
+
+def test_ai_universe_covers_every_council_market():
+    from src.bnd.council_daily import DEFAULT_MARKETS
+    names = [m.name for m in select(universe="ai")]
+    assert set(DEFAULT_MARKETS) <= set(names)
+    assert names == list(dict.fromkeys(names)) and len(names) == 13

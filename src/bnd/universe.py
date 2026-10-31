@@ -124,8 +124,15 @@ CRYPTO_UNIVERSE = tuple(
     Market(name, symbol, "crypto", *CLASS_COSTS["crypto"]) for name, symbol in _CRYPTO
 )
 
+# Toate piețele pe care le votează consiliul AI: un singur cont le poate
+# tranzacționa pe toate (indici, metale, petrol, forex, obligațiuni, crypto).
+AI_MARKETS = ("SP500", "NASDAQ100", "GOLD", "SILVER", "CRUDE_OIL", "BITCOIN", "ETHEREUM",
+              "EURUSD", "USDJPY", "US10Y_NOTE", "SOLANA", "BNB", "XRP")
+_BY_NAME = {m.name: m for m in ETF_UNIVERSE + CRYPTO_UNIVERSE}
+AI_UNIVERSE = tuple(_BY_NAME[name] for name in AI_MARKETS)
+
 UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE, "stocks": STOCK_UNIVERSE,
-             "crypto": CRYPTO_UNIVERSE}
+             "crypto": CRYPTO_UNIVERSE, "ai": AI_UNIVERSE}
 
 
 def select(names=None, classes=None, universe: str = "futures") -> tuple[Market, ...]:
