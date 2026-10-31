@@ -48,7 +48,7 @@ Setările unui cont sunt înghețate la creare (jurnalul `runner_settings`); nu 
 - Recuperare și backup: `docs/OPERARE.md`, `docs/PROXMOX.md`.
 
 ## Performanță (măsurat pe date sintetice, un nucleu)
-Pas zilnic al unui cont: 23 de piețe × 1100 de zile cu `regime_switch` = 0,3–0,4 s și ~45 MB RAM; cont AI cu semnale externe, 13 piețe: 0,1–0,2 s; fișierul contului < 1 MB. Colo de sticlă reale: descărcarea prețurilor de la Yahoo (zeci de secunde), latența agenților AI (zeci de secunde per piață; runda de 10 piețe a durat ~2 minute) și coada GitHub Actions. CPU, RAM și stocarea nu sunt blocaje: un LXC cu 1 CPU și 512 MB ajunge. Nu s-au făcut optimizări.
+Pas zilnic al unui cont: 23 de piețe × 1100 de zile cu `regime_switch` = 0,3–0,4 s și ~45 MB RAM; cont AI cu semnale externe, 13 piețe: 0,1–0,2 s; fișierul contului < 1 MB. Blocajele reale: descărcarea prețurilor de la Yahoo (zeci de secunde), latența agenților AI (zeci de secunde per piață; runda de 10 piețe a durat ~2 minute) și coada GitHub Actions. CPU, RAM și stocarea nu sunt blocaje: un LXC cu 1 CPU și 512 MB ajunge. Nu s-au făcut optimizări.
 
 ## Limite cunoscute
 Vezi `docs/AUDIT_P0.md` (F-04 o singură sursă de prețuri, F-08 cont etichetat EUR fără conversie, F-12 spread și slippage unite, F-05 aplicația depinde de o rutină). Niciun avantaj de tranzacționare nu e dovedit; testul de 16 zile abia a început.

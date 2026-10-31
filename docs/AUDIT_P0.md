@@ -30,8 +30,8 @@ Există **trei portofolii virtuale separate**, fără capital comun. Nu sunt tre
 | Cont | Ramură | Capital inițial | Monedă din cont | Decide | Rulează |
 |---|---|---|---|---|---|
 | Reguli matematice | `paper-trading` | 10.000 | EUR (etichetă) | strategia `regime_switch` | 23:23 ora Germaniei |
-| Cripto AI | `crypto-trading` | 11.183 | USD | voturile consiliului, 5 monede | 00:10 |
-| AI unificat | `ai-unificat` | 11.183 | USD | voturile consiliului, 13 piețe | 00:15 |
+| Cripto AI | `crypto-trading` | 11.183 | USD | voturile consiliului, 5 monede | 23:10 |
+| AI unificat | `ai-unificat` | 11.183 | USD | voturile consiliului, 13 piețe | 23:15 |
 
 Cele 11.183 $ reprezintă 10.000 € la cursul EUR/USD 1,1183 din 30.10.2026 (valoare folosită o singură dată, la creare).
 
