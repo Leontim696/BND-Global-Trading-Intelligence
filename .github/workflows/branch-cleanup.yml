@@ -7,6 +7,10 @@ on:
         description: 'Type DELETE to remove every branch already fully merged into main'
         required: true
         type: string
+      also_delete:
+        description: 'Optional: extra branches to delete even if not merged, comma-separated (never main, backtest-results or paper-trading)'
+        default: ''
+        type: string
 
 permissions:
   contents: write
@@ -23,6 +27,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
+      ALSO_DELETE: ${{ inputs.also_delete }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -35,7 +40,8 @@ jobs:
           for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
             branch="${ref#origin/}"
             case "$branch" in
-              main|backtest-results|HEAD|origin) continue ;;
+              # paper-trading holds the virtual account: never touched.
+              main|backtest-results|paper-trading|HEAD|origin) continue ;;
             esac
             if git merge-base --is-ancestor "$ref" origin/main; then
               gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
@@ -44,7 +50,20 @@ jobs:
               echo "Kept (not fully merged): $branch"; kept=$((kept + 1))
             fi
           done
+          IFS=',' read -r -a extra <<< "$ALSO_DELETE"
+          for branch in "${extra[@]}"; do
+            branch="${branch//[[:space:]]/}"
+            case "$branch" in
+              ""|main|backtest-results|paper-trading) continue ;;
+            esac
+            if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
+              gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
+              echo "Deleted (asked for): $branch"; deleted=$((deleted + 1))
+            else
+              echo "Not found (already gone?): $branch"
+            fi
+          done
           {
             echo "## Branch cleanup"
-            echo "Deleted $deleted fully merged branches; kept $kept with unmerged commits."
+            echo "Deleted $deleted branches; kept $kept with unmerged commits."
           } >> "$GITHUB_STEP_SUMMARY"
