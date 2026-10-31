@@ -1,0 +1,56 @@
+{
+  "created_at": "2026-10-31T07:47:12.999821+00:00",
+  "mode": "proposals_only",
+  "paid_ai_enabled": true,
+  "agents": {
+    "DEEPSEEK": {
+      "agent": "DEEPSEEK",
+      "model": "deepseek/deepseek-v4-pro",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.02589974",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "ZeroDivisionError in rebalance() when ATR is zero",
+        "evidence": "In rebalance(), distance = config.stop_atr * average_true_range(candles, config.atr_period) can be zero if all true ranges are zero. Then most = limits.max_risk_per_trade_pct / 100 * config.margin * equity / distance raises ZeroDivisionError. No check for distance == 0 exists before the division.",
+        "risk": "low",
+        "suggested_patch": "Add a guard after computing distance:\n```python\nif distance <= 0:\n    plan.update(status=\"SKIPPED\", reason=\"ATR is zero; cannot set stop\")\n    plans.append(plan)\n    continue\n```"
+      }
+    },
+    "GROK": {
+      "agent": "GROK",
+      "model": "x-ai/grok-4.7",
+      "status": "ok",
+      "billing": "reported",
+      "cost_usd": "0.03123",
+      "finish_reason": "stop",
+      "proposal": {
+        "finding": "rebalance divides by ATR distance without checking it is positive, so a flat market (ATR 0) raises ZeroDivisionError after earlier orders in the same run may already have been submitted; main() does not catch that exception.",
+        "evidence": "distance = config.stop_atr * average_true_range(...); stop <= 0 is the only guard, so distance == 0 and price > 0 falls through to most = ... equity / distance.",
+        "risk": "medium",
+        "suggested_patch": "Before computing most, if distance <= 0: plan.update(status=\"SKIPPED\", reason=\"ATR distance is not positive\"); plans.append(plan); continue."
+      }
+    }
+  },
+  "agents_asked": [
+    "DEEPSEEK",
+    "GROK"
+  ],
+  "source_coverage": {
+    "total_files": 1,
+    "included_files": 1,
+    "omitted_files": [],
+    "truncated_files": [],
+    "all_text_included": true
+  },
+  "run_cap_usd": "0.90",
+  "call_cap_usd": "0.40",
+  "status": "ok",
+  "halt_reason": null,
+  "successful_agents": 2,
+  "total_agents": 2,
+  "reported_cost_usd": "0.05712974",
+  "cost_reporting_complete": true,
+  "call_cap_exceeded": false,
+  "budget_breach_detected": false
+}
