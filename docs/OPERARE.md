@@ -37,3 +37,6 @@ Limitele din cod (plafon pe rundă, zilnic, lunar, buget pe scop) și limita che
 3. Restaurare: copiezi `paper_<marcaj>.sqlite` ca `paper.sqlite` în folderul de stare, apoi `python -m src.bnd.reconcile --state paper.sqlite`. Zilele ratate se recuperează automat la următoarea rulare (runnerul procesează lumânările lipsă, în ordine).
 4. Pe GitHub, starea fiecărui cont e și istoric de commit-uri pe ramura lui (`paper-trading`, `crypto-trading`, `ai-unificat`): se poate reveni la orice stare anterioară.
 5. Configurația: setările contului sunt înghețate în jurnalul lui (`runner_settings`), iar workflow-urile și codul sunt versionate în git. Detalii pentru Proxmox în `docs/PROXMOX.md`.
+
+## Rezumat de dimineață
+`dimineata.yml` trimite în fiecare zi la 05:05 ora Germaniei (04:05 UTC iarna) o notificare cu: cursul EUR/USD, valoarea fiecărui cont (și echivalentul în euro), ce s-a executat peste noapte, ce a votat consiliul, agenții cu eșecuri, alertele, costul AI și soldul cheii, apoi planurile zilei (rulările programate în ora Germaniei și evenimentele importante, de exemplu comparația din 6.11). Se oprește singur după 17.11.2026. Test manual: Actions → „Rezumat de dimineață” → Run workflow.
