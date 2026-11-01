@@ -61,7 +61,7 @@ def test_winners_need_a_small_investment_and_a_big_gain():
     assert set(sd.winners_of(buyers)) == {W1}
 
 
-def test_discover_needs_repeated_wins_and_tags_early_repeaters():
+def test_discover_ranks_repeated_winners_first_and_filters_by_full_history():
     def fetch(path, key):
         if path.startswith("/tokens/") or path == "/tokens/trending":
             return 200, [{"token": {"mint": M1}, "events": {"24h": {"priceChangePercentage": 5}}},
@@ -73,9 +73,10 @@ def test_discover_needs_repeated_wins_and_tags_early_repeaters():
                                      "winPercentage": 45, "averageBuyAmount": 300}, "tokens": {str(i): 1 for i in range(12)}}
         return 404, "x"
     result = sd.discover("k", fetch=fetch, pause=0)
-    assert result["tokens_checked"] == 2 and result["candidates"] == 1            # doar W1 câștigă pe 2 monede
-    row = result["rows"][0]
+    assert result["tokens_checked"] == 2 and result["candidates"] == 2            # W1 pe 2 monede, W2 pe una
+    row = result["rows"][0]                                                       # cel repetat e primul
     assert row[1] == W1 and row[2] == 2 and row[HEADER_INDEX("passes")] == 1
+    assert result["rows"][1][1] == W2 and result["rows"][1][2] == 1
 
 
 def HEADER_INDEX(name):
