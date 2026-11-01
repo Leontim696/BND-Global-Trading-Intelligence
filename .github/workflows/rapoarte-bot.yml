@@ -54,7 +54,7 @@ jobs:
             echo "post=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Current prices for the phone app
-        run: python -m src.bnd.quotes_snapshot --out raport/quotes.json || true
+        run: python -m src.bnd.quotes_snapshot --out raport/quotes.json || echo "::warning::cursurile de acum nu s-au putut citi"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: bnd-raport-${{ github.run_id }}

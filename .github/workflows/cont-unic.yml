@@ -100,7 +100,7 @@ jobs:
           cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
       - name: Correlated exposure report (read-only)
         if: steps.restore.outputs.account != 'none'
-        run: python -m src.bnd.exposure --state state/paper.sqlite --data-dir data --out state/expuneri.json || true
+        run: python -m src.bnd.exposure --state state/paper.sqlite --data-dir data --out state/expuneri.json || echo "::warning::raportul de expuneri a eșuat"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always() && steps.restore.outputs.account != 'none'
         with:

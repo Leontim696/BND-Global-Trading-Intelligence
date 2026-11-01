@@ -121,7 +121,10 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     status = collect(args.out)
     ok = [k for k, v in status["sources"].items() if v["ok"]]
-    print(json.dumps({"ok": ok, "failed": [k for k in status["sources"] if k not in ok]}))
+    failed = [k for k in status["sources"] if k not in ok]
+    print(json.dumps({"ok": ok, "failed": failed}))
+    for name in failed:               # anotare vizibilă în GitHub Actions (jobul rămâne verde: arhivarea continuă)
+        print(f"::warning::sursa {name} nu a răspuns: {status['sources'][name].get('error', '')}")
     return 0           # un eșec de sursă nu oprește arhivarea restului
 
 

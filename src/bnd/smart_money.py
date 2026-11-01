@@ -225,6 +225,10 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     status = collect(args.out, os.getenv("SOLANATRACKER_API_KEY") or None, args.manual)
     print(json.dumps({k: status[k] for k in ("leaderboard", "manual", "written", "passing", "insider_pattern")}))
+    if not status["leaderboard"]["ok"]:
+        print(f"::warning::clasamentul smart-money nu s-a citit: {status['leaderboard'].get('error', '')}")
+    for error in status["errors"][:5]:
+        print(f"::warning::{error}")
     return 0           # o sursă căzută nu strică restul
 
 
