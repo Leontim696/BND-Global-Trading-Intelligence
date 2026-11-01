@@ -1,4 +1,4 @@
-# Raport bot virtual, 2026-11-01 21:23 UTC
+# Raport bot virtual, 2026-11-01 22:23 UTC
 
 **Ziua 1 din 16** de test în timp real, cu bani virtuali.
 
@@ -6,7 +6,7 @@
 - Valoarea contului acum: **11 183.00 USD** (+0,00% față de start, 11 183.00 USD)
 - La ultima închidere: 11 183.00 USD; bani liberi: 11 183.00 USD
 - Poziții deschise: 0; ordine pregătite pentru mâine: 44
-- Piețe deschise acum: crypto
+- Piețe deschise acum: forex, crypto
 - Oprirea de siguranță: oprită (totul în regulă)
 - Ultima rulare a botului: 2026-11-01 06:48 UTC
 
