@@ -66,6 +66,9 @@ th:first-child,td:first-child{text-align:left}
 td{padding:8px 3px;border-bottom:1px solid var(--line);text-align:right;font:500 12px var(--font-data);font-variant-numeric:tabular-nums}
 td:first-child{font-family:var(--font-body);font-weight:600}
 .scroll{overflow-x:auto}
+.grp{display:flex;justify-content:space-between;gap:8px;margin-top:18px;padding-bottom:4px;border-bottom:2px solid var(--accent);font:800 14px var(--font-display)}
+.grp small{color:var(--muted);font-weight:400}.grp-t{font:500 12px var(--font-data)}
+.sg{flex:0 0 auto;align-self:center;font:700 10.5px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding:0 2px 0 8px;white-space:nowrap}
 .foot{color:var(--muted);font-size:12px;margin-top:28px}
 @media (prefers-reduced-motion:no-preference){.big{transition:opacity .2s}}
 </style>
@@ -115,6 +118,16 @@ function spark(history, initial) {
     <circle cx="${x(pts.length-1)}" cy="${y(pts[pts.length-1])}" r="3.5" fill="${col}"/></svg></div>`;
 }
 
+const GROUPS = DATA.groups || [];
+function byGroup(items) {
+  return GROUPS.map(g => ({...g, items: items.filter(x => (x.group || "alte") === g.key)})).filter(g => g.items.length);
+}
+function tally(items, net) {
+  const up = items.filter(x => net(x) > 0).length, down = items.filter(x => net(x) < 0).length;
+  return `<span class="gain">▲ ${up}</span> · <span class="loss">▼ ${down}</span> · – ${items.length - up - down}`;
+}
+const groupHead = (g, extra) => `<div class="grp"><span>${esc(g.label)} <small>(${g.items.length})</small></span><span class="grp-t">${extra || ""}</span></div>`;
+
 function rulesLine(a) {
   const r = a.rules || {}, p = a.plan || {};
   const dir = r.shorts ? "poate face long și short" : "doar long (fără short)";
@@ -127,14 +140,17 @@ function account(a) {
   if (!a.exists) return `<p class="empty">Contul „${esc(a.title)}” nu există încă.</p>`;
   const value = eq(a), ch = 100 * (value / a.initial - 1), cls = ch >= 0 ? "gain" : "loss";
   const notice = a.kill_switch ? `<div class="notice"><b>Oprire de siguranță activă.</b> ${esc(a.kill_reason || "")}</div>` : "";
-  const pos = a.positions.length ? a.positions.map(p => {
+  const posRow = p => {
     const side = p.quantity < 0 ? "short" : "long";
     return `<div class="row"><div><span class="name">${esc(p.symbol)}</span><span class="pill ${side}">${side}</span>
       <div class="meta">intrare ${money2(p.avg)} · acum ${money2(p.last)}${p.stop ? " · stop " + money2(p.stop) : ""}</div></div>
       <div class="num">${money(p.value, "")}<div class="${p.pnl >= 0 ? "gain" : "loss"}">${p.pnl >= 0 ? "+" : ""}${money2(p.pnl)}</div></div></div>`;
-  }).join("") : `<p class="empty">Nicio poziție deschisă: banii stau în numerar.</p>`;
-  const ord = a.orders.length ? a.orders.map(o => `<div class="row"><div><span class="name">${esc(o.symbol)}</span><span class="pill ${o.kind==="short"?"short":""}">${o.kind === "închide" ? "închide poziția" : o.kind === "short" ? "vinde (short)" : "cumpără (long)"}</span>
-      <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></div>`).join("")
+  };
+  const pos = a.positions.length ? byGroup(a.positions).map(g => groupHead(g, tally(g.items, p => p.quantity)) + g.items.map(posRow).join("")).join("")
+    : `<p class="empty">Nicio poziție deschisă: banii stau în numerar.</p>`;
+  const ordRow = o => `<div class="row"><div><span class="name">${esc(o.symbol)}</span><span class="pill ${o.kind==="short"?"short":""}">${o.kind === "închide" ? "închide poziția" : o.kind === "short" ? "vinde (short)" : "cumpără (long)"}</span>
+      <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></div>`;
+  const ord = a.orders.length ? byGroup(a.orders).map(g => groupHead(g, tally(g.items, o => o.kind === "închide" ? 0 : o.side === "BUY" ? 1 : -1)) + g.items.map(ordRow).join("")).join("")
     : `<p class="empty">Nicio comandă în așteptare.</p>`;
   return `${notice}<div class="hero"><div class="label">${esc(a.title)} · ${esc(a.currency)}${a.live ? '<span class="live">preț de acum</span>' : '<span class="live" style="color:var(--muted)">ultima închidere</span>'}</div>
     <div class="big">${money(value, "")}</div>${euro(value, a)}<div class="delta ${cls}">${pct(ch)} față de start (${money(a.initial,"")})</div>
@@ -161,8 +177,13 @@ function summary() {
   const c = DATA.council, cost = c.exists && c.costs ? `<div class="stats"><div><span class="label">Consiliu azi</span><b>${money2(c.costs.today)} $</b></div>
     <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "citit de la OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div>` : "";
   const rate = DATA.fx ? `<p class="sub">Curs EUR/USD: <b>${DATA.fx.eurusd.toFixed(4)}</b> (1 € = ${DATA.fx.eurusd.toFixed(2)} $)${DATA.fx.eurron ? " · EUR/RON: <b>" + DATA.fx.eurron.toFixed(4) + "</b>" : ""}, la ${when(DATA.fx.time)}.</p>` : "";
+  const cm = DATA.council && DATA.council.exists ? DATA.council.markets || [] : [];
+  const cats = cm.length ? `<h2>Semnale pe categorii</h2><div class="scroll"><table><tr><th>Categorie</th><th>Piețe</th><th>▲</th><th>▼</th><th>–</th></tr>${byGroup(cm).map(g => {
+    const up = g.items.filter(m => m.net > 0).length, down = g.items.filter(m => m.net < 0).length;
+    return `<tr><td>${esc(g.label)}</td><td>${g.items.length}</td><td class="gain">${up}</td><td class="loss">${down}</td><td>${g.items.length - up - down}</td></tr>`;
+  }).join("")}</table></div>` : "";
   const old = DATA.accounts.filter(a => a.archived && a.exists).length;
-  return `${rate}<div class="cards">${cards}</div>${cost}<p class="sub">Atinge contul pentru detalii. Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
+  return `${rate}<div class="cards">${cards}</div>${cost}${cats}<p class="sub">Atinge contul pentru detalii. Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
 }
 
 function comparison(c) {
@@ -188,12 +209,13 @@ function agentsPanel(c) {
 
 function council(c) {
   if (!c.exists || !c.day) return `<p class="empty">Consiliul nu a votat încă.</p>`;
-  const rows = c.markets.map(m => {
+  const marketRow = m => {
     const votes = Object.entries(m.votes).map(([a,v]) => `<span class="v ${esc(v)}">${esc(a)} ${esc(v)}</span>`).join("");
     return `<div class="row" style="grid-template-columns:1fr"><div><span class="name">${esc(m.symbol)}</span>
       <span class="pill ${m.decision==="SELL"?"short":""}">${m.decision==="HOLD"?"nu tranzacționa":m.decision==="BUY"?"cumpără":"vinde"}</span>
       <div class="votes">${votes}</div></div></div>`;
-  }).join("");
+  };
+  const rows = byGroup(c.markets).map(g => groupHead(g, tally(g.items, m => m.net)) + g.items.map(marketRow).join("")).join("");
   return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
     <div class="sub">„Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div>
     <div class="big">${c.markets.length} piețe</div>
@@ -205,11 +227,12 @@ function signalsBar() {
   const c = DATA.council;
   const box = document.getElementById("signals");
   if (!c || !c.exists || !c.markets || !c.markets.length) { box.innerHTML = ""; return; }
-  box.innerHTML = c.markets.map(m => {
+  const chip = m => {
     const kind = m.net > 0 ? "buy" : m.net < 0 ? "sell" : "hold";
-    const label = m.net > 0 ? "▲ cumpără" : m.net < 0 ? "▼ vinde" : "– hold";
-    return `<span class="sig ${kind}" title="${esc(m.symbol)}: ${m.net > 0 ? "cumpără" : m.net < 0 ? "vinde" : "hold"}, ${Math.abs(m.net)} net din 5 agenți">${esc(SHORT[m.symbol] || m.symbol)} ${label}${m.net ? " " + Math.abs(m.net) : ""}</span>`;
-  }).join("");
+    const label = m.net > 0 ? "▲" : m.net < 0 ? "▼" : "–";
+    return `<span class="sig ${kind}" title="${esc(m.symbol)}: ${m.net > 0 ? "cumpără" : m.net < 0 ? "vinde" : "hold"}, ${Math.abs(m.net)} net din 5 agenți">${esc(SHORT[m.symbol] || m.symbol)} ${label}${m.net ? Math.abs(m.net) : ""}</span>`;
+  };
+  box.innerHTML = byGroup(c.markets).map(g => `<span class="sg">${esc(g.label)}</span>` + g.items.map(chip).join("")).join("");
 }
 
 function top50() {

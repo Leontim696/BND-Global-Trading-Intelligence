@@ -17,7 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
-from . import crypto50, model_registry
+from . import crypto50, market_groups, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
@@ -71,7 +71,8 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                 last = float(quote[0])
                 live_equity += p["quantity"] * (last - close)
                 live_used += 1
-            positions.append({"symbol": p["symbol"], "quantity": p["quantity"],
+            positions.append({"symbol": p["symbol"], "group": market_groups.group_of(p["symbol"]),
+                              "quantity": p["quantity"],
                               "avg": p["avg_price"], "last": last,
                               "value": p["quantity"] * last,
                               "pnl": (last - p["avg_price"]) * p["quantity"],
@@ -84,7 +85,8 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                 or (held.get(o["symbol"], 0) < 0 and o["side"] == "BUY"
                     and o["quantity"] <= -held[o["symbol"]] + 1e-9)
             kind = "închide" if closing else ("long" if o["side"] == "BUY" else "short")
-            orders.append({"symbol": o["symbol"], "side": o["side"], "quantity": o["quantity"],
+            orders.append({"symbol": o["symbol"], "group": market_groups.group_of(o["symbol"]),
+                           "side": o["side"], "quantity": o["quantity"],
                            "status": o["status"], "kind": kind})
         return {**base, "exists": True, "currency": summary["currency"],
                 "initial": summary["initial_capital"], "equity": summary["equity"],
@@ -130,7 +132,8 @@ def read_council(folder, balance: dict | None = None, now: datetime | None = Non
                                          (decision_id,)).fetchone()[0] or "{}")
             net = sum({"BUY": 1, "SELL": -1}.get(v, 0) for v in votes.values())
             markets.append({"symbol": symbol, "decision": vote, "price": price, "votes": votes,
-                            "net": net, "bot": info.get("bot_signal") or 0})
+                            "net": net, "bot": info.get("bot_signal") or 0,
+                            "group": market_groups.group_of(symbol)})
         settled = db.execute("SELECT COUNT(*) FROM decisions WHERE settled_at IS NOT NULL"
                              ).fetchone()[0]
         total = db.execute("SELECT COUNT(*) FROM decisions").fetchone()[0]
@@ -250,7 +253,7 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     if fx and eurron and eurron[0] > 0:
         fx["eurron"] = float(eurron[0])
         fx["usdron"] = fx["eurron"] / fx["eurusd"]
-    return {"generated": now.isoformat(timespec="minutes"), "fx": fx,
+    return {"generated": now.isoformat(timespec="minutes"), "fx": fx, "groups": market_groups.labels(),
             "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
             "quotes_time": quotes_time,
             "accounts": accounts, "council": council, "alerts": alerts}

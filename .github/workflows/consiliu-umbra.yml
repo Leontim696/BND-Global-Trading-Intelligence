@@ -24,7 +24,7 @@ on:
         type: string
       markets:
         description: 'Piețele, cu virgulă (litere mari)'
-        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA,RHEINMETALL,HENSOLDT,RENK,BAE,THALES,LEONARDO,SAAB,KONGSBERG,LOCKHEED,NORTHROP,RTX,GENERAL_DYNAMICS,L3HARRIS,ITA'
+        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA,RHEINMETALL,HENSOLDT,RENK,BAE,THALES,LEONARDO,SAAB,KONGSBERG,LOCKHEED,NORTHROP,RTX,GENERAL_DYNAMICS,L3HARRIS,ITA,AAPL,MSFT,NVDA,GOOGL,AMZN,WMT,KO,PG,JNJ,UNH,XOM,CVX,JPM,GS,CAT,BA'
         type: string
 
 permissions:
@@ -46,7 +46,7 @@ jobs:
       MODE_INPUT: ${{ inputs.mode }}
       CONFIRMATION: ${{ inputs.paid_test_confirmation }}
       DAILY_SWITCH: ${{ vars.BND_COUNCIL_DAILY }}
-      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA,RHEINMETALL,HENSOLDT,RENK,BAE,THALES,LEONARDO,SAAB,KONGSBERG,LOCKHEED,NORTHROP,RTX,GENERAL_DYNAMICS,L3HARRIS,ITA' }}
+      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA,RHEINMETALL,HENSOLDT,RENK,BAE,THALES,LEONARDO,SAAB,KONGSBERG,LOCKHEED,NORTHROP,RTX,GENERAL_DYNAMICS,L3HARRIS,ITA,AAPL,MSFT,NVDA,GOOGL,AMZN,WMT,KO,PG,JNJ,UNH,XOM,CVX,JPM,GS,CAT,BA' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -98,6 +98,7 @@ jobs:
           yahoo_crypto="$(echo "$groups" | sed -n 's/^yahoo_crypto=//p')"
           binance="$(echo "$groups" | sed -n 's/^binance=//p')"
           defense="$(echo "$groups" | sed -n 's/^defense=//p')"
+          stocks="$(echo "$groups" | sed -n 's/^stocks=//p')"
           start="$(date -u -d '-2 years' +%Y-%m-%d)"
           python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
             --markets "$etf" --start "$start" --out-dir data
@@ -111,6 +112,10 @@ jobs:
           if [ -n "$defense" ]; then
             python -m src.bnd.backtest_cli fetch-universe --universe defense --update \
               --markets "$defense" --start "$start" --out-dir data
+          fi
+          if [ -n "$stocks" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe stocks --update \
+              --markets "$stocks" --start "$start" --out-dir data
           fi
       - name: Keep the candles for tomorrow
         if: steps.mode.outputs.run == 'true'
@@ -141,7 +146,7 @@ jobs:
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
-            --round-budget 0.60 --daily-budget "${DAILY_CAP:-2.50}" --monthly-budget "${MONTHLY_CAP:-38}" \
+            --round-budget 0.60 --daily-budget "${DAILY_CAP:-3.00}" --monthly-budget "${MONTHLY_CAP:-38}" \
             --audit-log state/audit.jsonl --report state/raport.md --report-short state/raport-scurt.md \
             --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"

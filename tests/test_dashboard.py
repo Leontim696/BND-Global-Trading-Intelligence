@@ -204,3 +204,18 @@ def test_long_only_settings_are_reported_as_such(tmp_path):
     rules = dashboard.collect(tmp_path, None, None, None, NOW)["accounts"][0]["rules"]
 
     assert rules["shorts"] is False and rules["max_leverage"] == 1.0
+
+
+def test_every_market_gets_a_category_and_the_template_groups_by_it():
+    from src.bnd import market_groups
+    from src.bnd.universe import UNIVERSES
+    assert market_groups.group_of("BITCOIN") == "crypto" and market_groups.group_of("DOGE") == "memecoin"
+    assert market_groups.group_of("AAPL") == "actiuni" and market_groups.group_of("RHEINMETALL") == "aparare"
+    assert market_groups.group_of("SP500") == "indici" and market_groups.group_of("GOLD") == "marfuri"
+    assert market_groups.group_of("EURUSD") == "forex" and market_groups.group_of("US10Y_NOTE") == "obligatiuni"
+    assert market_groups.group_of("NU_EXISTA") == "alte"
+    assert "alte" not in {market_groups.group_of(m.name) for m in UNIVERSES["unic"]}
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    assert "byGroup(c.markets)" in html and "byGroup(a.positions)" in html and "Semnale pe categorii" in html
+    labels = [g["key"] for g in market_groups.labels()]
+    assert labels[:3] == ["indici", "actiuni", "aparare"] and labels[-1] == "alte"
