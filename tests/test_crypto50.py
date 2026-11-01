@@ -49,3 +49,21 @@ def test_dashboard_carries_the_top50_table(tmp_path):
     data = dashboard.collect(None, None, None, None, NOW, top50=tmp_path / "t")
     assert len(data["top50"]) == 49
     assert dashboard.collect(None, None, None, None, NOW)["top50"] == []
+
+
+def test_extra_coins_are_the_forty_five_not_already_covered_and_the_split_is_safe():
+    assert len(crypto50.EXTRA) == 45 and not set(crypto50.EXTRA) & set(crypto50.COVERED)
+    groups = crypto50.split_markets(["SP500", "SOLANA", "DOGE", "PEPE", "BITCOIN", "XRP"])
+    assert groups == {"etf": ["SP500", "BITCOIN"], "yahoo_crypto": ["SOLANA", "XRP"],
+                      "binance": ["DOGE", "PEPE"]}
+    import pytest
+    for bad in ("SP500;rm", "a b", "$(x)", "bnb"):
+        with pytest.raises(ValueError):
+            crypto50.split_markets([bad])
+    assert crypto50.main(["--split", "SP500;rm -rf /"]) == 2
+
+
+def test_update_only_fetches_the_requested_coins(tmp_path):
+    status = crypto50.update(tmp_path, fake_fetch, NOW, years=1, only={"DOGE"})
+    assert list(status["coins"]) == ["DOGE"] and (tmp_path / "DOGE.csv").exists()
+    assert not (tmp_path / "BTC.csv").exists()

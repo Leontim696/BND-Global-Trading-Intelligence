@@ -87,13 +87,13 @@ def test_remaining_budget_starts_at_the_owners_confirmed_figure(tmp_path):
     db = sqlite3.connect(tmp_path / "costs.sqlite")
     db.execute("CREATE TABLE usage_records (id INTEGER PRIMARY KEY, agent TEXT, model TEXT,"
                " input_tokens INT, output_tokens INT, cost_usd TEXT, timestamp TEXT)")
-    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('0.2838356', '2026-10-31T09:00:00+00:00')")
+    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('0.36590888092', '2026-10-31T09:00:00+00:00')")
     db.commit()
-    assert dashboard.read_costs(tmp_path)["remaining"] == 8.05
+    assert dashboard.read_costs(tmp_path)["remaining"] == 37.97
     db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('0.25', '2026-11-01T22:00:00+00:00')")
     db.commit()
     db.close()
-    assert dashboard.read_costs(tmp_path)["remaining"] == pytest.approx(7.80)
+    assert dashboard.read_costs(tmp_path)["remaining"] == pytest.approx(37.72)
 
 
 def test_low_key_balance_raises_an_alert(tmp_path):
@@ -105,7 +105,7 @@ def test_low_key_balance_raises_an_alert(tmp_path):
     db = sqlite3.connect(tmp_path / "costs.sqlite")
     db.execute("CREATE TABLE usage_records (id INTEGER PRIMARY KEY, agent TEXT, model TEXT,"
                " input_tokens INT, output_tokens INT, cost_usd TEXT, timestamp TEXT)")
-    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('7', '2026-11-10T09:00:00+00:00')")
+    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('37', '2026-11-10T09:00:00+00:00')")
     db.commit(); db.close()
 
     data = dashboard.collect(None, None, None, tmp_path, NOW)

@@ -193,3 +193,80 @@ def test_lean_is_the_direction_of_the_non_hold_votes_and_is_compared_after_settl
     text = cd.render(later)
     assert "Înclinația consiliului" in text and "## Pe agenți" in text
     assert "înclină spre" in text or "fără înclinație" in text
+
+
+def test_workflow_default_is_the_thirteen_base_markets_plus_the_forty_five_extra_coins():
+    from src.bnd.crypto50 import EXTRA
+    text = open(".github/workflows/consiliu-umbra.yml", encoding="utf-8").read()
+    expected = ",".join(cd.BASE_PEERS + EXTRA)
+    assert text.count(expected) == 2                    # intrarea manuală și valoarea implicită
+    assert "--daily-budget 2.50 --monthly-budget 38" in text and "timeout-minutes: 45" in text
+
+
+def test_new_coins_get_a_class_and_a_label_and_old_markets_keep_the_same_context(tmp_path, series):
+    from src.bnd.council_context import build_context, label
+    assert cd.ASSET_CLASS["DOGE"] == "memecoin" and cd.ASSET_CLASS["LINK"] == "crypto"
+    assert "memecoin" in label("PEPE") and label("LINK") == "LINK (criptomonedă)"
+    assert label("SP500") == "S&P 500 (ETF)"
+    data = upto(series, 700)
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+    extra = {**data, "DOGE": data["GOLD"]}                # monedă nouă în plus față de piețele vechi
+    seen = []
+
+    class Spy(cd.CouncilRunner):
+        def run_round(self, market, symbol, context, budget, *a, **k):
+            seen.append((symbol, context))
+            return super().run_round(market, symbol, context, budget, *a, **k)
+
+    original = cd.CouncilRunner
+    cd.CouncilRunner = Spy
+    try:
+        cd.run_markets(extra, ("SP500", "DOGE"), cd.simulated_gateway(), registry, now,
+                       Decimal("0.6"), peers=cd.BASE_PEERS)
+    finally:
+        cd.CouncilRunner = original
+    contexts = dict(seen)
+    assert "DOGE" not in contexts["SP500"]                # piețele noi nu apar în contextul celor vechi
+    assert contexts["SP500"] == build_context("SP500", data["SP500"],
+                                              {k: v for k, v in data.items() if k in cd.BASE_PEERS})
+
+
+def test_short_report_is_one_line_per_market(tmp_path, series):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    data = upto(series, 700)
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+    report = cd.run_markets(data, MARKETS, cd.simulated_gateway(), registry, now, Decimal("0.6"))
+
+    short = cd.render_short(report)
+
+    assert short.count("\n| ") == len(MARKETS) + 1 and "Cost total" in short and len(short) < 3000
+
+
+def test_missing_data_for_one_market_skips_it_and_the_rest_still_run(tmp_path, series):
+    data_dir = tmp_path / "data"
+    data_dir.mkdir()
+    write_markets(data_dir, ["SP500", "GOLD"], days=700)
+    code = cd.main(["--data-dir", str(data_dir), "--registry", str(tmp_path / "r.sqlite"),
+                    "--markets", "SP500,GOLD,DOGE", "--mode", "mock", "--report", str(tmp_path / "r.md"),
+                    "--report-short", str(tmp_path / "s.md"), "--json", str(tmp_path / "r.json")])
+    assert code == 0
+    report = json.loads((tmp_path / "r.json").read_text())
+    assert report["no_data"] == ["DOGE"] and [m["market"] for m in report["markets"]] == ["SP500", "GOLD"]
+    assert "Fără date azi" in (tmp_path / "r.md").read_text()
+    assert "DOGE" in (tmp_path / "s.md").read_text()
+    assert cd.main(["--data-dir", str(data_dir), "--registry", str(tmp_path / "x.sqlite"),
+                    "--markets", "DOGE,PEPE", "--mode", "mock"]) == 2        # nicio piață cu date
+
+
+def test_a_market_with_too_little_history_is_skipped_not_fatal(tmp_path, series):
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    data = upto(series, 700)
+    data["NOU"] = data["GOLD"][:30]
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+
+    report = cd.run_markets(data, ("SP500", "NOU", "GOLD"), cd.simulated_gateway(), registry, now,
+                            Decimal("0.6"))
+
+    assert [m["status"] for m in report["markets"]] == ["ok", "date_insuficiente", "ok"]
+    assert "date insuficiente" in cd.render(report) and not registry.has(f"{now.date()}:NOU")

@@ -50,6 +50,18 @@ ASSET_CLASS = {"SP500": "index", "NASDAQ100": "index", "GOLD": "commodity",
                "SILVER": "commodity", "CRUDE_OIL": "commodity", "BITCOIN": "crypto",
                "ETHEREUM": "crypto", "EURUSD": "forex", "USDJPY": "forex",
                "US10Y_NOTE": "bond", "SOLANA": "crypto", "BNB": "crypto", "XRP": "crypto"}
+# Piețele consiliului la începutul testului: contextul fiecărei piețe arată mișcarea doar a acestora,
+# chiar dacă se adaugă monede noi, ca să nu se schimbe întrebarea pusă pentru piețele vechi.
+BASE_PEERS = DEFAULT_MARKETS + ("SOLANA", "BNB", "XRP")
+
+
+def _extend_asset_classes() -> None:
+    from .crypto50 import COINS
+    for name, _, meme in COINS:
+        ASSET_CLASS.setdefault(name, "memecoin" if meme else "crypto")
+
+
+_extend_asset_classes()
 DEFAULT_MODELS = {
     # The flagship, as the owner chose. Measured: a nine-market round with Astra
     # was counted at 0.27 USD in total, and the owner's key total matched the
@@ -126,7 +138,7 @@ def live_gateway(models: dict, pricing: dict, costs_path, now: datetime,
 
 def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegistry,
                 now: datetime, round_budget: Decimal, horizon_days: int = HORIZON_DAYS,
-                sleep=None) -> dict:
+                sleep=None, peers=None) -> dict:
     """O rundă pe piață; o piață deja decisă azi nu se mai plătește a doua oară."""
     runner = CouncilRunner(gateway, max_attempts=2, backoff_seconds=2.0,
                            **({"sleep": sleep} if sleep else {}))
@@ -139,7 +151,12 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
         if registry.has(decision_id):
             results.append({"market": market, "status": "deja_facut"})
             continue
-        context = build_context(market, candles, data)
+        others = data if peers is None else {k: v for k, v in data.items() if k in peers}
+        try:
+            context = build_context(market, candles, others)
+        except ValueError as exc:               # prea puține zile de date: se sare piața, restul merge
+            results.append({"market": market, "status": "date_insuficiente", "error": str(exc)})
+            continue
         outcome = runner.run_round(ASSET_CLASS.get(market, "market"), market, context, round_budget)
         council = outcome["council"]
         majority = decide(council, DecisionRule.MAJORITY)
@@ -197,6 +214,9 @@ def render(report: dict) -> str:
         if m["status"] == "deja_facut":
             lines.append(f"- {m['market']}: decis deja azi (nu s-a plătit a doua oară).")
             continue
+        if m["status"] == "date_insuficiente":
+            lines.append(f"- {m['market']}: sărită, date insuficiente ({m['error']}).")
+            continue
         verdict = LABEL[Vote(m["decision"])]
         note = "" if m["status"] == "ok" else " (rundă incompletă: cineva nu a răspuns)"
         tilt = {1: "înclină spre cumpărare", -1: "înclină spre vânzare", 0: "fără înclinație"}[m["lean"]]
@@ -210,6 +230,8 @@ def render(report: dict) -> str:
                 lines.append(f"| {agent} | {a['vote']} | {a['confidence']:.2f} | {a['reasoning']} |")
             else:
                 lines.append(f"| {agent} | – | – | n-a răspuns ({a['status']}) |")
+    if report.get("no_data"):
+        lines += ["", "Fără date azi (sărite, nu s-a plătit nimic): " + ", ".join(report["no_data"]) + "."]
     lines += ["", f"Cost total azi: **{spent:.3f} $**.", ""]
     comparison = report["comparison"]
     if comparison["settled_decisions"]:
@@ -239,6 +261,29 @@ def render(report: dict) -> str:
     return "\n".join(lines)
 
 
+def render_short(report: dict) -> str:
+    """Varianta scurtă: o linie pe piață (decizie, voturi, cost). Raportul complet cu motive rămâne separat."""
+    when = report["time"][:16].replace("T", " ")
+    spent = sum(Decimal(m.get("cost_usd") or "0") for m in report["markets"])
+    lines = [f"# Consiliul AI în umbră (scurt), {when} UTC", "",
+             "| Piață | Decizie | Înclinație | BUY | SELL | HOLD | Cost $ |", "|---|---|---|---:|---:|---:|---:|"]
+    for m in report["markets"]:
+        if m["status"] == "deja_facut":
+            lines.append(f"| {m['market']} | deja decis azi | | | | | |")
+            continue
+        if m["status"] == "date_insuficiente":
+            lines.append(f"| {m['market']} | sărită (date insuficiente) | | | | | |")
+            continue
+        votes = [a["vote"] for a in m["agents"].values() if a["vote"]]
+        tilt = {1: "cumpără", -1: "vinde", 0: "–"}[m["lean"]]
+        lines.append(f"| {m['market']} | {LABEL[Vote(m['decision'])]} | {tilt} | {votes.count('BUY')} | "
+                     f"{votes.count('SELL')} | {votes.count('HOLD')} | {Decimal(m['cost_usd']):.3f} |")
+    if report.get("no_data"):
+        lines += ["", "Fără date azi: " + ", ".join(report["no_data"]) + "."]
+    lines += ["", f"Cost total: **{spent:.3f} $**. Motivele fiecărui agent sunt în raportul complet.", ""]
+    return "\n".join(lines)
+
+
 def _decimal(text: str, name: str) -> Decimal:
     try:
         value = Decimal(text)
@@ -260,6 +305,7 @@ def main(argv=None) -> int:
     parser.add_argument("--daily-budget", default="1.60")
     parser.add_argument("--monthly-budget", default="12")
     parser.add_argument("--report")
+    parser.add_argument("--report-short", help="rezumat pe o linie per piață (pentru multe piețe)")
     parser.add_argument("--json")
     parser.add_argument("--audit-log", help="append a hash-chained audit entry here")
     args = parser.parse_args(argv)
@@ -270,12 +316,16 @@ def main(argv=None) -> int:
             raise ValueError("Lista de piețe e goală sau are duplicate")
         if not all(re.fullmatch(r"[A-Z0-9_]{1,20}", m) for m in markets):
             raise ValueError("Numele piețelor pot avea doar litere mari, cifre și _")
-        data = {}
+        data, no_data = {}, []
         for market in markets:
             path = Path(args.data_dir) / f"{market}.csv"
             if not path.exists():
-                raise ValueError(f"Lipsesc datele pentru {market}: {path}")
+                no_data.append(market)          # o sursă căzută nu oprește consiliul pe restul piețelor
+                continue
             data[market] = load_csv(path)
+        if not data:
+            raise ValueError("Nu există date pentru nicio piață: " + ", ".join(no_data))
+        markets = [m for m in markets if m in data]
         if args.mode == "live":
             if not args.costs:
                 raise ValueError("Modul live cere --costs")
@@ -289,20 +339,23 @@ def main(argv=None) -> int:
             gateway = simulated_gateway()
         registry = DecisionRegistry(args.registry)
         report = run_markets(data, markets, gateway, registry, now,
-                             _decimal(args.round_budget, "round-budget"))
+                             _decimal(args.round_budget, "round-budget"), peers=BASE_PEERS)
+        report["no_data"] = no_data
     except (MarketDataError, ValueError, OSError) as exc:
         print("Error:", exc, file=sys.stderr)
         return 2
     if args.audit_log:
         audit_log.append(args.audit_log, "council_run", {
             "mode": args.mode, "markets": markets,
-            "decided": sum(m["status"] != "deja_facut" for m in report["markets"]),
+            "decided": sum(m["status"] not in ("deja_facut", "date_insuficiente") for m in report["markets"]),
             "incomplete": sum(m["status"] == "incomplet" for m in report["markets"]),
             "cost_usd": str(sum(Decimal(m.get("cost_usd") or "0") for m in report["markets"])),
             "settled": report["settled_today"]}, now)
     text = render(report)
     if args.report:
         Path(args.report).write_text(text, encoding="utf-8")
+    if args.report_short:
+        Path(args.report_short).write_text(render_short(report), encoding="utf-8")
     if args.json:
         Path(args.json).write_text(json.dumps(report, indent=2, default=str, ensure_ascii=False))
     print(text, end="")
