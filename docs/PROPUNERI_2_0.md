@@ -38,7 +38,7 @@ Stări: **DONE**, **PARTIAL**, **MISSING**, **NOT JUSTIFIED** (acum). Complexita
 
 **Lipsește:** fazele 2–4 pe date reale (publicare, dezbatere, revizuire) în producție, un prompt de contestare, regulă de declanșare a dezbaterii doar la dezacord, măsurarea valorii revizuirii (voturile „înainte/după” față de rezultat).
 
-**Dependențe/cost:** apeluri AI în plus: o rundă de dezbatere are ~5 apeluri cu prompturi mai lungi, aproximativ 0,03–0,05 $ pe piață. Pe toate cele 88 de piețe ar fi ~3–4 $/zi, inacceptabil la bugetul actual. Soluția: dezbatere doar când votul e împărțit (în ziua de azi ~40% dintre piețe au măcar un vot neunanim) și pe un subset limitat, ~10–15 piețe, aproximativ 0,5 $/zi.
+**Dependențe/cost:** apeluri AI în plus: o rundă de dezbatere are ~5 apeluri cu prompturi mai lungi, aproximativ 0,03–0,05 $ pe piață. Pe toate cele 88 de piețe ar fi ~3–4 $/zi, inacceptabil la bugetul actual. Soluția: dezbatere doar când există o obiecție reală și pe un subset limitat, ~10–15 piețe, aproximativ 0,5 $/zi. Declanșatorul trebuie ales atent, pe datele din 1.11.2026 (58 de piețe votate): 81% dintre piețe au măcar un vot diferit de ceilalți (de obicei un BUY sau SELL printre HOLD), deci „orice dezacord” ar declanșa dezbaterea aproape peste tot; în schimb doar o piață (1 din 58) a avut voturi BUY și SELL în același timp, iar 39 din 58 au cel puțin două voturi în aceeași direcție. Un declanșator rezonabil: opoziție directă BUY–SELL sau o obiecție cu confidență ridicată, nu simpla prezență a unui vot minoritar.
 
 **Recomandare:** în umbră, după 17.11, cu măsurătoare dublă (înainte/după dezbatere) pe aceleași piețe; nu se adaugă în evaluarea activă. Beneficiu măsurabil: rata de reușită a votului final față de cel inițial, la 5 zile, după multe decizii.
 
