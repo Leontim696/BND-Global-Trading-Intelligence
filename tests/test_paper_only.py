@@ -80,7 +80,8 @@ def test_network_hosts_are_only_the_known_data_ai_and_notification_services():
                "fapi.binance.com", "data-api.binance.vision", "fonts.googleapis.com",
                "api.openai.com", "api.anthropic.com", "generativelanguage.googleapis.com",
                "api.x.ai", "api.deepseek.com", "github.com", "x-access-token",
-               "api.alternative.me", "www.okx.com"}
+               "api.alternative.me", "www.okx.com",
+               "nfs.faireconomy.media"}   # calendar economic public, doar citire (calendar_data.py)
     hosts = set()
     for text in _sources().values():
         hosts |= set(re.findall(r"https?://([A-Za-z0-9.-]+)", text))

@@ -42,6 +42,8 @@ jobs:
           python -m src.bnd.quotes_snapshot --out arhiva/ultimele-cursuri.json
           # Fear & Greed și funding: best effort, un eșec nu oprește arhiva.
           python -m src.bnd.context_data --out arhiva || true
+          # Calendar economic (săptămâna asta și următoarea): doar arhivă, nu intră în decizii.
+          python -m src.bnd.calendar_data --out arhiva || true
           # Top 50 cripto (inclusiv memecoin-uri), prețuri zilnice Binance: best effort.
           python -m src.bnd.crypto50 --out arhiva/crypto50 || true
           date -u +%Y-%m-%dT%H:%MZ > arhiva/ultima-actualizare.txt
@@ -80,9 +82,9 @@ jobs:
             else
               git checkout -q --orphan date-piete 2>/dev/null || true
             fi
-            rm -rf zilnic sentiment funding crypto50 context-status.json ultimele-cursuri.json ultima-actualizare.txt
+            rm -rf zilnic sentiment funding crypto50 calendar calendar-status.json context-status.json ultimele-cursuri.json ultima-actualizare.txt
             cp -r ../arhiva/zilnic ../arhiva/ultimele-cursuri.json ../arhiva/ultima-actualizare.txt .
-            for extra in sentiment funding crypto50 context-status.json; do [ -e "../arhiva/$extra" ] && cp -r "../arhiva/$extra" . || true; done
+            for extra in sentiment funding crypto50 calendar calendar-status.json context-status.json; do [ -e "../arhiva/$extra" ] && cp -r "../arhiva/$extra" . || true; done
             git add -A
             git commit -q -m "Date $(date -u +%Y-%m-%d)" || true
             if git push -q origin HEAD:refs/heads/date-piete; then break; fi
