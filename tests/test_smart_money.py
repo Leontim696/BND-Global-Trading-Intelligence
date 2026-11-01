@@ -1,3 +1,4 @@
+import csv
 import json
 
 from src.bnd import smart_money as sm
@@ -115,3 +116,27 @@ def test_env_paths_are_validated_at_import(monkeypatch):
         importlib.reload(sm)
     monkeypatch.delenv("SMART_MONEY_LEADERBOARD_PATH")
     importlib.reload(sm)
+
+
+def test_leaderboard_wallets_are_enriched_with_details_and_field_names_are_reported(tmp_path):
+    def fetch(url, key):
+        if "pnl" in url:
+            return {"summary": {"totalTokens": 25, "totalBuys": 120, "totalSells": 110, "winPercentage": 52,
+                                "totalInvested": 9000, "realized": 60000}, "wallet": "ignorat", "secret": "nu-se-raporteaza"}
+        return [{"wallet": W1, "realized": 60000, "roi": 6.6}]
+    status = sm.collect(tmp_path, "k", tmp_path / "lipsa.json", fetch=fetch)
+    assert status["leaderboard"]["enriched"] == 1
+    assert status["sample_keys"]["clasament"] == ["realized", "roi", "wallet"]
+    assert "summary.winPercentage" in status["sample_keys"]["detalii"]
+    assert "nu-se-raporteaza" not in json.dumps(status)                    # doar numele câmpurilor, nu valorile
+    row = next(csv.DictReader((tmp_path / "smart_money" / "wallete.csv").open()))
+    assert row["tokens"] == "25.0" and row["win_rate"] == "0.52" and row["passes"] == "1"
+
+
+def test_a_failing_detail_call_keeps_the_leaderboard_row(tmp_path):
+    def fetch(url, key):
+        if "pnl" in url:
+            raise ValueError("HTTP 404")
+        return [{"wallet": W1, "realized": 5, "roi": 0.1}]
+    status = sm.collect(tmp_path, "k", tmp_path / "lipsa.json", fetch=fetch)
+    assert status["written"] == 1 and any("detalii" in e for e in status["errors"])
