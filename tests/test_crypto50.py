@@ -82,3 +82,19 @@ def test_unified_universe_has_us_stocks_and_defense_with_their_own_sector():
     assert "apărare" in label("RHEINMETALL") and "EUR" in label("RHEINMETALL")
     from src.bnd.council_daily import ASSET_CLASS
     assert ASSET_CLASS["SAAB"] == "armament"
+
+
+def test_every_universe_used_by_the_workflows_is_accepted_by_the_fetch_and_runner_clis():
+    import re
+    from pathlib import Path
+    from src.bnd import backtest_cli, paper_runner
+    from src.bnd.universe import UNIVERSES
+    used = set()
+    for path in Path(".github/workflows").glob("*.yml"):
+        used |= set(re.findall(r"--universe\s+([a-z]+)", path.read_text(encoding="utf-8")))
+    assert used <= set(UNIVERSES), used - set(UNIVERSES)
+    for universe in sorted(used):
+        parser = backtest_cli.build_parser()
+        assert parser.parse_args(["fetch-universe", "--universe", universe, "--out-dir", "x"]).universe == universe
+        assert paper_runner.build_parser().parse_args(
+            ["--state", "s", "--data-dir", "d", "--universe", universe]).universe == universe

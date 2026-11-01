@@ -400,7 +400,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--reset-kill-switch", metavar="CONFIRMATION",
                         help="restart after a kill switch; the text must be RESET-KILL-SWITCH")
     # Settings default to None so an explicit value can be told apart.
-    parser.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto", "ai", "unic"])
+    parser.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto", "ai", "unic", "defense"])
     parser.add_argument("--markets")
     parser.add_argument("--classes")
     parser.add_argument("--strategy",
