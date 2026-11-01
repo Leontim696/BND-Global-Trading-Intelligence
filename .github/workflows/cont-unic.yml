@@ -148,15 +148,16 @@ jobs:
       RUN_ID: ${{ github.run_id }}
       RESULT: ${{ needs.step.result }}
     steps:
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
-        continue-on-error: true
-        with:
-          name: bnd-unic-${{ github.run_id }}
-          path: state
+      # Checkout ÎNAINTE de descărcare: checkout curăță spațiul de lucru și ar șterge starea descărcată (rularea din 1.11 a
+      # eșuat sigur pe asta: lipsea VALID.json și nu s-a publicat nimic).
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
           sparse-checkout: scripts/verify_marker.sh
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: bnd-unic-${{ github.run_id }}
+          path: state
       - name: Verify the checkpoint marker (hashes only, no project code)
         run: bash scripts/verify_marker.sh state
       - name: Commit the account to the cont-unic branch
