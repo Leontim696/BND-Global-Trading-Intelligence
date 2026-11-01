@@ -145,17 +145,59 @@ def read_council(folder, balance: dict | None = None, now: datetime | None = Non
             markets.append({"symbol": symbol, "decision": vote, "price": price, "votes": votes, "conf": conf,
                             "net": net, "bot": info.get("bot_signal") or 0,
                             "group": market_groups.group_of(symbol)})
+        history = council_history(db, day)
         settled = db.execute("SELECT COUNT(*) FROM decisions WHERE settled_at IS NOT NULL"
                              ).fetchone()[0]
         total = db.execute("SELECT COUNT(*) FROM decisions").fetchone()[0]
     finally:
         db.close()
     registry = DecisionRegistry(path)
-    return {"exists": True, "day": day, "markets": markets, "settled": settled,
+    return {"exists": True, "day": day, "markets": markets, "settled": settled, "history": history,
             "decisions": total, "comparison": registry.comparison(),
             "agents": registry.performance()["agents"], "costs": read_costs(folder, balance, now),
             "models": model_registry.build(path, Path(folder) / "costs.sqlite")["agents"],
             "last_round": last_round(path), "analysis": analysis_summary(path)}
+
+
+HISTORY_DAYS = 14
+
+
+def council_history(db, day: str) -> dict:
+    """Pulsul consiliului pe zile (doar citire): pe zi câte piețe spre cumpărare/vânzare/neutru/dezacord, plus
+    înclinația netă a fiecărei piețe în ultimele zile și piețele care și-au schimbat partea față de ziua precedentă."""
+    first = (datetime.fromisoformat(day) - timedelta(days=HISTORY_DAYS - 1)).date().isoformat()
+    cells: dict = {}
+    for decision_id, vote in db.execute(
+            "SELECT d.id, v.vote FROM decisions d JOIN votes v ON v.decision_id = d.id AND v.stage = 'final' "
+            "WHERE substr(d.id, 1, 10) >= ?", (first,)):
+        d, symbol = decision_id[:10], decision_id[11:]
+        cell = cells.setdefault((d, symbol), {"net": 0, "buy": False, "sell": False})
+        if vote == "BUY":
+            cell["net"] += 1
+            cell["buy"] = True
+        elif vote == "SELL":
+            cell["net"] -= 1
+            cell["sell"] = True
+    days = sorted({d for d, _ in cells})
+    summary = []
+    for d in days:
+        rows = [c for (dd, _), c in cells.items() if dd == d]
+        summary.append({"day": d, "n": len(rows), "up": sum(c["net"] > 0 for c in rows),
+                        "down": sum(c["net"] < 0 for c in rows), "split": sum(c["buy"] and c["sell"] for c in rows)})
+    series = {}
+    for (d, symbol), c in cells.items():
+        series.setdefault(symbol, {})[d] = c["net"]
+    flips = []
+    if len(days) >= 2:
+        today, before = days[-1], days[-2]
+        sign = lambda x: (x > 0) - (x < 0)
+        for symbol, by_day in series.items():
+            if today in by_day and before in by_day and sign(by_day[today]) != sign(by_day[before]):
+                flips.append({"symbol": symbol, "group": market_groups.group_of(symbol),
+                              "before": by_day[before], "now": by_day[today]})
+        flips.sort(key=lambda f: -abs(f["now"] - f["before"]))
+    return {"days": summary, "series": {s: [by_day.get(d) for d in days] for s, by_day in series.items()},
+            "series_days": days, "flips": flips[:20], "flips_between": [days[-2], days[-1]] if len(days) >= 2 else None}
 
 
 def analysis_summary(path) -> dict:

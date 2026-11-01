@@ -214,6 +214,21 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0}
 .help:hover{border-color:var(--accent);color:var(--accent)}
 .term{padding:12px 0;border-bottom:1px solid var(--line)}
 .term b{display:block;font:700 14px var(--font-body)}.term.on{background:var(--accent-soft);margin-inline:-8px;padding-inline:8px;border-radius:10px}
+.dial{display:block;margin:6px auto 0}
+.dial text{fill:var(--fg);font:500 16px var(--font-display);text-anchor:middle}
+.trend{display:flex;align-items:center;gap:4px;height:84px;margin-top:12px}
+.trend div{flex:1;display:flex;flex-direction:column;justify-content:center;height:100%;position:relative}
+.trend i{display:block;width:100%;border-radius:3px;min-height:2px}
+.trend .u{background:var(--gain);align-self:flex-end;margin-top:auto}
+.trend .d{background:var(--loss);margin-bottom:auto}
+.trend .mid{position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line-2)}
+.days{display:flex;gap:4px;margin-top:4px}.days span{flex:1;text-align:center;font:500 10px var(--font-data);color:var(--muted)}
+.flip{display:inline-flex;gap:6px;align-items:center;border:1px solid var(--line-2);border-radius:12px;padding:6px 10px;background:var(--glass);font:600 12.5px var(--font-body)}
+.flip .mono{font-size:12px}
+.hist{display:flex;gap:4px;margin-top:8px}
+.hist span{flex:1;text-align:center;border-radius:8px;border:1px solid var(--line);padding:6px 0;font:600 12px var(--font-data);background:var(--glass)}
+.hist .up{color:var(--gain);border-color:color-mix(in srgb,var(--gain) 50%,transparent)}.hist .down{color:var(--loss);border-color:color-mix(in srgb,var(--loss) 50%,transparent)}
+.hist small{display:block;font:500 9.5px var(--font-data);color:var(--muted)}
 .foot{color:var(--muted);font-size:12px;margin-top:30px}
 kbd{font:500 10.5px var(--font-data);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px;color:var(--muted)}
 /* foaie (detaliu piață / căutare rapidă) */
@@ -481,7 +496,7 @@ function openMarket(sym) {
     : `<p class="sub" style="margin-top:14px">Nicio poziție sau comandă în conturile active.</p>`;
   const cry = t ? `<h2>Top 50 cripto</h2><div class="pillrow"><span class="tag mono">$ ${t.price >= 1 ? money2(t.price) : t.price.toPrecision(3)}</span>${[["24h", t.d1], ["7z", t.d7], ["30z", t.d30]].map(([k, v]) => `<span class="tag ${v == null ? "" : v >= 0 ? "gain" : "loss"}">${k} ${v == null ? "–" : pct1(v)}</span>`).join("")}</div>` : "";
   openSheet(`<div class="label">${g ? esc(g.label) : "Piață"}</div><div class="hero-value" id="sheet-title" style="font-size:30px">${esc(label(sym))}</div>
-    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button></div>${council}${own}${cry}<h2>Notița ta</h2><textarea class="note" data-note="${esc(sym)}" placeholder="Scrie ce vrei să-ți amintești despre această piață (rămâne doar în acest browser)" aria-label="Notița ta">${esc(store("bnd-nota-" + sym) || "")}</textarea>`);
+    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button></div>${council}${marketHistory(sym)}${own}${cry}<h2>Notița ta</h2><textarea class="note" data-note="${esc(sym)}" placeholder="Scrie ce vrei să-ți amintești despre această piață (rămâne doar în acest browser)" aria-label="Notița ta">${esc(store("bnd-nota-" + sym) || "")}</textarea>`);
 }
 function openPalette() {
   openSheet(`<div class="label">Căutare rapidă</div><input class="pal" id="pal" type="search" placeholder="Scrie o piață sau o monedă…" aria-label="Caută o piață" autocomplete="off"><div id="pal-res"></div>`);
@@ -631,6 +646,38 @@ function convictionPanel(ms) {
     <p class="sub">${agree.length} din ${rows.length} piețe cu semnal de la reguli au consiliul de aceeași parte. Valorile sunt estimări din datele de azi.</p></div>`;
 }
 
+function moodWord(m) { return m > .25 ? "optimist" : m > .08 ? "ușor optimist" : m < -.25 ? "prudent" : m < -.08 ? "ușor prudent" : "echilibrat"; }
+function pulsePanel(c) {
+  const h = c.history; if (!h || !h.days || !h.days.length) return "";
+  const days = h.days, last = days[days.length - 1], mood = last.n ? (last.up - last.down) / last.n : 0;
+  const a = Math.PI * (1 - (mood + 1) / 2), cx = 60 + 46 * Math.cos(a), cy = 62 - 46 * Math.sin(a);
+  const dial = `<svg class="dial" viewBox="0 0 120 76" width="170" role="img" aria-label="Starea de spirit a consiliului: ${esc(moodWord(mood))}">
+    <path d="M14 62 A46 46 0 0 1 106 62" fill="none" stroke="var(--line-2)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M14 62 A46 46 0 0 1 60 16" fill="none" stroke="var(--loss)" stroke-width="9" stroke-linecap="round" opacity=".5"/>
+    <path d="M60 16 A46 46 0 0 1 106 62" fill="none" stroke="var(--gain)" stroke-width="9" stroke-linecap="round" opacity=".5"/>
+    <circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="6" fill="var(--fg)"/><text x="60" y="60">${mood >= 0 ? "+" : "−"}${Math.round(100 * Math.abs(mood))}</text></svg>`;
+  const peak = Math.max(1, ...days.map(d => Math.max(d.up, d.down) / (d.n || 1)));
+  const bars = days.map(d => { const u = 100 * (d.up / (d.n || 1)) / peak / 2, w = 100 * (d.down / (d.n || 1)) / peak / 2;
+    return `<div title="${esc(dayOnly(d.day + "T12:00:00Z"))}: ▲ ${d.up} · ▼ ${d.down} din ${d.n}"><span class="mid"></span><i class="u" style="height:${u.toFixed(1)}%"></i><i class="d" style="height:${w.toFixed(1)}%"></i></div>`; }).join("");
+  const labels = days.map(d => `<span>${esc(d.day.slice(8, 10))}</span>`).join("");
+  const between = h.flips_between ? dayOnly(h.flips_between[0] + "T12:00:00Z") + " → " + dayOnly(h.flips_between[1] + "T12:00:00Z") : "";
+  const fl = (h.flips || []).filter(f => !FILTER || f.group === FILTER);
+  const chips = fl.map(f => '<button class="flip" type="button" data-m="' + esc(f.symbol) + '">' + esc(label(f.symbol)) + ' <span class="mono ' + (f.now > f.before ? "gain" : "loss") + '">' + (f.before > 0 ? "+" : "") + f.before + " → " + (f.now > 0 ? "+" : "") + f.now + "</span></button>").join("");
+  const flipsHtml = h.flips_between ? `<div class="label" style="margin-top:16px">Și-au schimbat partea față de ziua precedentă · ${esc(between)}</div>
+    <div class="filters" style="padding-top:8px;flex-wrap:wrap">${chips || '<span class="sub">Nicio piață nu și-a schimbat partea.</span>'}</div>` : `<p class="sub" style="margin-top:14px">Comparația cu ziua precedentă apare după a doua zi de voturi.</p>`;
+  return `<h2>Pulsul consiliului</h2><div class="panel"><div class="grid" style="align-items:center"><div style="text-align:center">${dial}
+    <div class="label" style="margin-top:4px">Starea de spirit azi</div><div style="font:500 18px var(--font-display);margin-top:4px">${esc(moodWord(mood))}</div>
+    <div class="sub">▲ ${last.up} · ▼ ${last.down} · dezacord ${last.split} din ${last.n} piețe votate</div></div>
+    <div><div class="label">Ultimele ${days.length} zile · cumpărare față de vânzare</div><div class="trend" role="img" aria-label="Tendința pe zile">${bars}</div><div class="days">${labels}</div></div></div>${flipsHtml}
+    <p class="sub">Starea de spirit = (piețe spre cumpărare − piețe spre vânzare) / piețe votate. Zilele cu mai puține piețe votate (prima zi a testului) se compară mai greu.</p></div>`;
+}
+function marketHistory(sym) {
+  const h = DATA.council && DATA.council.history; if (!h || !h.series || !h.series[sym]) return "";
+  const days = h.series_days, vals = h.series[sym];
+  const cells = days.map((d, i) => { const v = vals[i]; return '<span class="' + (v > 0 ? "up" : v < 0 ? "down" : "") + '"><small>' + esc(d.slice(8, 10)) + "</small>" + (v == null ? "–" : (v > 0 ? "+" : "") + v) + "</span>"; }).join("");
+  return `<h2>Ultimele zile</h2><div class="hist" role="img" aria-label="Înclinația netă pe zile">${cells}</div><p class="sub">Înclinația netă a consiliului pentru această piață, pe zile.</p>`;
+}
+
 function briefing() {
   const a = DATA.accounts.find(x => x.key === "unic"), c = DATA.council, out = [];
   if (a && a.exists) {
@@ -646,6 +693,9 @@ function briefing() {
     const ms = c.markets || [], up = ms.filter(m => m.net > 0).length, down = ms.filter(m => m.net < 0).length;
     const split = ms.filter(m => Object.values(m.votes).includes("BUY") && Object.values(m.votes).includes("SELL")).length;
     out.push(`<p>Consiliul din <b>${esc(c.day)}</b>: <span class="gain">${up}</span> piețe spre cumpărare, <span class="loss">${down}</span> spre vânzare, ${split} cu dezacord între agenți.</p>`);
+    const fl = (c.history && c.history.flips) || [];
+    const flipNames = fl.slice(0, 3).map(f => "<b>" + esc(label(f.symbol)) + "</b>").join(", ") + (fl.length > 3 ? "…" : "");
+    if (c.history && c.history.flips_between) out.push(`<p>Față de ziua precedentă, <b>${fl.length}</b> ${fl.length === 1 ? "piață și-a schimbat" : "piețe și-au schimbat"} partea${fl.length ? ": " + flipNames : ""}.</p>`);
     const strong = ms.filter(m => m.bot).map(m => ({m, c: combo(m)})).filter(x => x.c && sgn(x.m.bot) === sgn(x.m.net)).sort((x, y) => Math.abs(y.c) - Math.abs(x.c)).slice(0, 3);
     const names = strong.map(x => "<b>" + esc(label(x.m.symbol)) + "</b> " + (x.c > 0 ? "▲" : "▼")).join(", ");
     if (strong.length) out.push(`<p>Cele mai clare semnale (reguli și consiliu de acord): ${names}.</p>`);
@@ -856,7 +906,7 @@ function council(c) {
     <div class="hero-value">${FILTER ? c.markets.filter(m => m.group === FILTER).length + " din " + c.markets.length : c.markets.length}<small>piețe</small></div>
     <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile). „Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div></div>
     ${c.costs ? `<div class="panel"><div class="label">Costuri</div><div class="stats" style="margin-bottom:0"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div></div>` : ""}</div>
-    <h2>Piețele</h2>${vseg}${seg}${body}${convictionPanel(c.markets)}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
+    ${pulsePanel(c)}<h2>Piețele</h2>${vseg}${seg}${body}${convictionPanel(c.markets)}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
 }
 
 function signalsBar() {
