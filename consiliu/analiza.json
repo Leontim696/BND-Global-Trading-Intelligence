@@ -1,0 +1,134 @@
+{
+  "incomplete_excluded": 0,
+  "settled": 0,
+  "enough_data": false,
+  "note": "Doar 0 decizii încheiate (sub 20): rezultatele sunt orientative, nu concluzii.",
+  "agents": {},
+  "disagreement": {
+    "scazut": {
+      "decisions": 0,
+      "mean_abs_move_pct": null,
+      "share_big_moves": null
+    },
+    "mediu": {
+      "decisions": 0,
+      "mean_abs_move_pct": null,
+      "share_big_moves": null
+    },
+    "ridicat": {
+      "decisions": 0,
+      "mean_abs_move_pct": null,
+      "share_big_moves": null
+    }
+  },
+  "strategies": {
+    "bot": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null
+    },
+    "council": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null
+    },
+    "lean": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null
+    },
+    "hybrid": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null
+    }
+  },
+  "cost_to_value": {
+    "toți": {
+      "agents": [],
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null,
+      "cost_per_decision_usd": 0
+    },
+    "primii 3": {
+      "agents": [],
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null,
+      "cost_per_decision_usd": 0
+    }
+  },
+  "by_regime": {},
+  "by_horizon": {},
+  "alpha": {
+    "raw": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null,
+      "reliable": false
+    },
+    "entry_next": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null,
+      "reliable": false
+    },
+    "alpha_next": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null,
+      "reliable": false
+    },
+    "alpha_raw": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null,
+      "reliable": false
+    },
+    "note": "Încă nicio decizie decontată cu detalii de alpha (apar de la primele decontări, ~6.11)."
+  },
+  "revision": {
+    "changed_votes": 0,
+    "improved": 0,
+    "worsened": 0,
+    "note": "Nicio revizuire de vot încă (producția face o singură rundă)."
+  },
+  "before_after": {
+    "initial": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null
+    },
+    "final": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_return_pct": null
+    },
+    "lean_changed": 0,
+    "improved": 0,
+    "worsened": 0,
+    "note": "Nicio schimbare de înclinație încă."
+  },
+  "weights": {
+    "base": {
+      "gpt": 0.2,
+      "claude": 0.2,
+      "gemini": 0.2,
+      "grok": 0.2,
+      "deepseek": 0.2
+    },
+    "penalized": {
+      "gpt": 0.2,
+      "claude": 0.2,
+      "gemini": 0.2,
+      "grok": 0.2,
+      "deepseek": 0.2
+    }
+  },
+  "out_of_sample": {
+    "evaluated": false,
+    "days": 0,
+    "note": "Doar 0 zile cu decizii încheiate (minim 8): nu se poate testa ponderarea pe date nevăzute."
+  }
+}
