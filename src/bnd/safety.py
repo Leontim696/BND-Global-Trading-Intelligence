@@ -26,3 +26,19 @@ def trading_mode(environ=None) -> str:
         raise SafetyError(f"{ENV_VAR}={mode!r} refused: only {', '.join(ALLOWED)} are allowed; "
                           "real (LIVE) trading does not exist in this system")
     return mode
+
+
+OBSERVER_VAR = "BND_OBSERVER_ONLY"
+
+
+def observer_only(environ=None) -> bool:
+    """True dacă instanța e doar observator (ex. pe Proxmox): nu are voie să deschidă un cont pentru scriere."""
+    environ = os.environ if environ is None else environ
+    return (environ.get(OBSERVER_VAR) or "").strip().lower() in ("1", "true", "yes", "da")
+
+
+def require_writable_account(environ=None) -> None:
+    """Oprește orice cale care ar scrie în contul virtual când instanța e observer-only."""
+    if observer_only(environ):
+        raise SafetyError(f"{OBSERVER_VAR}=true: această instanță doar observă; "
+                          "nu poate rula runnerul și nu poate scrie în contul virtual")

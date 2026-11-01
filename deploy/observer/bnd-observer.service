@@ -1,0 +1,21 @@
+[Unit]
+Description=BND observer (doar citire: oglindă cont-unic + status JSON)
+After=network-online.target
+Wants=network-online.target
+Conflicts=bnd-paper.service bnd-paper.timer
+
+[Service]
+Type=oneshot
+User=bnd-observer
+WorkingDirectory=/opt/bnd-observer
+EnvironmentFile=/etc/bnd-observer/env
+ExecStart=/usr/bin/bash /opt/bnd-observer/deploy/observer/run-once.sh
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ReadWritePaths=/var/lib/bnd-observer
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+CapabilityBoundingSet=
+MemoryMax=512M

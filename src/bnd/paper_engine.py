@@ -22,7 +22,7 @@ from math import isfinite, log, sqrt
 from pathlib import Path
 
 from .market_data import Candle
-from .safety import trading_mode
+from .safety import require_writable_account, trading_mode
 from .risk_engine import Portfolio, RiskDecision, RiskLimits, TradeProposal, evaluate_risk
 
 SECONDS_PER_YEAR = 365.25 * 24 * 3600
@@ -202,6 +202,7 @@ class PaperEngine:
         # (BND_TRADING_MODE=LIVE sau o valoare necunoscută) oprește motorul aici,
         # indiferent de punctul de intrare.
         trading_mode()
+        require_writable_account()
         self.path = str(Path(path))
         self._db = sqlite3.connect(self.path, timeout=30, isolation_level=None)
         self._db.row_factory = sqlite3.Row

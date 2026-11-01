@@ -1,0 +1,11 @@
+[Unit]
+Description=BND observer: la fiecare 30 de minute
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=30min
+RandomizedDelaySec=120
+Persistent=true
+
+[Install]
+WantedBy=timers.target
