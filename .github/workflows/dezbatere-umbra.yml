@@ -1,0 +1,183 @@
+name: Dezbatere în umbră
+
+# Runda a doua a consiliului (Fusion Council 2.0), doar pe piețele cu obiecții reale, în registru separat.
+# Nu tranzacționează nimic și nu atinge contul sau consiliul principal.
+#
+# Doar manual. settle = închide deciziile scadente (gratuit); mock = agenți simulați (gratuit);
+# live = agenți reali (PLĂTIT: cere exact RUN-PAID-TEST și respectă plafoanele consiliului).
+# Planificată pentru după testul de 16 zile (17.11.2026).
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'settle = doar închide deciziile (gratis); mock = simulat (gratis); live = plătit'
+        default: 'settle'
+        type: choice
+        options: [settle, mock, live]
+      paid_test_confirmation:
+        description: 'Doar pentru live: scrie RUN-PAID-TEST (șterge NO)'
+        default: 'NO'
+        type: string
+      max_markets:
+        description: 'Câte piețe cu obiecții se dezbat (1-30)'
+        default: '12'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-council
+  cancel-in-progress: false
+
+jobs:
+  debate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      run: ${{ steps.gate.outputs.run }}
+      live: ${{ steps.gate.outputs.live }}
+    env:
+      EVENT: ${{ github.event_name }}
+      MODE_INPUT: ${{ inputs.mode }}
+      CONFIRMATION: ${{ inputs.paid_test_confirmation }}
+      MAX_MARKETS: ${{ inputs.max_markets }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Gate (paid only with the exact confirmation)
+        id: gate
+        run: |
+          mkdir -p state data
+          run=true; live=false
+          if [ "$MODE_INPUT" = live ]; then
+            GITHUB_OUTPUT=gate.txt python scripts/confirm_paid_test.py > /dev/null
+            if grep -q '^confirmed=true' gate.txt; then live=true; else run=false; fi
+          fi
+          { echo "run=$run"; echo "live=$live"; } >> "$GITHUB_OUTPUT"
+          if [ "$run" = false ]; then
+            echo "Nu s-a rulat nimic și nu s-a cheltuit nimic: pentru live scrie exact RUN-PAID-TEST." >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Restore the registries and the report
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
+            for f in debate-registry.sqlite costs.sqlite; do
+              if git cat-file -e "FETCH_HEAD:$f" 2>/dev/null; then git show "FETCH_HEAD:$f" > "state/$f"; fi
+            done
+            if git cat-file -e "FETCH_HEAD:consiliu/LATEST.json" 2>/dev/null; then
+              git show "FETCH_HEAD:consiliu/LATEST.json" > state/raport.json
+            fi
+          fi
+          if [ ! -f state/raport.json ] && [ "$MODE_INPUT" != settle ]; then
+            echo "::error::Lipsește consiliu/LATEST.json (apare după următoarea rulare a consiliului)."; exit 1
+          fi
+      - name: Download only the candles that are needed
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          report=()
+          if [ -f state/raport.json ]; then report=(--report state/raport.json); fi
+          needed="$(python -m src.bnd.council_debate --needed "${report[@]}" --registry state/debate-registry.sqlite --max "$MAX_MARKETS")"
+          echo "Piețe necesare: $needed" >> "$GITHUB_STEP_SUMMARY"
+          groups="$(python -m src.bnd.crypto50 --split "$needed")"
+          etf="$(echo "$groups" | sed -n 's/^etf=//p')"
+          yahoo_crypto="$(echo "$groups" | sed -n 's/^yahoo_crypto=//p')"
+          binance="$(echo "$groups" | sed -n 's/^binance=//p')"
+          defense="$(echo "$groups" | sed -n 's/^defense=//p')"
+          stocks="$(echo "$groups" | sed -n 's/^stocks=//p')"
+          start="$(date -u -d '-2 years' +%Y-%m-%d)"
+          if [ -n "$etf" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe etf --markets "$etf" --start "$start" --out-dir data
+          fi
+          if [ -n "$yahoo_crypto" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe crypto --markets "$yahoo_crypto" --start "$start" --out-dir data
+          fi
+          if [ -n "$binance" ]; then python -m src.bnd.crypto50 --out data --only "$binance"; fi
+          if [ -n "$defense" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe defense --markets "$defense" --start "$start" --out-dir data
+          fi
+          if [ -n "$stocks" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe stocks --markets "$stocks" --start "$start" --out-dir data
+          fi
+      - name: Settle due decisions (free)
+        if: steps.gate.outputs.run == 'true' && inputs.mode == 'settle'
+        run: python -m src.bnd.council_debate --settle-only --data-dir data --registry state/debate-registry.sqlite
+      - name: Simulated agents (free, throw-away registry)
+        if: steps.gate.outputs.run == 'true' && inputs.mode == 'mock'
+        run: |
+          python -m src.bnd.council_debate --mode mock --report state/raport.json --data-dir data \
+            --registry state/mock-debate.sqlite --max "$MAX_MARKETS" --out state/debata.md > /dev/null
+          cat state/debata.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Real agents (paid, capped)
+        if: steps.gate.outputs.run == 'true' && steps.gate.outputs.live == 'true'
+        env:
+          BND_ALLOW_LIVE_AI: 'true'
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          DAILY_CAP: ${{ vars.BND_COUNCIL_DAILY_CAP }}
+          MONTHLY_CAP: ${{ vars.BND_COUNCIL_MONTHLY_CAP }}
+          BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT }}
+          BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE }}
+          BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI }}
+          BND_MODEL_GROK: ${{ vars.BND_MODEL_GROK }}
+          BND_MODEL_DEEPSEEK: ${{ vars.BND_MODEL_DEEPSEEK }}
+        run: |
+          python -m src.bnd.council_debate --mode live --report state/raport.json --data-dir data \
+            --registry state/debate-registry.sqlite --costs state/costs.sqlite --max "$MAX_MARKETS" \
+            --round-budget 0.60 --daily-budget "${DAILY_CAP:-3.00}" --monthly-budget "${MONTHLY_CAP:-38}" \
+            --out state/debata.md > /dev/null
+          cat state/debata.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: always() && steps.gate.outputs.run == 'true'
+        with:
+          name: bnd-debate-${{ github.run_id }}
+          path: state/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Separate job: the write token never runs project code.
+  publish:
+    needs: debate
+    if: always() && needs.debate.outputs.run == 'true' && inputs.mode != 'mock'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        continue-on-error: true
+        with:
+          name: bnd-debate-${{ github.run_id }}
+          path: state
+      - name: Save the shadow registry on the consiliu-umbra branch
+        run: |
+          set -euo pipefail
+          if [ ! -f state/debate-registry.sqlite ]; then echo "::warning::No registry"; exit 0; fi
+          day=$(date -u +%Y-%m-%d)
+          git init -q out
+          cd out
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          for attempt in 1 2 3 4; do
+            if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
+              git checkout -q -f -B consiliu-umbra FETCH_HEAD
+            else
+              git checkout -q --orphan consiliu-umbra 2>/dev/null || true
+            fi
+            mkdir -p dezbatere
+            cp ../state/debate-registry.sqlite .
+            if [ -f ../state/costs.sqlite ]; then cp ../state/costs.sqlite .; fi
+            if [ -f ../state/debata.md ]; then cp ../state/debata.md "dezbatere/${day}.md"; fi
+            git add -A
+            git commit -q -m "Dezbatere în umbră ${day}, rularea ${RUN_ID}" || true
+            if git push -q origin HEAD:refs/heads/consiliu-umbra; then break; fi
+            if [ "$attempt" = 4 ]; then echo "::error::Could not save"; exit 1; fi
+            sleep $((attempt * 5))
+          done

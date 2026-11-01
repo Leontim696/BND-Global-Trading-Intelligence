@@ -240,6 +240,35 @@ def revision_value(decisions: dict) -> dict:
             "note": None if changed else "Nicio revizuire de vot încă (producția face o singură rundă)."}
 
 
+def before_after(decisions: dict) -> dict:
+    """Aceleași piețe, înainte și după dezbatere: înclinația inițială față de cea finală.
+
+    Merge pe registrul de dezbatere (voturile `initial` și `final`). Se numără doar piețele unde
+    înclinația s-a schimbat ca să se vadă dacă dezbaterea a ajutat; cele rămase la fel nu spun nimic."""
+    rows = {"initial": [], "final": []}
+    flipped = better = worse = 0
+    for d in decisions.values():
+        out = d["outcome"]
+        if not out:
+            continue
+        lean = {}
+        for stage in rows:
+            net = sum(SIDE[st[stage][0]] for st in d["votes"].values() if stage in st)
+            lean[stage] = (net > 0) - (net < 0)
+            if lean[stage]:
+                rows[stage].append(lean[stage] * out)
+        if lean["initial"] != lean["final"]:
+            flipped += 1
+            a, b = lean["initial"] * out, lean["final"] * out
+            better += b > a
+            worse += b < a
+    stat = lambda xs: {"calls": len(xs), "hit_rate": _rate(sum(x > 0 for x in xs), len(xs)),
+                       "mean_return_pct": 100 * sum(xs) / len(xs) if xs else None}
+    return {"initial": stat(rows["initial"]), "final": stat(rows["final"]), "lean_changed": flipped,
+            "improved": better, "worsened": worse,
+            "note": None if flipped else "Nicio schimbare de înclinație încă."}
+
+
 def penalized_weights(decisions: dict) -> dict:
     """Ponderi calculate cu penalizarea supraîncrederii (doar raportate, nu folosite în decizii).
 
@@ -320,7 +349,7 @@ def analyse(path, cost_per_agent: dict | None = None) -> dict:
             "strategies": strategy_comparison(decisions),
             "cost_to_value": cost_to_value(decisions, cost_per_agent),
             "by_regime": by_regime(decisions), "by_horizon": by_horizon(decisions),
-            "revision": revision_value(decisions), "weights": penalized_weights(decisions),
+            "revision": revision_value(decisions), "before_after": before_after(decisions), "weights": penalized_weights(decisions),
             "out_of_sample": out_of_sample_weighting(decisions)}
 
 

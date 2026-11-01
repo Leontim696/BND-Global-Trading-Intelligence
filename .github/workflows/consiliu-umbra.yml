@@ -201,6 +201,7 @@ jobs:
               cp ../state/registry.sqlite ../state/costs.sqlite .
               if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
               if [ -s ../state/analiza.json ]; then cp ../state/analiza.json consiliu/analiza.json; fi
+              if [ -f ../state/raport.json ]; then cp ../state/raport.json consiliu/LATEST.json; fi
               cp ../state/raport.md "consiliu/${day}.md"
               cp ../state/raport.md consiliu/LATEST.md
               if [ -f ../state/raport-scurt.md ]; then
