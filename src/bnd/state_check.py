@@ -24,7 +24,11 @@ from . import audit_log
 
 FILES = ("paper.sqlite", "audit.jsonl", "last_run.json")
 REQUIRED_TABLES = ("account", "orders", "fills", "journal", "positions")
-HISTORY_TABLES = ("orders", "fills", "journal")
+COUNT_QUERIES = {
+    "orders": "SELECT COUNT(*) FROM orders",
+    "fills": "SELECT COUNT(*) FROM fills",
+    "journal": "SELECT COUNT(*) FROM journal",
+}
 
 
 def sha256(path) -> str:
@@ -68,7 +72,7 @@ def _snapshot(path: Path) -> dict:
         out["capital"], out["created_at"], out["cash"], out["kill"] = row
         if not all(isinstance(v, (int, float)) and math.isfinite(v) for v in (out["capital"], out["cash"])):
             out["problems"].append(f"{path.name}: capital/cash nefinite.")
-        out["counts"] = {t: db.execute(f"SELECT COUNT(*) FROM {t}").fetchone()[0] for t in HISTORY_TABLES}
+        out["counts"] = {name: db.execute(query).fetchone()[0] for name, query in COUNT_QUERIES.items()}
     except sqlite3.Error as exc:
         out["problems"].append(f"{path.name}: eroare SQLite ({exc}).")
     finally:
