@@ -17,7 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
-from . import model_registry
+from . import crypto50, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
@@ -189,7 +189,7 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 
 
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
-            quotes: dict | None = None, runs: list | None = None) -> dict:
+            quotes: dict | None = None, runs: list | None = None, top50=None) -> dict:
     now = now or datetime.now(timezone.utc)
     folders = {"paper": paper, "crypto": crypto, "ai": ai}
     prices = (quotes or {}).get("quotes", {})
@@ -212,6 +212,7 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
         fx["eurron"] = float(eurron[0])
         fx["usdron"] = fx["eurron"] / fx["eurusd"]
     return {"generated": now.isoformat(timespec="minutes"), "fx": fx,
+            "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
             "quotes_time": quotes_time,
             "accounts": accounts, "council": council, "alerts": alerts}
 
@@ -247,6 +248,7 @@ def main(argv=None) -> int:
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
+    parser.add_argument("--top50", help="folderul cu CSV-urile top 50 cripto (arhiva)")
     parser.add_argument("--template", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--status-json", help="scrie și un JSON mic pentru senzori (Home Assistant)")
@@ -254,7 +256,8 @@ def main(argv=None) -> int:
     try:
         quotes = json.loads(Path(args.quotes).read_text()) if args.quotes and Path(args.quotes).exists() else None
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
-        data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs)
+        data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
+                       top50=args.top50)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

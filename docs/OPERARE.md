@@ -46,3 +46,6 @@ Limitele din cod (plafon pe rundă, zilnic, lunar, buget pe scop) și limita che
 
 ## Semnale buy/sell în aplicație
 Banda de sub file arată, pe orice ecran, direcția curentă a consiliului pe fiecare piață (▲ cumpără, ▼ vinde, – hold, cu numărul net de agenți). Sunt doar recomandări în umbră și poziții virtuale: aplicația nu poate da ordine.
+
+## Top 50 cripto (inclusiv memecoin-uri)
+`crypto50.py` arhivează prețurile zilnice (Binance, public) ale unei selecții statice de 50 de monede mari și lichide, 8 dintre ele memecoin-uri (DOGE, SHIB, PEPE, BONK, WIF, FLOKI, TRUMP, PENGU), în `crypto50/` pe ramura `date-piete`. Stablecoin-urile sunt excluse; XMR, KAS și HYPE lipsesc pentru că nu au piață spot publică pe Binance. Lista nu e un clasament live după capitalizare: se poate schimba în `COINS`. Fila „Top 50” din aplicație arată preț, variație pe 24h/7z/30z și semnalul simplu SMA 20/50. **Monedele nu intră în consiliul AI** (50 de piețe ar costa ~1,4 $ pe zi, față de plafonul de 0,80 $ pe zi și soldul rămas) **și nu în conturile virtuale.**
