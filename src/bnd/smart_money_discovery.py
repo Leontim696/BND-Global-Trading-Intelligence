@@ -93,9 +93,111 @@ def probe(key: str, fetch=get, pause: float = 1.2) -> dict:
     return report
 
 
+# --- descoperire ----------------------------------------------------------------------------
+
+LISTS = ("/tokens/trending", "/tokens/volume", "/tokens/multi/graduated", "/tokens/latest")
+MAX_TOKENS = 45                      # câte monede se cercetează (un apel pe monedă)
+MIN_INVESTED, MAX_INVESTED = 15.0, 3000.0     # „sume mici” pe o monedă, în dolari
+MIN_TOKEN_ROI, MIN_TOKEN_PROFIT = 5.0, 2000.0  # câștig de cel puțin 500% și 2.000 $ pe moneda respectivă
+MIN_HITS = 2                         # câștigător pe cel puțin 2 monede diferite (repetarea scade rolul norocului)
+INSIDER_HITS = 3                     # primii cumpărători câștigători pe cel puțin 3 monede = tipar de intrare timpurie
+ENRICH_MAX = 30
+HEADER = ["time", "wallet", "hits", "tokens_seen", "best_token_roi", "profit_in_batch", "avg_invested", "tokens",
+          "trades", "win_rate", "avg_buy_usd", "realized_pnl_usd", "roi", "passes", "tags", "reasons"]
+
+
+def _items(payload) -> list:
+    if isinstance(payload, list):
+        return payload
+    if isinstance(payload, dict):
+        for name in ("data", "tokens", "results", "wallets"):
+            if isinstance(payload.get(name), list):
+                return payload[name]
+    return []
+
+
+def _price_change_24h(item) -> float:
+    events = item.get("events") if isinstance(item, dict) else None
+    day = events.get("24h") if isinstance(events, dict) else None
+    if isinstance(day, dict):
+        for key, value in day.items():
+            if "price" in key.lower() and isinstance(value, (int, float)):
+                return float(value)
+    return 0.0
+
+
+def pick_tokens(lists: dict, limit: int = MAX_TOKENS) -> list[str]:
+    """Monedele de cercetat: reuniunea listelor, cele mai urcate în 24h primele (acolo apar câștigurile mari)."""
+    best = {}
+    for items in lists.values():
+        for item in items:
+            token = item.get("token") if isinstance(item, dict) and isinstance(item.get("token"), dict) else item
+            mint = token.get("mint") if isinstance(token, dict) else None
+            if isinstance(mint, str) and 32 <= len(mint) <= 44:
+                best[mint] = max(best.get(mint, float("-inf")), _price_change_24h(item))
+    return [m for m, _ in sorted(best.items(), key=lambda kv: -kv[1])][:limit]
+
+
+def winners_of(buyers: list) -> dict:
+    """wallet -> (roi, profit, investit) pentru cumpărătorii cu sumă mică și câștig mare pe această monedă."""
+    from .smart_money import _num, valid_address
+    out = {}
+    for b in buyers:
+        if not isinstance(b, dict) or not valid_address(b.get("wallet")):
+            continue
+        invested, realized = _num(b.get("total_invested")), _num(b.get("realized"))
+        if invested is None or realized is None or not MIN_INVESTED <= invested <= MAX_INVESTED:
+            continue
+        roi = realized / invested
+        if roi >= MIN_TOKEN_ROI and realized >= MIN_TOKEN_PROFIT:
+            out[b["wallet"]] = (roi, realized, invested)
+    return out
+
+
+def discover(key: str, fetch=get, pause: float = 1.2, now=None) -> dict:
+    from datetime import datetime, timezone
+    from .smart_money import assess, normalise
+    now = now or datetime.now(timezone.utc)
+    lists, errors = {}, []
+    for path in LISTS:
+        code, payload = fetch(path, key)
+        if code == 200:
+            lists[path] = _items(payload)
+        else:
+            errors.append(f"{path}: HTTP {code}")
+        sleep(pause)
+    mints = pick_tokens(lists)
+    hits, seen = {}, 0
+    for mint in mints:
+        code, payload = fetch(f"/first-buyers/{mint}", key)
+        sleep(pause)
+        if code != 200:
+            errors.append(f"first-buyers: HTTP {code}")
+            continue
+        seen += 1
+        for wallet, (roi, profit, invested) in winners_of(_items(payload)).items():
+            hits.setdefault(wallet, []).append((roi, profit, invested))
+    candidates = {w: v for w, v in hits.items() if len(v) >= MIN_HITS}
+    rows = []
+    for wallet, v in sorted(candidates.items(), key=lambda kv: -len(kv[1]))[:ENRICH_MAX]:
+        code, detail = fetch(f"/pnl/{wallet}", key)
+        sleep(pause)
+        stats = normalise({**detail, "wallet": wallet}) if code == 200 and isinstance(detail, dict) else {"wallet": wallet}
+        verdict = assess({**(stats or {}), "early_share": None})
+        tags = ["tipar_insider"] if len(v) >= INSIDER_HITS else []
+        rows.append([now.isoformat(timespec="minutes"), wallet, len(v), seen, f"{max(r for r, _, _ in v):.1f}",
+                     f"{sum(p for _, p, _ in v):.0f}", f"{sum(i for _, _, i in v) / len(v):.0f}"]
+                    + [("" if (stats or {}).get(k) is None else stats[k]) for k in
+                       ("tokens", "trades", "win_rate", "avg_buy_usd", "realized_pnl_usd", "roi")]
+                    + [int(verdict["passes"]), ";".join(tags), "; ".join(verdict["reasons"])])
+    return {"tokens_checked": seen, "wallets_with_hits": len(hits), "candidates": len(candidates),
+            "rows": rows, "errors": errors[:10]}
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="smart_money_discovery")
     parser.add_argument("--probe", action="store_true")
+    parser.add_argument("--discover", action="store_true")
     parser.add_argument("--out", required=True)
     args = parser.parse_args(argv)
     key = os.getenv("SOLANATRACKER_API_KEY")
@@ -108,6 +210,15 @@ def main(argv=None) -> int:
         report = probe(key)
         (out / "sondaj.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         print(json.dumps({p: r["status"] for p, r in report.items()}, ensure_ascii=False))
+    if args.discover:
+        import csv
+        from .context_data import merge_csv
+        result = discover(key)
+        path = out / "descoperite.csv"
+        added = merge_csv(path, ["id"] + HEADER, [[f"{r[1]}|{r[0][:10]}"] + r for r in result["rows"]])
+        (out / "descoperire.json").write_text(json.dumps({k: v for k, v in result.items() if k != "rows"} | {"added": added},
+                                                         indent=2, ensure_ascii=False), encoding="utf-8")
+        print(json.dumps({k: v for k, v in result.items() if k != "rows"}, ensure_ascii=False))
     return 0
 
 
