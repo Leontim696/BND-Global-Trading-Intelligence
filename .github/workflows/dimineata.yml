@@ -38,7 +38,7 @@ jobs:
           if [ "$(date -u +%Y-%m-%d)" \> "2026-11-17" ]; then
             echo "Testul s-a încheiat: nu se mai trimite rezumatul." >> "$GITHUB_STEP_SUMMARY"; exit 0
           fi
-          mkdir -p out/p out/c out/a out/k
+          mkdir -p out/p out/c out/a out/k out/r
           grab() { # ramură fișier destinație
             if git fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
               git show "FETCH_HEAD:$2" > "$3"
@@ -48,9 +48,10 @@ jobs:
           grab paper-trading rapoarte/quotes.json out/quotes.json
           grab crypto-trading paper.sqlite out/c/paper.sqlite
           grab ai-unificat paper.sqlite out/a/paper.sqlite
+          grab reguli-ls paper.sqlite out/r/paper.sqlite
           grab consiliu-umbra registry.sqlite out/k/registry.sqlite
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
           grab status balance.json out/balance.json
           gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
-          python -m src.bnd.morning --paper out/p --crypto out/c --ai out/a --council out/k \
+          python -m src.bnd.morning --paper out/p --crypto out/c --ai out/a --rls out/r --council out/k \
             --quotes out/quotes.json --runs out/runs.json --balance out/balance.json --send | tee -a "$GITHUB_STEP_SUMMARY"

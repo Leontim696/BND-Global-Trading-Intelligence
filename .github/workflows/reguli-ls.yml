@@ -1,0 +1,167 @@
+name: Bot Reguli long/short (virtual)
+
+# Un al doilea cont cu reguli (nu AI): strategia regime_switch, CU short și leverage până la 3x,
+# finanțare 5%/an, ca termen de comparație pentru contul „Reguli” (acela e doar long, fără leverage).
+# Cont separat, pe ramura reguli-ls. Nu pornește singur: se creează dintr-o rulare manuală cu un
+# capital virtual confirmat; până atunci rulările programate doar spun că nu există cont.
+
+on:
+  schedule:
+    # After the US close (20:00/21:00 UTC), every day: crypto trades weekends.
+    - cron: '28 22 * * *'
+  workflow_dispatch:
+    inputs:
+      capital:
+        description: 'Virtual starting capital, only to CREATE the account (blank = continue)'
+        default: ''
+        type: string
+      settings:
+        description: 'Setări pentru contul NOU (gol = regime_switch cu short, leverage 3x, finanțare 5%)'
+        default: ''
+        type: string
+      reset_kill_switch:
+        description: 'Type RESET-KILL-SWITCH to restart trading after a safety stop (blank = no reset)'
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-reguli-ls
+  cancel-in-progress: false
+
+jobs:
+  step:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      account: ${{ steps.restore.outputs.account }}
+    env:
+      # Public market data only: no API keys, no paid AI, no real orders.
+      BND_ALLOW_LIVE_AI: "false"
+      # Read by src/bnd/safety.py: only MOCK or PAPER are accepted.
+      BND_TRADING_MODE: PAPER
+      CAPITAL: ${{ inputs.capital }}
+      SETTINGS: ${{ inputs.settings || '--strategy regime_switch --portfolio-vol 15 --max-leverage 3 --financing 5' }}
+      RESET: ${{ inputs.reset_kill_switch }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Restore the account from the reguli-ls branch
+        id: restore
+        run: |
+          mkdir -p state
+          if git fetch -q --depth=1 origin reguli-ls 2>/dev/null \
+              && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
+            git show FETCH_HEAD:paper.sqlite > state/paper.sqlite
+            git show FETCH_HEAD:audit.jsonl > state/audit.jsonl 2>/dev/null || true
+            echo "account=existing" >> "$GITHUB_OUTPUT"
+          elif [ -n "$CAPITAL" ]; then
+            echo "account=new" >> "$GITHUB_OUTPUT"
+          else
+            echo "account=none" >> "$GITHUB_OUTPUT"
+            echo "No paper account yet. Start one with a manual run and a virtual capital." \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Restore yesterday's candles
+        if: steps.restore.outputs.account != 'none'
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: data
+          key: reguli-ls-candles-${{ github.run_id }}
+          restore-keys: reguli-ls-candles-
+      - name: Download recent daily candles (only new days when cached)
+        if: steps.restore.outputs.account != 'none'
+        run: |
+          python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
+            --start "$(date -u -d '-3 years' +%Y-%m-%d)" --out-dir data
+      - name: Keep the candles for tomorrow
+        if: steps.restore.outputs.account != 'none'
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: data
+          key: reguli-ls-candles-${{ github.run_id }}
+      - name: Daily paper step
+        if: steps.restore.outputs.account != 'none'
+        env:
+          ACCOUNT: ${{ steps.restore.outputs.account }}
+        run: |
+          args=()
+          if [ "$ACCOUNT" = new ]; then
+            args+=(--capital "$CAPITAL")
+            # SETTINGS is split into separate arguments on purpose.
+            # shellcheck disable=SC2206
+            args+=($SETTINGS)
+          fi
+          if [ -n "$RESET" ]; then
+            args+=(--reset-kill-switch "$RESET")
+          fi
+          python -m src.bnd.paper_runner --state state/paper.sqlite --data-dir data \
+            --audit-log state/audit.jsonl --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
+          cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        # Also after a failure: a safe stop (kill switch) must be kept.
+        if: always() && steps.restore.outputs.account != 'none'
+        with:
+          name: bnd-rls-${{ github.run_id }}
+          path: state/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # Separate job: the write token never runs project code. It only
+  # commits the account file and its status page.
+  publish:
+    needs: step
+    if: always() && needs.step.outputs.account != 'none' && needs.step.result != 'cancelled'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      RUN_ID: ${{ github.run_id }}
+      SOURCE_SHA: ${{ github.sha }}
+      RESULT: ${{ needs.step.result }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        continue-on-error: true
+        with:
+          name: bnd-rls-${{ github.run_id }}
+          path: state
+      - name: Commit the account to the reguli-ls branch
+        run: |
+          set -euo pipefail
+          if [ ! -f state/paper.sqlite ]; then
+            echo "::warning::No account file to publish"; exit 0
+          fi
+          day=$(date -u +%Y-%m-%d)
+          git init -q account
+          cd account
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          # The hourly report job also writes to this branch (only rapoarte/),
+          # so a rejected push is retried from the newest tip; the account
+          # file is never touched by the reports.
+          for attempt in 1 2 3 4; do
+            if git fetch -q --depth=1 origin reguli-ls 2>/dev/null; then
+              git checkout -q -f -B reguli-ls FETCH_HEAD
+            else
+              git checkout -q --orphan reguli-ls 2>/dev/null || true
+            fi
+            cp ../state/paper.sqlite .
+            if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
+            mkdir -p runs
+            if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
+            if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
+            git add -A
+            git commit -q -m "Paper step $day, run $RUN_ID ($RESULT, source ${SOURCE_SHA:0:7})" || true
+            if git push -q origin HEAD:refs/heads/reguli-ls; then break; fi
+            if [ "$attempt" = 4 ]; then echo "::error::Could not save the account"; exit 1; fi
+            sleep $((attempt * 5))
+          done
+          echo "Saved to the reguli-ls branch" >> "$GITHUB_STEP_SUMMARY"
