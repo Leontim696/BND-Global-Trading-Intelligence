@@ -13,6 +13,7 @@ folosită la momentul deciziei: rezultatul se citește doar după închidere.
 
 import argparse
 import json
+from datetime import date, timedelta
 import sqlite3
 import sys
 from math import comb, isfinite
@@ -312,7 +313,14 @@ def out_of_sample_weighting(decisions: dict, train_share: float = 0.6, min_days:
                         "testa ponderarea pe date nevăzute."}
     cut = days[max(1, int(len(days) * train_share)) - 1]
     train = {k: d for k, d in decisions.items() if d["day"] <= cut}
-    test = [d for d in decisions.values() if d["day"] > cut and d["outcome"]]
+    # Embargo: rezultatul unei decizii din antrenare se află abia după `horizon` zile. Deciziile de test
+    # luate înainte să treacă acest interval nu aveau cum să folosească acele ponderi, deci se exclud.
+    horizon = max((d["horizon"] for d in train.values()), default=0)
+    first_test = (date.fromisoformat(cut) + timedelta(days=horizon)).isoformat()
+    test = [d for d in decisions.values() if d["day"] > first_test and d["outcome"]]
+    if not test:
+        return {"evaluated": False, "days": len(days),
+                "note": f"După embargo ({horizon} zile) nu rămâne nicio decizie de test."}
     weights = penalized_weights(train)["base"]
     stats = {"equal": [0, 0, 0.0], "weighted": [0, 0, 0.0]}
     wins = losses = 0
@@ -333,7 +341,7 @@ def out_of_sample_weighting(decisions: dict, train_share: float = 0.6, min_days:
            for name, (n, h, net) in stats.items()}
     p = _sign_test_p(wins, losses)
     return {"evaluated": True, "train_days": len([x for x in days if x <= cut]),
-            "test_days": len([x for x in days if x > cut]), "weights_from_train": weights, **out,
+            "test_days": len({d["day"] for d in test}), "embargo_days": horizon, "weights_from_train": weights, **out,
             "disagreements": wins + losses, "weighted_right": wins, "sign_test_p": p,
             "verdict": ("neconcludent" if p is None or p > 0.05 or wins + losses < MIN_SAMPLE else
                         "ponderarea bate votul egal" if wins > losses else "votul egal bate ponderarea"),

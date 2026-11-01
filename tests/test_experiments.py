@@ -96,3 +96,13 @@ def test_notes_are_added_without_changing_the_verdict(tmp_path):
         ex.add_note(path, id="E-009", text="x")
     with pytest.raises(ex.RegistryError):
         ex.add_note(path, id="E-001", text=" ")
+
+
+def test_accepted_needs_a_p_value_or_an_explicit_justification(tmp_path):
+    path = tmp_path / "r.jsonl"
+    ex.propose(path, **BASE)
+    with pytest.raises(ex.RegistryError, match="cere valoarea p"):
+        ex.finish(path, id="E-001", verdict="acceptat", concluzie="fără test")
+    row = ex.finish(path, id="E-001", verdict="acceptat", concluzie="control sintetic",
+                    justificare_fara_p="simulare cu limită Wilson")
+    assert row["justificare_fara_p"]

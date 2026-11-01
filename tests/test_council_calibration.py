@@ -72,7 +72,7 @@ def test_out_of_sample_needs_enough_days():
 
 def test_out_of_sample_uses_only_training_days_for_weights():
     r = ca.out_of_sample_weighting(many(40))
-    assert r["evaluated"] and r["train_days"] == 24 and r["test_days"] == 16
+    assert r["evaluated"] and r["train_days"] == 24 and r["embargo_days"] == 5 and r["test_days"] == 11
     assert r["weights_from_train"]["gpt"] > r["weights_from_train"]["claude"]
     # Doi agenți opuși se anulează la vot egal (nicio direcție); ponderarea urmează agentul bun.
     assert r["equal"]["calls"] == 0 and r["weighted"]["calls"] > 0
