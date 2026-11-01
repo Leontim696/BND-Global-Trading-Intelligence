@@ -37,7 +37,7 @@ jobs:
           python-version: "3.13"
       - name: Read the accounts, the council and the prices
         run: |
-          mkdir -p out/p out/c out/a out/k out/r
+          mkdir -p out/p out/c out/a out/k out/r out/u
           grab() { # ramură fișier destinație
             if git fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
               git show "FETCH_HEAD:$2" > "$3"
@@ -48,6 +48,7 @@ jobs:
           grab crypto-trading paper.sqlite out/c/paper.sqlite
           grab ai-unificat paper.sqlite out/a/paper.sqlite
           grab reguli-ls paper.sqlite out/r/paper.sqlite
+          grab cont-unic paper.sqlite out/u/paper.sqlite
           grab consiliu-umbra registry.sqlite out/k/registry.sqlite
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
           grab status alerts.json out/alerts.json
@@ -58,7 +59,7 @@ jobs:
         run: python -m src.bnd.openrouter_balance --out out/balance.json
       - name: Build the status
         run: |
-          python -m src.bnd.dashboard --paper out/p --crypto out/c --ai out/a --rls out/r --council out/k \
+          python -m src.bnd.dashboard --paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --council out/k \
             --quotes out/quotes.json --runs out/runs.json --balance out/balance.json \
             --template src/bnd/dashboard_template.html --out out/app.html --status-json out/status.json
           cat out/status.json >> "$GITHUB_STEP_SUMMARY"

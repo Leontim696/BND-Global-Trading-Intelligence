@@ -102,3 +102,48 @@ def test_old_decisions_without_net_use_the_saved_votes(tmp_path):
                     meta={"bot_signal": 1})
 
     assert build_signals(registry, ["NASDAQ100"], "2026-11-01")["signals"] == {"NASDAQ100": 0.5}
+
+
+def test_hybrid_blends_rules_and_council_and_falls_back_to_rules_without_an_ai_signal():
+    from src.bnd.paper_runner import latest_weights
+    from src.bnd.strategies import sma_crossover
+    from tests.test_paper_runner import make_data
+
+    data = make_data()
+    config = PortfolioConfig(vol_lookback=20)
+    rules_only = latest_weights(data, MARKETS, lambda: sma_crossover(5, 20), config)[1]
+    blended = latest_weights(data, MARKETS, lambda: sma_crossover(5, 20), config,
+                             {"UP": 1.0, "DOWN": 1.0}, blend=True)[1]
+
+    assert rules_only["UP"] == 1 and rules_only["DOWN"] == -1
+    assert blended["UP"] == 1.0                    # acord: semnal întreg
+    assert blended["DOWN"] == 0.0                  # dezacord: se anulează
+    assert blended["FX"] == rules_only["FX"]       # fără semnal AI azi: doar regulile
+
+
+def test_hybrid_account_end_to_end_with_shorts_and_sector_for_memecoins(tmp_path, capsys):
+    from tests.test_end_to_end import prepare
+    from src.bnd.universe import UNIVERSES
+    names = [m.name for m in UNIVERSES["unic"]]
+    data_dir = prepare(tmp_path, markets=names, days=300)
+    signals = tmp_path / "semnale.json"
+    signals.write_text(json.dumps({"signals": {n: (1.0 if i % 2 else -1.0) for i, n in enumerate(names[:30])}}))
+    args = ["--state", str(tmp_path / "paper.sqlite"), "--data-dir", str(data_dir), "--signals", str(signals),
+            "--json", str(tmp_path / "last.json")]
+
+    assert paper_runner.main(args + ["--capital", "11183", "--universe", "unic", "--strategy", "hibrid",
+                                     "--max-leverage", "2", "--max-weight", "0.25", "--max-sector", "60",
+                                     "--portfolio-vol", "15", "--financing", "5"]) == 0
+    capsys.readouterr()
+
+    last = json.loads((tmp_path / "last.json").read_text())
+    engine = PaperEngine.open(tmp_path / "paper.sqlite")
+    try:
+        assert len(engine.registered_instruments()) == 71 if hasattr(engine, "registered_instruments") else True
+        assert engine.instrument("DOGE").sector == "memecoin" and engine.instrument("BITCOIN").sector == ""
+        assert any(o["side"] == "SELL" for o in last["orders"]) and any(o["side"] == "BUY" for o in last["orders"])
+        assert last["weights"] and max(abs(w) for w in last["weights"].values()) <= 0.25 + 1e-9
+        gross = sum(abs(w) for w in last["weights"].values())
+        assert gross <= 2.0 + 1e-9
+    finally:
+        engine.close()

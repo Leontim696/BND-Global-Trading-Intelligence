@@ -31,11 +31,11 @@ jobs:
       - name: Check the account and the last daily run
         run: |
           mkdir -p health
-          if git fetch -q --depth=1 origin paper-trading 2>/dev/null \
+          if git fetch -q --depth=1 origin cont-unic 2>/dev/null \
               && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
             git show FETCH_HEAD:paper.sqlite > health/paper.sqlite
           fi
-          conclusion=$(gh run list -R "$REPO" --workflow paper-trading.yml -L 1 \
+          conclusion=$(gh run list -R "$REPO" --workflow cont-unic.yml -L 1 \
             --json conclusion -q '.[0].conclusion // ""' 2>/dev/null || true)
           python -m src.bnd.health_check --state health/paper.sqlite \
             --last-run-conclusion "$conclusion" --json health/health.json > health/health.md

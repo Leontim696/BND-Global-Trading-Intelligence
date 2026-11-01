@@ -202,7 +202,7 @@ def main(argv=None) -> int:
             engine.close()
         except PaperEngineError:
             names = []
-    report = build(args.state, now, quotes_for(names) if names else {})
+    report = build(args.state, now, quotes_for(names, universe="unic") if names else {})
     Path(args.out).write_text(render(report), encoding="utf-8")
     if args.json:
         Path(args.json).write_text(json.dumps(report, indent=2, default=str, ensure_ascii=False))

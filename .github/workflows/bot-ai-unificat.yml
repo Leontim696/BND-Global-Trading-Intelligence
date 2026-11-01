@@ -8,9 +8,9 @@ name: Bot AI unificat (virtual)
 # semnale. Contul trăiește pe ramura ai-unificat. Nu pornește singur: se creează
 # dintr-o rulare manuală cu capitalul virtual confirmat.
 
+# OPRIT (1.11.2026): contul a fost înlocuit de „Cont unic” (cont-unic.yml). Rămâne doar pornirea manuală,
+# ca arhivă; nu mai rulează singur.
 on:
-  schedule:
-    - cron: '15 22 * * *'
   workflow_dispatch:
     inputs:
       capital:

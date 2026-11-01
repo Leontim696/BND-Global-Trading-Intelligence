@@ -38,7 +38,8 @@ jobs:
         id: build
         run: |
           mkdir -p raport
-          if git fetch -q --depth=1 origin paper-trading 2>/dev/null \
+          # Raportul orar urmărește acum contul unic (cont-unic); rapoartele rămân pe ramura paper-trading.
+          if git fetch -q --depth=1 origin cont-unic 2>/dev/null \
               && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
             git show FETCH_HEAD:paper.sqlite > raport/paper.sqlite
           fi

@@ -33,7 +33,7 @@ def test_summary_has_overnight_events_alerts_and_the_plans_in_german_time(tmp_pa
                     CouncilDecision(Vote.HOLD, DecisionRule.MAJORITY, {}, (), (), True, ()),
                     meta={"trace": {"agents": {"grok": {"status": "failed"}}}})
 
-    result = morning.build(tmp_path, None, None, tmp_path, NOW)
+    result = morning.build(None, None, None, tmp_path, NOW, unic=tmp_path)
 
     text = result["message"]
     assert result["title"] == "BND: dimineața, ziua 7/16"
@@ -62,7 +62,7 @@ def test_exchange_rate_and_euro_equivalents_are_shown(tmp_path):
     account_with_overnight_fill(tmp_path)
     quotes = {"time": NOW.isoformat(), "quotes": {"EURUSD": [1.12, NOW.isoformat()]}}
 
-    result = morning.build(tmp_path, None, None, None, NOW, quotes=quotes)
+    result = morning.build(None, None, None, None, NOW, quotes=quotes, unic=tmp_path)
 
     assert "Curs EUR/USD: 1.1200" in result["message"]
     assert "≈ 8" in result["message"] or "≈ 9" in result["message"] or "≈ 10" in result["message"]
@@ -74,7 +74,7 @@ def test_ron_rates_and_lei_equivalents_are_shown_when_available(tmp_path):
     quotes = {"time": NOW.isoformat(), "quotes": {"EURUSD": [1.12, NOW.isoformat()],
                                                   "EURRON": [4.98, NOW.isoformat()]}}
 
-    text = morning.build(tmp_path, None, None, None, NOW, quotes=quotes)["message"]
+    text = morning.build(None, None, None, None, NOW, quotes=quotes, unic=tmp_path)["message"]
 
     assert "EUR/RON: 4.9800" in text and "USD/RON: 4.4464" in text and "lei," in text
 

@@ -54,6 +54,9 @@ def instrument(name: str) -> tuple[str, str, str]:
     """(activ/ETF, futures, CFD) pentru o piață; KeyError dacă nu e cunoscută."""
     if name in INSTRUMENTS:
         return INSTRUMENTS[name]
+    from .coins import COINS
+    if name in {c[0] for c in COINS}:
+        return (f"{name} spot", "–", f"{name}USD")
     stock_names = {m.name for m in UNIVERSES["stocks"]}
     if name in stock_names:
         return (name, "–", f"{name} (CFD pe acțiune)")
@@ -62,7 +65,7 @@ def instrument(name: str) -> tuple[str, str, str]:
 
 def table() -> str:
     seen, rows = set(), []
-    for universe in ("etf", "futures", "stocks", "crypto"):
+    for universe in ("etf", "futures", "stocks", "crypto", "unic"):
         for market in UNIVERSES[universe]:
             if market.name in seen:
                 continue

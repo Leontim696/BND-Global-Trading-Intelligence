@@ -20,7 +20,7 @@ Yahoo (zilnic, public)  ──►  CSV de lumânări (cache în Actions)
         └─ prețuri de acum ─►  rapoarte orare / status.json / aplicația de pe telefon / alerte
 ```
 
-## Conturi (trei portofolii separate, `docs/CONTURI.md`)
+## Conturi (un singur cont activ din 1.11.2026: `cont-unic`; cele patru vechi sunt arhivă, vezi `docs/CONTURI.md`)
 | Cont | Ramură | Decide | Workflow | Ora (UTC) |
 |---|---|---|---|---|
 | Reguli | `paper-trading` | strategia `regime_switch` | `paper-trading.yml` | 22:23 |

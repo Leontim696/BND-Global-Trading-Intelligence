@@ -6,10 +6,9 @@ name: Bot virtual zilnic
 # is created by a manual run with a confirmed virtual capital; scheduled
 # runs before that only report that no account exists.
 
+# OPRIT (1.11.2026): contul a fost înlocuit de „Cont unic” (cont-unic.yml). Rămâne doar pornirea manuală,
+# ca arhivă; nu mai rulează singur.
 on:
-  schedule:
-    # After the US close (20:00/21:00 UTC), every day: crypto trades weekends.
-    - cron: '23 22 * * *'
   workflow_dispatch:
     inputs:
       capital:

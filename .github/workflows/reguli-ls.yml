@@ -5,10 +5,9 @@ name: Bot Reguli long/short (virtual)
 # Cont separat, pe ramura reguli-ls. Nu pornește singur: se creează dintr-o rulare manuală cu un
 # capital virtual confirmat; până atunci rulările programate doar spun că nu există cont.
 
+# OPRIT (1.11.2026): contul a fost înlocuit de „Cont unic” (cont-unic.yml). Rămâne doar pornirea manuală,
+# ca arhivă; nu mai rulează singur.
 on:
-  schedule:
-    # After the US close (20:00/21:00 UTC), every day: crypto trades weekends.
-    - cron: '28 22 * * *'
   workflow_dispatch:
     inputs:
       capital:

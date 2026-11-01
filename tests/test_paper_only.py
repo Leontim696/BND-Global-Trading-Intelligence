@@ -101,6 +101,6 @@ def test_workflows_never_set_a_live_trading_mode():
 
 
 def test_live_ai_flag_is_never_on_in_the_trading_workflows():
-    for name in ("paper-trading.yml", "cripto-ai.yml", "bot-ai-unificat.yml", "rapoarte-bot.yml", "reguli-ls.yml"):
+    for name in ("paper-trading.yml", "cripto-ai.yml", "bot-ai-unificat.yml", "rapoarte-bot.yml", "reguli-ls.yml", "cont-unic.yml"):
         text = (ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8")
         assert re.search(r'BND_ALLOW_LIVE_AI:\s*"false"', text), name

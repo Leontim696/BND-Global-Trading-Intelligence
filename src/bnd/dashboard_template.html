@@ -83,7 +83,7 @@ td:first-child{font-family:var(--font-body);font-weight:600}
 <script>
 const DATA = /*DATA*/null;
 const view = document.getElementById("view"), tabs = document.getElementById("tabs");
-const names = {reguli:"paper", cripto:"crypto", ai:"ai", rls:"rls"};
+const names = {unic:"unic", reguli:"paper", cripto:"crypto", ai:"ai", rls:"rls"};
 const eq = a => a.live ? a.live_equity : a.equity;
 const money = (v, c) => ((v == null ? "–" : new Intl.NumberFormat("ro-RO",{maximumFractionDigits:0}).format(v)) + " " + (c || "")).trim();
 const money2 = v => new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(v);
@@ -95,7 +95,7 @@ document.getElementById("stamp").textContent = "Actualizat " + when(DATA.generat
   (DATA.quotes_time ? " · prețuri de la " + when(DATA.quotes_time) : "");
 document.getElementById("alerts").innerHTML = (DATA.alerts || []).map(t => `<div class="alert" role="alert">${esc(t)}</div>`).join("");
 
-const TABS = [["rezumat","Rezumat"],["reguli","Reguli"],["cripto","Cripto AI"],["ai","AI unificat"],["rls","Reguli L/S"],["consiliu","Consiliul"],["top50","Top 50"]];
+const TABS = [["rezumat","Rezumat"],["unic","Cont unic"],["consiliu","Consiliul"],["top50","Top 50"],["arhiva","Arhivă"]];
 tabs.innerHTML = TABS.map(([id,t]) => `<button role="tab" data-id="${id}" id="tab-${id}">${t}</button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; } });
 
@@ -151,8 +151,8 @@ function account(a) {
 const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}${DATA.fx.usdron ? " · " + money(v * DATA.fx.usdron, "lei") : ""}</div>` : "";
 
 function summary() {
-  const cards = DATA.accounts.map((a, i) => {
-    const id = ["reguli","cripto","ai","rls"][i];
+  const cards = DATA.accounts.filter(a => !a.archived).map(a => {
+    const id = "unic";
     if (!a.exists) return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}</div><div class="sub">Nu există încă.</div></button>`;
     const v = eq(a), ch = 100 * (v / a.initial - 1);
     return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
@@ -161,7 +161,8 @@ function summary() {
   const c = DATA.council, cost = c.exists && c.costs ? `<div class="stats"><div><span class="label">Consiliu azi</span><b>${money2(c.costs.today)} $</b></div>
     <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "citit de la OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div>` : "";
   const rate = DATA.fx ? `<p class="sub">Curs EUR/USD: <b>${DATA.fx.eurusd.toFixed(4)}</b> (1 € = ${DATA.fx.eurusd.toFixed(2)} $)${DATA.fx.eurron ? " · EUR/RON: <b>" + DATA.fx.eurron.toFixed(4) + "</b>" : ""}, la ${when(DATA.fx.time)}.</p>` : "";
-  return `${rate}<div class="cards">${cards}</div>${cost}<p class="sub">Atinge un cont pentru detalii. Cele trei conturi sunt separate: pierderea unuia nu o afectează pe a celorlalte.</p>`;
+  const old = DATA.accounts.filter(a => a.archived && a.exists).length;
+  return `${rate}<div class="cards">${cards}</div>${cost}<p class="sub">Atinge contul pentru detalii. Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
 }
 
 function comparison(c) {
@@ -224,12 +225,22 @@ function top50() {
     ${rows.map(r => `<tr><td>${esc(r.name)}${r.meme ? ' <span class="pill short" style="margin-left:3px;padding:0 5px" title="memecoin">M</span>' : ""}</td><td>${price(r.price)}</td><td>${cell(r.d1)}</td><td>${cell(r.d7)}</td><td>${cell(r.d30)}</td><td>${sig(r.signal)}</td></tr>`).join("")}</table></div>`;
 }
 
+function archive() {
+  const rows = DATA.accounts.filter(a => a.archived).map(a => {
+    if (!a.exists) return `<div class="row"><div><span class="name">${esc(a.title)}</span><div class="meta">nu a fost pornit</div></div><div class="num">–</div></div>`;
+    const v = eq(a), ch = 100 * (v / a.initial - 1);
+    return `<div class="row"><div><span class="name">${esc(a.title)}</span><div class="meta">${esc(a.rules && a.rules.shorts ? "long și short" : "doar long")} · ${a.positions.length} poziții · ${a.fills} tranzacții · oprit</div></div>
+      <div class="num">${money(v, "")} ${esc(a.currency)}<div class="${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</div></div></div>`;
+  }).join("");
+  return `<div class="hero"><div class="label">Arhivă · conturi oprite la 1 noiembrie</div><div class="sub">Starea lor finală e păstrată. Nu mai rulează zilnic.</div></div>${rows}`;
+}
+
 function show() {
   signalsBar();
   const id = (location.hash || "#rezumat").slice(1);
   const key = TABS.some(t => t[0] === id) ? id : "rezumat";
   tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.id === key)));
-  view.innerHTML = key === "rezumat" ? summary() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
+  view.innerHTML = key === "rezumat" ? summary() : key === "arhiva" ? archive() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
     : account(DATA.accounts.find(a => a.key === names[key]));
 }
 view.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) location.hash = b.dataset.go; });
