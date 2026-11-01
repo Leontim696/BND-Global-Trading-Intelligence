@@ -19,3 +19,15 @@ Cel puțin jumătate dintre cumpărături în primele minute de la lansare, pe c
 
 ## Ce ai de făcut tu, când vrei
 - Cheie gratuită Solana Tracker → secret `SOLANATRACKER_API_KEY` în depozit; și/sau adrese în `smart_money/wallete.json`.
+
+
+## Validat, candidat, date insuficiente (audit 01.11)
+Descoperirea (`smart_money_discovery.py`) pornește de la un singur câștig mare pe o monedă în trend; asta **nu** dovedește nimic. Fiecare wallet din `descoperite.csv` are coloana `status`:
+- **validat**: istoricul complet (`/pnl`) trece TOATE filtrele (monede, tranzacții, rată de succes, profit realizat, ROI, ținere, vârstă unde sunt cunoscute).
+- **candidat**: a câștigat mult pe o monedă, dar istoricul complet nu trece filtrele. Se urmărește doar înainte în timp (cele 4 walleturi din `smart_money/wallete.json` sunt candidate, nu validate: au 1–17 monede și 1–16 tranzacții, sub minimul de 8 monede și 50 de tranzacții).
+- **date_insuficiente**: istoricul nu s-a putut citi sau lipsesc câmpuri esențiale; nu se judecă și nu se numește validat.
+Rândurile mai vechi (fără coloană) au statusul gol = necunoscut.
+
+**Nu se atribuie „insider” din descoperire.** `first-buyers` nu spune cât de devreme față de lansare a cumpărat walletul. Din ≥3 monede câștigate ca prim cumpărător iese doar `indiciu_intrare_timpurie`. Eticheta `tipar_insider` apare numai în colectorul zilnic, când datele din API arată că cel puțin jumătate din cumpărături sunt în primele minute pe cel puțin 3 monede; și atunci e un tipar statistic, nu o dovadă.
+
+**Limite API:** 429 așteaptă `Retry-After` (maximum 30 s) cu 3 încercări; după 5 erori consecutive rularea se oprește ca să nu epuizeze limita. Rezultatul rulării: `ok`, `partial` (cod 0, cu avertisment), `failed` (cod 2, workflow roșu) sau cheie lipsă (cod 3). Workflow-ul salvează oricum `descoperire.json`, iar verdictul final reflectă rezultatul colectării, separat de publicare.
