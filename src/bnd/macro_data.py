@@ -29,8 +29,10 @@ FRED_URL = ("https://api.stlouisfed.org/fred/series/observations?series_id={seri
             "&observation_start={start}")
 EDGAR_TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
 EDGAR_FACTS_URL = "https://data.sec.gov/api/xbrl/companyfacts/CIK{cik}.json"
-USER_AGENT = os.getenv("EDGAR_USER_AGENT",
-                       "BND Global Trading Intelligence research (https://github.com/Leontim696/BND-Global-Trading-Intelligence)")
+# SEC cere un User-Agent cu un contact real ("Nume contact@domeniu"); fără el răspunde 403. Se setează din variabila
+# de depozit EDGAR_USER_AGENT (nu punem o adresă în cod). Gol = identificarea cu depozitul, pe care SEC o poate refuza.
+USER_AGENT = (os.getenv("EDGAR_USER_AGENT") or "").strip() or \
+    "BND Global Trading Intelligence research (https://github.com/Leontim696/BND-Global-Trading-Intelligence)"
 FRED_SERIES = ("FEDFUNDS", "DGS2", "DGS10", "CPIAUCSL", "UNRATE", "VIXCLS", "T10Y2Y")
 EDGAR_TAGS = ("Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "NetIncomeLoss", "OperatingIncomeLoss",
               "Assets", "StockholdersEquity", "EarningsPerShareDiluted")
