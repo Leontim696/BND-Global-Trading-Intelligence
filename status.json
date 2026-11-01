@@ -1,11 +1,62 @@
 {
-  "time": "2026-11-01T15:51+00:00",
+  "time": "2026-11-01T15:57+00:00",
   "leaderboard": {
     "ok": true,
-    "wallets": 25
+    "wallets": 25,
+    "enriched": 7
   },
   "manual": 0,
-  "errors": [],
+  "errors": [
+    "detalii suqh5s…: https://data.solanatracker.io/pnl/suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK nu răspunde: JSONDecodeError",
+    "detalii CyaE1V…: https://data.solanatracker.io/pnl/CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o nu răspunde: JSONDecodeError",
+    "detalii DfMxre…: https://data.solanatracker.io/pnl/DfMxre4cKmvogbLrPigxmibVTTQDuzjdXojWzjCXXhzj nu răspunde: JSONDecodeError",
+    "detalii 73LnJ7…: https://data.solanatracker.io/pnl/73LnJ7G9ffBDjEBGgJDdgvLUhD5APLonKrNiHsKDCw5B nu răspunde: JSONDecodeError",
+    "detalii JDd3hy…: https://data.solanatracker.io/pnl/JDd3hy3gQn2V982mi1zqhNqUw1GfV2UL6g76STojCJPN nu răspunde: JSONDecodeError",
+    "detalii 4Ddrfi…: https://data.solanatracker.io/pnl/4DdrfiDHpmx55i4SPssxVzS9ZaKLb8qr45NKY9Er9nNh nu răspunde: JSONDecodeError",
+    "detalii 4BdKax…: https://data.solanatracker.io/pnl/4BdKaxN8G6ka4GYtQQWk4G4dZRUTX2vQH9GcXdBREFUk nu răspunde: JSONDecodeError",
+    "detalii 86AEJE…: https://data.solanatracker.io/pnl/86AEJExyjeNNgcp7GrAvCXTDicf5aGWgoERbXFiG1EdD nu răspunde: JSONDecodeError",
+    "detalii BCagck…: https://data.solanatracker.io/pnl/BCagckXeMChUKrHEd6fKFA1uiWDtcmCXMsqaheLiUPJd nu răspunde: JSONDecodeError",
+    "detalii BTf4A2…: https://data.solanatracker.io/pnl/BTf4A2exGK9BCVDNzy65b9dUzXgMqB4weVkvTMFQsadd nu răspunde: JSONDecodeError",
+    "detalii 8rvAsD…: https://data.solanatracker.io/pnl/8rvAsDKeAcEjEkiZMug9k8v1y8mW6gQQiMobd89Uy7qR nu răspunde: JSONDecodeError",
+    "detalii EHg5Yk…: https://data.solanatracker.io/pnl/EHg5YkU2SZBTvuT87rUsvxArGp3HLeye1fXaSDfuMyaf nu răspunde: JSONDecodeError",
+    "detalii 5mtbmP…: https://data.solanatracker.io/pnl/5mtbmPwj2SMkxPP9c93s9oD9bmMdByTqepNarM9Y7u7e nu răspunde: JSONDecodeError",
+    "detalii 6LChaY…: https://data.solanatracker.io/pnl/6LChaYRYtEYjLEHhzo4HdEmgNwu2aia8CM8VhR9wn6n7 nu răspunde: JSONDecodeError",
+    "detalii BCnqsP…: https://data.solanatracker.io/pnl/BCnqsPEtA1TkgednYEebRpkmwFRJDCjMQcKZMMtEdArc nu răspunde: JSONDecodeError",
+    "detalii F5jWYu…: https://data.solanatracker.io/pnl/F5jWYuiDLTiaLYa54D88YbpXgEsA6NKHzWy4SN4bMYjt nu răspunde: JSONDecodeError",
+    "detalii 9FNz4M…: https://data.solanatracker.io/pnl/9FNz4MjPUmnJqTf6yEDbL1D4SsHVh7uA8zRHhR5K138r nu răspunde: JSONDecodeError",
+    "detalii GJA1HE…: https://data.solanatracker.io/pnl/GJA1HEbxGnqBhBifH9uQauzXSB53to5rhDrzmKxhSU65 nu răspunde: JSONDecodeError"
+  ],
+  "sample_keys": {
+    "clasament": [
+      "summary",
+      "wallet",
+      "summary.averageBuyAmount",
+      "summary.lossPercentage",
+      "summary.neutralPercentage",
+      "summary.realized",
+      "summary.total",
+      "summary.totalInvested",
+      "summary.totalLosses",
+      "summary.totalWins",
+      "summary.unrealized",
+      "summary.winPercentage"
+    ],
+    "detalii": [
+      "pnl_since",
+      "summary",
+      "tokens",
+      "summary.averageBuyAmount",
+      "summary.lossPercentage",
+      "summary.neutralPercentage",
+      "summary.realized",
+      "summary.total",
+      "summary.totalInvested",
+      "summary.totalLosses",
+      "summary.totalWins",
+      "summary.unrealized",
+      "summary.winPercentage"
+    ]
+  },
   "written": 25,
   "passing": 0,
   "insider_pattern": 0
