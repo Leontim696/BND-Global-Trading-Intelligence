@@ -17,7 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
-from . import crypto50, market_groups, model_registry
+from . import council_analytics, crypto50, market_groups, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
@@ -144,7 +144,21 @@ def read_council(folder, balance: dict | None = None, now: datetime | None = Non
             "decisions": total, "comparison": registry.comparison(),
             "agents": registry.performance()["agents"], "costs": read_costs(folder, balance, now),
             "models": model_registry.build(path, Path(folder) / "costs.sqlite")["agents"],
-            "last_round": last_round(path)}
+            "last_round": last_round(path), "analysis": analysis_summary(path)}
+
+
+def analysis_summary(path) -> dict:
+    """Rezumat scurt al analizei agenților (doar citire) pentru aplicație."""
+    try:
+        full = council_analytics.analyse(path)
+    except Exception:          # analiza nu are voie să strice aplicația
+        return {}
+    oos = full["out_of_sample"]
+    return {"enough_data": full["enough_data"], "note": full["note"],
+            "overconfidence": {a: v["overconfidence"] for a, v in full["agents"].items()
+                               if v["overconfidence"] is not None},
+            "oos": {"evaluated": oos["evaluated"], "note": oos.get("note"),
+                    "verdict": oos.get("verdict")}}
 
 
 def last_round(path) -> dict:
