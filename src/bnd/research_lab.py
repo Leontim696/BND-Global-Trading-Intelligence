@@ -320,6 +320,9 @@ def _variants():
     return out
 
 
+DISCOVERY_SEEDS = {"univers": "random.Random(1000 + u), u = 0..n-1"}
+
+
 def synthetic_universe(seed: int, markets: int = 6, days: int = 600, edge: float = 0.0) -> dict:
     """Piețe aleatorii fără drift. `edge` > 0 plantează o regularitate reală: regimuri persistente (în medie
     60 de zile) de urcare/scădere cu drift zilnic ±edge = control pozitiv, pe care o regulă de tendință o poate găsi."""
@@ -488,8 +491,12 @@ def main(argv=None) -> int:
     if args.what == "descoperire" and args.control:
         result = run_discovery_control()
         verdict, p = control_verdict(result), None
+        result["reproducere"] = {"seeds": DISCOVERY_SEEDS,
+                                 "costuri": "CLASS_COSTS/market_costs() din codul înregistrat"}
     elif args.what == "descoperire":
         result = run_discovery(args.universes)
+        result["reproducere"] = {"seeds": DISCOVERY_SEEDS,
+                                 "costuri": "CLASS_COSTS/market_costs() din codul înregistrat"}
         if args.upper_bound:
             verdict = discovery_verdict(result, args.upper_bound, use_upper_bound=True)
             result["wilson_upper_95"] = wilson_upper(result["bonferroni_and_oos_pass"], result["universes"])
@@ -502,8 +509,10 @@ def main(argv=None) -> int:
             return 2
         names = args.markets.split(",") if args.markets else None
         data = load_markets(args.data_dir, names)
+        manifest = experiments.data_manifest(args.data_dir, sorted(data))
         result = (run_capital if args.what == "capital" else run_meta)(data, family)
         verdict, p = result["verdict"], result["p"]
+        result["reproducere"] = {"date": manifest, "seeds": {"bootstrap": 7}, "costuri": "CLASS_COSTS/market_costs() din codul înregistrat"}
     import json
     deviations = plan_deviations(state[args.id], result["plan"]) if "plan" in result else []
     if deviations and not args.accept_deviation:

@@ -120,6 +120,89 @@ def _git_head() -> str | None:
         return None
 
 
+def code_state() -> dict:
+    """Codul exact: commit complet și dacă există modificări necomise în fișierele urmărite (None = necunoscut)."""
+    def run(*args):
+        out = subprocess.run(["git", *args], capture_output=True, text=True, timeout=20, check=False)  # nosec B607
+        return out.stdout.strip() if out.returncode == 0 else None
+    try:
+        commit = run("rev-parse", "HEAD")
+        status = run("status", "--porcelain", "--untracked-files=no")
+    except (OSError, subprocess.SubprocessError):
+        return {"commit": None, "modificat": None}
+    return {"commit": commit, "modificat": None if status is None else bool(status)}
+
+
+def data_manifest(folder, names=None) -> dict:
+    """Amprenta datelor folosite: hash, număr de rânduri și prima/ultima zi pentru fiecare CSV + un hash comun."""
+    folder = Path(folder)
+    files = [folder / f"{n}.csv" for n in names] if names else sorted(folder.glob("*.csv"))
+    out = {}
+    for path in files:
+        if not path.exists():
+            continue
+        lines = path.read_text(encoding="utf-8").splitlines()
+        body = [x for x in lines[1:] if x.strip()]
+        out[path.name] = {"sha256": file_hash(path), "randuri": len(body),
+                          "prima": body[0].split(",")[0] if body else None,
+                          "ultima": body[-1].split(",")[0] if body else None}
+    combined = hashlib.sha256(json.dumps({k: v["sha256"] for k, v in out.items()}, sort_keys=True).encode()).hexdigest()
+    return {"fisiere": out, "hash": combined[:16]}
+
+
+COST_KEYS = ("cost_bps", "costuri", "costs")
+
+
+def reproducibility(path=DEFAULT_PATH) -> list[dict]:
+    """Pentru fiecare experiment: ce lipsește ca să poată fi repetat cu același cod, aceleași date, aceleași costuri și criterii."""
+    out = []
+    for e in experiments(path).values():
+        problems, info = [], []
+        result = e.get("rezultat") or {}
+        repro = (result.get("metrici") or {}).get("reproducere") or {}
+        simulated = e["tip"] in JUSTIFIED_TYPES
+        if not e.get("criteriu", "").strip():
+            problems.append("criteriul de acceptare lipsește")
+        if not e.get("cod"):
+            problems.append("codul de la propunere nu e înregistrat")
+        after = result.get("cod_la_rezultat") or {}
+        if result and not after.get("commit"):
+            problems.append("codul de la rezultat nu e înregistrat (nu se poate dovedi că rularea a folosit același cod)")
+        elif result and after.get("commit") and not str(after["commit"]).startswith(str(e.get("cod") or "?")):
+            problems.append(f"codul s-a schimbat între propunere ({e.get('cod')}) și rezultat ({str(after['commit'])[:7]})")
+        if after.get("modificat"):
+            problems.append("rezultatul vine dintr-un cod cu modificări necomise")
+        if simulated:
+            if result and not repro.get("seeds"):
+                problems.append("seed-urile simulării nu sunt înregistrate (sunt doar în cod)")
+        elif not e.get("date") and not (repro.get("date") or {}).get("hash"):
+            problems.append("datele nu sunt fixate prin hash (există doar eticheta: " + str(e.get("date_eticheta")) + ")")
+        if not any(k in (e.get("parametri") or {}) for k in COST_KEYS):
+            info.append("costurile nu sunt în parametri: vin din cod (CLASS_COSTS), fixate doar prin commit")
+        out.append({"id": e["id"], "titlu": e["titlu"], "reproductibil": not problems,
+                    "probleme": problems, "informatii": info})
+    return out
+
+
+def verify_data(path, id, folder) -> list[str]:
+    """Compară datele de acum cu amprenta înregistrată la rezultat; listă de diferențe (goală = identice)."""
+    e = experiments(path).get(id)
+    if e is None:
+        raise RegistryError(f"{id} nu există în registru")
+    saved = (((e.get("rezultat") or {}).get("metrici") or {}).get("reproducere") or {}).get("date")
+    if not saved:
+        return [f"{id} nu are amprenta datelor înregistrată; nu se poate verifica"]
+    now = data_manifest(folder, list(n[:-4] for n in saved["fisiere"]))
+    diffs = []
+    for name, info in saved["fisiere"].items():
+        cur = now["fisiere"].get(name)
+        if cur is None:
+            diffs.append(f"{name}: lipsește")
+        elif cur["sha256"] != info["sha256"]:
+            diffs.append(f"{name}: conținut diferit ({info['randuri']} -> {cur['randuri']} rânduri)")
+    return diffs
+
+
 def experiments(path=DEFAULT_PATH) -> dict:
     """id -> starea curentă (propunere + rezultat, dacă există)."""
     state = {}
@@ -186,6 +269,7 @@ def _propose_locked(path, titlu, ipoteza, familie, tip, criteriu, parametri, dat
 
 def finish(path=DEFAULT_PATH, *, id, verdict, concluzie, metrici=None, cost_usd=0.0,
            p_valoare=None, justificare_fara_p=None, now=None) -> dict:
+    metrici = dict(metrici or {})
     if verdict not in VERDICTS:
         raise RegistryError(f"verdict: unul dintre {', '.join(VERDICTS)}")
     if not (concluzie or "").strip():
@@ -212,9 +296,10 @@ def finish(path=DEFAULT_PATH, *, id, verdict, concluzie, metrici=None, cost_usd=
             raise RegistryError(
                 f"nu se poate accepta: p={p_valoare} > {threshold:.4f} (= {ALPHA}/{tests} experimente "
                 f"în familia „{state[id]['familie']}”). Marchează „neconcludent” sau „respins”.")
-        row = {"id": id, "verdict": verdict, "concluzie": concluzie.strip(), "metrici": metrici or {},
+        row = {"id": id, "verdict": verdict, "concluzie": concluzie.strip(), "metrici": metrici,
                "cost_usd": cost_usd, "p_valoare": p_valoare, "prag_corectat": threshold,
-               "justificare_fara_p": justificare_fara_p, "experimente_in_familie": tests}
+               "justificare_fara_p": justificare_fara_p, "experimente_in_familie": tests,
+               "cod_la_rezultat": code_state()}
         audit_log.append(path, "experiment_rezultat", row, now)
     return row
 
@@ -297,6 +382,11 @@ def main(argv=None) -> int:
     n.add_argument("id")
     n.add_argument("text")
     sub.add_parser("raport")
+    rp = sub.add_parser("reproducere", help="ce lipsește ca fiecare experiment să poată fi repetat (cod, date, costuri, criterii)")
+    rp.add_argument("id", nargs="?")
+    vd = sub.add_parser("verifica-date", help="compară un folder de date cu amprenta înregistrată la rezultat")
+    vd.add_argument("id")
+    vd.add_argument("folder")
     sub.add_parser("verifica")
     args = parser.parse_args(argv)
     try:
@@ -323,6 +413,19 @@ def main(argv=None) -> int:
             for e in search(args.registru, " ".join(args.text)):
                 verdict = e.get("rezultat", {}).get("verdict", "în curs")
                 print(f"{e['id']} [{e['familie']}] {e['titlu']} — {verdict}")
+        elif args.cmd == "reproducere":
+            rows = [r for r in reproducibility(args.registru) if not args.id or r["id"] == args.id]
+            for r in rows:
+                print(f"{r['id']} {'REPRODUCTIBIL' if r['reproductibil'] else 'NEREPRODUCTIBIL COMPLET'} — {r['titlu']}")
+                for item in r["probleme"]:
+                    print("   - " + item)
+                for item in r["informatii"]:
+                    print("   · " + item)
+            return 0 if all(r["reproductibil"] for r in rows) else 1
+        elif args.cmd == "verifica-date":
+            diffs = verify_data(args.registru, args.id, args.folder)
+            print("\n".join(diffs) if diffs else "Datele sunt identice cu cele din rezultat.")
+            return 1 if diffs else 0
         elif args.cmd == "verifica":
             ok, message = audit_log.verify(args.registru, allow_missing=False)
             print(message)
