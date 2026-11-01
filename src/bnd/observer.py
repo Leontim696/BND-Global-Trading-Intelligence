@@ -36,8 +36,11 @@ EXIT = {"ok": 0, "integrity": 1, "stale": 2, "locked": 4, "not_observer": 5, "mi
 SYNC_STALE_HOURS = 3.0      # timerul rulează la 30 de minute: peste 3 ore fără sincronizare reușită e o problemă
 
 
-def record_sync(data_dir, ok: bool, reason: str = "", now: datetime | None = None) -> dict:
-    """Scrie `sync.json` (atomic). La eșec păstrează `last_successful_sync` și `mirror_commit` de la ultima reușită."""
+def record_sync(data_dir, ok: bool, reason: str = "", now: datetime | None = None, interrupted: bool = False) -> dict:
+    """Scrie `sync.json` (atomic). La eșec păstrează `last_successful_sync` și `mirror_commit` de la ultima reușită.
+
+    `interrupted=True`: o tentativă anterioară s-a oprit brusc (marcajul sync.attempt a rămas); se numără separat
+    și NU schimbă `last_successful_sync`."""
     data_dir = Path(data_dir)
     now = now or datetime.now(timezone.utc)
     path = data_dir / "sync.json"
@@ -47,12 +50,37 @@ def record_sync(data_dir, ok: bool, reason: str = "", now: datetime | None = Non
         previous = {}
     commit_file = data_dir / "mirror" / "COMMIT"
     commit = commit_file.read_text(encoding="utf-8").strip() if commit_file.is_file() else previous.get("mirror_commit")
+    if interrupted:
+        ok, reason = False, reason or "tentativa_anterioara_intrerupta"
     state = {"sync_ok": bool(ok), "last_attempt": now.isoformat(timespec="seconds"),
              "last_successful_sync": now.isoformat(timespec="seconds") if ok else previous.get("last_successful_sync"),
              "mirror_commit": commit, "sync_error": None if ok else (reason or "necunoscut"),
-             "consecutive_failures": 0 if ok else int(previous.get("consecutive_failures") or 0) + 1}
+             "consecutive_failures": 0 if ok else int(previous.get("consecutive_failures") or 0) + 1,
+             "interrupted_attempts": int(previous.get("interrupted_attempts") or 0) + (1 if interrupted else 0),
+             "last_interrupted": now.isoformat(timespec="seconds") if interrupted else previous.get("last_interrupted")}
     write_status(path, state)
     return state
+
+
+def attempt_interrupted(data_dir) -> bool:
+    """True dacă `sync.attempt` există dar nicio sincronizare nu mai ține lacătul `.sync.lock` (procesul a murit).
+
+    Cât timp o sincronizare rulează, lacătul e ținut și tentativa e doar „în curs”, nu întreruptă."""
+    data_dir = Path(data_dir)
+    if not (data_dir / "sync.attempt").exists():
+        return False
+    if fcntl is None:
+        return False
+    try:
+        with open(data_dir / ".sync.lock", "a+") as handle:
+            try:
+                fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except OSError:
+                return False                       # lacăt ținut: sincronizare activă
+            fcntl.flock(handle, fcntl.LOCK_UN)
+            return True
+    except OSError:
+        return False
 
 
 def _sync_info(sync_file, now: datetime) -> dict:
@@ -63,7 +91,12 @@ def _sync_info(sync_file, now: datetime) -> dict:
         return {"sync_ok": False, "last_successful_sync": None, "mirror_commit": None,
                 "sync_error": "nicio sincronizare înregistrată (lipsește sync.json)"}
     info = {k: state.get(k) for k in ("sync_ok", "last_attempt", "last_successful_sync", "mirror_commit",
-                                      "sync_error", "consecutive_failures")}
+                                      "sync_error", "consecutive_failures", "interrupted_attempts", "last_interrupted")}
+    if attempt_interrupted(Path(sync_file).parent):
+        # Un proces de sincronizare a murit în mijlocul lucrului: nu raportăm ultima stare „ok” ca fiind curentă.
+        info["sync_ok"] = False
+        info["sync_interrupted"] = True
+        info["sync_error"] = "tentativă de sincronizare întreruptă (sync.attempt fără proces activ)"
     try:
         age = (now - datetime.fromisoformat(state["last_successful_sync"])).total_seconds() / 3600
         info["sync_age_hours"] = round(age, 1)
@@ -151,6 +184,9 @@ def observe(mirror: Path, now: datetime | None = None, stale_hours: float = STAL
     sync = _sync_info(sync_file, now) if sync_file is not None else None
     if sync is not None:
         status.update(sync)
+        commit_file = mirror / "COMMIT"            # adevărul e oglinda reală, nu ultima înregistrare din sync.json
+        if commit_file.is_file():
+            status["mirror_commit"] = commit_file.read_text(encoding="utf-8").strip()
         sync_bad = (not sync["sync_ok"]) or (sync.get("sync_age_hours") is None) or sync["sync_age_hours"] > sync_stale_hours
         status["sync_ok"] = not sync_bad
         if sync_bad and sync["sync_ok"]:
@@ -180,7 +216,7 @@ def main(argv=None) -> int:
     parser.add_argument("--stale-hours", type=float, default=STALE_HOURS)
     parser.add_argument("--sync-file", help="sync.json scris de sync.sh (altfel câmpurile de sincronizare lipsesc)")
     parser.add_argument("--sync-stale-hours", type=float, default=SYNC_STALE_HOURS)
-    parser.add_argument("--record-sync", choices=["ok", "fail"], help="doar scrie sync.json în --data-dir și iese")
+    parser.add_argument("--record-sync", choices=["ok", "fail", "interrupted"], help="doar scrie sync.json în --data-dir și iese")
     parser.add_argument("--reason", default="")
     parser.add_argument("--data-dir")
     args = parser.parse_args(argv)
@@ -188,7 +224,7 @@ def main(argv=None) -> int:
         if not args.data_dir:
             print("--record-sync cere --data-dir", file=sys.stderr)
             return 2
-        record_sync(args.data_dir, args.record_sync == "ok", args.reason)
+        record_sync(args.data_dir, args.record_sync == "ok", args.reason, interrupted=args.record_sync == "interrupted")
         return 0
     if not args.mirror or not args.out:
         parser.error("--mirror și --out sunt obligatorii")
