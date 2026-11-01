@@ -82,6 +82,11 @@ jobs:
           if [ -n "$stocks" ]; then
             python -m src.bnd.backtest_cli fetch-universe --universe stocks --markets "$stocks" --start "$start" --out-dir data
           fi
+      - name: Keep the restored (last valid) state
+        if: steps.restore.outputs.account == 'existing'
+        run: |
+          mkdir -p prev
+          cp state/paper.sqlite state/audit.jsonl prev/
       - name: Daily step
         if: steps.restore.outputs.account != 'none'
         env:
@@ -101,18 +106,38 @@ jobs:
       - name: Correlated exposure report (read-only)
         if: steps.restore.outputs.account != 'none'
         run: python -m src.bnd.exposure --state state/paper.sqlite --data-dir data --out state/expuneri.json || echo "::warning::raportul de expuneri a eșuat"
+      - name: Checkpoint (integrity of account and audit log)
+        id: checkpoint
+        if: steps.restore.outputs.account != 'none'
+        env:
+          ACCOUNT: ${{ steps.restore.outputs.account }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          if [ "$ACCOUNT" = new ]; then flags=(--new); else flags=(--previous prev); fi
+          python -m src.bnd.state_check --state state "${flags[@]}" --run-id "$RUN_ID"
+      # Doar o stare care a trecut de punctul de control se publică.
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-        if: always() && steps.restore.outputs.account != 'none'
+        if: success() && steps.restore.outputs.account != 'none'
         with:
           name: bnd-unic-${{ github.run_id }}
           path: state/
+          if-no-files-found: error
+          retention-days: 14
+      # La eșec: copie pentru diagnostic și ultima stare validă, NICIODATĂ consumate de publicare.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        if: failure() && steps.restore.outputs.account != 'none'
+        with:
+          name: bnd-unic-ESEC-${{ github.run_id }}
+          path: |
+            state/
+            prev/
           if-no-files-found: ignore
           retention-days: 14
 
   # Separate job: the write token never runs project code.
   publish:
     needs: step
-    if: always() && needs.step.outputs.account != 'none' && needs.step.result != 'cancelled'
+    if: needs.step.result == 'success' && needs.step.outputs.account != 'none'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -128,10 +153,16 @@ jobs:
         with:
           name: bnd-unic-${{ github.run_id }}
           path: state
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+          sparse-checkout: scripts/verify_marker.sh
+      - name: Verify the checkpoint marker (hashes only, no project code)
+        run: bash scripts/verify_marker.sh state
       - name: Commit the account to the cont-unic branch
         run: |
           set -euo pipefail
-          if [ ! -f state/paper.sqlite ]; then echo "::warning::No account file"; exit 0; fi
+          if [ ! -f state/paper.sqlite ]; then echo "::error::No account file"; exit 1; fi
           day=$(date -u +%Y-%m-%d)
           git init -q account
           cd account
