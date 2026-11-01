@@ -28,7 +28,7 @@ import math
 import subprocess
 import sys
 from contextlib import contextmanager
-from datetime import date, datetime, timezone
+from datetime import date
 from pathlib import Path
 
 from . import audit_log

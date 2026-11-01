@@ -211,7 +211,6 @@ def main(argv=None) -> int:
         (out / "sondaj.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
         print(json.dumps({p: r["status"] for p, r in report.items()}, ensure_ascii=False))
     if args.discover:
-        import csv
         from .context_data import merge_csv
         result = discover(key)
         path = out / "descoperite.csv"

@@ -287,7 +287,6 @@ class OpenRouterAdapter:
             TypeError,
             IndexError,
             UnicodeError,
-            InvalidAIResponse,
         ) as exc:
             raise InvalidAIResponse(
                 "OpenRouter returned an invalid AI response"
