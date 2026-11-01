@@ -75,7 +75,7 @@ jobs:
           fi
       - name: Restore the registry and the costs
         if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live == 'true'
-        run: bash scripts/restore_branch.sh consiliu-umbra state registry.sqlite costs.sqlite audit.jsonl
+        run: bash scripts/restore_branch.sh consiliu-umbra state "!registry.sqlite" "!costs.sqlite" audit.jsonl
       - name: Restore yesterday's candles
         if: steps.mode.outputs.run == 'true'
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4

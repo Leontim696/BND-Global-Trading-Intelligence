@@ -26,7 +26,7 @@ Yahoo (zilnic, public)  ──►  CSV de lumânări (cache în Actions)
 | Reguli | `paper-trading` | strategia `regime_switch` | `paper-trading.yml` | 22:23 |
 | Cripto AI | `crypto-trading` | voturile consiliului, 5 monede | `cripto-ai.yml` | 22:10 |
 | AI unificat | `ai-unificat` | voturile consiliului, 13 piețe | `bot-ai-unificat.yml` | 22:15 |
-Consiliul: `consiliu-umbra.yml`, 21:40 UTC (plătit, plafoane: 0,60 $ pe rundă, 0,80 $ pe zi, 7 $ pe lună; limita cheii 10 $ la OpenRouter).
+Consiliul: `consiliu-umbra.yml`, 21:40 UTC (plătit, plafoane implicite în workflow: 0,60 $ pe rundă, 3,00 $ pe zi, 38 $ pe lună, ajustabile din variabilele `BND_COUNCIL_DAILY_CAP` / `BND_COUNCIL_MONTHLY_CAP`; soldul real al cheii se citește de la OpenRouter).
 
 ## Straturi și reguli de siguranță
 1. **Mod:** `safety.trading_mode()` acceptă doar MOCK/PAPER; motorul îl verifică la fiecare deschidere de cont. Nu există cod de broker.

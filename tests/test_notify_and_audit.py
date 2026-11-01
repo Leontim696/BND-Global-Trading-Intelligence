@@ -85,7 +85,7 @@ def test_audit_log_appends_across_runs_and_cli(tmp_path, capsys):
 
     assert second["previous"] == json.loads(path.read_text().splitlines()[0])["hash"]
     assert audit_log.main(["verify", str(path)]) == 0
-    assert audit_log.main(["verify", str(tmp_path / "lipsa.jsonl")]) == 0
+    assert audit_log.main(["verify", str(tmp_path / "lipsa.jsonl")]) == 1      # lipsă = problemă, nu "corect"
     path.write_text("nu e json\n", encoding="utf-8")
     assert audit_log.main(["verify", str(path)]) == 1 and audit_log.main([]) == 2
     capsys.readouterr()
@@ -113,3 +113,16 @@ def test_runs_append_to_the_audit_log(tmp_path, monkeypatch, capsys):
     assert rows[0]["data"]["decided"] == 10 and rows[0]["data"]["mode"] == "mock"
     assert rows[1]["data"]["kill_switch"] is False
     assert audit_log.verify(audit)[0]
+
+
+def test_verify_treats_a_missing_or_empty_journal_as_a_problem_unless_first_run(tmp_path):
+    from src.bnd import audit_log
+    missing = tmp_path / "nu_exista.jsonl"
+    assert audit_log.verify(missing) == (False, "Jurnalul lipsește.")
+    assert audit_log.verify(missing, allow_missing=True)[0]
+    empty = tmp_path / "gol.jsonl"
+    empty.write_text("")
+    assert audit_log.verify(empty) == (False, "Jurnalul e gol.")        # fără UnboundLocalError
+    assert audit_log.verify(empty, allow_missing=True)[0]
+    audit_log.append(tmp_path / "ok.jsonl", "x", {})
+    assert audit_log.verify(tmp_path / "ok.jsonl")[0]

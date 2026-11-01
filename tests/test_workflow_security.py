@@ -65,7 +65,9 @@ def test_only_official_actions_are_used():
 def test_runtime_has_no_third_party_dependencies():
     lines = [line.strip() for line in text(ROOT / "requirements.txt").splitlines()
              if line.strip() and not line.startswith("#")]
-    assert all(line.startswith("pytest") for line in lines), lines
+    # Singura excepție: tzdata, doar pe Windows (fusurile orare din morning.py).
+    assert all(line.startswith("pytest") or line.startswith('tzdata>=') and "sys_platform == \"win32\"" in line
+               for line in lines), lines
     assert (ROOT / ".github" / "dependabot.yml").exists()
 
 

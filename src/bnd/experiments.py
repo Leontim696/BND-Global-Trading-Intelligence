@@ -24,20 +24,48 @@ Reguli aplicate de cod, nu doar scrise:
 import argparse
 import hashlib
 import json
+import math
 import subprocess
 import sys
+from contextlib import contextmanager
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 from . import audit_log
+from .audit_log import fcntl
 
 DEFAULT_PATH = Path("experimente/registru.jsonl")
 VERDICTS = ("acceptat", "respins", "neconcludent")
 ALPHA = 0.05
 
 
+JUSTIFIED_TYPES = ("simulare", "control")      # singurele fără test statistic unic: acceptat fără p cu justificare
+
+
 class RegistryError(ValueError):
     """Încălcarea unei reguli a registrului."""
+
+
+@contextmanager
+def _locked(path):
+    """Blocare pe registru pentru tot ciclul citire–validare–adăugare (două procese nu pot lua același id)."""
+    lock = Path(str(path) + ".lock")
+    lock.parent.mkdir(parents=True, exist_ok=True)
+    with lock.open("a+") as handle:
+        if fcntl:
+            fcntl.flock(handle, fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            if fcntl:
+                fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def _intact(path):
+    """Un registru stricat (rând modificat/lipsă) oprește orice scriere: altfel ids și rezultate se pot încurca."""
+    ok, message = audit_log.verify(path, allow_missing=True)
+    if not ok:
+        raise RegistryError(f"registrul nu trece verificarea ({message}); repară-l înainte de a scrie")
 
 
 def _events(path) -> list[dict]:
@@ -126,6 +154,15 @@ def propose(path=DEFAULT_PATH, *, titlu, ipoteza, familie, tip, criteriu, parame
     if limit and tested and tested[1] > limit:
         raise RegistryError("perioada de test depășește data până la care informația era "
                             "disponibilă (info_pana_la)")
+    with _locked(path):
+        return _propose_locked(path, titlu, ipoteza, familie, tip, criteriu, parametri, date_fisiere, date_eticheta,
+                               train, tested, antrenare, test, info_pana_la, cost_estimat_usd,
+                               justificare_duplicat, now)
+
+
+def _propose_locked(path, titlu, ipoteza, familie, tip, criteriu, parametri, date_fisiere, date_eticheta,
+                    train, tested, antrenare, test, info_pana_la, cost_estimat_usd, justificare_duplicat, now):
+    _intact(path)
     hashes = {str(p): file_hash(p) for p in date_fisiere}
     date_hash = hashlib.sha256(json.dumps(hashes or date_eticheta, sort_keys=True).encode()).hexdigest()[:16]
     key = fingerprint(tip, ipoteza, parametri or {}, date_hash, antrenare, test)
@@ -134,7 +171,8 @@ def propose(path=DEFAULT_PATH, *, titlu, ipoteza, familie, tip, criteriu, parame
     if twin and not (justificare_duplicat or "").strip():
         raise RegistryError(f"duplicat al {twin} (aceeași amprentă {key}); "
                             "adaugă --justificare-duplicat dacă repetarea e intenționată")
-    entry = {"id": f"E-{len(state) + 1:03d}", "titlu": titlu.strip(), "ipoteza": ipoteza.strip(),
+    next_number = 1 + max((int(i.split("-")[1]) for i in state if i.startswith("E-")), default=0)
+    entry = {"id": f"E-{next_number:03d}", "titlu": titlu.strip(), "ipoteza": ipoteza.strip(),
              "familie": familie.strip(), "tip": tip, "criteriu": criteriu.strip(),
              "parametri": parametri or {}, "date": hashes, "date_eticheta": date_eticheta,
              "antrenare": antrenare, "test": test, "info_pana_la": info_pana_la,
@@ -152,35 +190,44 @@ def finish(path=DEFAULT_PATH, *, id, verdict, concluzie, metrici=None, cost_usd=
         raise RegistryError(f"verdict: unul dintre {', '.join(VERDICTS)}")
     if not (concluzie or "").strip():
         raise RegistryError("concluzia e obligatorie, inclusiv pentru eșecuri")
-    state = experiments(path)
-    if id not in state:
-        raise RegistryError(f"{id} nu există în registru")
-    if state[id]["stare"] == "încheiat":
-        raise RegistryError(f"{id} e deja încheiat (rezultatele nu se rescriu; propune un nou experiment)")
-    tests = family_count(state, state[id]["familie"])
-    threshold = ALPHA / tests
-    if verdict == "acceptat" and p_valoare is None and not (justificare_fara_p or "").strip():
-        raise RegistryError("„acceptat” cere valoarea p; pentru experimente fără test statistic (control, simulare) "
-                            "dă --justificare-fara-p cu motivul")
-    if verdict == "acceptat" and p_valoare is not None and p_valoare > threshold:
-        raise RegistryError(
-            f"nu se poate accepta: p={p_valoare} > {threshold:.4f} (= {ALPHA}/{tests} experimente "
-            f"în familia „{state[id]['familie']}”). Marchează „neconcludent” sau „respins”.")
-    row = {"id": id, "verdict": verdict, "concluzie": concluzie.strip(), "metrici": metrici or {},
-           "cost_usd": cost_usd, "p_valoare": p_valoare, "prag_corectat": threshold,
-           "justificare_fara_p": justificare_fara_p,
-           "experimente_in_familie": tests}
-    audit_log.append(path, "experiment_rezultat", row, now)
+    if p_valoare is not None and not (isinstance(p_valoare, (int, float)) and math.isfinite(p_valoare)
+                                      and 0 <= p_valoare <= 1):
+        raise RegistryError(f"valoarea p trebuie să fie un număr între 0 și 1 (primit: {p_valoare})")
+    with _locked(path):
+        _intact(path)
+        state = experiments(path)
+        if id not in state:
+            raise RegistryError(f"{id} nu există în registru")
+        if state[id]["stare"] == "încheiat":
+            raise RegistryError(f"{id} e deja încheiat (rezultatele nu se rescriu; propune un nou experiment)")
+        tests = family_count(state, state[id]["familie"])
+        threshold = ALPHA / tests
+        if verdict == "acceptat" and p_valoare is None:
+            if state[id]["tip"] not in JUSTIFIED_TYPES:
+                raise RegistryError(f"„acceptat” cere valoarea p pentru un experiment de tip „{state[id]['tip']}”; "
+                                    f"fără p se acceptă doar tipurile: {', '.join(JUSTIFIED_TYPES)}")
+            if not (justificare_fara_p or "").strip():
+                raise RegistryError("„acceptat” fără p cere --justificare-fara-p cu motivul")
+        if verdict == "acceptat" and p_valoare is not None and p_valoare > threshold:
+            raise RegistryError(
+                f"nu se poate accepta: p={p_valoare} > {threshold:.4f} (= {ALPHA}/{tests} experimente "
+                f"în familia „{state[id]['familie']}”). Marchează „neconcludent” sau „respins”.")
+        row = {"id": id, "verdict": verdict, "concluzie": concluzie.strip(), "metrici": metrici or {},
+               "cost_usd": cost_usd, "p_valoare": p_valoare, "prag_corectat": threshold,
+               "justificare_fara_p": justificare_fara_p, "experimente_in_familie": tests}
+        audit_log.append(path, "experiment_rezultat", row, now)
     return row
 
 
 def add_note(path=DEFAULT_PATH, *, id, text, now=None) -> dict:
     """Interpretare adăugată ulterior; rezultatul și verdictul rămân neschimbate."""
-    if id not in experiments(path):
-        raise RegistryError(f"{id} nu există în registru")
     if not (text or "").strip():
         raise RegistryError("nota nu poate fi goală")
-    return audit_log.append(path, "experiment_nota", {"id": id, "text": text.strip()}, now)
+    with _locked(path):
+        _intact(path)
+        if id not in experiments(path):
+            raise RegistryError(f"{id} nu există în registru")
+        return audit_log.append(path, "experiment_nota", {"id": id, "text": text.strip()}, now)
 
 
 def search(path, text: str) -> list[dict]:
@@ -197,7 +244,7 @@ def search(path, text: str) -> list[dict]:
 
 def report(path=DEFAULT_PATH) -> str:
     state = experiments(path)
-    ok, message = audit_log.verify(path)
+    ok, message = audit_log.verify(path, allow_missing=True)
     lines = ["# Registrul de experimente", "", f"Integritate: {'corect' if ok else 'STRICAT'} — {message}", ""]
     if not state:
         return "\n".join(lines + ["Niciun experiment înregistrat încă."])
@@ -277,7 +324,7 @@ def main(argv=None) -> int:
                 verdict = e.get("rezultat", {}).get("verdict", "în curs")
                 print(f"{e['id']} [{e['familie']}] {e['titlu']} — {verdict}")
         elif args.cmd == "verifica":
-            ok, message = audit_log.verify(args.registru)
+            ok, message = audit_log.verify(args.registru, allow_missing=False)
             print(message)
             return 0 if ok else 1
         else:

@@ -8,13 +8,17 @@ importante (rulări, costuri, opriri).
     python -m src.bnd.audit_log verify audit.jsonl
 """
 
-import fcntl
 import hashlib
 import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
+
+try:                      # nu există pe Windows; acolo scrierile concurente nu sunt blocate
+    import fcntl
+except ImportError:       # pragma: no cover
+    fcntl = None
 
 GENESIS = "0" * 64
 
@@ -45,7 +49,8 @@ def append(path, kind: str, data: dict, now: datetime | None = None) -> dict:
     body = {"time": (now or datetime.now(timezone.utc)).isoformat(), "kind": kind,
             "data": data}
     with path.open("a+", encoding="utf-8") as handle:
-        fcntl.flock(handle, fcntl.LOCK_EX)
+        if fcntl:
+            fcntl.flock(handle, fcntl.LOCK_EX)
         try:
             handle.seek(0)
             text = handle.read()
@@ -56,15 +61,19 @@ def append(path, kind: str, data: dict, now: datetime | None = None) -> dict:
             handle.flush()
             os.fsync(handle.fileno())
         finally:
-            fcntl.flock(handle, fcntl.LOCK_UN)
+            if fcntl:
+                fcntl.flock(handle, fcntl.LOCK_UN)
     return row
 
 
-def verify(path) -> tuple[bool, str]:
-    """(corect, mesaj): primul rând stricat sau lanțul întreg."""
+def verify(path, allow_missing: bool = False) -> tuple[bool, str]:
+    """(corect, mesaj): primul rând stricat sau lanțul întreg.
+
+    Un jurnal inexistent NU e „corect” (poate fi un istoric pierdut): doar cu ``allow_missing`` (prima rulare)."""
     path = Path(path)
     if not path.exists():
-        return True, "Jurnalul nu există încă."
+        return (True, "Jurnalul nu există încă.") if allow_missing else (False, "Jurnalul lipsește.")
+    number = 0
     previous = GENESIS
     for number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
         try:
@@ -77,6 +86,8 @@ def verify(path) -> tuple[bool, str]:
         if row.get("hash") != _digest(previous, body):
             return False, f"Rândul {number}: conținutul a fost modificat."
         previous = row["hash"]
+    if number == 0:
+        return (True, "Jurnal gol.") if allow_missing else (False, "Jurnalul e gol.")
     return True, f"Lanț corect până la rândul {number}."
 
 

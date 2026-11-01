@@ -2,7 +2,9 @@
 # Restaurează fișiere de pe o ramură de stare, FĂRĂ să confunde „ramura nu există” cu „descărcarea a eșuat”.
 #   restore_branch.sh RAMURĂ DESTINAȚIE [fișier ...]
 # Fără fișiere se extrage tot arborele. Ramura inexistentă (prima rulare) e ok; orice altă eroare oprește jobul,
-# ca să nu se publice un istoric nou peste cel real. Un fișier cerut dar lipsit pe o ramură existentă dă avertisment.
+# ca să nu se publice un istoric nou peste cel real. Un fișier cerut dar lipsit pe o ramură existentă dă avertisment;
+# prefixat cu ! (de exemplu '!costs.sqlite') devine OBLIGATORIU: dacă lipsește pe o ramură existentă, jobul se oprește
+# (altfel registrul de buget ar reporni de la zero și plafoanele s-ar reseta).
 set -euo pipefail
 branch="$1"; dest="$2"; shift 2
 mkdir -p "$dest"
@@ -27,9 +29,13 @@ fi
 if [ "$#" = 0 ]; then
   git archive FETCH_HEAD | tar -x -C "$dest"
 else
-  for f in "$@"; do
+  for spec in "$@"; do
+    f="${spec#!}"
     if git cat-file -e "FETCH_HEAD:$f" 2>/dev/null; then
       git show "FETCH_HEAD:$f" > "$dest/$(basename "$f")"
+    elif [ "$spec" != "$f" ]; then
+      echo "::error::$f lipsește pe ramura $branch, deși e obligatoriu; mă opresc ca să nu repornesc de la zero."
+      exit 1
     else
       echo "::warning::$f lipsește pe ramura $branch."
     fi

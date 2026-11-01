@@ -79,3 +79,18 @@ def test_leaderboard_failure_does_not_stop(tmp_path):
         raise ValueError("nu răspunde")
     assert sm.collect(tmp_path, "k", tmp_path / "lipsa.json", fetch=fetch)["leaderboard"]["ok"] is False
     assert sm.rows_of({"traders": [1]}) == [1]
+
+
+def test_base_url_is_restricted_to_https_known_host():
+    import pytest
+    ok = sm.checked_base_url("https://data.solanatracker.io/")
+    assert ok == "https://data.solanatracker.io"
+    for bad in ("http://data.solanatracker.io", "https://evil.example", "https://user@data.solanatracker.io",
+                "https://data.solanatracker.io:8443", "ftp://data.solanatracker.io", ""):
+        with pytest.raises(ValueError):
+            sm.checked_base_url(bad)
+
+
+def test_redirects_are_refused_so_the_key_cannot_follow_them():
+    from urllib.request import Request
+    assert sm._NoRedirect().redirect_request(Request("https://data.solanatracker.io/x"), None, 302, "x", {}, "https://evil.example") is None
