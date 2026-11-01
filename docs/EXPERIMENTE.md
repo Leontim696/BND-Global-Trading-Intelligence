@@ -47,3 +47,16 @@ Date: arhiva `date-piete`, 10 piețe, 1.11.2023–30.10.2026 (≈666 de zile com
 python -m src.bnd.research_lab capital --id E-005 --data-dir date --markets SP500,GOLD,BITCOIN
 python -m src.bnd.experiments nota E-001 "interpretare ulterioară"   # nu schimbă verdictul
 ```
+
+## Corectat după auditul din 1.11.2026
+Auditul a găsit în laborator: semnalul se executa la închiderea care îl producea (nu la deschiderea următoare), costul era 5 bps și nu se plătea deriva ponderilor, `p` din bootstrap avea rezoluție 1/300 (sub pragul Bonferroni), iar planul înregistrat nu era verificat. Toate sunt reparate în cod (rezultatele vechi au rămas în registru, marcate DEPĂȘIT/INVALID prin note).
+
+| ID | Înlocuiește | Verdict | Pe scurt |
+|---|---|---|---|
+| E-007 | E-001 (3 ani) | neconcludent | Kelly bate volatilitatea-țintă în test (p=0,003), dar pierde în antrenare; volatilitatea-țintă are rotație 30–36/an și costurile reale o strică. |
+| E-008 | E-002 (3 ani) | respins | Meta 0,54 față de 1,37 (combo). |
+| E-009 | E-005 (12 ani) | neconcludent | Kelly bate volatilitatea-țintă în ambele perioade, p=0,047 > 0,0125; risc dublu față de ponderea egală. |
+| E-010 | E-006 (12 ani) | respins | Meta 1,00 față de 1,19 (combo). |
+| E-011 | E-003/E-004 | acceptat | Fals pozitive ≤ 4,6% (limită superioară), putere 97,5% la regularitate puternică; rata naivă 16%. |
+
+Regula nouă: o rulare care diferă de planul înregistrat (parametri, perioade) e refuzată sau cere `--accept-deviation` cu motivul; „acceptat” cere valoarea p sau o justificare.
