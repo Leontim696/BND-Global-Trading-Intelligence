@@ -124,12 +124,30 @@ CRYPTO_UNIVERSE = tuple(
     Market(name, symbol, "crypto", *CLASS_COSTS["crypto"]) for name, symbol in _CRYPTO
 )
 
-# Universul contului unic: piețele de reguli (ETF/forex) + monedele din top 50 cripto. Memecoin-urile
+# Acțiuni din industria de apărare și armament (Yahoo). Acțiunile europene sunt în moneda lor locală
+# (EUR, GBP, SEK, NOK), fără conversie în dolari: procentele sunt corecte, valoarea absolută nu e convertită
+# (aceeași limitare ca la rest: vezi docs/AUDIT_P0.md, F-08/F-11). ITA e un ETF american de aerospațial și apărare.
+_DEFENSE = (
+    ("RHEINMETALL", "RHM.DE", "EUR"), ("HENSOLDT", "HAG.DE", "EUR"), ("RENK", "R3NK.DE", "EUR"),
+    ("BAE", "BA.L", "GBp"), ("THALES", "HO.PA", "EUR"), ("LEONARDO", "LDO.MI", "EUR"),
+    ("SAAB", "SAAB-B.ST", "SEK"), ("KONGSBERG", "KOG.OL", "NOK"), ("LOCKHEED", "LMT", "USD"),
+    ("NORTHROP", "NOC", "USD"), ("RTX", "RTX", "USD"), ("GENERAL_DYNAMICS", "GD", "USD"),
+    ("L3HARRIS", "LHX", "USD"), ("ITA", "ITA", "USD"),
+)
+DEFENSE_UNIVERSE = tuple(
+    Market(name, symbol, "stock", *CLASS_COSTS["stock"], sector="armament") for name, symbol, _ in _DEFENSE
+)
+DEFENSE_CURRENCY = {name: currency for name, _, currency in _DEFENSE}
+DEFENSE_NAMES = tuple(name for name, _, _ in _DEFENSE)
+
+# Universul contului unic: piețele de reguli (ETF/forex), acțiuni (inclusiv apărare) + monedele din top 50 cripto. Memecoin-urile
 # au sector propriu (limită separată) și alunecare mai mare.
 def _build_unic():
     from .coins import COINS
     markets = {m.name: m for m in ETF_UNIVERSE}
     for m in CRYPTO_UNIVERSE:
+        markets.setdefault(m.name, m)
+    for m in STOCK_UNIVERSE + DEFENSE_UNIVERSE:       # acțiuni americane mari + apărare/armament
         markets.setdefault(m.name, m)
     covered = {"BTC", "ETH", "SOL", "BNB", "XRP"}
     for name, symbol, meme in COINS:
@@ -151,7 +169,8 @@ _BY_NAME = {m.name: m for m in ETF_UNIVERSE + CRYPTO_UNIVERSE}
 AI_UNIVERSE = tuple(_BY_NAME[name] for name in AI_MARKETS)
 
 UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE, "stocks": STOCK_UNIVERSE,
-             "crypto": CRYPTO_UNIVERSE, "ai": AI_UNIVERSE, "unic": UNIC_UNIVERSE}
+             "crypto": CRYPTO_UNIVERSE, "ai": AI_UNIVERSE, "unic": UNIC_UNIVERSE,
+             "defense": DEFENSE_UNIVERSE}
 
 
 def select(names=None, classes=None, universe: str = "futures") -> tuple[Market, ...]:

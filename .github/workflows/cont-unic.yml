@@ -67,7 +67,7 @@ jobs:
               && git cat-file -e FETCH_HEAD:registry.sqlite 2>/dev/null; then
             git show FETCH_HEAD:registry.sqlite > state/registry.sqlite
           fi
-          coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; print(','.join(BASE_PEERS + EXTRA))")"
+          coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES))")"
           python -m src.bnd.crypto_signals --registry state/registry.sqlite --coins "$coins" --out state/semnale.json
       - name: Download the candles (ETF/forex and Yahoo crypto, then Binance coins)
         if: steps.restore.outputs.account != 'none'
@@ -77,6 +77,8 @@ jobs:
           etf="$(echo "$groups" | sed -n 's/^etf=//p')"
           yahoo_crypto="$(echo "$groups" | sed -n 's/^yahoo_crypto=//p')"
           binance="$(echo "$groups" | sed -n 's/^binance=//p')"
+          defense="$(echo "$groups" | sed -n 's/^defense=//p')"
+          stocks="$(echo "$groups" | sed -n 's/^stocks=//p')"
           start="$(date -u -d '-3 years' +%Y-%m-%d)"
           python -m src.bnd.backtest_cli fetch-universe --universe etf --markets "$etf" --start "$start" --out-dir data
           if [ -n "$yahoo_crypto" ]; then
@@ -84,6 +86,12 @@ jobs:
           fi
           if [ -n "$binance" ]; then
             python -m src.bnd.crypto50 --out data --only "$binance"
+          fi
+          if [ -n "$defense" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe defense --markets "$defense" --start "$start" --out-dir data
+          fi
+          if [ -n "$stocks" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe stocks --markets "$stocks" --start "$start" --out-dir data
           fi
       - name: Daily step
         if: steps.restore.outputs.account != 'none'
