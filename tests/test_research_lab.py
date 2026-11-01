@@ -168,15 +168,61 @@ def plan_dev(entry, plan):
 def test_cli_refuses_a_run_that_differs_from_the_registered_plan(tmp_path, capsys):
     registry = tmp_path / "r.jsonl"
     ex.propose(registry, titlu="t", ipoteza="i", familie="capital", tip="backtest", criteriu="c",
-               parametri={"cost_bps": 5}, antrenare=None, test=None)
+               parametri={"costs": "plat"}, antrenare=None, test=None)
     data = tmp_path / "d"
     data.mkdir()
     from src.bnd.market_data import save_csv
     for name, candles in rl.synthetic_universe(5, markets=3, days=700).items():
         save_csv(candles, data / f"{name}.csv")
     args = ["capital", "--id", "E-001", "--data-dir", str(data), "--registru", str(registry)]
-    assert rl.main(args) == 2 and "cost_bps: înregistrat 5" in capsys.readouterr().err
-    assert rl.main(args + ["--accept-deviation", "costuri corectate la 15 bps"]) == 0
+    assert rl.main(args) == 2 and "costs: înregistrat plat, rulat pe_clasa" in capsys.readouterr().err
+    assert rl.main(args + ["--accept-deviation", "costuri pe clasă"]) == 0
     state = ex.experiments(registry)["E-001"]
     assert state["stare"] == "încheiat" and "Abatere acceptată" in state["rezultat"]["concluzie"]
     capsys.readouterr()
+
+
+# --- audit #19, #20 ------------------------------------------------------------------------
+
+def test_costs_follow_the_asset_class_like_the_paper_engine():
+    forex, forex_carry = rl.market_costs("EURUSD")
+    index, _ = rl.market_costs("SP500")
+    crypto, crypto_carry = rl.market_costs("BITCOIN")
+    assert forex < index < crypto                                   # 0,7 < 3 < 15 bps
+    assert abs(forex - 0.7) < 1e-9 and abs(crypto - 15.0) < 1e-9
+    assert forex_carry == 0 and crypto_carry == 10.0                # carry doar la cripto
+    assert rl.market_costs("NECUNOSCUT") == (rl.COST_BPS, 0.0)
+
+
+def test_class_costs_and_crypto_carry_are_charged_in_the_simulation():
+    from datetime import datetime, timedelta, timezone
+    from src.bnd import strategies
+    from src.bnd.market_data import Candle
+    start = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    flat = lambda: [Candle(start + timedelta(days=i), 100, 100, 100, 100, 1.0) for i in range(300)]
+    w = rl.prepare({"BITCOIN": flat(), "EURUSD": flat()}, strategies.buy_and_hold)
+    hold = lambda t: {"BITCOIN": 0.5, "EURUSD": 0.5}
+    result = rl.simulate(w, hold, 100, financing=0)
+    # prețuri plate: tot ce se pierde sunt costurile; carry 10%/an pe jumătate din capital ≈ 5%/an
+    years = len(result["returns"]) / w["ppy"]
+    loss = 1 - result["curve"][-1][1]
+    assert 0.04 * years < loss < 0.07 * years
+    flat_cost = rl.simulate(w, hold, 100, cost_bps=15.0, financing=0)
+    assert result["curve"][-1][1] != flat_cost["curve"][-1][1]       # costul plat explicit rămâne posibil
+
+
+def test_synthetic_markets_have_overnight_gaps_so_open_execution_is_testable():
+    data = rl.synthetic_universe(3, markets=2, days=200)
+    candles = data["S0"]
+    gaps = [abs(b.open / a.close - 1) for a, b in zip(candles, candles[1:])]
+    assert max(gaps) > 0.002 and all(g > 0 for g in gaps)
+    w = rl.prepare(data, lambda: __import__("src.bnd.strategies", fromlist=["x"]).buy_and_hold())
+    diffs = [abs(w["pnl"]["S0"][t] - w["ret"]["S0"][t]) for t in range(1, 150)]
+    assert max(diffs) > 1e-4                                         # P&L la deschidere ≠ închidere-închidere
+
+
+def test_power_curve_reports_the_smallest_detectable_edge():
+    out = rl.run_discovery_control(null_universes=4, power_universes=4, days=600, power_edge=0.006, edges=(0.0005, 0.006))
+    assert set(out["power_curve"]) == {"0.0005", "0.006"}
+    assert out["power_curve"]["0.006"] >= out["power_curve"]["0.0005"]
+    assert out["min_detectable_edge_annual_pct"] in (None, 0.006 * 100 * 252)
