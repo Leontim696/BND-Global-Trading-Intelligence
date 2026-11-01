@@ -6,7 +6,8 @@ After=network.target
 User=bnd-observer
 EnvironmentFile=/etc/bnd-observer/env
 # Servește DOAR folderul public/ (status.json), pe loopback; expune-l în LAN/VPN printr-un proxy sau un firewall.
-ExecStart=/usr/bin/python3 -m http.server 8765 --bind 127.0.0.1 --directory /var/lib/bnd-observer/public
+ExecStartPre=/usr/bin/bash /opt/bnd-observer/deploy/observer/http-bind-check.sh
+ExecStart=/usr/bin/python3 -m http.server 8765 --bind ${BND_HTTP_BIND} --directory /var/lib/bnd-observer/public
 NoNewPrivileges=true
 ProtectSystem=strict
 ProtectHome=true
