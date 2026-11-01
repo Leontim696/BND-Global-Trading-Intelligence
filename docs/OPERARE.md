@@ -63,3 +63,5 @@ Actualizare 1.11.2026: consiliul votează acum pe 72 de piețe (cele 13 de bază
 Actualizare 1.11.2026 (seara): consiliul votează și pe cele 16 acțiuni americane mari: **88 de piețe** (13 de bază, 45 de monede, 14 titluri de apărare, 16 acțiuni americane), cost estimat ~2,4 $/zi. Plafonul zilnic implicit a urcat la 3,00 $ (variabila `BND_COUNCIL_DAILY_CAP` îl poate schimba). Cu soldul de ~36 $ și 15 zile de rulat, creditul ajunge exact până la sfârșitul testului: dacă soldul scade sub 5 $, aplicația alertează și se reîncarcă sau se reduce lista.
 
 Aplicația grupează piețele pe categorii (Indici, Acțiuni americane, Apărare și armament, Mărfuri și metale, Forex, Obligațiuni, Crypto, Memecoin-uri) în banda de semnale, în fila Consiliul, în poziții, în comenzi și într-un tabel „Semnale pe categorii” în Rezumat.
+
+Filtru pe categorii în aplicație: sub file e o bară de filtre (Toate, Indici, Acțiuni americane, Apărare, Mărfuri, Forex, Obligațiuni, Crypto, Memecoin-uri). Atingi o categorie și rămâne doar ea în banda de semnale, în fila Consiliul, în poziții și comenzi și în Top 50; atingi din nou (sau „Toate") ca să le vezi pe toate. Alegerea se ține minte pe telefon.
