@@ -1,0 +1,15 @@
+{
+  "time": "2026-11-01T09:35+00:00",
+  "sources": {
+    "ff_calendar_thisweek": {
+      "ok": true,
+      "events": 116,
+      "added": 116,
+      "last": "2026-11-06T21:45+00:00"
+    },
+    "ff_calendar_nextweek": {
+      "ok": false,
+      "error": "https://nfs.faireconomy.media/ff_calendar_nextweek.json nu răspunde: HTTPError"
+    }
+  }
+}
