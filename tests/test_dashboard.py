@@ -105,7 +105,7 @@ def test_low_key_balance_raises_an_alert(tmp_path):
     db = sqlite3.connect(tmp_path / "costs.sqlite")
     db.execute("CREATE TABLE usage_records (id INTEGER PRIMARY KEY, agent TEXT, model TEXT,"
                " input_tokens INT, output_tokens INT, cost_usd TEXT, timestamp TEXT)")
-    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('36', '2026-11-10T09:00:00+00:00')")
+    db.execute("INSERT INTO usage_records (cost_usd, timestamp) VALUES ('37', '2026-11-10T09:00:00+00:00')")
     db.commit(); db.close()
 
     data = dashboard.collect(None, None, None, tmp_path, NOW)
