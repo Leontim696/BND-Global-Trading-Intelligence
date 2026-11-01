@@ -8,6 +8,7 @@ WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 WITH_KEY = {"OPENROUTER_API_KEY": {"bnd-five-agent-overnight.yml", "bnd-overnight-ai-review.yml",
                                    "consiliu-umbra.yml", "dezbatere-umbra.yml", "status.yml", "gpt-claude-manual.yml",
                                    "openrouter-secret-check.yml", "three-agents-live.yml"},
+            "SOLANATRACKER_API_KEY": {"smart-money.yml"},
             "NTFY_TOPIC": {"health-check.yml", "status.yml", "test-notificare.yml", "dimineata.yml"}}
 
 
