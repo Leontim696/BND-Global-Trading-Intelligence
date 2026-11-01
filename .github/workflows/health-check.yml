@@ -40,7 +40,7 @@ jobs:
           mkdir -p health
           state_err=""
           rc=0
-          gitr ls-remote --exit-code --heads origin cont-unic >/dev/null 2>&1 || rc=$?
+          gitr ls-remote --exit-code origin refs/heads/cont-unic >/dev/null 2>&1 || rc=$?
           if [ "$rc" = 0 ]; then
             if gitr fetch -q --depth=1 origin cont-unic && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
               git show FETCH_HEAD:paper.sqlite > health/paper.sqlite

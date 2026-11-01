@@ -19,7 +19,7 @@ git_net() {
 branch="$1"; dest="$2"; shift 2
 mkdir -p "$dest"
 rc=0
-git_net ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1 || rc=$?
+git_net ls-remote --exit-code origin "refs/heads/$branch" >/dev/null 2>&1 || rc=$?
 if [ "$rc" = 2 ]; then
   echo "Ramura $branch nu există încă (prima rulare)."
   exit 0
