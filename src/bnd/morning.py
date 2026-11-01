@@ -73,7 +73,11 @@ def council_lines(council: dict) -> list:
         if net:
             moves.append(f"{m['symbol']} {'cumpără' if net > 0 else 'vinde'} ({abs(net)} net)")
     text = f"Consiliul ({council['day']}): {len(council['markets'])} piețe"
-    text += ", cu direcție: " + ", ".join(moves) if moves else ", toți pe HOLD"
+    if moves:
+        shown = moves[:8]
+        text += f", {len(moves)} cu direcție: " + ", ".join(shown) + (f" (+{len(moves) - 8} altele)" if len(moves) > 8 else "")
+    else:
+        text += ", toți pe HOLD"
     failed = [a for a, c in (council.get("last_round") or {}).get("agents", {}).items() if c["failed"]]
     if failed:
         text += f". Agenți cu eșecuri: {', '.join(failed)}"

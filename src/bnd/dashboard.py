@@ -29,11 +29,11 @@ ACCOUNTS = (("paper", "Reguli matematice", "Strategie: regime_switch, piețe ETF
 STALE_AFTER = timedelta(hours=36)
 LOW_BALANCE_USD = 2.0
 KEY_LIMIT_USD = 10.0
-# Ancora confirmată de proprietar pe 2026-10-31: din cheie mai rămâneau 8,05 $,
-# când registrul consiliului arăta 0,2838356 $ cheltuiți. De aici, rămasul scade
-# cu ce se adaugă în registru după acel moment.
-ANCHOR_REMAINING_USD = Decimal("8.05")
-ANCHOR_LEDGER_USD = Decimal("0.2838356")
+# Ancora confirmată de proprietar pe 2026-11-01, după ce a încărcat 30 $ la OpenRouter: din cheie
+# rămân 37,97 $, când registrul consiliului arăta 0.36590888092 $ cheltuiți. De aici, rămasul scade cu ce se
+# adaugă în registru după acel moment. (Ancora anterioară: 8,05 $ pe 2026-10-31.)
+ANCHOR_REMAINING_USD = Decimal("37.97")
+ANCHOR_LEDGER_USD = Decimal("0.36590888092")
 WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Bot virtual zilnic": "botul pe reguli",
            "Bot cripto virtual (AI)": "botul de cripto", "Bot AI unificat (virtual)": "botul AI unificat"}
 

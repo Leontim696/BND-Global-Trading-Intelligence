@@ -11,6 +11,7 @@ Doar colectare și afișare: monedele NU intră în consiliul AI (cost) și nu �
 
 import argparse
 import json
+import re
 import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -40,7 +41,25 @@ COINS = (
 )
 
 
-def update(out, fetch=fetch_binance_klines, now: datetime | None = None, years: int = 3) -> dict:
+# Monedele care au deja piață în consiliu, din surse Yahoo, sub alt nume.
+COVERED = {"BTC": "BITCOIN", "ETH": "ETHEREUM", "SOL": "SOLANA", "BNB": "BNB", "XRP": "XRP"}
+EXTRA = tuple(name for name, _, _ in COINS if name not in COVERED)       # cele 45 în plus
+YAHOO_CRYPTO = ("SOLANA", "BNB", "XRP")
+
+
+def split_markets(markets) -> dict:
+    """Împarte lista consiliului după sursa de date: ETF/forex, crypto Yahoo, crypto Binance."""
+    markets = list(markets)
+    if not all(re.fullmatch(r"[A-Z0-9_]{1,20}", m) for m in markets):
+        raise ValueError("Nume de piață invalid (doar litere mari, cifre și _)")
+    binance = [m for m in markets if m in EXTRA]
+    yahoo = [m for m in markets if m in YAHOO_CRYPTO]
+    return {"etf": [m for m in markets if m not in binance and m not in yahoo],
+            "yahoo_crypto": yahoo, "binance": binance}
+
+
+def update(out, fetch=fetch_binance_klines, now: datetime | None = None, years: int = 3,
+           only=None) -> dict:
     """Completează fișierele cu zilele noi; o monedă care nu răspunde nu oprește restul."""
     now = now or datetime.now(timezone.utc)
     out = Path(out)
@@ -48,6 +67,8 @@ def update(out, fetch=fetch_binance_klines, now: datetime | None = None, years: 
     today = now.replace(hour=0, minute=0, second=0, microsecond=0)
     status = {"time": now.isoformat(timespec="minutes"), "coins": {}}
     for name, symbol, meme in COINS:
+        if only is not None and name not in only:
+            continue
         path = out / f"{name}.csv"
         try:
             old = load_csv(path) if path.exists() else []
@@ -93,9 +114,23 @@ def summary(folder) -> list:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="crypto50")
-    parser.add_argument("--out", required=True)
+    parser.add_argument("--out")
+    parser.add_argument("--only", help="doar aceste monede, separate prin virgulă")
+    parser.add_argument("--split", help="lista consiliului: afișează grupele după sursa de date")
     args = parser.parse_args(argv)
-    status = update(args.out)
+    if args.split is not None:
+        try:
+            groups = split_markets([m for m in args.split.split(",") if m])
+        except ValueError as exc:
+            print("Error:", exc, file=sys.stderr)
+            return 2
+        for key, names in groups.items():
+            print(f"{key}={','.join(names)}")
+        return 0
+    if not args.out:
+        parser.error("--out sau --split")
+    only = {n for n in args.only.split(",") if n} if args.only else None
+    status = update(args.out, only=only)
     ok = sum(1 for v in status["coins"].values() if v["ok"])
     print(json.dumps({"ok": ok, "failed": [k for k, v in status["coins"].items() if not v["ok"]]}))
     return 0

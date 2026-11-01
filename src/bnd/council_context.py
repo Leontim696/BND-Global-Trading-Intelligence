@@ -21,6 +21,17 @@ LABELS = {"SP500": "S&P 500 (ETF)", "GOLD": "aur (ETF)", "BITCOIN": "Bitcoin",
           "SOLANA": "Solana", "BNB": "BNB", "XRP": "XRP"}
 
 
+def label(name: str) -> str:
+    """Eticheta unei piețe; monedele din top 50 primesc una generică (cu mențiune pentru memecoin)."""
+    if name in LABELS:
+        return LABELS[name]
+    from .crypto50 import COINS
+    for coin, _, meme in COINS:
+        if coin == name:
+            return f"{name} (memecoin, volatilitate foarte mare)" if meme else f"{name} (criptomonedă)"
+    return name
+
+
 def _change(candles: Sequence[Candle], days: int) -> float | None:
     if len(candles) <= days:
         return None
@@ -75,7 +86,7 @@ def build_context(name: str, candles: Sequence[Candle], others: dict | None = No
     sma20, sma50, sma200 = _sma(candles, 20), _sma(candles, 50), _sma(candles, 200)
     signal = bot_signal(candles)
     lines = [
-        f"Piața: {LABELS.get(name, name)} ({name}). Ultima închidere: "
+        f"Piața: {label(name)} ({name}). Ultima închidere: "
         f"{last.open_time.date().isoformat()}, preț {last.close:.4f}.",
         "Modificare pe 1/5/20/60/120 de zile: " + ", ".join(
             _fmt(_change(candles, d), "%") for d in (1, 5, 20, 60, 120)),
@@ -94,7 +105,7 @@ def build_context(name: str, candles: Sequence[Candle], others: dict | None = No
         peers = []
         for other, series in sorted(others.items()):
             if other != name and (move := _change(series, 20)) is not None:
-                peers.append(f"{LABELS.get(other, other)} {move:+.1f}%")
+                peers.append(f"{label(other)} {move:+.1f}%")
         if peers:
             lines.append("Alte piețe, modificare pe 20 de zile: " + ", ".join(peers) + ".")
     lines += [

@@ -24,7 +24,7 @@ on:
         type: string
       markets:
         description: 'Piețele, cu virgulă (litere mari)'
-        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP'
+        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA'
         type: string
 
 permissions:
@@ -37,7 +37,7 @@ concurrency:
 jobs:
   council:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 45
     outputs:
       run: ${{ steps.mode.outputs.run }}
       live: ${{ steps.mode.outputs.live }}
@@ -46,7 +46,7 @@ jobs:
       MODE_INPUT: ${{ inputs.mode }}
       CONFIRMATION: ${{ inputs.paid_test_confirmation }}
       DAILY_SWITCH: ${{ vars.BND_COUNCIL_DAILY }}
-      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP' }}
+      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -91,14 +91,21 @@ jobs:
       - name: Download the candles (only new days when cached)
         if: steps.mode.outputs.run == 'true'
         run: |
-          # Piețele din universul ETF/forex, apoi monedele crypto în plus (hrănesc și contul de cripto).
-          etf_markets=$(echo "$MARKETS" | tr ',' '\n' | grep -vxE 'SOLANA|BNB|XRP' | paste -sd, -)
+          # Trei surse: ETF/forex (Yahoo), monede crypto Yahoo (SOL, BNB, XRP), restul monedelor (Binance).
+          # Numele sunt validate de crypto50 (doar litere mari, cifre, _) înainte să ajungă în comenzi.
+          groups="$(python -m src.bnd.crypto50 --split "$MARKETS")"
+          etf="$(echo "$groups" | sed -n 's/^etf=//p')"
+          yahoo_crypto="$(echo "$groups" | sed -n 's/^yahoo_crypto=//p')"
+          binance="$(echo "$groups" | sed -n 's/^binance=//p')"
+          start="$(date -u -d '-2 years' +%Y-%m-%d)"
           python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
-            --markets "$etf_markets" --start "$(date -u -d '-2 years' +%Y-%m-%d)" --out-dir data
-          crypto_markets=$(echo "$MARKETS" | tr ',' '\n' | grep -xE 'SOLANA|BNB|XRP' | paste -sd, - || true)
-          if [ -n "$crypto_markets" ]; then
+            --markets "$etf" --start "$start" --out-dir data
+          if [ -n "$yahoo_crypto" ]; then
             python -m src.bnd.backtest_cli fetch-universe --universe crypto --update \
-              --markets "$crypto_markets" --start "$(date -u -d '-2 years' +%Y-%m-%d)" --out-dir data
+              --markets "$yahoo_crypto" --start "$start" --out-dir data
+          fi
+          if [ -n "$binance" ]; then
+            python -m src.bnd.crypto50 --out data --only "$binance"
           fi
       - name: Keep the candles for tomorrow
         if: steps.mode.outputs.run == 'true'
@@ -126,8 +133,9 @@ jobs:
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
-            --round-budget 0.60 --daily-budget 0.80 --monthly-budget 7 \
-            --audit-log state/audit.jsonl --report state/raport.md --json state/raport.json > /dev/null
+            --round-budget 0.60 --daily-budget 2.50 --monthly-budget 38 \
+            --audit-log state/audit.jsonl --report state/raport.md --report-short state/raport-scurt.md \
+            --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always() && steps.mode.outputs.run == 'true'
@@ -179,6 +187,10 @@ jobs:
               if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
               cp ../state/raport.md "consiliu/${day}.md"
               cp ../state/raport.md consiliu/LATEST.md
+              if [ -f ../state/raport-scurt.md ]; then
+                cp ../state/raport-scurt.md "consiliu/${day}-scurt.md"
+                cp ../state/raport-scurt.md consiliu/LATEST-scurt.md
+              fi
             else
               cp ../state/raport.md consiliu/mock-LATEST.md
             fi
@@ -200,4 +212,8 @@ jobs:
             number=$(gh api -X POST "repos/$REPO/issues" -f title="$title" \
               -f body="Rapoartele orare ale botului virtual pentru ziua de azi (ora UTC)." -q .number)
           fi
-          gh api -X POST "repos/$REPO/issues/$number/comments" -F body=@state/raport.md > /dev/null
+          # Un comentariu GitHub are limita de 65.536 de caractere: se pune varianta scurtă, dacă există.
+          source=state/raport.md
+          if [ -f state/raport-scurt.md ]; then source=state/raport-scurt.md; fi
+          head -c 60000 "$source" > state/comentariu.md
+          gh api -X POST "repos/$REPO/issues/$number/comments" -F body=@state/comentariu.md > /dev/null
