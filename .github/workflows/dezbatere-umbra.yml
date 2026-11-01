@@ -171,7 +171,11 @@ jobs:
             if [ -f ../state/costs.sqlite ]; then cp ../state/costs.sqlite .; fi
             if [ -f ../state/debata.md ]; then cp ../state/debata.md "dezbatere/${day}.md"; fi
             git add -A
-            git commit -q -m "Dezbatere în umbră ${day}, rularea ${RUN_ID}" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Dezbatere în umbră ${day}, rularea ${RUN_ID}"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/consiliu-umbra; then break; fi
             if [ "$attempt" = 4 ]; then echo "::error::Could not save"; exit 1; fi
             sleep $((attempt * 5))

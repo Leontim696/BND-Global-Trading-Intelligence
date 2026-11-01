@@ -137,10 +137,12 @@ def test_block_t_pvalue_has_no_resolution_floor():
     assert rl.block_t_pvalue(a[:20], b[:20]) is None
 
 
-def test_control_verdict_needs_both_no_hallucination_and_power():
-    ok = {"false_positive_upper_95": 0.05, "power_rate": 0.9}
+def test_control_verdict_needs_both_no_hallucination_and_realistic_power():
+    ok = {"false_positive_upper_95": 0.05, "power_rate": 0.9, "realistic_power_rate": 0.9}
     assert rl.control_verdict(ok) == "acceptat"
-    assert rl.control_verdict({**ok, "power_rate": 0.1}) == "neconcludent"           # oarbă
+    assert rl.control_verdict({**ok, "power_rate": 0.1, "realistic_power_rate": 0.9}) == "acceptat"
+    # vede doar avantajul uriaș (≈126%/an), nu pe cel realist (≈25%/an): nu se acceptă
+    assert rl.control_verdict({**ok, "realistic_power_rate": 0.0}) == "neconcludent"
     assert rl.control_verdict({**ok, "false_positive_upper_95": 0.3}) == "respins"   # halucinează
 
 

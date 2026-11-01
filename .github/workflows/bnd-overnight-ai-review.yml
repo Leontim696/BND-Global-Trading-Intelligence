@@ -1,8 +1,13 @@
 name: Review AI GPT+Claude (plătit)
+# Plătit (GPT + Claude, cel mult 2 apeluri de max 1000 de tokeni). Doar manual și doar cu confirmarea exactă
+# RUN-PAID-TEST, ca toate celelalte workflow-uri plătite; fără programare automată.
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "50 21 * * *"
+    inputs:
+      paid_test_confirmation:
+        description: 'Doar pentru apel plătit: scrie RUN-PAID-TEST (șterge NO)'
+        default: 'NO'
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -17,7 +22,6 @@ jobs:
       BND_ALLOW_LIVE_AI: "false"
       # Paid calls stay off unless the repository variable is set to true.
       BND_ALLOW_PAID_AI: ${{ vars.BND_ALLOW_PAID_AI || 'false' }}
-      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       BND_DEV_MODEL: ${{ vars.BND_DEV_MODEL }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -26,20 +30,16 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
-      - name: Stop the schedule after the 16-day test
-        id: window
+      - name: Check the paid-test confirmation
+        id: gate
         env:
           EVENT: ${{ github.event_name }}
-        run: |
-          # O programare uitată nu mai cheltuie după testul de 16 zile (16.11.2026); rularea manuală merge oricând.
-          if [ "$EVENT" = schedule ] && [ "$(date -u +%Y-%m-%d)" \> "2026-11-16" ]; then
-            echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "Programarea s-a încheiat (testul de 16 zile s-a terminat): nu se rulează." >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "run=true" >> "$GITHUB_OUTPUT"
-          fi
+          CONFIRMATION: ${{ inputs.paid_test_confirmation }}
+        run: python scripts/confirm_paid_test.py
       - name: Generate bounded AI review
-        if: steps.window.outputs.run == 'true'
+        if: steps.gate.outputs.confirmed == 'true'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python scripts/overnight_ai_review.py
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always()

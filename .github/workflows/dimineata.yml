@@ -26,21 +26,27 @@ jobs:
       actions: read
     env:
       BND_ALLOW_LIVE_AI: "false"
-      GH_TOKEN: ${{ github.token }}
-      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
-      - name: Build and send the morning summary
+      - name: Fetch the state (network step; the only one holding the token)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           if [ "$(date -u +%Y-%m-%d)" \> "2026-11-17" ]; then
             echo "Testul s-a încheiat: nu se mai trimite rezumatul." >> "$GITHUB_STEP_SUMMARY"; exit 0
           fi
+          # Token doar pentru comenzile de rețea (nu rămâne în .git/config pentru restul pașilor).
+          b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$b64"
+          gitr() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $b64" "$@"; }
           mkdir -p out/p out/c out/a out/k out/r out/u
           grab() { # ramură fișier destinație
-            if git fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
+            if gitr fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
               git show "FETCH_HEAD:$2" > "$3"
             fi
           }
@@ -54,5 +60,10 @@ jobs:
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
           grab status balance.json out/balance.json
           gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
+      - name: Build and send the morning summary
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          if [ "$(date -u +%Y-%m-%d)" \> "2026-11-17" ]; then exit 0; fi
           python -m src.bnd.morning --paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --council out/k \
             --quotes out/quotes.json --runs out/runs.json --balance out/balance.json --send | tee -a "$GITHUB_STEP_SUMMARY"

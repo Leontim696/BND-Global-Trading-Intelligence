@@ -50,8 +50,21 @@ class _NoRedirect(HTTPRedirectHandler):
     def redirect_request(self, *args, **kwargs):
         return None
 
-LEADERBOARD_PATH = os.getenv("SMART_MONEY_LEADERBOARD_PATH", "/top-traders/all")
-WALLET_PATH = os.getenv("SMART_MONEY_WALLET_PATH", "/pnl/{wallet}")
+SAFE_PATH = re.compile(r"/[A-Za-z0-9_\-]+(/[A-Za-z0-9_\-{}]+)*")
+
+
+def checked_path(value: str, placeholders=()) -> str:
+    """Doar o cale simplă, care începe cu / (fără @, //, .., ?, #): altfel gazda din URL ar putea fi schimbată."""
+    stripped = value
+    for name in placeholders:
+        stripped = stripped.replace("{" + name + "}", "x")
+    if not SAFE_PATH.fullmatch(stripped) or "{" in stripped or "}" in stripped:
+        raise ValueError(f"cale refuzată: {value[:40]!r}")
+    return value
+
+
+LEADERBOARD_PATH = checked_path(os.getenv("SMART_MONEY_LEADERBOARD_PATH", "/top-traders/all"))
+WALLET_PATH = checked_path(os.getenv("SMART_MONEY_WALLET_PATH", "/pnl/{wallet}"), ("wallet",))
 ADDRESS = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
 
 MIN_TOKENS, MIN_TRADES, MIN_WIN_RATE = 8, 50, 0.40
@@ -138,6 +151,8 @@ def assess(stats: dict) -> dict:
 
 
 def _get(url: str, key: str, timeout: float = 30.0):
+    if urlparse(url).hostname not in ALLOWED_HOSTS or urlparse(url).scheme != "https":
+        raise ValueError("URL refuzat: gazdă sau schemă nepermisă")
     request = Request(url, headers={"x-api-key": key, "User-Agent": "BND-research"}, method="GET")
     try:
         with build_opener(_NoRedirect).open(request, timeout=timeout) as response:  # nosec B310 - https, gazdă fixă, fără redirect
