@@ -58,7 +58,9 @@ def main(argv=None, sender=notify.send) -> int:
     args = parser.parse_args(argv)
     now = datetime.now(timezone.utc)
     try:
-        alerts = json.loads(Path(args.status).read_text(encoding="utf-8")).get("alerts", [])
+        status_data = json.loads(Path(args.status).read_text(encoding="utf-8"))
+        alerts = status_data.get("alerts", [])
+        events = status_data.get("events", [])
         state_path = Path(args.state)
         state = json.loads(state_path.read_text()) if state_path.exists() else {}
     except (OSError, ValueError) as exc:
@@ -67,13 +69,14 @@ def main(argv=None, sender=notify.send) -> int:
     kept_once = {k: v for k, v in state.items() if k.startswith("o:")}
     fresh, state = due(alerts, {k: v for k, v in state.items() if not k.startswith("o:")}, now)
     state.update(kept_once)
+    once = list(events)
     if args.extra and Path(args.extra).exists():
         try:
-            once = json.loads(Path(args.extra).read_text(encoding="utf-8")).get("once", [])
+            once += json.loads(Path(args.extra).read_text(encoding="utf-8")).get("once", [])
         except (OSError, ValueError):
-            once = []
-        new_once, state = once_due([str(x) for x in once], state, now)
-        fresh += new_once
+            pass
+    new_once, state = once_due([str(x) for x in once], state, now)
+    fresh += new_once
     topic = os.environ.get("NTFY_TOPIC", "").strip()
     if fresh and topic:
         try:

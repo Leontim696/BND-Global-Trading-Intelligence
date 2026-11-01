@@ -67,3 +67,39 @@ def test_regular_alerts_still_repeat_after_the_cooldown_and_do_not_erase_once_ke
     assert fresh == ["nou"] and "o:abc" in new_state
     due, _ = alerting.due(["x"], {}, NOW)
     assert due == ["x"]
+
+
+def test_events_report_first_fills_big_daily_moves_council_summary_and_test_end():
+    unic = account(fills=3, positions=[1, 2], currency="USD",
+                   history=[{"t": "2026-11-02T22:00:00+00:00", "equity": 11000.0},
+                            {"t": "2026-11-03T22:00:00+00:00", "equity": 11330.0}])
+    council = {"exists": True, "day": "2026-11-03", "markets": [1] * 88, "costs": {"today": 2.41, "remaining": 33.5}}
+    events = dashboard.events_from([unic], council, datetime(2026, 11, 3, 23, tzinfo=timezone.utc))
+    assert "Cont unic: s-au executat primele ordine (2 poziții deschise)" in events
+    assert any(e.startswith("Cont unic: variație zilnică +3.0%") and e.endswith("la 2026-11-03") for e in events)
+    assert "Consiliul AI 2026-11-03: 88 piețe votate, cost azi 2.41 $, rămas 33.50 $" in events
+    assert not any("încheiat" in e for e in events)
+    end = dashboard.events_from([], None, datetime(2026, 11, 16, 8, tzinfo=timezone.utc))
+    assert end == ["Testul de 16 zile s-a încheiat: raportul final urmează (17.11)"]
+
+
+def test_small_moves_archived_accounts_and_missing_data_produce_no_events():
+    quiet = account(fills=0, positions=[], currency="USD",
+                    history=[{"t": "a", "equity": 100.0}, {"t": "2026-11-03T22:00:00+00:00", "equity": 101.0}])
+    old = account(key="paper", fills=9, positions=[1], currency="USD", history=[])
+    assert dashboard.events_from([quiet, old, {"exists": False}], {"exists": False}, NOW) == []
+
+
+def test_events_in_status_json_are_sent_once_by_the_alerting_step(tmp_path):
+    sent = []
+    state, status = tmp_path / "s.json", tmp_path / "st.json"
+    status.write_text(json.dumps({"alerts": [], "events": ["Cont unic: variație zilnică +3.0% (valoare 11,330 USD) la 2026-11-03"]}))
+    import os
+    os.environ["NTFY_TOPIC"] = "topic-de-proba-1234"
+    try:
+        for _ in range(2):
+            alerting.main(["--status", str(status), "--state", str(state)],
+                          sender=lambda topic, title, message, priority: sent.append(message))
+    finally:
+        del os.environ["NTFY_TOPIC"]
+    assert len(sent) == 1 and "variație zilnică" in sent[0]
