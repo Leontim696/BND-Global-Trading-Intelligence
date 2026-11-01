@@ -1,7 +1,10 @@
 {
-  "generated": "2026-11-01T17:30+00:00",
+  "generated": "2026-11-01T17:40+00:00",
   "ok": true,
   "alerts": [],
+  "events": [
+    "Consiliul AI 2026-11-01: 58 piețe votate, cost azi 1.56 $, rămas 36.42 $"
+  ],
   "accounts": {
     "paper": {
       "equity": 10000.0,
