@@ -147,7 +147,7 @@ def propose(path=DEFAULT_PATH, *, titlu, ipoteza, familie, tip, criteriu, parame
 
 
 def finish(path=DEFAULT_PATH, *, id, verdict, concluzie, metrici=None, cost_usd=0.0,
-           p_valoare=None, now=None) -> dict:
+           p_valoare=None, justificare_fara_p=None, now=None) -> dict:
     if verdict not in VERDICTS:
         raise RegistryError(f"verdict: unul dintre {', '.join(VERDICTS)}")
     if not (concluzie or "").strip():
@@ -159,12 +159,16 @@ def finish(path=DEFAULT_PATH, *, id, verdict, concluzie, metrici=None, cost_usd=
         raise RegistryError(f"{id} e deja încheiat (rezultatele nu se rescriu; propune un nou experiment)")
     tests = family_count(state, state[id]["familie"])
     threshold = ALPHA / tests
+    if verdict == "acceptat" and p_valoare is None and not (justificare_fara_p or "").strip():
+        raise RegistryError("„acceptat” cere valoarea p; pentru experimente fără test statistic (control, simulare) "
+                            "dă --justificare-fara-p cu motivul")
     if verdict == "acceptat" and p_valoare is not None and p_valoare > threshold:
         raise RegistryError(
             f"nu se poate accepta: p={p_valoare} > {threshold:.4f} (= {ALPHA}/{tests} experimente "
             f"în familia „{state[id]['familie']}”). Marchează „neconcludent” sau „respins”.")
     row = {"id": id, "verdict": verdict, "concluzie": concluzie.strip(), "metrici": metrici or {},
            "cost_usd": cost_usd, "p_valoare": p_valoare, "prag_corectat": threshold,
+           "justificare_fara_p": justificare_fara_p,
            "experimente_in_familie": tests}
     audit_log.append(path, "experiment_rezultat", row, now)
     return row
@@ -239,6 +243,7 @@ def main(argv=None) -> int:
     r.add_argument("--metrici", default="{}", help="JSON")
     r.add_argument("--cost", type=float, default=0.0)
     r.add_argument("--p", type=float)
+    r.add_argument("--justificare-fara-p", help="obligatoriu pentru „acceptat” fără valoare p")
     c = sub.add_parser("cauta")
     c.add_argument("text", nargs="+")
     n = sub.add_parser("nota")
@@ -261,7 +266,8 @@ def main(argv=None) -> int:
         elif args.cmd == "rezultat":
             row = finish(args.registru, id=args.id, verdict=args.verdict,
                                      concluzie=args.concluzie, metrici=json.loads(args.metrici),
-                                     cost_usd=args.cost, p_valoare=args.p)
+                                     cost_usd=args.cost, p_valoare=args.p,
+                         justificare_fara_p=args.justificare_fara_p)
             print(f"Încheiat {row['id']}: {row['verdict']}.")
         elif args.cmd == "nota":
             add_note(args.registru, id=args.id, text=args.text)

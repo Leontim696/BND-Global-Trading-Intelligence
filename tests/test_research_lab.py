@@ -83,3 +83,100 @@ def test_wilson_bound_and_upper_bound_verdict():
     assert rl.discovery_verdict(result) == "acceptat"
     assert rl.discovery_verdict(result, 0.10, use_upper_bound=True) == "respins"
     assert rl.discovery_verdict({**result, "universes": 80}, 0.10, use_upper_bound=True) == "acceptat"
+
+
+# --- audit #9, #12, #13, #26 ---------------------------------------------------------------
+
+def test_execution_is_at_the_next_open_not_at_the_signal_close():
+    from datetime import datetime, timedelta, timezone
+    from src.bnd.market_data import Candle
+    start = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    # deschidere de a doua zi cu gap față de închiderea anterioară: P&L trebuie să pornească de la deschidere
+    candles = [Candle(start + timedelta(days=i), 100 + i * 2 + 1, 100 + i * 2 + 2, 100 + i * 2, 100 + i * 2 + 1.5, 1.0)
+               for i in range(40)]
+    w = rl.prepare({"A": candles}, lambda: __import__("src.bnd.strategies", fromlist=["x"]).buy_and_hold())
+    t = 10
+    assert abs(w["pnl"]["A"][t] - (candles[t + 1].open / candles[t].open - 1)) < 1e-12
+    assert abs(w["pnl"]["A"][t] - w["ret"]["A"][t]) > 1e-6          # nu e randamentul închidere-închidere
+    assert abs(w["pnl"]["A"][-1] - (candles[-1].close / candles[-1].open - 1)) < 1e-12
+
+
+def test_costs_are_charged_on_drift_rebalancing_and_default_is_fifteen_bps():
+    assert rl.COST_BPS == 15.0
+    w, _ = world(markets=2, days=300)
+    hold = lambda t: {n: 0.5 for n in w["names"]}                  # țintă constantă, dar prețurile derivă
+    free = rl.simulate(w, hold, 100, cost_bps=0, financing=0)
+    costly = rl.simulate(w, hold, 100, cost_bps=15, financing=0)
+    assert costly["turnover_per_year"] > 0.5 * w["ppy"] * 0.001      # deriva generează tranzacții
+    assert costly["curve"][-1][1] < free["curve"][-1][1]
+
+
+def test_periods_per_year_follow_the_calendar_of_the_axis():
+    from datetime import datetime, timedelta, timezone
+    from src.bnd.market_data import Candle
+    start = datetime(2024, 1, 1, tzinfo=timezone.utc)                # luni
+    every_day = [Candle(start + timedelta(days=i), 100, 101, 99, 100, 1.0) for i in range(730)]
+    weekdays = [c for c in every_day if c.open_time.weekday() < 5]
+    from src.bnd import strategies
+    assert 360 < rl.prepare({"A": every_day}, strategies.buy_and_hold)["ppy"] < 370
+    assert 250 < rl.prepare({"A": weekdays}, strategies.buy_and_hold)["ppy"] < 262
+
+
+def test_block_t_pvalue_has_no_resolution_floor():
+    from datetime import datetime, timedelta, timezone
+    start = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    import random
+    rng = random.Random(1)
+    a, b, ea, eb = [], [], 1.0, 1.0
+    for i in range(600):
+        ea *= 1 + 0.004 + rng.gauss(0, 0.005)
+        eb *= 1 + rng.gauss(0, 0.005)
+        a.append((start + timedelta(days=i), ea)); b.append((start + timedelta(days=i), eb))
+    p = rl.block_t_pvalue(a, b)
+    assert p is not None and p < 1e-5                              # sub orice prag Bonferroni (0,05/30)
+    assert rl.block_t_pvalue(a[:20], b[:20]) is None
+
+
+def test_control_verdict_needs_both_no_hallucination_and_power():
+    ok = {"false_positive_upper_95": 0.05, "power_rate": 0.9}
+    assert rl.control_verdict(ok) == "acceptat"
+    assert rl.control_verdict({**ok, "power_rate": 0.1}) == "neconcludent"           # oarbă
+    assert rl.control_verdict({**ok, "false_positive_upper_95": 0.3}) == "respins"   # halucinează
+
+
+def test_planted_edge_is_found_more_often_than_noise():
+    noise = rl.run_discovery(6, 4, 700, edge=0.0)
+    strong = rl.run_discovery(6, 4, 700, edge=0.006)
+    assert strong["naive_train_pass"] > noise["naive_train_pass"]
+
+
+def test_plan_deviations_are_detected():
+    entry = {"parametri": {"cost_bps": 5, "markets": 9, "execution": "deschidere_urmatoare"},
+             "antrenare": "2015-04-16:2021-12-22", "test": "2021-12-23:2026-10-30"}
+    plan = {"cost_bps": 15.0, "markets": 9, "execution": "deschidere_urmatoare",
+            "antrenare": "2015-04-16:2021-12-22", "test": "2021-12-23:2026-10-30"}
+    assert plan_dev(entry, plan) == ["cost_bps: înregistrat 5, rulat 15.0"]
+    assert plan_dev({**entry, "parametri": {**entry["parametri"], "cost_bps": 15}}, plan) == []
+    moved = plan_dev({**entry, "parametri": {**entry["parametri"], "cost_bps": 15}, "test": "2022-01-01:2026-10-30"}, plan)
+    assert len(moved) == 1 and moved[0].startswith("test:")
+
+
+def plan_dev(entry, plan):
+    return rl.plan_deviations(entry, plan)
+
+
+def test_cli_refuses_a_run_that_differs_from_the_registered_plan(tmp_path, capsys):
+    registry = tmp_path / "r.jsonl"
+    ex.propose(registry, titlu="t", ipoteza="i", familie="capital", tip="backtest", criteriu="c",
+               parametri={"cost_bps": 5}, antrenare=None, test=None)
+    data = tmp_path / "d"
+    data.mkdir()
+    from src.bnd.market_data import save_csv
+    for name, candles in rl.synthetic_universe(5, markets=3, days=700).items():
+        save_csv(candles, data / f"{name}.csv")
+    args = ["capital", "--id", "E-001", "--data-dir", str(data), "--registru", str(registry)]
+    assert rl.main(args) == 2 and "cost_bps: înregistrat 5" in capsys.readouterr().err
+    assert rl.main(args + ["--accept-deviation", "costuri corectate la 15 bps"]) == 0
+    state = ex.experiments(registry)["E-001"]
+    assert state["stare"] == "încheiat" and "Abatere acceptată" in state["rezultat"]["concluzie"]
+    capsys.readouterr()
