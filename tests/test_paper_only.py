@@ -79,7 +79,8 @@ def test_network_hosts_are_only_the_known_data_ai_and_notification_services():
     allowed = {"openrouter.ai", "ntfy.sh", "query1.finance.yahoo.com", "localhost",
                "fapi.binance.com", "data-api.binance.vision", "fonts.googleapis.com",
                "api.openai.com", "api.anthropic.com", "generativelanguage.googleapis.com",
-               "api.x.ai", "api.deepseek.com", "github.com", "x-access-token"}
+               "api.x.ai", "api.deepseek.com", "github.com", "x-access-token",
+               "api.alternative.me", "www.okx.com"}
     hosts = set()
     for text in _sources().values():
         hosts |= set(re.findall(r"https?://([A-Za-z0-9.-]+)", text))

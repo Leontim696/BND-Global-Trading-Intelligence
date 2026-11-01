@@ -23,7 +23,11 @@ main{max-width:640px;margin:0 auto}
 header{padding-block:18px 10px}
 h1{font:800 26px/1.1 var(--font-display);letter-spacing:-.02em;margin:0}
 .stamp{color:var(--muted);font:400 12px var(--font-data);margin-top:6px}
-nav{display:flex;gap:6px;overflow-x:auto;padding-block:8px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding-bottom:6px}
+nav{display:flex;gap:6px;overflow-x:auto;padding-block:8px}
+.signals{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.sig{flex:0 0 auto;font:500 12px var(--font-data);padding:4px 8px;border-radius:7px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.sig.buy{color:var(--gain);border-color:var(--gain)}.sig.sell{color:var(--loss);border-color:var(--loss)}
 nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--fg);
   font:600 14px var(--font-body);padding:9px 14px;border-radius:999px;cursor:pointer}
 nav button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--bg)}
@@ -71,7 +75,8 @@ td:first-child{font-family:var(--font-body);font-weight:600}
     <div class="stamp" id="stamp"></div>
   </header>
   <div id="alerts"></div>
-  <nav id="tabs" role="tablist" aria-label="Conturi"></nav>
+  <div class="bar"><nav id="tabs" role="tablist" aria-label="Conturi"></nav>
+    <div id="signals" class="signals" aria-label="Semnale buy/sell acum"></div></div>
   <section id="view"></section>
   <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj.</p>
 </main>
@@ -184,7 +189,20 @@ function council(c) {
     <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div></div>` : ""}${agentsPanel(c)}${rows}${comparison(c)}`;
 }
 
+const SHORT = {SP500:"S&P500",NASDAQ100:"NASDAQ",CRUDE_OIL:"PETROL",US10Y_NOTE:"OBLIG.10A",BITCOIN:"BTC",ETHEREUM:"ETH",SOLANA:"SOL"};
+function signalsBar() {
+  const c = DATA.council;
+  const box = document.getElementById("signals");
+  if (!c || !c.exists || !c.markets || !c.markets.length) { box.innerHTML = ""; return; }
+  box.innerHTML = c.markets.map(m => {
+    const kind = m.net > 0 ? "buy" : m.net < 0 ? "sell" : "hold";
+    const label = m.net > 0 ? "▲ cumpără" : m.net < 0 ? "▼ vinde" : "– hold";
+    return `<span class="sig ${kind}" title="${esc(m.symbol)}: ${m.net > 0 ? "cumpără" : m.net < 0 ? "vinde" : "hold"}, ${Math.abs(m.net)} net din 5 agenți">${esc(SHORT[m.symbol] || m.symbol)} ${label}${m.net ? " " + Math.abs(m.net) : ""}</span>`;
+  }).join("");
+}
+
 function show() {
+  signalsBar();
   const id = (location.hash || "#rezumat").slice(1);
   const key = TABS.some(t => t[0] === id) ? id : "rezumat";
   tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.id === key)));
