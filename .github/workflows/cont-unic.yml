@@ -152,7 +152,11 @@ jobs:
             if [ -f ../state/semnale.json ]; then cp ../state/semnale.json "runs/${day}-semnale.json"; fi
             if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
             git add -A
-            git commit -q -m "Pas cont unic $day, rularea $RUN_ID ($RESULT)" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Pas cont unic $day, rularea $RUN_ID ($RESULT)"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/cont-unic; then break; fi
             if [ "$attempt" = 4 ]; then echo "::error::Could not save the account"; exit 1; fi
             sleep $((attempt * 5))

@@ -94,3 +94,24 @@ def test_base_url_is_restricted_to_https_known_host():
 def test_redirects_are_refused_so_the_key_cannot_follow_them():
     from urllib.request import Request
     assert sm._NoRedirect().redirect_request(Request("https://data.solanatracker.io/x"), None, 302, "x", {}, "https://evil.example") is None
+
+
+def test_paths_cannot_change_the_host():
+    import pytest
+    assert sm.checked_path("/top-traders/all") == "/top-traders/all"
+    assert sm.checked_path("/pnl/{wallet}", ("wallet",)) == "/pnl/{wallet}"
+    for bad in ("@evil.example/x", "//evil.example/x", "/../x", "/a?x=1", "/a#b", "evil", "", "/a b", "/pnl/{wallet}"):
+        with pytest.raises(ValueError):
+            sm.checked_path(bad)
+    with pytest.raises(ValueError):
+        sm._get("https://data.solanatracker.io@evil.example/x", "k")
+
+
+def test_env_paths_are_validated_at_import(monkeypatch):
+    import importlib
+    import pytest
+    monkeypatch.setenv("SMART_MONEY_LEADERBOARD_PATH", "@evil.example/x")
+    with pytest.raises(ValueError):
+        importlib.reload(sm)
+    monkeypatch.delenv("SMART_MONEY_LEADERBOARD_PATH")
+    importlib.reload(sm)

@@ -51,6 +51,8 @@ jobs:
           python-version: "3.13"
       - name: Restore the account from the reguli-ls branch
         id: restore
+        env:
+          REQUIRE_AUDIT: "1"
         run: |
           bash scripts/restore_account.sh reguli-ls "No paper account yet. Start one with a manual run and a virtual capital."
       - name: Restore yesterday's candles
@@ -147,7 +149,11 @@ jobs:
             if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
             if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
             git add -A
-            git commit -q -m "Paper step $day, run $RUN_ID ($RESULT, source ${SOURCE_SHA:0:7})" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Paper step $day, run $RUN_ID ($RESULT, source ${SOURCE_SHA:0:7})"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/reguli-ls; then break; fi
             if [ "$attempt" = 4 ]; then echo "::error::Could not save the account"; exit 1; fi
             sleep $((attempt * 5))

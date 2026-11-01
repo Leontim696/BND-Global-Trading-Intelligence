@@ -21,21 +21,28 @@ jobs:
       contents: read
       actions: read
     env:
-      GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.13"
-      - name: Check the account and the last daily run
+      - name: Read the account state (network step; the only one holding the token)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
+          # Token doar pentru comenzile de rețea (nu rămâne în .git/config pentru restul pașilor).
+          b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$b64"
+          gitr() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $b64" "$@"; }
           mkdir -p health
           state_err=""
           rc=0
-          git ls-remote --exit-code --heads origin cont-unic >/dev/null 2>&1 || rc=$?
+          gitr ls-remote --exit-code --heads origin cont-unic >/dev/null 2>&1 || rc=$?
           if [ "$rc" = 0 ]; then
-            if git fetch -q --depth=1 origin cont-unic && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
+            if gitr fetch -q --depth=1 origin cont-unic && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
               git show FETCH_HEAD:paper.sqlite > health/paper.sqlite
             else
               state_err="nu pot descărca paper.sqlite de pe ramura cont-unic"
@@ -52,6 +59,12 @@ jobs:
           fi
           conclusion=$(gh run list -R "$REPO" --workflow cont-unic.yml -L 1 \
             --json conclusion -q '.[0].conclusion // ""' 2>/dev/null) || conclusion="unknown"
+          printf '%s' "$conclusion" > health/conclusion.txt
+          printf '%s' "$state_err" > health/state_err.txt
+      - name: Check the account and the last daily run
+        run: |
+          conclusion="$(cat health/conclusion.txt)"
+          state_err="$(cat health/state_err.txt)"
           # Dacă verificarea însăși crapă, tot trebuie să rezulte o alertă (nu tăcere).
           python -m src.bnd.health_check --state health/paper.sqlite --state-error "$state_err" \
             --last-run-conclusion "$conclusion" --json health/health.json > health/health.md || {

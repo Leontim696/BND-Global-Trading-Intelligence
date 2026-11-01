@@ -408,6 +408,7 @@ def wilson_upper(rate: float, n: int, z: float = 1.96) -> float:
 
 
 POWER_EDGES = (0.001, 0.0025, 0.005)      # drift zilnic al regimului plantat (≈ 25%, 63%, 126% pe an)
+REALISTIC_EDGE = POWER_EDGES[0]           # cel mai mic avantaj realist (≈ 25% pe an): pe el se decide verdictul
 
 
 def run_discovery_control(null_universes: int = 80, power_universes: int = 40, days: int = 900,
@@ -419,18 +420,26 @@ def run_discovery_control(null_universes: int = 80, power_universes: int = 40, d
     null = run_discovery(null_universes, 6, days, edge=0.0)
     curve = {e: run_discovery(power_universes, 6, days, edge=e) for e in sorted(set(edges) | {power_edge})}
     power = curve[power_edge]
+    realistic = curve[min(curve)]
     found = [e for e, r in curve.items() if r["bonferroni_and_oos_pass"] >= 0.8]
     return {"null": null, "power": power,
             "power_curve": {f"{e}": r["bonferroni_and_oos_pass"] for e, r in curve.items()},
             "min_detectable_edge_annual_pct": 100 * min(found) * 252 if found else None,
             "false_positive_upper_95": wilson_upper(null["bonferroni_and_oos_pass"], null["universes"]),
-            "power_rate": power["bonferroni_and_oos_pass"], "naive_false_rate": null["naive_train_pass"]}
+            "power_rate": power["bonferroni_and_oos_pass"],
+            "realistic_edge": min(curve), "realistic_power_rate": realistic["bonferroni_and_oos_pass"],
+            "naive_false_rate": null["naive_train_pass"]}
 
 
 def control_verdict(result: dict, max_false_upper: float = 0.10, min_power: float = 0.80) -> str:
-    """Acceptat doar dacă procedura NU halucinează (limita superioară a falselor pozitive) ȘI nu e oarbă (putere)."""
-    ok = result["false_positive_upper_95"] <= max_false_upper and result["power_rate"] >= min_power
-    return "acceptat" if ok else ("respins" if result["false_positive_upper_95"] > max_false_upper else "neconcludent")
+    """Acceptat doar dacă procedura NU halucinează (limita superioară a falselor pozitive) ȘI vede avantajele
+    REALISTE (putere pe cel mai mic avantaj, ≈25%/an), nu doar pe unul uriaș (≈126%/an).
+
+    Dacă vede doar avantaje mari, verdictul e „neconcludent”: nu produce falsuri, dar e oarbă la ce contează."""
+    if result["false_positive_upper_95"] > max_false_upper:
+        return "respins"
+    power = result.get("realistic_power_rate", result["power_rate"])
+    return "acceptat" if power >= min_power else "neconcludent"
 
 
 def plan_deviations(entry: dict, plan: dict) -> list[str]:

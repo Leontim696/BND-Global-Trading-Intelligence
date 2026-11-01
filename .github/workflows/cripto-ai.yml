@@ -46,6 +46,8 @@ jobs:
           python-version: "3.13"
       - name: Restore the account from the crypto-trading branch
         id: restore
+        env:
+          REQUIRE_AUDIT: "1"
         run: |
           bash scripts/restore_account.sh crypto-trading "Încă nu există cont de cripto. Pornește-l dintr-o rulare manuală cu capitalul virtual."
       - name: Take the council's votes
@@ -125,7 +127,11 @@ jobs:
             if [ -f ../state/semnale.json ]; then cp ../state/semnale.json "runs/${day}-semnale.json"; fi
             if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
             git add -A
-            git commit -q -m "Pas cripto $day, rularea $RUN_ID ($RESULT)" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Pas cripto $day, rularea $RUN_ID ($RESULT)"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/crypto-trading; then break; fi
             if [ "$attempt" = 4 ]; then echo "::error::Could not save the account"; exit 1; fi
             sleep $((attempt * 5))

@@ -73,7 +73,11 @@ jobs:
             fi
             cp ../smart_money/wallete.csv ../smart_money/status.json .
             git add -A
-            git commit -q -m "Smart-Money $(date -u +%Y-%m-%d)" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Smart-Money $(date -u +%Y-%m-%d)"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/smart-money; then pushed=1; break; fi
             sleep $((attempt * 5))
           done

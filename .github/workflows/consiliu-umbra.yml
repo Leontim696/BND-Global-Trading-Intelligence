@@ -75,7 +75,7 @@ jobs:
           fi
       - name: Restore the registry and the costs
         if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live == 'true'
-        run: bash scripts/restore_branch.sh consiliu-umbra state "!registry.sqlite" "!costs.sqlite" audit.jsonl
+        run: bash scripts/restore_branch.sh consiliu-umbra state "!registry.sqlite" "!costs.sqlite" "!audit.jsonl"
       - name: Restore yesterday's candles
         if: steps.mode.outputs.run == 'true'
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
@@ -130,7 +130,7 @@ jobs:
           BND_ALLOW_LIVE_AI: 'true'
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           # Empty = the defaults in council_daily.py; a repository variable overrides.
-          # Plafoane de cost: implicit 2,50 $/zi și 38 $/lună; se pot ridica din variabilele de depozit.
+          # Plafoane de cost: implicit 3,00 $/zi și 38 $/lună; se pot ridica din variabilele de depozit.
           DAILY_CAP: ${{ vars.BND_COUNCIL_DAILY_CAP }}
           MONTHLY_CAP: ${{ vars.BND_COUNCIL_MONTHLY_CAP }}
           BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT }}
@@ -207,7 +207,11 @@ jobs:
               cp ../state/raport.md consiliu/mock-LATEST.md
             fi
             git add -A
-            git commit -q -m "Consiliul AI ${day}, rularea ${RUN_ID} (live=${LIVE})" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Consiliul AI ${day}, rularea ${RUN_ID} (live=${LIVE})"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/consiliu-umbra; then break; fi
             if [ "$attempt" = 4 ]; then echo "::error::Could not save"; exit 1; fi
             sleep $((attempt * 5))

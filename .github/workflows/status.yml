@@ -30,6 +30,8 @@ jobs:
       BND_ALLOW_LIVE_AI: "false"
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
@@ -37,9 +39,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}      # doar aici: descărcarea ramurilor și lista rulărilor
         run: |
+          # Token doar pentru comenzile de rețea (nu rămâne în .git/config pentru restul pașilor).
+          b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$b64"
+          gitr() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $b64" "$@"; }
           mkdir -p out/p out/c out/a out/k out/r out/u
           grab() { # ramură fișier destinație
-            if git fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
+            if gitr fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
               git show "FETCH_HEAD:$2" > "$3"
             fi
           }
@@ -110,7 +116,11 @@ jobs:
             if [ -f ../out/alerts.json ]; then cp ../out/alerts.json alerts.json; fi
             if [ -f ../out/balance.json ]; then cp ../out/balance.json balance.json; fi
             git add -A
-            git commit -q -m "Stare $(date -u +%Y-%m-%dT%H:%MZ)" || true
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Stare $(date -u +%Y-%m-%dT%H:%MZ)"
+            else
+              echo "Nimic nou de salvat."
+            fi
             if git push -q origin HEAD:refs/heads/status; then pushed=1; break; fi
             sleep $((attempt * 5))
           done
