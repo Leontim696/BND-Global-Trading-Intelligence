@@ -25,6 +25,7 @@ from pathlib import Path
 from statistics import mean, stdev
 
 from . import experiments, regimes, strategies
+from .universe import CLASS_COSTS, UNIVERSES
 from .market_data import Candle, load_csv
 from .portfolio import _History
 from .significance import bootstrap_difference, daily_returns
@@ -35,6 +36,18 @@ COST_BPS = 15.0              # 10 bps comision + 5 bps alunecare, pe valoarea tr
 FINANCING = 0.05
 MAX_LEVERAGE = 2.0
 TARGET_VOL = 0.15
+
+def market_costs(name: str) -> tuple[float, float]:
+    """(cost în bps pe valoarea tranzacționată, carry anual în %) din clasa de activ a pieței, ca în motorul de paper.
+
+    Piețele necunoscute (de exemplu cele sintetice) primesc costul plat COST_BPS și zero carry."""
+    for markets in UNIVERSES.values():
+        for market in markets:
+            if market.name == name:
+                return 100 * (market.fee_pct + market.slippage_pct), market.carry_pct_annual
+    return COST_BPS, 0.0
+
+
 KELLY_FRACTION = 0.25
 KELLY_CAP = 0.25
 WARMUP = 130
@@ -82,14 +95,17 @@ def prepare(data: dict, strategy_factory) -> dict:
         full = signal_series(data[n], strategy_factory())
         sig[n] = [full[index[n][d]] for d in days]
     return {"days": days, "names": names, "ret": ret, "pnl": pnl, "ppy": ppy, "sig": sig, "candles": data,
-            "index": index}
+            "index": index, "costs": {n: market_costs(n) for n in names}}
 
 
 # --- simulare ------------------------------------------------------------------------------
 
 def simulate(world: dict, weights_for_day, start: int, end: int | None = None,
-             cost_bps: float = COST_BPS, financing: float = FINANCING) -> dict:
-    """Curba de capital pentru zilele [start, end); ponderile zilei t folosesc doar date până la t-1."""
+             cost_bps: float | None = None, financing: float = FINANCING) -> dict:
+    """Curba de capital pentru zilele [start, end); ponderile zilei t folosesc doar date până la t-1.
+
+    Costuri: implicit pe clasa fiecărei piețe (comision + alunecare la fiecare tranzacție, carry anual cât timp
+    poziția e deschisă, cum face motorul de paper). `cost_bps` dat explicit = cost plat pe toate piețele, fără carry."""
     names, days = world["names"], world["days"]
     ppy = world.get("ppy", DAYS)
     end = end or len(days)
@@ -98,10 +114,16 @@ def simulate(world: dict, weights_for_day, start: int, end: int | None = None,
     for t in range(start, end):
         w = weights_for_day(t)
         gross = sum(abs(v) for v in w.values())
-        turnover = sum(abs(w.get(n, 0.0) - previous[n]) for n in names)
+        moves = {n: abs(w.get(n, 0.0) - previous[n]) for n in names}
+        turnover = sum(moves.values())
         day = sum(w.get(n, 0.0) * world["pnl"][n][t] for n in names)
         before_costs = day
-        day -= turnover * cost_bps / 1e4 + max(0.0, gross - 1.0) * financing / ppy
+        if cost_bps is None:
+            trading = sum(moves[n] * world["costs"][n][0] for n in names) / 1e4
+            carry = sum(abs(w.get(n, 0.0)) * world["costs"][n][1] for n in names) / 100 / ppy
+        else:
+            trading, carry = turnover * cost_bps / 1e4, 0.0
+        day -= trading + carry + max(0.0, gross - 1.0) * financing / ppy
         equity *= 1 + day
         curve.append((days[t], equity))
         rets.append(day)
@@ -210,7 +232,7 @@ def run_capital(data: dict, family_size: int = 1) -> dict:
             "days": {"total": T, "test": T - split},
             "periods": {"train": [str(world["days"][WARMUP])[:10], str(world["days"][split - 1])[:10]],
                         "test": [str(world["days"][split])[:10], str(world["days"][-1])[:10]]},
-            "plan": {"execution": "deschidere_urmatoare", "cost_bps": COST_BPS, "financing": FINANCING,
+            "plan": {"execution": "deschidere_urmatoare", "costs": "pe_clasa", "financing": FINANCING,
                      "kelly_fraction": KELLY_FRACTION, "kelly_cap": KELLY_CAP, "max_leverage": MAX_LEVERAGE,
                      "vol_target": TARGET_VOL, "markets": len(world["names"]),
                      "antrenare": f"{str(world['days'][WARMUP])[:10]}:{str(world['days'][split - 1])[:10]}",
@@ -278,7 +300,7 @@ def run_meta(data: dict, family_size: int = 1, lookback: int = 252, min_obs: int
         verdict = "neconcludent"
     return {"summary": summary, "bootstrap": boot, "verdict": verdict, "p": worst_p,
             "best_fixed_in_train": best_fixed, "days": {"total": T, "test": T - split},
-            "plan": {"execution": "deschidere_urmatoare", "cost_bps": COST_BPS, "financing": FINANCING,
+            "plan": {"execution": "deschidere_urmatoare", "costs": "pe_clasa", "financing": FINANCING,
                      "lookback": lookback, "min_obs": min_obs, "markets": len(names),
                      "antrenare": f"{str(world['days'][start])[:10]}:{str(world['days'][split - 1])[:10]}",
                      "test": f"{str(world['days'][split])[:10]}:{str(world['days'][-1])[:10]}"}}
@@ -310,10 +332,12 @@ def synthetic_universe(seed: int, markets: int = 6, days: int = 600, edge: float
         for d in range(days):
             if rng.random() < 1 / 60:
                 direction = -direction
-            shock = edge * direction + rng.gauss(0.0, vol)
-            new = price * (1 + shock)
-            candles.append(Candle(start + timedelta(days=d), price,
-                                  max(price, new), min(price, new), new, 1.0))
+            # Gap peste noapte: deschiderea diferă de închiderea precedentă (altfel execuția la deschidere
+            # nu poate fi testată); regularitatea plantată se află în mișcarea din timpul zilei.
+            opening = price * (1 + rng.gauss(0.0, 0.5 * vol))
+            new = opening * (1 + edge * direction + rng.gauss(0.0, vol))
+            candles.append(Candle(start + timedelta(days=d), opening,
+                                  max(opening, new), min(opening, new), new, 1.0))
             price = new
         data[f"S{m}"] = candles
     return data
@@ -383,12 +407,22 @@ def wilson_upper(rate: float, n: int, z: float = 1.96) -> float:
     return (centre + margin) / (1 + z * z / n)
 
 
+POWER_EDGES = (0.001, 0.0025, 0.005)      # drift zilnic al regimului plantat (≈ 25%, 63%, 126% pe an)
+
+
 def run_discovery_control(null_universes: int = 80, power_universes: int = 40, days: int = 900,
-                          power_edge: float = 0.005) -> dict:
-    """Fără regularitate: câte descoperiri false trec? Cu o regularitate puternică plantată: o găsește?"""
+                          power_edge: float = 0.005, edges=POWER_EDGES) -> dict:
+    """Fără regularitate: câte descoperiri false trec? Cu regularități plantate de mărimi diferite: le găsește?
+
+    Rezultatul include curba de putere și cea mai mică regularitate găsită în >= 80% din universuri
+    (`min_detectable_edge_annual_pct`): arată cât de mare trebuie să fie un avantaj ca procedura să-l vadă."""
     null = run_discovery(null_universes, 6, days, edge=0.0)
-    power = run_discovery(power_universes, 6, days, edge=power_edge)
+    curve = {e: run_discovery(power_universes, 6, days, edge=e) for e in sorted(set(edges) | {power_edge})}
+    power = curve[power_edge]
+    found = [e for e, r in curve.items() if r["bonferroni_and_oos_pass"] >= 0.8]
     return {"null": null, "power": power,
+            "power_curve": {f"{e}": r["bonferroni_and_oos_pass"] for e, r in curve.items()},
+            "min_detectable_edge_annual_pct": 100 * min(found) * 252 if found else None,
             "false_positive_upper_95": wilson_upper(null["bonferroni_and_oos_pass"], null["universes"]),
             "power_rate": power["bonferroni_and_oos_pass"], "naive_false_rate": null["naive_train_pass"]}
 
