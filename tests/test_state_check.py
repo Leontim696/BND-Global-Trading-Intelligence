@@ -177,3 +177,12 @@ def test_only_validated_state_is_uploaded_for_publish():
     assert "if: success()" in ok and "always()" not in ok
     assert "bnd-unic-ESEC-" in step and "failure()" in step
     assert "cp state/paper.sqlite state/audit.jsonl prev/" in step
+
+
+def test_publish_downloads_the_state_after_checkout_and_failures_are_not_swallowed():
+    """Regresie 1.11: checkout (git clean) rula după descărcare și ștergea state/, deci publicarea refuza mereu."""
+    text = workflow()
+    publish = text.split("\n  publish:")[1]
+    assert publish.index("actions/checkout") < publish.index("actions/download-artifact")
+    download = publish[publish.index("actions/download-artifact"):].split("- name:")[0]
+    assert "continue-on-error" not in download                      # o descărcare eșuată oprește publicarea, nu o ascunde
