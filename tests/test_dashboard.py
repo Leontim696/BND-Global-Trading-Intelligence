@@ -1,6 +1,6 @@
 """Datele aplicației de pe telefon: doar citire, fără rețea."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
@@ -14,7 +14,7 @@ NOW = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
 def test_missing_accounts_are_reported_not_fatal(tmp_path):
     data = dashboard.collect(tmp_path, None, None, tmp_path, NOW)
 
-    assert [a["exists"] for a in data["accounts"]] == [False, False, False]
+    assert [a["exists"] for a in data["accounts"]] == [False, False, False, False]
     assert data["council"] == {"exists": False}
 
 
@@ -170,3 +170,37 @@ def test_council_markets_carry_the_net_buy_sell_signal_for_the_permanent_strip(t
     assert market["symbol"] == "BITCOIN" and market["net"] == -2 and market["bot"] == -1
     html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
     assert 'id="signals"' in html and "signalsBar()" in html
+
+
+def test_account_shows_its_rules_the_planned_exposure_and_order_kinds(tmp_path):
+    from src.bnd.paper_engine import Instrument, OrderRequest
+    from src.bnd.market_data import Candle
+    engine = PaperEngine.create(tmp_path / "paper.sqlite", 10_000.0, currency="USD", now=NOW)
+    engine.record("runner_settings", {"strategy": "ai_council", "no_shorts": False, "max_leverage": 2.0,
+                                      "portfolio_vol": 15.0, "financing": 5.0}, NOW)
+    engine.record("daily_run", {"time": NOW.isoformat(), "equity": 10_000.0,
+                                "weights": {"AAA": 0.2, "BBB": -0.5, "CCC": -0.4}}, NOW)
+    engine.register_instrument(Instrument("AAA", "index", fee_pct=0, slippage_pct=0))
+    engine.register_instrument(Instrument("BBB", "index", fee_pct=0, slippage_pct=0))
+    for name in ("AAA", "BBB"):
+        engine.on_bar(name, Candle(NOW - timedelta(days=1), 100, 100, 100, 100, 1))
+    engine.submit_order(OrderRequest("l", "AAA", "BUY", 1, stop_loss=99), NOW)
+    engine.submit_order(OrderRequest("s", "BBB", "SELL", 1, stop_loss=101), NOW)
+    engine.close()
+
+    account = dashboard.collect(tmp_path, None, None, None, NOW)["accounts"][0]
+
+    assert account["rules"]["shorts"] is True and account["rules"]["max_leverage"] == 2.0
+    assert round(account["plan"]["gross"], 2) == 1.1 and round(account["plan"]["short"], 2) == 0.9
+    assert {o["symbol"]: o["kind"] for o in account["orders"]} == {"AAA": "long", "BBB": "short"}
+
+
+def test_long_only_settings_are_reported_as_such(tmp_path):
+    engine = PaperEngine.create(tmp_path / "paper.sqlite", 10_000.0, currency="USD", now=NOW)
+    engine.record("runner_settings", {"strategy": "sma_crossover", "no_shorts": True,
+                                      "max_leverage": 1.0}, NOW)
+    engine.close()
+
+    rules = dashboard.collect(tmp_path, None, None, None, NOW)["accounts"][0]["rules"]
+
+    assert rules["shorts"] is False and rules["max_leverage"] == 1.0

@@ -83,7 +83,7 @@ td:first-child{font-family:var(--font-body);font-weight:600}
 <script>
 const DATA = /*DATA*/null;
 const view = document.getElementById("view"), tabs = document.getElementById("tabs");
-const names = {reguli:"paper", cripto:"crypto", ai:"ai"};
+const names = {reguli:"paper", cripto:"crypto", ai:"ai", rls:"rls"};
 const eq = a => a.live ? a.live_equity : a.equity;
 const money = (v, c) => ((v == null ? "–" : new Intl.NumberFormat("ro-RO",{maximumFractionDigits:0}).format(v)) + " " + (c || "")).trim();
 const money2 = v => new Intl.NumberFormat("ro-RO",{minimumFractionDigits:2,maximumFractionDigits:2}).format(v);
@@ -95,7 +95,7 @@ document.getElementById("stamp").textContent = "Actualizat " + when(DATA.generat
   (DATA.quotes_time ? " · prețuri de la " + when(DATA.quotes_time) : "");
 document.getElementById("alerts").innerHTML = (DATA.alerts || []).map(t => `<div class="alert" role="alert">${esc(t)}</div>`).join("");
 
-const TABS = [["rezumat","Rezumat"],["reguli","Reguli"],["cripto","Cripto AI"],["ai","AI unificat"],["consiliu","Consiliul"],["top50","Top 50"]];
+const TABS = [["rezumat","Rezumat"],["reguli","Reguli"],["cripto","Cripto AI"],["ai","AI unificat"],["rls","Reguli L/S"],["consiliu","Consiliul"],["top50","Top 50"]];
 tabs.innerHTML = TABS.map(([id,t]) => `<button role="tab" data-id="${id}" id="tab-${id}">${t}</button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; } });
 
@@ -115,6 +115,14 @@ function spark(history, initial) {
     <circle cx="${x(pts.length-1)}" cy="${y(pts[pts.length-1])}" r="3.5" fill="${col}"/></svg></div>`;
 }
 
+function rulesLine(a) {
+  const r = a.rules || {}, p = a.plan || {};
+  const dir = r.shorts ? "poate face long și short" : "doar long (fără short)";
+  const lev = r.max_leverage ? `leverage maxim ${money2(r.max_leverage)}x` : "";
+  const plan = p.gross ? ` · plan acum: long ${Math.round(100 * p.long)}%, short ${Math.round(100 * p.short)}%, expunere ${money2(p.gross)}x din cont` : "";
+  return `<div class="sub">${dir}, ${lev}${plan}</div>`;
+}
+
 function account(a) {
   if (!a.exists) return `<p class="empty">Contul „${esc(a.title)}” nu există încă.</p>`;
   const value = eq(a), ch = 100 * (value / a.initial - 1), cls = ch >= 0 ? "gain" : "loss";
@@ -125,12 +133,12 @@ function account(a) {
       <div class="meta">intrare ${money2(p.avg)} · acum ${money2(p.last)}${p.stop ? " · stop " + money2(p.stop) : ""}</div></div>
       <div class="num">${money(p.value, "")}<div class="${p.pnl >= 0 ? "gain" : "loss"}">${p.pnl >= 0 ? "+" : ""}${money2(p.pnl)}</div></div></div>`;
   }).join("") : `<p class="empty">Nicio poziție deschisă: banii stau în numerar.</p>`;
-  const ord = a.orders.length ? a.orders.map(o => `<div class="row"><div><span class="name">${esc(o.symbol)}</span><span class="pill ${o.side==="SELL"?"short":""}">${o.side==="BUY"?"cumpără":"vinde"}</span>
+  const ord = a.orders.length ? a.orders.map(o => `<div class="row"><div><span class="name">${esc(o.symbol)}</span><span class="pill ${o.kind==="short"?"short":""}">${o.kind === "închide" ? "închide poziția" : o.kind === "short" ? "vinde (short)" : "cumpără (long)"}</span>
       <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></div>`).join("")
     : `<p class="empty">Nicio comandă în așteptare.</p>`;
   return `${notice}<div class="hero"><div class="label">${esc(a.title)} · ${esc(a.currency)}${a.live ? '<span class="live">preț de acum</span>' : '<span class="live" style="color:var(--muted)">ultima închidere</span>'}</div>
     <div class="big">${money(value, "")}</div>${euro(value, a)}<div class="delta ${cls}">${pct(ch)} față de start (${money(a.initial,"")})</div>
-    <div class="sub">${esc(a.subtitle)}</div></div>${spark(a.history, a.initial)}
+    <div class="sub">${esc(a.subtitle)}</div>${rulesLine(a)}</div>${spark(a.history, a.initial)}
     <div class="stats"><div><span class="label">Numerar</span><b>${money(a.cash,"")}</b></div>
     <div><span class="label">Leverage</span><b>${a.leverage == null ? "–" : money2(a.leverage) + "x"}</b></div>
     <div><span class="label">Poziții</span><b>${a.positions.length}</b></div>
@@ -144,7 +152,7 @@ const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">�
 
 function summary() {
   const cards = DATA.accounts.map((a, i) => {
-    const id = ["reguli","cripto","ai"][i];
+    const id = ["reguli","cripto","ai","rls"][i];
     if (!a.exists) return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}</div><div class="sub">Nu există încă.</div></button>`;
     const v = eq(a), ch = 100 * (v / a.initial - 1);
     return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
@@ -186,6 +194,7 @@ function council(c) {
       <div class="votes">${votes}</div></div></div>`;
   }).join("");
   return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
+    <div class="sub">„Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div>
     <div class="big">${c.markets.length} piețe</div>
     <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "citit de la OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div>` : ""}${agentsPanel(c)}${rows}${comparison(c)}`;
 }

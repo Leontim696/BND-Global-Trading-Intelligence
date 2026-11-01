@@ -21,9 +21,10 @@ from . import crypto50, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
-ACCOUNTS = (("paper", "Reguli matematice", "Strategie: regime_switch, piețe ETF/forex/crypto"),
+ACCOUNTS = (("paper", "Reguli matematice", "Reguli simple, piețe ETF/forex/crypto"),
             ("crypto", "Cripto (AI)", "Consiliul AI pe 5 monede"),
-            ("ai", "AI unificat", "Consiliul AI pe 13 piețe"))
+            ("ai", "AI unificat", "Consiliul AI pe 13 piețe"),
+            ("rls", "Reguli long/short", "Reguli cu short și leverage"))
 
 
 STALE_AFTER = timedelta(hours=36)
@@ -50,6 +51,12 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
     try:
         summary = engine.summary()
         account_row = engine.account()
+        settings_rows = engine.journal("runner_settings")
+        settings = settings_rows[-1]["payload"] if settings_rows else {}
+        daily = engine.journal("daily_run")
+        weights = daily[-1]["payload"].get("weights", {}) if daily else {}
+        longs = sum(v for v in weights.values() if v > 0)
+        shorts = -sum(v for v in weights.values() if v < 0)
         checked = reconcile(engine)
         history = [{"t": e["payload"]["time"], "equity": e["payload"]["equity"]}
                    for e in engine.journal("daily_run")]
@@ -68,8 +75,16 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                               "value": p["quantity"] * last,
                               "pnl": (last - p["avg_price"]) * p["quantity"],
                               "stop": p["stop_loss"]})
-        orders = [{"symbol": o["symbol"], "side": o["side"], "quantity": o["quantity"],
-                   "status": o["status"]} for o in summary["open_orders"]]
+        held = {p["symbol"]: p["quantity"] for p in engine.positions()}
+        orders = []
+        for o in summary["open_orders"]:
+            closing = bool(o["reduce_only"]) or (held.get(o["symbol"], 0) > 0 and o["side"] == "SELL"
+                                                 and o["quantity"] <= held[o["symbol"]] + 1e-9) \
+                or (held.get(o["symbol"], 0) < 0 and o["side"] == "BUY"
+                    and o["quantity"] <= -held[o["symbol"]] + 1e-9)
+            kind = "închide" if closing else ("long" if o["side"] == "BUY" else "short")
+            orders.append({"symbol": o["symbol"], "side": o["side"], "quantity": o["quantity"],
+                           "status": o["status"], "kind": kind})
         return {**base, "exists": True, "currency": summary["currency"],
                 "initial": summary["initial_capital"], "equity": summary["equity"],
                 "cash": summary["cash"], "profit": summary["net_profit"],
@@ -78,6 +93,11 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                 "history": history[-60:], "positions": positions, "orders": orders,
                 "live_equity": live_equity, "live": bool(live_used),
                 "peak": account_row["peak_equity"],
+                "rules": {"strategy": settings.get("strategy"), "shorts": not settings.get("no_shorts", False),
+                          "max_leverage": settings.get("max_leverage"),
+                          "target_vol": settings.get("portfolio_vol"),
+                          "financing": settings.get("financing")},
+                "plan": {"long": longs, "short": shorts, "gross": longs + shorts, "net": longs - shorts},
                 "drawdown_pct": 100 * (1 - live_equity / account_row["peak_equity"])
                 if account_row["peak_equity"] > 0 and live_equity < account_row["peak_equity"] else 0.0,
                 "reconciled": checked["ok"],
@@ -207,9 +227,9 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
-            balance: dict | None = None) -> dict:
+            balance: dict | None = None, rls=None) -> dict:
     now = now or datetime.now(timezone.utc)
-    folders = {"paper": paper, "crypto": crypto, "ai": ai}
+    folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls}
     prices = (quotes or {}).get("quotes", {})
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
     council = read_council(council, balance, now)
@@ -262,7 +282,7 @@ def render(data: dict, template: str) -> str:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="dashboard")
-    for name in ("paper", "crypto", "ai", "council"):
+    for name in ("paper", "crypto", "ai", "council", "rls"):
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
@@ -277,7 +297,7 @@ def main(argv=None) -> int:
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
         balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
-                       top50=args.top50, balance=balance)
+                       top50=args.top50, balance=balance, rls=args.rls)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

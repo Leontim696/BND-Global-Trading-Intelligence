@@ -103,10 +103,10 @@ def plans(now: datetime, council: dict) -> list:
 
 
 def build(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
-          quotes=None, runs=None, balance=None) -> dict:
+          quotes=None, runs=None, balance=None, rls=None) -> dict:
     now = now or datetime.now(timezone.utc)
-    data = dashboard.collect(paper, crypto, ai, council, now, quotes, runs, balance=balance)
-    folders = {"paper": paper, "crypto": crypto, "ai": ai}
+    data = dashboard.collect(paper, crypto, ai, council, now, quotes, runs, balance=balance, rls=rls)
+    folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls}
     fx = data.get("fx")
     rate = fx["eurusd"] if fx else None
     lines = ["Peste noapte:"]
@@ -147,7 +147,7 @@ def build(paper=None, crypto=None, ai=None, council=None, now: datetime | None =
 
 def main(argv=None, sender=notify.send) -> int:
     parser = argparse.ArgumentParser(prog="morning")
-    for name in ("paper", "crypto", "ai", "council"):
+    for name in ("paper", "crypto", "ai", "council", "rls"):
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes")
     parser.add_argument("--runs")
@@ -159,7 +159,7 @@ def main(argv=None, sender=notify.send) -> int:
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
         balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
         result = build(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
-                       balance=balance)
+                       balance=balance, rls=args.rls)
     except (OSError, ValueError, sqlite3.Error) as exc:
         print("Error:", exc, file=sys.stderr)
         return 2
