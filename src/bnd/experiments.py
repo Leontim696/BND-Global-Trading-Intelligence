@@ -99,6 +99,8 @@ def experiments(path=DEFAULT_PATH) -> dict:
         data = row.get("data", {})
         if row.get("kind") == "experiment_propus":
             state[data["id"]] = {**data, "stare": "propus", "propus_la": row["time"]}
+        elif row.get("kind") == "experiment_nota" and data.get("id") in state:
+            state[data["id"]].setdefault("note", []).append({"time": row["time"], "text": data["text"]})
         elif row.get("kind") == "experiment_rezultat" and data.get("id") in state:
             state[data["id"]].update({"stare": "încheiat", "rezultat": data,
                                       "incheiat_la": row["time"]})
@@ -168,12 +170,22 @@ def finish(path=DEFAULT_PATH, *, id, verdict, concluzie, metrici=None, cost_usd=
     return row
 
 
+def add_note(path=DEFAULT_PATH, *, id, text, now=None) -> dict:
+    """Interpretare adăugată ulterior; rezultatul și verdictul rămân neschimbate."""
+    if id not in experiments(path):
+        raise RegistryError(f"{id} nu există în registru")
+    if not (text or "").strip():
+        raise RegistryError("nota nu poate fi goală")
+    return audit_log.append(path, "experiment_nota", {"id": id, "text": text.strip()}, now)
+
+
 def search(path, text: str) -> list[dict]:
     words = [w for w in text.lower().split() if w]
     found = []
     for e in experiments(path).values():
         haystack = " ".join([e["titlu"], e["ipoteza"], e["familie"], e["tip"],
-                             e.get("rezultat", {}).get("concluzie", "")]).lower()
+                             e.get("rezultat", {}).get("concluzie", "")]
+                            + [n["text"] for n in e.get("note", [])]).lower()
         if all(w in haystack for w in words):
             found.append(e)
     return found
@@ -200,7 +212,8 @@ def report(path=DEFAULT_PATH) -> str:
         if "rezultat" in e:
             lines += [f"### {e['id']} — {e['titlu']}", f"- Ipoteză: {e['ipoteza']}",
                       f"- Criteriu (scris înainte): {e['criteriu']}",
-                      f"- Verdict: **{e['rezultat']['verdict']}** — {e['rezultat']['concluzie']}", ""]
+                      f"- Verdict: **{e['rezultat']['verdict']}** — {e['rezultat']['concluzie']}"]
+            lines += [f"- Notă ({n['time'][:10]}): {n['text']}" for n in e.get("note", [])] + [""]
     return "\n".join(lines)
 
 
@@ -228,6 +241,9 @@ def main(argv=None) -> int:
     r.add_argument("--p", type=float)
     c = sub.add_parser("cauta")
     c.add_argument("text", nargs="+")
+    n = sub.add_parser("nota")
+    n.add_argument("id")
+    n.add_argument("text")
     sub.add_parser("raport")
     sub.add_parser("verifica")
     args = parser.parse_args(argv)
@@ -247,6 +263,9 @@ def main(argv=None) -> int:
                                      concluzie=args.concluzie, metrici=json.loads(args.metrici),
                                      cost_usd=args.cost, p_valoare=args.p)
             print(f"Încheiat {row['id']}: {row['verdict']}.")
+        elif args.cmd == "nota":
+            add_note(args.registru, id=args.id, text=args.text)
+            print(f"Notă adăugată la {args.id}.")
         elif args.cmd == "cauta":
             for e in search(args.registru, " ".join(args.text)):
                 verdict = e.get("rezultat", {}).get("verdict", "în curs")

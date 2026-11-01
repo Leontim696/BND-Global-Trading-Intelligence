@@ -4,6 +4,12 @@ Livrabil cerut: starea actuală, componentele reutilizabile, dependențele, cost
 
 Stări: **DONE**, **PARTIAL**, **MISSING**, **NOT JUSTIFIED** (acum). Complexitate: S (zile de lucru puține), M, L. Costuri API pentru consiliu: ~0,027 $ pe piață și pe rundă de 5 agenți (măsurat), consiliul actual: 88 de piețe, ~2,4 $/zi.
 
+## Stare după implementare (1.11.2026)
+Priorități aprobate și făcute, toate în PAPER, fără apeluri AI plătite și fără atingerea testului de 16 zile:
+registrul de experimente (`docs/EXPERIMENTE.md`, #10), analiza agenților (#4), raportul de expuneri corelate (#3, pasul 1),
+dezbaterea în umbră (`docs/DEZBATERE.md`, #1, oprită până la 17.11) și calendarul economic în arhivă (#6, pasul 1),
+plus experimentele E-001..E-004 pentru #9, #2 și #7. Execution Intelligence (#5) rămâne respinsă, Smart-Money Graph (#8) amânată.
+
 ## Trei constatări care schimbă ordinea
 
 1. **Un consiliu AI nu se poate valida pe istoric.** Modelele cunosc deja istoria, deci un backtest al votului lor ar scurge viitorul în decizie (look-ahead). Singura evaluare validă a propunerilor 1, 4 și 6 este **înainte în timp**, cu decizii închise la 5 zile. Cele 88 de decizii zilnice dau multe puncte, dar corelate între piețe: 15 zile nu dovedesc nimic statistic, cum scrie și `council_analytics` („sub 20 de decizii: orientativ").
