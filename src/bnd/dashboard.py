@@ -157,6 +157,7 @@ def analysis_summary(path) -> dict:
     return {"enough_data": full["enough_data"], "note": full["note"],
             "overconfidence": {a: v["overconfidence"] for a, v in full["agents"].items()
                                if v["overconfidence"] is not None},
+            "alpha": {k: full["alpha"][k] for k in ("raw", "alpha_next")},
             "oos": {"evaluated": oos["evaluated"], "note": oos.get("note"),
                     "verdict": oos.get("verdict")}}
 

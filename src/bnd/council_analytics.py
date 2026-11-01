@@ -31,15 +31,32 @@ def _asset_class(symbol: str) -> str:
     return ASSET_CLASS.get(symbol, "alta")
 
 
-def _rows(path):
+def _incomplete_ids(db) -> set:
+    """Deciziile cu runda incompletă (un agent a lipsit): nu sunt decizii ale consiliului, nu intră în statistici.
+
+    Un răspuns care lipsește nu e un HOLD: tratat ca HOLD ar îngroșa artificial rata de „abținere corectă”."""
+    ids = set()
+    for decision_id, meta in db.execute("SELECT id, meta FROM decisions"):
+        try:
+            if json.loads(meta or "{}").get("complete") is False:
+                ids.add(decision_id)
+        except ValueError:
+            continue
+    return ids
+
+
+def _rows(path, include_incomplete: bool = False):
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     try:
+        skip = set() if include_incomplete else _incomplete_ids(db)
         decisions = {r[0]: {"symbol": r[1], "vote": r[2], "uncertain": bool(r[3]),
                             "outcome": r[4], "meta": json.loads(r[5] or "{}"), "votes": {},
                             "day": r[0][:10], "horizon": r[6]}
                      for r in db.execute("SELECT id, symbol, vote, uncertain, outcome_return, meta,"
                                          " horizon_days FROM decisions WHERE settled_at IS NOT NULL"
                                          " AND outcome_return IS NOT NULL")}
+        for key in skip:
+            decisions.pop(key, None)
         for decision_id, agent, stage, vote, confidence in db.execute(
                 "SELECT decision_id, agent, stage, vote, confidence FROM votes"):
             if decision_id in decisions:
@@ -270,6 +287,35 @@ def before_after(decisions: dict) -> dict:
             "note": None if flipped else "Nicio schimbare de înclinație încă."}
 
 
+def alpha_report(decisions: dict) -> dict:
+    """Aceeași înclinație (BUY minus SELL din voturile inițiale), măsurată în trei feluri.
+
+    - ``raw``: randamentul de la prețul deciziei (cum se măsura până acum);
+    - ``entry_next``: intrare la prima închidere de după data deciziei;
+    - ``alpha``: randament minus benchmark (SP500 / BITCOIN), cu intrarea la prima închidere de după decizie.
+    Dacă rata brută e mare, dar alpha e slab, consiliul a prins doar direcția pieței. Doar decizii cu ``meta.settle``."""
+    buckets = {"raw": [], "entry_next": [], "alpha_next": [], "alpha_raw": []}
+    for d in decisions.values():
+        info = d["meta"].get("settle")
+        if not info:
+            continue
+        net = sum(SIDE[_vote(st, "initial")[0]] for st in d["votes"].values())
+        side = (net > 0) - (net < 0)
+        if not side:
+            continue
+        buckets["raw"].append(side * d["outcome"])
+        for key, source in (("entry_next", "entry_next_return"), ("alpha_next", "alpha_next"), ("alpha_raw", "alpha_raw")):
+            if info.get(source) is not None:
+                buckets[key].append(side * info[source])
+    stat = lambda xs: {"calls": len(xs), "hit_rate": _rate(sum(x > 0 for x in xs), len(xs)),
+                       "mean_return_pct": 100 * sum(xs) / len(xs) if xs else None,
+                       "reliable": len(xs) >= MIN_SAMPLE}
+    out = {k: stat(v) for k, v in buckets.items()}
+    out["note"] = (None if out["alpha_next"]["calls"] else
+                   "Încă nicio decizie decontată cu detalii de alpha (apar de la primele decontări, ~6.11).")
+    return out
+
+
 def penalized_weights(decisions: dict) -> dict:
     """Ponderi calculate cu penalizarea supraîncrederii (doar raportate, nu folosite în decizii).
 
@@ -350,13 +396,16 @@ def out_of_sample_weighting(decisions: dict, train_share: float = 0.6, min_days:
 
 def analyse(path, cost_per_agent: dict | None = None) -> dict:
     decisions = _rows(path)
-    return {"settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
+    with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
+        excluded = len(_incomplete_ids(db))
+    return {"incomplete_excluded": excluded, "settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
             "note": None if len(decisions) >= MIN_SAMPLE else
             f"Doar {len(decisions)} decizii încheiate (sub {MIN_SAMPLE}): rezultatele sunt orientative, nu concluzii.",
             "agents": agent_scoreboard(decisions), "disagreement": disagreement(decisions),
             "strategies": strategy_comparison(decisions),
             "cost_to_value": cost_to_value(decisions, cost_per_agent),
             "by_regime": by_regime(decisions), "by_horizon": by_horizon(decisions),
+            "alpha": alpha_report(decisions),
             "revision": revision_value(decisions), "before_after": before_after(decisions), "weights": penalized_weights(decisions),
             "out_of_sample": out_of_sample_weighting(decisions)}
 
