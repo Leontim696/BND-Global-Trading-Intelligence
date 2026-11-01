@@ -27,8 +27,6 @@ jobs:
         with:
           python-version: "3.13"
       - name: Restore the history
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: bash scripts/restore_branch.sh date-macro arhiva
       - name: Collect
         env:
