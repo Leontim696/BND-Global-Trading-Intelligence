@@ -109,6 +109,9 @@ jobs:
             --signals state/semnale.json --audit-log state/audit.jsonl \
             --report state/REPORT.md --json state/last_run.json "${args[@]}" > /dev/null
           cat state/REPORT.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Correlated exposure report (read-only)
+        if: steps.restore.outputs.account != 'none'
+        run: python -m src.bnd.exposure --state state/paper.sqlite --data-dir data --out state/expuneri.json || true
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always() && steps.restore.outputs.account != 'none'
         with:
@@ -156,6 +159,7 @@ jobs:
             if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
             mkdir -p runs
             if [ -f ../state/REPORT.md ]; then cp ../state/REPORT.md README.md; fi
+            if [ -f ../state/expuneri.json ]; then cp ../state/expuneri.json expuneri.json; fi
             if [ -f ../state/semnale.json ]; then cp ../state/semnale.json "runs/${day}-semnale.json"; fi
             if [ -f ../state/last_run.json ]; then cp ../state/last_run.json "runs/$day.json"; fi
             git add -A

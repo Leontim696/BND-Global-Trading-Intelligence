@@ -49,6 +49,7 @@ jobs:
           grab ai-unificat paper.sqlite out/a/paper.sqlite
           grab reguli-ls paper.sqlite out/r/paper.sqlite
           grab cont-unic paper.sqlite out/u/paper.sqlite
+          grab cont-unic expuneri.json out/expuneri.json
           grab consiliu-umbra registry.sqlite out/k/registry.sqlite
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
           grab status alerts.json out/alerts.json
@@ -60,7 +61,7 @@ jobs:
       - name: Build the status
         run: |
           python -m src.bnd.dashboard --paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --council out/k \
-            --quotes out/quotes.json --runs out/runs.json --balance out/balance.json \
+            --quotes out/quotes.json --runs out/runs.json --balance out/balance.json --exposure out/expuneri.json \
             --template src/bnd/dashboard_template.html --out out/app.html --status-json out/status.json
           cat out/status.json >> "$GITHUB_STEP_SUMMARY"
       - name: New alerts to the phone (no repeats)
