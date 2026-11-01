@@ -32,3 +32,31 @@ jobs:
           name: date-12-ani
           path: data/
           retention-days: 7
+
+  # Separate job: the write token never runs project code.
+  publica:
+    needs: descarca
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: date-12-ani
+          path: data
+      - name: Save the candles on the date-12-ani branch
+        run: |
+          set -euo pipefail
+          git init -q out && cd out
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          git checkout -q --orphan date-12-ani
+          cp ../data/*.csv .
+          git add -A
+          git commit -q -m "Istoric zilnic 12 ani"
+          git push -q -f origin HEAD:refs/heads/date-12-ani
