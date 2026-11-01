@@ -158,6 +158,26 @@ def assess(stats: dict) -> dict:
     return {"passes": core_known and not reasons, "reasons": reasons, "unknown": unknown, "tags": tags}
 
 
+class RateLimited(ValueError):
+    """HTTP 429: sursa cere o pauză (Retry-After, în secunde, dacă a dat-o)."""
+
+    def __init__(self, message: str, retry_after: float | None = None):
+        super().__init__(message)
+        self.retry_after = retry_after
+
+
+MAX_WAIT = 30.0          # nu așteptăm mai mult de atât între încercări
+RATE_LIMIT_ATTEMPTS = 3
+
+
+def _retry_after(value) -> float | None:
+    try:
+        seconds = float(value)
+    except (TypeError, ValueError):
+        return None
+    return seconds if math.isfinite(seconds) and seconds >= 0 else None
+
+
 def _get(url: str, key: str, timeout: float = 30.0):
     if urlparse(url).hostname not in ALLOWED_HOSTS or urlparse(url).scheme != "https":
         raise ValueError("URL refuzat: gazdă sau schemă nepermisă")
@@ -166,9 +186,32 @@ def _get(url: str, key: str, timeout: float = 30.0):
         with build_opener(_NoRedirect).open(request, timeout=timeout) as response:  # nosec B310 - https, gazdă fixă, fără redirect
             return json.loads(response.read(30_000_001))      # detaliile unui wallet activ pot fi mari
     except HTTPError as exc:
+        if exc.code == 429:
+            raise RateLimited(f"{url.split('?')[0]} a răspuns HTTP 429 (prea multe cereri)",
+                              _retry_after(exc.headers.get("Retry-After") if exc.headers else None)) from exc
         raise ValueError(f"{url.split('?')[0]} a răspuns HTTP {exc.code}") from exc
     except (URLError, TimeoutError, ValueError, OSError) as exc:
         raise ValueError(f"{url.split('?')[0]} nu răspunde: {type(exc).__name__}") from exc
+
+
+def fetch_with_retry(fetch, url: str, key: str, status: dict, what: str = ""):
+    """O cerere cu reîncercări: 429 așteaptă (Retry-After, plafonat) de până la 3 ori, restul o dată.
+
+    Întoarce răspunsul sau ridică ValueError după ultima încercare (eroarea ajunge în status)."""
+    attempts = 0
+    while True:
+        attempts += 1
+        try:
+            return fetch(url, key)
+        except RateLimited as exc:
+            status["rate_limited"] = status.get("rate_limited", 0) + 1
+            if attempts >= RATE_LIMIT_ATTEMPTS:
+                raise
+            sleep(min(exc.retry_after if exc.retry_after is not None else 2.0 * attempts, MAX_WAIT))
+        except ValueError:
+            if attempts >= 2:
+                raise
+            sleep(1.5)
 
 
 def rows_of(payload) -> list:
@@ -204,6 +247,19 @@ def _keys(obj) -> list:
     return keys
 
 
+EXIT_CODES = {"ok": 0, "partial": 0, "failed": 2, "no_key": 3}
+
+
+def classify(status: dict, key) -> str:
+    """ok = totul citit; partial = clasamentul s-a citit dar unele cereri au eșuat; failed = fără date;
+    no_key = lipsește cheia (nu s-a colectat nimic din sursă)."""
+    if not key:
+        return "no_key"
+    if not status["leaderboard"] or not status["leaderboard"].get("ok"):
+        return "failed"
+    return "partial" if status["errors"] else "ok"
+
+
 def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=_get, now=None) -> dict:
     out = Path(out) / "smart_money"
     out.mkdir(parents=True, exist_ok=True)
@@ -212,26 +268,21 @@ def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=
     candidates = {}
     if key:
         try:
-            board = rows_of(fetch(BASE_URL + LEADERBOARD_PATH, key))
+            board = rows_of(fetch_with_retry(fetch, BASE_URL + LEADERBOARD_PATH, key, status))
             status["sample_keys"] = {"clasament": _keys(board[0]) if board else []}
             for row in board:
                 stats = normalise(row) if isinstance(row, dict) else None
                 if stats:
                     candidates[stats["wallet"]] = {**stats, "source": "clasament"}
+            if not candidates:
+                raise ValueError(f"Clasament fără niciun wallet valid ({len(board)} rânduri primite)")
             status["leaderboard"] = {"ok": True, "wallets": len(candidates)}
             enriched = 0
             for wallet in list(candidates)[:ENRICH_LIMIT]:
-                detail = None
-                for attempt in (1, 2):
-                    try:
-                        detail = fetch(BASE_URL + WALLET_PATH.format(wallet=wallet), key)
-                        break
-                    except ValueError as exc:
-                        if attempt == 2:
-                            status["errors"].append(f"detalii {wallet[:6]}…: {exc}")
-                        else:
-                            sleep(1.5)
-                if detail is None:
+                try:
+                    detail = fetch_with_retry(fetch, BASE_URL + WALLET_PATH.format(wallet=wallet), key, status)
+                except ValueError as exc:
+                    status["errors"].append(f"detalii {wallet[:6]}…: {exc}")
                     continue
                 if enriched == 0:
                     status["sample_keys"]["detalii"] = _keys(detail)
@@ -251,12 +302,13 @@ def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=
         stats = candidates.get(item["wallet"], {"wallet": item["wallet"], "source": "manual"})
         if key and stats["source"] == "manual":
             try:
-                found = normalise({**fetch(BASE_URL + WALLET_PATH.format(wallet=item["wallet"]), key),
+                found = normalise({**fetch_with_retry(fetch, BASE_URL + WALLET_PATH.format(wallet=item["wallet"]), key, status),
                                    "wallet": item["wallet"]})
                 stats = {**(found or stats), "source": "manual"}
             except ValueError as exc:
                 status["errors"].append(f"{item['wallet'][:6]}…: {exc}")
         candidates[item["wallet"]] = {**stats, "source": "manual"}
+    status["outcome"] = classify(status, key)
     rows = []
     for wallet, stats in sorted(candidates.items()):
         verdict = assess(stats)
@@ -265,12 +317,15 @@ def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=
                     + [("" if stats.get(k) is None else stats[k]) for k in HEADER[3:12]]
                     + [int(verdict["passes"]), ";".join(verdict["tags"]), "; ".join(verdict["reasons"])])
     path = out / "wallete.csv"
-    new_file = not path.exists()
-    with path.open("a", newline="", encoding="utf-8") as handle:
-        writer = csv.writer(handle)
-        if new_file:
-            writer.writerow(HEADER)
-        writer.writerows(rows)
+    if status["outcome"] in ("ok", "partial"):     # fără date reale nu adăugăm rânduri goale în istoric
+        new_file = not path.exists()
+        with path.open("a", newline="", encoding="utf-8") as handle:
+            writer = csv.writer(handle)
+            if new_file:
+                writer.writerow(HEADER)
+            writer.writerows(rows)
+    else:
+        rows = []
     status["written"] = len(rows)
     status["passing"] = sum(r[HEADER.index("passes")] for r in rows)
     status["insider_pattern"] = sum(bool(r[HEADER.index("tags")]) for r in rows)
@@ -284,12 +339,18 @@ def main(argv=None) -> int:
     parser.add_argument("--manual", default="smart_money/wallete.json")
     args = parser.parse_args(argv)
     status = collect(args.out, os.getenv("SOLANATRACKER_API_KEY") or None, args.manual)
-    print(json.dumps({k: status[k] for k in ("leaderboard", "manual", "written", "passing", "insider_pattern")}))
-    if not status["leaderboard"]["ok"]:
-        print(f"::warning::clasamentul smart-money nu s-a citit: {status['leaderboard'].get('error', '')}")
+    print(json.dumps({k: status[k] for k in ("outcome", "leaderboard", "manual", "written", "passing", "insider_pattern")}))
+    outcome = status["outcome"]
+    if outcome == "no_key":
+        print("::error::Lipsește SOLANATRACKER_API_KEY: nu s-a colectat nimic din sursă.")
+    elif outcome == "failed":
+        print(f"::error::Clasamentul smart-money nu s-a citit: {status['leaderboard'].get('error', '')}")
+    elif outcome == "partial":
+        print(f"::warning::Colectare parțială: {len(status['errors'])} cereri au eșuat "
+              f"({status.get('rate_limited', 0)} limitări 429).")
     for error in status["errors"][:5]:
         print(f"::warning::{error}")
-    return 0           # o sursă căzută nu strică restul
+    return EXIT_CODES[outcome]
 
 
 if __name__ == "__main__":

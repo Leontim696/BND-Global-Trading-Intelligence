@@ -20,6 +20,8 @@ jobs:
   colecteaza:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      rc: ${{ steps.collect.outputs.rc }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -28,11 +30,19 @@ jobs:
       - name: Restore the history
         run: bash scripts/restore_branch.sh smart-money arhiva
       - name: Collect
+        id: collect
         env:
           SOLANATRACKER_API_KEY: ${{ secrets.SOLANATRACKER_API_KEY }}
         run: |
-          python -m src.bnd.smart_money --out arhiva || echo "::warning::colectorul smart-money a eșuat"
-          cat arhiva/smart_money/status.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          # Codul de ieșire se păstrează: statusul se salvează oricum, dar verdictul final al rulării îl reflectă.
+          rc=0
+          python -m src.bnd.smart_money --out arhiva || rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Smart-Money: cod de ieșire $rc (0 = ok/parțial, 2 = clasament necitit, 3 = cheie lipsă)"
+            echo "Un workflow verde NU dovedește walleturi valide: vezi \`outcome\`, \`errors\` și \`passing\` din status.json."
+            cat arhiva/smart_money/status.json 2>/dev/null || true
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: bnd-smart-money-${{ github.run_id }}
@@ -43,6 +53,7 @@ jobs:
   # Separate job: the write token never runs project code.
   publica:
     needs: colecteaza
+    if: always() && needs.colecteaza.result != 'cancelled' && needs.colecteaza.result != 'skipped'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -50,6 +61,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
+      COLLECT_RC: ${{ needs.colecteaza.outputs.rc }}
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         continue-on-error: true
@@ -59,7 +71,7 @@ jobs:
       - name: Save on the smart-money branch
         run: |
           set -euo pipefail
-          [ -f smart_money/wallete.csv ] || { echo "::warning::Nothing to save"; exit 0; }
+          [ -f smart_money/status.json ] || { echo "::warning::Nothing to save"; exit 0; }
           git init -q out && cd out
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -71,7 +83,8 @@ jobs:
             else
               git checkout -q --orphan smart-money 2>/dev/null || true
             fi
-            cp ../smart_money/wallete.csv ../smart_money/status.json .
+            if [ -f ../smart_money/wallete.csv ]; then cp ../smart_money/wallete.csv .; fi
+            cp ../smart_money/status.json .
             git add -A
             if ! git diff --cached --quiet; then
               git commit -q -m "Smart-Money $(date -u +%Y-%m-%d)"
@@ -82,3 +95,12 @@ jobs:
             sleep $((attempt * 5))
           done
           [ "$pushed" = 1 ] || { echo "::error::Nu am putut salva pe ramură după 3 încercări."; exit 1; }
+      - name: Final verdict (collection result, separate from publishing)
+        if: always()
+        run: |
+          case "${COLLECT_RC:-missing}" in
+            0) echo "Colectare reușită (vezi outcome în status.json: ok sau partial)." ;;
+            2) echo "::error::Colectarea a eșuat: clasamentul nu s-a citit (API indisponibil, 429 sau răspuns invalid)."; exit 1 ;;
+            3) echo "::error::Colectarea nu a rulat: lipsește SOLANATRACKER_API_KEY."; exit 1 ;;
+            *) echo "::error::Colectorul s-a oprit neașteptat (cod ${COLLECT_RC:-lipsă})."; exit 1 ;;
+          esac
