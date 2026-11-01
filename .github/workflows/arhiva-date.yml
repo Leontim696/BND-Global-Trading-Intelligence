@@ -37,11 +37,11 @@ jobs:
             --start "$(date -u -d '-3 years' +%Y-%m-%d)" --out-dir arhiva/zilnic
           python -m src.bnd.quotes_snapshot --out arhiva/ultimele-cursuri.json
           # Fear & Greed și funding: best effort, un eșec nu oprește arhiva.
-          python -m src.bnd.context_data --out arhiva || true
+          python -m src.bnd.context_data --out arhiva || echo "::warning::context_data a eșuat"
           # Calendar economic (săptămâna asta și următoarea): doar arhivă, nu intră în decizii.
-          python -m src.bnd.calendar_data --out arhiva || true
+          python -m src.bnd.calendar_data --out arhiva || echo "::warning::calendar_data a eșuat"
           # Top 50 cripto (inclusiv memecoin-uri), prețuri zilnice Binance: best effort.
-          python -m src.bnd.crypto50 --out arhiva/crypto50 || true
+          python -m src.bnd.crypto50 --out arhiva/crypto50 || echo "::warning::crypto50 a eșuat"
           date -u +%Y-%m-%dT%H:%MZ > arhiva/ultima-actualizare.txt
           find arhiva/zilnic -name "*.csv" | wc -l >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7

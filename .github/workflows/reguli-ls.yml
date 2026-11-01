@@ -79,9 +79,10 @@ jobs:
           args=()
           if [ "$ACCOUNT" = new ]; then
             args+=(--capital "$CAPITAL")
-            # SETTINGS is split into separate arguments on purpose.
-            # shellcheck disable=SC2206
-            args+=($SETTINGS)
+            # Setările libere trec printr-o listă albă de steaguri (fără căi, fără steaguri necunoscute).
+            safe="$(python scripts/safe_args.py "$SETTINGS")"
+            read -r -a safe_settings <<< "$safe"
+            args+=("${safe_settings[@]}")
           fi
           if [ -n "$RESET" ]; then
             args+=(--reset-kill-switch "$RESET")

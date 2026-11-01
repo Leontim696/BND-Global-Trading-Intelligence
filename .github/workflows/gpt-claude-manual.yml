@@ -58,6 +58,8 @@ jobs:
       CLAUDE_OUT: ${{ inputs.claude_output_price }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - name: Three-call cost and key preflight
         run: python -m src.bnd.manual_live_review --preflight
       - name: GPT proposal, Claude critique, GPT revision; no trading

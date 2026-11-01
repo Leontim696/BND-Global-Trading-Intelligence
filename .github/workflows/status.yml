@@ -28,14 +28,14 @@ jobs:
       actions: read
     env:
       BND_ALLOW_LIVE_AI: "false"
-      GH_TOKEN: ${{ github.token }}
-      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
       - name: Read the accounts, the council and the prices
+        env:
+          GH_TOKEN: ${{ github.token }}      # doar aici: descărcarea ramurilor și lista rulărilor
         run: |
           mkdir -p out/p out/c out/a out/k out/r out/u
           grab() { # ramură fișier destinație
@@ -65,6 +65,8 @@ jobs:
             --template src/bnd/dashboard_template.html --out out/app.html --status-json out/status.json
           cat out/status.json >> "$GITHUB_STEP_SUMMARY"
       - name: New alerts to the phone (no repeats)
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}      # doar aici; pasul de construire a stării nu îl vede
         run: python -m src.bnd.alerting --status out/status.json --state out/alerts.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:

@@ -54,12 +54,18 @@ jobs:
       CLASSES: ${{ inputs.classes }}
       UNIVERSE: ${{ inputs.universe }}
       STRATEGY: ${{ inputs.strategy }}
-      EXTRA_ARGS: ${{ inputs.extra_args }}
+      RAW_EXTRA_ARGS: ${{ inputs.extra_args }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
+      - name: Validate the free-text arguments (allow-list)
+        run: |
+          safe="$(python scripts/safe_args.py "$RAW_EXTRA_ARGS")"
+          echo "EXTRA_ARGS=$safe" >> "$GITHUB_ENV"
       - name: Download every market (failures are recorded, not fatal)
         run: |
           python -m src.bnd.backtest_cli fetch-universe --start "$START" \
@@ -69,7 +75,7 @@ jobs:
         if: inputs.mode != 'walk-forward'
         run: |
           set -o pipefail
-          # EXTRA_ARGS is split into separate arguments on purpose.
+          # EXTRA_ARGS a trecut prin lista albă de steaguri (scripts/safe_args.py); fără căi sau steaguri necunoscute.
           # shellcheck disable=SC2086
           python -m src.bnd.backtest_cli portfolio \
             --data-dir backtest-reports/universe --universe "$UNIVERSE" \
@@ -81,7 +87,7 @@ jobs:
         run: |
           set -o pipefail
           # --base-currency belongs to the compare mode only.
-          args=$(printf '%s' "$EXTRA_ARGS" | sed -E 's/--base-currency +[A-Z]+//')
+          args=$(printf '%s' "$EXTRA_ARGS" | sed -E 's/--base-currency +[A-Z]+//')    # deja validat
           # args is split into separate arguments on purpose.
           # shellcheck disable=SC2086
           python -m src.bnd.backtest_cli portfolio-wfo \
