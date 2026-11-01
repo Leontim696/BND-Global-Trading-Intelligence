@@ -142,3 +142,13 @@ def test_cli_reports_failures_as_warnings_but_exits_zero(tmp_path, capsys, monke
     monkeypatch.delenv("FRED_API_KEY", raising=False)
     assert md.main(["--out", str(tmp_path), "--only", "polymarket"]) == 0
     assert "::warning::sursa polymarket" in capsys.readouterr().out
+
+
+def test_edgar_user_agent_comes_from_the_environment_and_empty_falls_back(monkeypatch):
+    import importlib
+    monkeypatch.setenv("EDGAR_USER_AGENT", "BND research contact@example.org")
+    assert importlib.reload(md).USER_AGENT == "BND research contact@example.org"
+    monkeypatch.setenv("EDGAR_USER_AGENT", "  ")
+    assert "github.com" in importlib.reload(md).USER_AGENT
+    monkeypatch.delenv("EDGAR_USER_AGENT")
+    importlib.reload(md)
