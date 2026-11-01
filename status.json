@@ -1,11 +1,11 @@
 {
-  "time": "2026-11-01T16:04+00:00",
+  "time": "2026-11-01T16:47+00:00",
   "leaderboard": {
     "ok": true,
     "wallets": 25,
     "enriched": 21
   },
-  "manual": 0,
+  "manual": 4,
   "errors": [
     "detalii suqh5s…: https://data.solanatracker.io/pnl/suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK nu răspunde: JSONDecodeError",
     "detalii CyaE1V…: https://data.solanatracker.io/pnl/CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o nu răspunde: JSONDecodeError",
@@ -43,7 +43,7 @@
       "summary.winPercentage"
     ]
   },
-  "written": 25,
+  "written": 29,
   "passing": 1,
   "insider_pattern": 0
 }
