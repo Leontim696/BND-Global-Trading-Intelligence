@@ -25,7 +25,10 @@ def label(name: str) -> str:
     """Eticheta unei piețe; monedele din top 50 primesc una generică (cu mențiune pentru memecoin)."""
     if name in LABELS:
         return LABELS[name]
-    from .universe import DEFENSE_CURRENCY
+    from .universe import DEFENSE_CURRENCY, STOCK_UNIVERSE
+    for stock in STOCK_UNIVERSE:
+        if stock.name == name:
+            return f"{name} (acțiune americană, sector {stock.sector})"
     if name in DEFENSE_CURRENCY:
         return f"{name} (acțiune din industria de apărare, în {DEFENSE_CURRENCY[name]})"
     from .crypto50 import COINS

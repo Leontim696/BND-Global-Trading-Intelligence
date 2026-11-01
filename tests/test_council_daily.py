@@ -197,11 +197,11 @@ def test_lean_is_the_direction_of_the_non_hold_votes_and_is_compared_after_settl
 
 def test_workflow_default_is_the_base_markets_plus_the_extra_coins_and_the_defense_stocks():
     from src.bnd.crypto50 import EXTRA
-    from src.bnd.universe import DEFENSE_NAMES
+    from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES
     text = open(".github/workflows/consiliu-umbra.yml", encoding="utf-8").read()
-    expected = ",".join(cd.BASE_PEERS + EXTRA + DEFENSE_NAMES)
+    expected = ",".join(cd.BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES)
     assert text.count(expected) == 2                    # intrarea manuală și valoarea implicită
-    assert '--daily-budget "${DAILY_CAP:-2.50}" --monthly-budget "${MONTHLY_CAP:-38}"' in text and "timeout-minutes: 45" in text
+    assert '--daily-budget "${DAILY_CAP:-3.00}" --monthly-budget "${MONTHLY_CAP:-38}"' in text and "timeout-minutes: 45" in text
 
 
 def test_new_coins_get_a_class_and_a_label_and_old_markets_keep_the_same_context(tmp_path, series):

@@ -67,7 +67,7 @@ jobs:
               && git cat-file -e FETCH_HEAD:registry.sqlite 2>/dev/null; then
             git show FETCH_HEAD:registry.sqlite > state/registry.sqlite
           fi
-          coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES))")"
+          coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
           python -m src.bnd.crypto_signals --registry state/registry.sqlite --coins "$coins" --out state/semnale.json
       - name: Download the candles (ETF/forex and Yahoo crypto, then Binance coins)
         if: steps.restore.outputs.account != 'none'

@@ -139,6 +139,7 @@ DEFENSE_UNIVERSE = tuple(
 )
 DEFENSE_CURRENCY = {name: currency for name, _, currency in _DEFENSE}
 DEFENSE_NAMES = tuple(name for name, _, _ in _DEFENSE)
+STOCK_NAMES = tuple(m.name for m in STOCK_UNIVERSE)
 
 # Universul contului unic: piețele de reguli (ETF/forex), acțiuni (inclusiv apărare) + monedele din top 50 cripto. Memecoin-urile
 # au sector propriu (limită separată) și alunecare mai mare.
