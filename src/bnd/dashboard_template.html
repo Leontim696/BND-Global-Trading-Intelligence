@@ -25,6 +25,11 @@ h1{font:800 26px/1.1 var(--font-display);letter-spacing:-.02em;margin:0}
 .stamp{color:var(--muted);font:400 12px var(--font-data);margin-top:6px}
 .bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding-bottom:6px}
 nav{display:flex;gap:6px;overflow-x:auto;padding-block:8px}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+.filters button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--fg);font:600 12.5px var(--font-body);padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.filters button small{color:var(--muted);font-weight:400;margin-left:3px}
+.filters button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.filters button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .signals{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
 .sig{flex:0 0 auto;font:500 12px var(--font-data);padding:4px 8px;border-radius:7px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
 .sig.buy{color:var(--gain);border-color:var(--gain)}.sig.sell{color:var(--loss);border-color:var(--loss)}
@@ -79,6 +84,7 @@ td:first-child{font-family:var(--font-body);font-weight:600}
   </header>
   <div id="alerts"></div>
   <div class="bar"><nav id="tabs" role="tablist" aria-label="Conturi"></nav>
+    <div id="filters" class="filters" role="group" aria-label="Filtrează pe categorie"></div>
     <div id="signals" class="signals" aria-label="Semnale buy/sell acum"></div></div>
   <section id="view"></section>
   <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj.</p>
@@ -119,9 +125,36 @@ function spark(history, initial) {
 }
 
 const GROUPS = DATA.groups || [];
+let FILTER = "";
+try { FILTER = localStorage.getItem("bnd-filtru") || ""; } catch (e) { FILTER = ""; }
+if (!GROUPS.some(g => g.key === FILTER)) FILTER = "";
 function byGroup(items) {
-  return GROUPS.map(g => ({...g, items: items.filter(x => (x.group || "alte") === g.key)})).filter(g => g.items.length);
+  return GROUPS.filter(g => !FILTER || g.key === FILTER)
+    .map(g => ({...g, items: items.filter(x => (x.group || "alte") === g.key)})).filter(g => g.items.length);
 }
+function setFilter(key) {
+  FILTER = FILTER === key ? "" : key;
+  try { localStorage.setItem("bnd-filtru", FILTER); } catch (e) { /* fără stocare: filtrul rămâne doar cât e pagina deschisă */ }
+  show();
+}
+function filtersBar() {
+  const box = document.getElementById("filters");
+  // Numărul din chip = piețele consiliului pe categorie; categoriile fără vot încă (de exemplu acțiunile
+  // noi) folosesc pozițiile și ordinele conturilor.
+  const counts = {};
+  for (const m of (DATA.council && DATA.council.markets) || []) counts[m.group || "alte"] = (counts[m.group || "alte"] || 0) + 1;
+  for (const a of DATA.accounts.filter(x => x.exists && !x.archived)) {
+    const own = {};
+    for (const x of a.positions.concat(a.orders)) own[x.group || "alte"] = (own[x.group || "alte"] || 0) + 1;
+    for (const k of Object.keys(own)) if (!counts[k]) counts[k] = own[k];
+  }
+  const chips = GROUPS.filter(g => counts[g.key]).map(g => `<button type="button" data-g="${esc(g.key)}" aria-pressed="${FILTER === g.key}">${esc(g.label)}<small>${counts[g.key]}</small></button>`);
+  box.innerHTML = chips.length ? `<button type="button" data-g="" aria-pressed="${FILTER === ""}">Toate</button>` + chips.join("") : "";
+}
+document.getElementById("filters").addEventListener("click", e => {
+  const b = e.target.closest("button");
+  if (b) { if (b.dataset.g === "") { FILTER = ""; try { localStorage.setItem("bnd-filtru", ""); } catch (x) {} show(); } else setFilter(b.dataset.g); }
+});
 function tally(items, net) {
   const up = items.filter(x => net(x) > 0).length, down = items.filter(x => net(x) < 0).length;
   return `<span class="gain">▲ ${up}</span> · <span class="loss">▼ ${down}</span> · – ${items.length - up - down}`;
@@ -218,7 +251,7 @@ function council(c) {
   const rows = byGroup(c.markets).map(g => groupHead(g, tally(g.items, m => m.net)) + g.items.map(marketRow).join("")).join("");
   return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
     <div class="sub">„Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div>
-    <div class="big">${c.markets.length} piețe</div>
+    <div class="big">${FILTER ? c.markets.filter(m => m.group === FILTER).length + " din " + c.markets.length : c.markets.length} piețe</div>
     <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "citit de la OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div>` : ""}${agentsPanel(c)}${rows}${comparison(c)}`;
 }
 
@@ -236,7 +269,11 @@ function signalsBar() {
 }
 
 function top50() {
-  const rows = DATA.top50 || [];
+  let rows = DATA.top50 || [];
+  if (FILTER && FILTER !== "crypto" && FILTER !== "memecoin")
+    return `<p class="empty">Fila Top 50 conține doar criptomonede. Alege „Crypto", „Memecoin-uri" sau „Toate" din bara de filtre.</p>`;
+  if (FILTER === "crypto") rows = rows.filter(r => !r.meme);
+  if (FILTER === "memecoin") rows = rows.filter(r => r.meme);
   if (!rows.length) return `<p class="empty">Arhiva cu top 50 cripto nu are încă date. Apare după prima colectare de seară.</p>`;
   const cell = v => v == null ? "–" : `<span class="${v >= 0 ? "gain" : "loss"}">${pct1(v)}</span>`;
   const sig = s => s > 0 ? `<span class="gain" title="cumpără">▲</span>` : s < 0 ? `<span class="loss" title="vinde">▼</span>` : "–";
@@ -259,6 +296,7 @@ function archive() {
 }
 
 function show() {
+  filtersBar();
   signalsBar();
   const id = (location.hash || "#rezumat").slice(1);
   const key = TABS.some(t => t[0] === id) ? id : "rezumat";

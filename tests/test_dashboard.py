@@ -219,3 +219,13 @@ def test_every_market_gets_a_category_and_the_template_groups_by_it():
     assert "byGroup(c.markets)" in html and "byGroup(a.positions)" in html and "Semnale pe categorii" in html
     labels = [g["key"] for g in market_groups.labels()]
     assert labels[:3] == ["indici", "actiuni", "aparare"] and labels[-1] == "alte"
+
+
+def test_template_has_a_category_filter_bar_that_filters_every_grouped_view():
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    assert 'id="filters"' in html and "filtersBar()" in html and "bnd-filtru" in html
+    assert "g => !FILTER || g.key === FILTER" in html               # byGroup respectă filtrul
+    for view in ("byGroup(c.markets)", "byGroup(a.positions)", "byGroup(a.orders)", "byGroup(cm)"):
+        assert view in html, view
+    assert "FILTER === \"memecoin\"" in html                        # și fila Top 50 se filtrează
+    assert "try { FILTER = localStorage" in html                    # stocarea poate lipsi
