@@ -94,7 +94,7 @@ document.getElementById("stamp").textContent = "Actualizat " + when(DATA.generat
   (DATA.quotes_time ? " · prețuri de la " + when(DATA.quotes_time) : "");
 document.getElementById("alerts").innerHTML = (DATA.alerts || []).map(t => `<div class="alert" role="alert">${esc(t)}</div>`).join("");
 
-const TABS = [["rezumat","Rezumat"],["reguli","Reguli"],["cripto","Cripto AI"],["ai","AI unificat"],["consiliu","Consiliul"]];
+const TABS = [["rezumat","Rezumat"],["reguli","Reguli"],["cripto","Cripto AI"],["ai","AI unificat"],["consiliu","Consiliul"],["top50","Top 50"]];
 tabs.innerHTML = TABS.map(([id,t]) => `<button role="tab" data-id="${id}" id="tab-${id}">${t}</button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; } });
 
@@ -201,12 +201,25 @@ function signalsBar() {
   }).join("");
 }
 
+function top50() {
+  const rows = DATA.top50 || [];
+  if (!rows.length) return `<p class="empty">Arhiva cu top 50 cripto nu are încă date. Apare după prima colectare de seară.</p>`;
+  const cell = v => v == null ? "–" : `<span class="${v >= 0 ? "gain" : "loss"}">${pct(v)}</span>`;
+  const sig = s => s > 0 ? `<span class="gain">▲ cumpără</span>` : s < 0 ? `<span class="loss">▼ vinde</span>` : "–";
+  const price = p => p >= 100 ? money2(p) : p >= 1 ? p.toFixed(3) : p >= 0.01 ? p.toFixed(5) : p.toExponential(2);
+  const memes = rows.filter(r => r.meme).length;
+  return `<div class="hero"><div class="label">Top 50 cripto · ${rows.length} monede, ${memes} memecoin-uri</div>
+    <div class="sub">Date de la ${esc(rows[0].date)}. Doar privire de ansamblu: nu intră în consiliu și nu în conturi. Semnalul e regula simplă SMA 20/50, nu o recomandare.</div></div>
+    <div class="scroll"><table><tr><th>Monedă</th><th>Preț $</th><th>24h</th><th>7z</th><th>30z</th><th>Semnal</th></tr>
+    ${rows.map(r => `<tr><td>${esc(r.name)}${r.meme ? ' <span class="pill short" style="margin-left:4px">meme</span>' : ""}</td><td>${price(r.price)}</td><td>${cell(r.d1)}</td><td>${cell(r.d7)}</td><td>${cell(r.d30)}</td><td>${sig(r.signal)}</td></tr>`).join("")}</table></div>`;
+}
+
 function show() {
   signalsBar();
   const id = (location.hash || "#rezumat").slice(1);
   const key = TABS.some(t => t[0] === id) ? id : "rezumat";
   tabs.querySelectorAll("button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.id === key)));
-  view.innerHTML = key === "rezumat" ? summary() : key === "consiliu" ? council(DATA.council)
+  view.innerHTML = key === "rezumat" ? summary() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
     : account(DATA.accounts.find(a => a.key === names[key]));
 }
 view.addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) location.hash = b.dataset.go; });
