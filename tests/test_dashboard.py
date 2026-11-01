@@ -14,7 +14,7 @@ NOW = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
 def test_missing_accounts_are_reported_not_fatal(tmp_path):
     data = dashboard.collect(tmp_path, None, None, tmp_path, NOW)
 
-    assert [a["exists"] for a in data["accounts"]] == [False, False, False, False]
+    assert [a["exists"] for a in data["accounts"]] == [False] * 5
     assert data["council"] == {"exists": False}
 
 
@@ -57,12 +57,12 @@ def test_live_prices_change_the_valuation_and_alerts_are_listed(tmp_path):
     engine.record("daily_run", {"time": (NOW - timedelta(hours=50)).isoformat(), "equity": 10_000.0}, NOW)
     engine.close()
 
-    data = dashboard.collect(tmp_path, None, None, None, NOW,
+    data = dashboard.collect(None, None, None, None, NOW, unic=tmp_path,
                              quotes={"time": NOW.isoformat(), "quotes": {"AAA": [110.0, NOW.isoformat()]}},
-                             runs=[{"workflowName": "Bot virtual zilnic", "event": "schedule",
+                             runs=[{"workflowName": "Cont unic (virtual)", "event": "schedule",
                                     "conclusion": "failure", "createdAt": "2026-10-31T05:00:00Z"}])
 
-    account = data["accounts"][0]
+    account = data["accounts"][-1]
     assert account["live"] and account["live_equity"] > account["equity"]
     assert any("mai veche" in a for a in data["alerts"])
     assert any("a eșuat" in a for a in data["alerts"])

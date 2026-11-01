@@ -24,10 +24,12 @@ from .reconcile import reconcile
 ACCOUNTS = (("paper", "Reguli matematice", "Reguli simple, piețe ETF/forex/crypto"),
             ("crypto", "Cripto (AI)", "Consiliul AI pe 5 monede"),
             ("ai", "AI unificat", "Consiliul AI pe 13 piețe"),
-            ("rls", "Reguli long/short", "Reguli cu short și leverage"))
+            ("rls", "Reguli long/short", "Reguli cu short și leverage"),
+            ("unic", "Cont unic", "Regulile și consiliul AI amestecate, long și short"))
 
 
 STALE_AFTER = timedelta(hours=36)
+ARCHIVED = {"paper", "crypto", "ai", "rls"}      # conturile vechi, oprite la 1.11.2026 (înlocuite de „unic”)
 LOW_BALANCE_USD = 2.0
 KEY_LIMIT_USD = 10.0
 # Ancora confirmată de proprietar pe 2026-11-01, după ce a încărcat 30 $ la OpenRouter: din cheie
@@ -35,13 +37,12 @@ KEY_LIMIT_USD = 10.0
 # adaugă în registru după acel moment. (Ancora anterioară: 8,05 $ pe 2026-10-31.)
 ANCHOR_REMAINING_USD = Decimal("37.97")
 ANCHOR_LEDGER_USD = Decimal("0.36590888092")
-WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Bot virtual zilnic": "botul pe reguli",
-           "Bot cripto virtual (AI)": "botul de cripto", "Bot AI unificat (virtual)": "botul AI unificat"}
+WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Cont unic (virtual)": "contul unic"}
 
 
 def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | None = None) -> dict:
     path = Path(folder) / "paper.sqlite" if folder else None
-    base = {"key": key, "title": title, "subtitle": subtitle}
+    base = {"key": key, "title": title, "subtitle": subtitle, "archived": key in ARCHIVED}
     if not path or not path.exists():
         return {**base, "exists": False}
     try:
@@ -213,7 +214,7 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
         if a["kill_switch"]:
             found.append(f"{a['title']}: oprire de siguranță activă ({a['kill_reason']})")
         last = a.get("last_run")
-        if last and now - datetime.fromisoformat(last) > STALE_AFTER:
+        if a["key"] not in ARCHIVED and last and now - datetime.fromisoformat(last) > STALE_AFTER:
             found.append(f"{a['title']}: ultima rulare e mai veche de 36 de ore")
     latest = {}
     for run in sorted(runs or [], key=lambda r: r.get("createdAt", "")):
@@ -227,9 +228,9 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
-            balance: dict | None = None, rls=None) -> dict:
+            balance: dict | None = None, rls=None, unic=None) -> dict:
     now = now or datetime.now(timezone.utc)
-    folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls}
+    folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic}
     prices = (quotes or {}).get("quotes", {})
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
     council = read_council(council, balance, now)
@@ -282,7 +283,7 @@ def render(data: dict, template: str) -> str:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="dashboard")
-    for name in ("paper", "crypto", "ai", "council", "rls"):
+    for name in ("paper", "crypto", "ai", "council", "rls", "unic"):
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
@@ -297,7 +298,7 @@ def main(argv=None) -> int:
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
         balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
-                       top50=args.top50, balance=balance, rls=args.rls)
+                       top50=args.top50, balance=balance, rls=args.rls, unic=args.unic)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

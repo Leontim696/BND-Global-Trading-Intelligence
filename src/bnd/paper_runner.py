@@ -78,6 +78,7 @@ def instrument_for(market) -> Instrument:
     return Instrument(symbol=market.name, asset_class=market.asset_class,
                       fee_pct=market.fee_pct, slippage_pct=market.slippage_pct,
                       carry_pct_annual=market.carry_pct_annual,
+                      sector=market.sector,
                       currency_pair=market.name if _is_pair(market) else "",
                       margin_pct=esma_margin_pct(market))
 
@@ -103,13 +104,16 @@ def feed_new_candles(engine: PaperEngine, data: dict) -> int:
     return len(pending)
 
 
+AI_WEIGHT = 0.5      # în strategia hibridă: jumătate regulile, jumătate consiliul AI
+
+
 def latest_weights(data: dict, markets, factory, config: PortfolioConfig,
-                   given_signals: dict | None = None) -> tuple[dict, dict]:
+                   given_signals: dict | None = None, blend: bool = False) -> tuple[dict, dict]:
     """Today's portfolio weights and raw signals, as the backtest computes them."""
     books, signals = [], {}
     for market in markets:
         candles = data[market.name]
-        if given_signals is not None:
+        if given_signals is not None and not blend:
             # Semnale venite din afară (consiliul AI); o piață fără semnal nu are poziție nouă.
             strategy, signal = (lambda history: 0.0), float(given_signals.get(market.name, 0.0))
         else:
@@ -117,6 +121,9 @@ def latest_weights(data: dict, markets, factory, config: PortfolioConfig,
             signal = 0.0
             for end in range(1, len(candles) + 1):
                 signal = strategy(_History(candles, end))
+            if blend and market.name in (given_signals or {}):
+                # Hibrid: regulile și consiliul se amestecă; la dezacord se anulează, la acord crește.
+                signal = (1 - AI_WEIGHT) * signal + AI_WEIGHT * float(given_signals[market.name])
         signal = signal if (signal >= 0 or config.allow_short) else 0.0
         book = _Book(market, candles, strategy, signal=signal,
                      vol=_volatility(candles, len(candles), config.vol_lookback))
@@ -260,7 +267,7 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
 
 def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerConfig,
               strategy: str, now: datetime | None = None,
-              given_signals: dict | None = None) -> dict:
+              given_signals: dict | None = None, blend: bool = False) -> dict:
     """One daily step; the result is also written to the engine's journal."""
     now = now or datetime.now(timezone.utc)
     for market in markets:
@@ -273,8 +280,8 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
               "orders": []}
     if not account["kill_switch"]:
         weights, signals = latest_weights(data, markets, factory, config.portfolio,
-                                          given_signals)
-        if given_signals is not None:
+                                          given_signals, blend)
+        if given_signals is not None and not blend:
             # Fără decizie azi pentru o piață: poziția rămâne cum e.
             equity = engine.equity()
             held = {p["symbol"]: p["quantity"] for p in engine.positions()}
@@ -393,11 +400,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--reset-kill-switch", metavar="CONFIRMATION",
                         help="restart after a kill switch; the text must be RESET-KILL-SWITCH")
     # Settings default to None so an explicit value can be told apart.
-    parser.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto", "ai"])
+    parser.add_argument("--universe", choices=["futures", "etf", "stocks", "crypto", "ai", "unic"])
     parser.add_argument("--markets")
     parser.add_argument("--classes")
     parser.add_argument("--strategy",
-                        choices=["combo", "selector", "score_weighted", "cross_momentum", "ai_council"]
+                        choices=["combo", "selector", "score_weighted", "cross_momentum", "ai_council", "hibrid"]
                         + sorted(SWEEP_RANGES))
     parser.add_argument("--members", help="combo/selector: comma-separated strategies")
     parser.add_argument("--param", action="append", metavar="NAME=VALUE")
@@ -470,7 +477,8 @@ def _make_factory(settings, data):
         return lambda: (lambda history: 0.0)          # semnalele vin din fișier
     params = _params(settings)
     if settings["strategy"] != "cross_momentum":
-        factory = _factory(settings["strategy"], params)
+        # „hibrid” = regulile regime_switch amestecate cu semnalele consiliului AI.
+        factory = _factory("regime_switch" if settings["strategy"] == "hibrid" else settings["strategy"], params)
         if not data:
             factory()
         return factory
@@ -522,12 +530,12 @@ def main(argv=None) -> int:
             data = {m.name: load_csv(folder / f"{m.name}.csv") for m in available}
             factory = _make_factory(settings, data)
             given = None
-            if settings["strategy"] == "ai_council":
+            if settings["strategy"] in ("ai_council", "hibrid"):
                 if not args.signals:
-                    raise ValueError("Strategia ai_council cere --signals")
+                    raise ValueError(f"Strategia {settings['strategy']} cere --signals")
                 given = _read_signals(args.signals)
             report = run_daily(engine, data, available, factory, config, settings["strategy"],
-                               given_signals=given)
+                               given_signals=given, blend=settings["strategy"] == "hibrid")
             report["settings"] = settings
             report["mode"] = mode
             if args.audit_log:

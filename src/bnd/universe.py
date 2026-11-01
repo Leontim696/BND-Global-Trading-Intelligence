@@ -124,6 +124,25 @@ CRYPTO_UNIVERSE = tuple(
     Market(name, symbol, "crypto", *CLASS_COSTS["crypto"]) for name, symbol in _CRYPTO
 )
 
+# Universul contului unic: piețele de reguli (ETF/forex) + monedele din top 50 cripto. Memecoin-urile
+# au sector propriu (limită separată) și alunecare mai mare.
+def _build_unic():
+    from .coins import COINS
+    markets = {m.name: m for m in ETF_UNIVERSE}
+    for m in CRYPTO_UNIVERSE:
+        markets.setdefault(m.name, m)
+    covered = {"BTC", "ETH", "SOL", "BNB", "XRP"}
+    for name, symbol, meme in COINS:
+        if name in covered:
+            continue
+        fee, slippage, carry = CLASS_COSTS["crypto"]
+        markets[name] = Market(name, symbol, "crypto", fee, slippage * (3 if meme else 1), carry,
+                               sector="memecoin" if meme else "")
+    return tuple(markets.values())
+
+
+UNIC_UNIVERSE = _build_unic()
+
 # Toate piețele pe care le votează consiliul AI: un singur cont le poate
 # tranzacționa pe toate (indici, metale, petrol, forex, obligațiuni, crypto).
 AI_MARKETS = ("SP500", "NASDAQ100", "GOLD", "SILVER", "CRUDE_OIL", "BITCOIN", "ETHEREUM",
@@ -132,7 +151,7 @@ _BY_NAME = {m.name: m for m in ETF_UNIVERSE + CRYPTO_UNIVERSE}
 AI_UNIVERSE = tuple(_BY_NAME[name] for name in AI_MARKETS)
 
 UNIVERSES = {"futures": DEFAULT_UNIVERSE, "etf": ETF_UNIVERSE, "stocks": STOCK_UNIVERSE,
-             "crypto": CRYPTO_UNIVERSE, "ai": AI_UNIVERSE}
+             "crypto": CRYPTO_UNIVERSE, "ai": AI_UNIVERSE, "unic": UNIC_UNIVERSE}
 
 
 def select(names=None, classes=None, universe: str = "futures") -> tuple[Market, ...]:

@@ -83,12 +83,12 @@ def test_branch_cleanup_protects_every_state_branch_and_has_write_only_in_its_jo
     body = text(ROOT / ".github" / "workflows" / "branch-cleanup.yml")
     assert re.search(r"^permissions:\n  contents: read", body, re.M)
     for branch in ("backtest-results", "paper-trading", "crypto-trading", "ai-unificat",
-                   "consiliu-umbra", "status", "date-piete", "reguli-ls"):
+                   "consiliu-umbra", "status", "date-piete", "reguli-ls", "cont-unic"):
         assert body.count(branch) >= 2, branch              # în ambele liste de protecție
     # Orice ramură de stare folosită de un workflow trebuie să fie protejată.
     used = set()
     for path in WORKFLOWS:
-        used |= set(re.findall(r"origin\s+(paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status|backtest-results|date-piete|reguli-ls)\b",
+        used |= set(re.findall(r"origin\s+(paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status|backtest-results|date-piete|reguli-ls|cont-unic)\b",
                                text(path)))
     assert all(branch in body for branch in used), used
 
