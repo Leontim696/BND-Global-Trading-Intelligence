@@ -1,12 +1,12 @@
 {
-  "time": "2026-11-01T14:07+00:00",
+  "time": "2026-11-01T15:51+00:00",
   "leaderboard": {
-    "ok": false,
-    "error": "fără cheie SOLANATRACKER_API_KEY"
+    "ok": true,
+    "wallets": 25
   },
   "manual": 0,
   "errors": [],
-  "written": 0,
+  "written": 25,
   "passing": 0,
   "insider_pattern": 0
 }
