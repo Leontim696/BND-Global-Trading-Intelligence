@@ -59,8 +59,11 @@ jobs:
               ""|main|backtest-results|paper-trading|crypto-trading|ai-unificat|consiliu-umbra|status|date-piete|reguli-ls|cont-unic|smart-money|date-12-ani) continue ;;
             esac
             if git show-ref --verify --quiet "refs/remotes/origin/$branch"; then
-              gh api -X DELETE "repos/$REPO/git/refs/heads/$branch"
-              echo "Deleted (asked for): $branch"; deleted=$((deleted + 1))
+              if gh api -X DELETE "repos/$REPO/git/refs/heads/$branch" > /dev/null; then
+                echo "Deleted (asked for): $branch"; deleted=$((deleted + 1))
+              else
+                echo "Could not delete (already gone?): $branch"
+              fi
             else
               echo "Not found (already gone?): $branch"
             fi
