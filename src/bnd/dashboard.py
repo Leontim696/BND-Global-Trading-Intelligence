@@ -37,7 +37,10 @@ KEY_LIMIT_USD = 10.0
 # adaugă în registru după acel moment. (Ancora anterioară: 8,05 $ pe 2026-10-31.)
 ANCHOR_REMAINING_USD = Decimal("37.97")
 ANCHOR_LEDGER_USD = Decimal("0.36590888092")
-WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Cont unic (virtual)": "contul unic"}
+WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Cont unic (virtual)": "contul unic",
+           "Arhivă date de piață": "arhivei de date", "Date macro și context (arhivă)": "colectării de date macro",
+           "Smart-Money (colector walleturi)": "colectorului smart-money"}
+DRAWDOWN_ALERT_PCT = 5.0           # scădere față de vârful contului, de la care se trimite o alertă
 
 
 def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | None = None) -> dict:
@@ -231,6 +234,8 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
             found.append(f"{a['title']}: discrepanță contabilă (reconcilierea independentă nu se potrivește)")
         if a["kill_switch"]:
             found.append(f"{a['title']}: oprire de siguranță activă ({a['kill_reason']})")
+        if a["key"] not in ARCHIVED and (a.get("drawdown_pct") or 0) >= DRAWDOWN_ALERT_PCT:
+            found.append(f"{a['title']}: scădere de {a['drawdown_pct']:.1f}% față de vârf")
         last = a.get("last_run")
         if a["key"] not in ARCHIVED and last and now - datetime.fromisoformat(last) > STALE_AFTER:
             found.append(f"{a['title']}: ultima rulare e mai veche de 36 de ore")

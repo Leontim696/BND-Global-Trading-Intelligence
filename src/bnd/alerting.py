@@ -39,10 +39,22 @@ def due(alerts, state: dict, now: datetime, cooldown: timedelta = COOLDOWN):
     return fresh, new_state
 
 
+def once_due(items, state: dict, now: datetime):
+    """Alerte de tip „eveniment”: se trimit o singură dată, nu se repetă după pauză. (de trimis, starea nouă)"""
+    fresh, new_state = [], dict(state)
+    for text in dict.fromkeys(items):
+        key = "o:" + _key(text)
+        if key not in state:
+            fresh.append(text)
+            new_state[key] = now.isoformat()
+    return fresh, new_state
+
+
 def main(argv=None, sender=notify.send) -> int:
     parser = argparse.ArgumentParser(prog="alerting")
     parser.add_argument("--status", required=True, help="JSON de la dashboard --status-json")
     parser.add_argument("--state", required=True)
+    parser.add_argument("--extra", help="JSON cu {\"once\": [...]}: alerte trimise o singură dată")
     args = parser.parse_args(argv)
     now = datetime.now(timezone.utc)
     try:
@@ -52,7 +64,16 @@ def main(argv=None, sender=notify.send) -> int:
     except (OSError, ValueError) as exc:
         print("Error:", exc, file=sys.stderr)
         return 2
-    fresh, state = due(alerts, state, now)
+    kept_once = {k: v for k, v in state.items() if k.startswith("o:")}
+    fresh, state = due(alerts, {k: v for k, v in state.items() if not k.startswith("o:")}, now)
+    state.update(kept_once)
+    if args.extra and Path(args.extra).exists():
+        try:
+            once = json.loads(Path(args.extra).read_text(encoding="utf-8")).get("once", [])
+        except (OSError, ValueError):
+            once = []
+        new_once, state = once_due([str(x) for x in once], state, now)
+        fresh += new_once
     topic = os.environ.get("NTFY_TOPIC", "").strip()
     if fresh and topic:
         try:
