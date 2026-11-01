@@ -1,0 +1,1 @@
+{"data": {"candles_processed": 23, "equity": 11183.0, "kill_switch": false, "mode": "PAPER", "orders": 20, "strategy": "regime_switch"}, "hash": "dd84d3ee33403b8b44f9decda34928aaca59807161fd07791146b19a9380c4b0", "kind": "daily_run", "previous": "0000000000000000000000000000000000000000000000000000000000000000", "time": "2026-11-01T06:21:29.826173+00:00"}
