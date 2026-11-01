@@ -1,0 +1,44 @@
+name: Notificare telefon (mesaj liber)
+
+# Trimite o notificare pe telefon (aplicația ntfy) cu titlul și mesajul date la pornire manuală.
+# Folosită ca să te anunț când o lucrare e gata. Nu tranzacționează și nu cheamă AI.
+
+on:
+  workflow_dispatch:
+    inputs:
+      title:
+        description: 'Titlul notificării'
+        required: true
+        type: string
+      message:
+        description: 'Mesajul notificării'
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  trimite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+      TITLE: ${{ inputs.title }}
+      MESSAGE: ${{ inputs.message }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Send the notification
+        run: |
+          if [ -z "$NTFY_TOPIC" ]; then
+            echo "Secretul NTFY_TOPIC lipsește." >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          # Titlul și mesajul vin din variabile de mediu (nu sunt lipite în comandă).
+          python -m src.bnd.notify --title "${TITLE:0:80}" --message "${MESSAGE:0:500}" --priority default
+          echo "Notificarea a fost trimisă." >> "$GITHUB_STEP_SUMMARY"
