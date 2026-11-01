@@ -62,3 +62,15 @@ Auditul a găsit în laborator: semnalul se executa la închiderea care îl prod
 Regula nouă: o rulare care diferă de planul înregistrat (parametri, perioade) e refuzată sau cere `--accept-deviation` cu motivul; „acceptat” cere valoarea p sau o justificare.
 
 | E-012 | E-011 | **neconcludent** | Decis pe avantaj realist (0,1%/zi ≈ 25%/an): fals pozitive 0/80 (limită 4,6%), dar puterea e 0% la 25%/an, 20% la 63%/an, 87,5% la 126%/an. Procedura nu vede decât avantaje enorme. |
+
+## Reproductibilitate (audit 01.11)
+Un experiment se poate repeta doar dacă sunt fixate: **codul**, **datele**, **costurile**, **criteriile de acceptare** și **seed-urile**.
+- Codul: la propunere se salvează commit-ul scurt (`cod`); de acum, la rezultat se salvează și commit-ul complet împreună cu starea „modificat” (`cod_la_rezultat`). Un rezultat dintr-un cod cu modificări necomise sau cu alt commit decât la propunere e marcat.
+- Datele: la rezultat, `research_lab` salvează în metrici `reproducere.date` (SHA-256, număr de rânduri, prima și ultima zi pentru fiecare CSV, plus un hash comun). `python -m src.bnd.experiments verifica-date E-0xx FOLDER` compară datele de acum cu cele din rezultat.
+- Costurile vin din cod (`CLASS_COSTS`/`market_costs()`), deci sunt fixate doar prin commit; parametrii înregistrați conțin costul unde a fost dat explicit.
+- Criteriul se scrie înainte de rulare și rămâne în registrul cu lanț de hash-uri; `plan_deviations` blochează rularea care se abate de la plan.
+- Seed-urile: bootstrap 7; universurile sintetice `random.Random(1000 + u)`. Se salvează acum în `reproducere.seeds`.
+
+Raport: `python -m src.bnd.experiments reproducere` (cod de ieșire 1 dacă un experiment nu poate fi repetat complet).
+
+**Verdict onest pentru E-001..E-012 (făcute înainte de această schimbare):** NU sunt reproductibile complet. Codul de la propunere există (commit-uri valide), seed-urile sunt deterministe în cod, dar datele sunt doar etichetate (`date-piete/zilnic ...`, `date-12-ani ...`), fără hash, iar codul de la rezultat nu a fost salvat. O repetare cu datele de azi poate da alte numere dacă arhiva sau prețurile ajustate s-au schimbat. Registrul nu se rescrie; experimentele noi (E-013 și următoarele) pornesc cu aceste câmpuri.
