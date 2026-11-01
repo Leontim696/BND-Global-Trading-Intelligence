@@ -1,7 +1,7 @@
-name: Smart-Money sondaj API (manual)
+name: Smart-Money descoperire de walleturi (manual)
 
-# Sondează ce răspunde API-ul Solana Tracker (stări HTTP și NUMELE câmpurilor, niciodată valori sau cheia) și salvează
-# rezultatul ca sondaj.json pe ramura smart-money. Doar manual, doar citire.
+# Caută walleturi care au câștigat mult cu sume mici: monede în trend -> primii cumpărători -> câștigători repetați,
+# apoi le verifică cu filtrele. Salvează descoperite.csv și descoperire.json pe ramura smart-money. Doar manual, doar citire.
 
 on:
   workflow_dispatch:
@@ -22,14 +22,18 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
-      - name: Probe
+      - name: Restore the history
+        run: bash scripts/restore_branch.sh smart-money arhiva
+      - name: Discover
         env:
           SOLANATRACKER_API_KEY: ${{ secrets.SOLANATRACKER_API_KEY }}
-        run: python -m src.bnd.smart_money_discovery --probe --out arhiva
+        run: python -m src.bnd.smart_money_discovery --discover --out arhiva
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: bnd-sondaj-${{ github.run_id }}
-          path: arhiva/smart_money/sondaj.json
+          path: |
+            arhiva/smart_money/descoperite.csv
+            arhiva/smart_money/descoperire.json
           if-no-files-found: ignore
           retention-days: 3
 
@@ -52,7 +56,7 @@ jobs:
       - name: Save on the smart-money branch
         run: |
           set -euo pipefail
-          [ -f sondaj/sondaj.json ] || { echo "::warning::Nothing to save"; exit 0; }
+          [ -f sondaj/descoperire.json ] || { echo "::warning::Nothing to save"; exit 0; }
           git init -q out && cd out
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -64,10 +68,10 @@ jobs:
             else
               git checkout -q --orphan smart-money 2>/dev/null || true
             fi
-            cp ../sondaj/sondaj.json sondaj.json
+            cp ../sondaj/descoperite.csv ../sondaj/descoperire.json .
             git add -A
             if ! git diff --cached --quiet; then
-              git commit -q -m "Sondaj API Solana Tracker $(date -u +%Y-%m-%d)"
+              git commit -q -m "Descoperire walleturi $(date -u +%Y-%m-%d)"
             else
               echo "Nimic nou de salvat."
             fi
