@@ -1,7 +1,12 @@
 import csv
 import json
+from pathlib import Path
+
+import pytest
 
 from src.bnd import smart_money as sm
+
+ROOT = Path(__file__).resolve().parents[1]
 
 W1 = "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"
 W2 = "9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM"
@@ -54,8 +59,10 @@ def test_collect_without_key_uses_manual_list_and_reports_it(tmp_path):
     manual = tmp_path / "w.json"
     manual.write_text(json.dumps([{"wallet": W2, "label": "x"}, {"wallet": "invalid"}]))
     status = sm.collect(tmp_path, None, manual)
-    assert status["manual"] == 1 and status["written"] == 1 and "cheie" in status["leaderboard"]["error"]
-    assert (tmp_path / "smart_money" / "wallete.csv").exists()
+    assert status["manual"] == 1 and "cheie" in status["leaderboard"]["error"]
+    assert status["outcome"] == "no_key" and status["written"] == 0     # fără cheie nu se scriu rânduri goale
+    assert not (tmp_path / "smart_money" / "wallete.csv").exists()
+    assert (tmp_path / "smart_money" / "status.json").exists()
 
 
 def test_collect_with_leaderboard_and_failure_isolated(tmp_path):
@@ -167,3 +174,117 @@ def test_a_detail_call_is_retried_once(monkeypatch):
     with tempfile.TemporaryDirectory() as tmp:
         status = sm.collect(tmp, "k", Path(tmp) / "x.json", fetch=fetch)
     assert len(calls) == 2 and status["leaderboard"]["enriched"] == 1 and not status["errors"]
+
+
+# --- erori care nu trebuie ascunse (audit 01.11, P1 #2) -------------------------------------------
+import io
+import urllib.error
+
+
+def _http_error(code, retry_after=None):
+    headers = {"Retry-After": retry_after} if retry_after else {}
+    import email.message
+    msg = email.message.Message()
+    for k, v in headers.items():
+        msg[k] = v
+    return urllib.error.HTTPError("https://data.solanatracker.io/x", code, "x", msg, io.BytesIO(b""))
+
+
+def _run_main(tmp_path, monkeypatch, fetch, key="k"):
+    monkeypatch.setattr(sm, "sleep", lambda s: None)
+    monkeypatch.setattr(sm, "_get", fetch)
+    monkeypatch.setattr(sm, "collect", lambda out, k, m, _c=sm.collect: _c(out, k, m, fetch=fetch))
+    if key:
+        monkeypatch.setenv("SOLANATRACKER_API_KEY", key)
+    else:
+        monkeypatch.delenv("SOLANATRACKER_API_KEY", raising=False)
+    code = sm.main(["--out", str(tmp_path), "--manual", str(tmp_path / "lipsa.json")])
+    return code, json.loads((tmp_path / "smart_money" / "status.json").read_text())
+
+
+def test_missing_key_is_a_failed_exit_not_a_green_run(tmp_path, monkeypatch, capsys):
+    code, status = _run_main(tmp_path, monkeypatch, lambda u, k: [], key=None)
+    assert code == 3 and status["outcome"] == "no_key"
+    assert "::error::" in capsys.readouterr().out
+
+
+def test_unavailable_api_is_failed_and_writes_no_rows(tmp_path, monkeypatch):
+    def fetch(url, key):
+        raise ValueError("nu răspunde: URLError")
+    code, status = _run_main(tmp_path, monkeypatch, fetch)
+    assert code == 2 and status["outcome"] == "failed" and status["written"] == 0
+    assert not (tmp_path / "smart_money" / "wallete.csv").exists()
+
+
+def test_http_429_is_retried_then_reported_as_rate_limited(tmp_path, monkeypatch):
+    waits = []
+    monkeypatch.setattr(sm, "sleep", waits.append)
+    calls = []
+
+    def fetch(url, key):
+        calls.append(url)
+        raise sm.RateLimited("HTTP 429", retry_after=4)
+    status = {}
+    with pytest.raises(sm.RateLimited):
+        sm.fetch_with_retry(fetch, sm.BASE_URL + "/x", "k", status)
+    assert len(calls) == sm.RATE_LIMIT_ATTEMPTS and status["rate_limited"] == 3
+    assert waits == [4, 4]                                    # Retry-After respectat, fără pauză după ultima
+
+
+def test_retry_after_is_capped(monkeypatch):
+    waits = []
+    monkeypatch.setattr(sm, "sleep", waits.append)
+
+    def fetch(url, key):
+        raise sm.RateLimited("429", retry_after=9999)
+    with pytest.raises(sm.RateLimited):
+        sm.fetch_with_retry(fetch, "u", "k", {})
+    assert max(waits) == sm.MAX_WAIT
+
+
+def test_real_429_from_http_layer_becomes_rate_limited(monkeypatch):
+    class Opener:
+        def open(self, request, timeout=0):
+            raise _http_error(429, "7")
+    monkeypatch.setattr(sm, "build_opener", lambda *a: Opener())
+    with pytest.raises(sm.RateLimited) as caught:
+        sm._get(sm.BASE_URL + sm.LEADERBOARD_PATH, "k")
+    assert caught.value.retry_after == 7.0
+
+
+def test_429_on_leaderboard_fails_the_run(tmp_path, monkeypatch):
+    def fetch(url, key):
+        raise sm.RateLimited("HTTP 429", retry_after=0)
+    code, status = _run_main(tmp_path, monkeypatch, fetch)
+    assert code == 2 and status["outcome"] == "failed" and status["rate_limited"] == 3
+
+
+@pytest.mark.parametrize("payload", [{"hello": "world"}, "text", 42, [], {"data": []}, [{"wallet": "bad"}, 7]])
+def test_invalid_or_empty_leaderboard_is_failed(tmp_path, monkeypatch, payload):
+    code, status = _run_main(tmp_path, monkeypatch, lambda u, k: payload)
+    assert code == 2 and status["outcome"] == "failed" and status["leaderboard"]["ok"] is False
+
+
+def test_partial_detail_failures_are_visible_not_green_by_default(tmp_path, monkeypatch):
+    def fetch(url, key):
+        if "pnl" in url:
+            raise ValueError("HTTP 500")
+        return {"data": [row(), row(wallet=W2)]}
+    code, status = _run_main(tmp_path, monkeypatch, fetch)
+    assert status["outcome"] == "partial" and status["leaderboard"]["enriched"] == 0
+    assert len(status["errors"]) == 2 and status["written"] == 2 and code == 0
+
+
+def test_clean_run_is_ok(tmp_path, monkeypatch):
+    def fetch(url, key):
+        return {"summary": {"realized": 10, "totalInvested": 5}, "tokens": {"a": 1}} if "pnl" in url else {"data": [row()]}
+    code, status = _run_main(tmp_path, monkeypatch, fetch)
+    assert code == 0 and status["outcome"] == "ok"
+
+
+def test_workflow_reports_collection_failure_separately_from_publishing():
+    text = (ROOT / ".github/workflows/smart-money.yml").read_text()
+    assert "|| echo" not in text                                 # colectarea nu mai e înghițită
+    assert "rc=$" in text and "needs.colecteaza.outputs.rc" in text
+    publish = text.split("\n  publica:")[1]
+    assert "needs.colecteaza.outputs.rc" in publish and publish.rindex("COLLECT_RC") > publish.index("git push")   # verdictul vine după salvare
