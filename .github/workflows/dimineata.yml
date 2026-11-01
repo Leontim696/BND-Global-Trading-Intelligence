@@ -50,6 +50,7 @@ jobs:
           grab ai-unificat paper.sqlite out/a/paper.sqlite
           grab consiliu-umbra registry.sqlite out/k/registry.sqlite
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
+          grab status balance.json out/balance.json
           gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
           python -m src.bnd.morning --paper out/p --crypto out/c --ai out/a --council out/k \
-            --quotes out/quotes.json --runs out/runs.json --send | tee -a "$GITHUB_STEP_SUMMARY"
+            --quotes out/quotes.json --runs out/runs.json --balance out/balance.json --send | tee -a "$GITHUB_STEP_SUMMARY"

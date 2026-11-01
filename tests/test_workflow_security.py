@@ -6,7 +6,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 WORKFLOWS = sorted((ROOT / ".github" / "workflows").glob("*.yml"))
 WITH_KEY = {"OPENROUTER_API_KEY": {"bnd-five-agent-overnight.yml", "bnd-overnight-ai-review.yml",
-                                   "consiliu-umbra.yml", "gpt-claude-manual.yml",
+                                   "consiliu-umbra.yml", "status.yml", "gpt-claude-manual.yml",
                                    "openrouter-secret-check.yml", "three-agents-live.yml"},
             "NTFY_TOPIC": {"health-check.yml", "status.yml", "test-notificare.yml", "dimineata.yml"}}
 
