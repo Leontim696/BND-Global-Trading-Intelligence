@@ -1,14 +1,14 @@
 {
-  "time": "2026-11-01T14:59+00:00",
+  "time": "2026-11-01T15:27+00:00",
   "sources": {
     "polymarket": {
       "ok": true,
-      "markets": 9,
-      "added": 9
+      "markets": 8,
+      "added": 8
     },
     "fred": {
-      "ok": false,
-      "error": "fără cheie FRED_API_KEY"
+      "ok": true,
+      "rows": 1135
     },
     "edgar": {
       "ok": true,
