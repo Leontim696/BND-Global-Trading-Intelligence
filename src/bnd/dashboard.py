@@ -276,10 +276,40 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     if fx and eurron and eurron[0] > 0:
         fx["eurron"] = float(eurron[0])
         fx["usdron"] = fx["eurron"] / fx["eurusd"]
-    return {"generated": now.isoformat(timespec="minutes"), "fx": fx, "groups": market_groups.labels(),
+    events = events_from(accounts, council if council.get("exists") else None, now)
+    return {"generated": now.isoformat(timespec="minutes"), "events": events, "fx": fx, "groups": market_groups.labels(),
             "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
             "quotes_time": quotes_time,
             "accounts": accounts, "council": council, "alerts": alerts}
+
+
+DAILY_MOVE_ALERT_PCT = 2.0        # variație zilnică a contului de la care se trimite o notificare
+TEST_END = "2026-11-16"
+
+
+def events_from(accounts: list, council: dict | None, now: datetime) -> list:
+    """Evenimente importante, trimise o SINGURĂ dată fiecare (textul le face unice): nu sunt probleme, sunt vești."""
+    events = []
+    for a in accounts:
+        if not a.get("exists") or a["key"] in ARCHIVED:
+            continue
+        if a.get("fills"):
+            events.append(f"{a['title']}: s-au executat primele ordine ({len(a['positions'])} poziții deschise)")
+        history = a.get("history") or []
+        if len(history) >= 2 and history[-2]["equity"] > 0:
+            change = 100 * (history[-1]["equity"] / history[-2]["equity"] - 1)
+            if abs(change) >= DAILY_MOVE_ALERT_PCT:
+                events.append(f"{a['title']}: variație zilnică {change:+.1f}% (valoare {history[-1]['equity']:,.0f} "
+                              f"{a['currency']}) la {history[-1]['t'][:10]}")
+    if council and council.get("exists") and council.get("day"):
+        costs = council.get("costs") or {}
+        line = f"Consiliul AI {council['day']}: {len(council.get('markets', []))} piețe votate"
+        if costs:
+            line += f", cost azi {costs.get('today', 0):.2f} $, rămas {costs.get('remaining', 0):.2f} $"
+        events.append(line)
+    if now.date().isoformat() >= TEST_END:
+        events.append("Testul de 16 zile s-a încheiat: raportul final urmează (17.11)")
+    return events
 
 
 def status_summary(data: dict) -> dict:
@@ -296,6 +326,7 @@ def status_summary(data: dict) -> dict:
                               "kill_switch": a["kill_switch"], "reconciled": a["reconciled"]}
     costs = (data["council"] or {}).get("costs") or {}
     return {"generated": data["generated"], "ok": not data["alerts"], "alerts": data["alerts"],
+            "events": data.get("events", []),
             "accounts": accounts, "ai_balance_usd": costs.get("remaining"),
             "ai_spent_today_usd": costs.get("today")}
 
