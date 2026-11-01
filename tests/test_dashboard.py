@@ -151,3 +151,22 @@ def series_for_alerts(tmp_path):
     registry.record("2026-10-31:X", NOW, "X", 10.0, FusionCouncil(),
                     CouncilDecision(Vote.HOLD, DecisionRule.MAJORITY, {}, (), (), True, ()),
                     meta={"trace": trace})
+
+
+def test_council_markets_carry_the_net_buy_sell_signal_for_the_permanent_strip(tmp_path):
+    from src.bnd.decision_rules import CouncilDecision, DecisionRule
+    from src.bnd.fusion_council import FusionCouncil, Opinion, Vote
+    registry = DecisionRegistry(tmp_path / "registry.sqlite")
+    council = FusionCouncil()
+    for agent, vote in (("gpt", Vote.SELL), ("claude", Vote.SELL), ("gemini", Vote.BUY),
+                        ("grok", Vote.SELL), ("deepseek", Vote.HOLD)):
+        council.submit(Opinion(agent, vote, "x", 0.6))
+    registry.record("2026-11-01:BITCOIN", NOW, "BITCOIN", 70000.0, council,
+                    CouncilDecision(Vote.SELL, DecisionRule.MAJORITY, {}, (), (), False, ()),
+                    meta={"bot_signal": -1})
+
+    market = dashboard.collect(None, None, None, tmp_path, NOW)["council"]["markets"][0]
+
+    assert market["symbol"] == "BITCOIN" and market["net"] == -2 and market["bot"] == -1
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    assert 'id="signals"' in html and "signalsBar()" in html

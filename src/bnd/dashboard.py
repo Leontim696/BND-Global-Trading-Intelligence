@@ -105,7 +105,11 @@ def read_council(folder) -> dict:
             votes = {agent: v for agent, v in db.execute(
                 "SELECT agent, vote FROM votes WHERE decision_id = ? AND stage = 'final'",
                 (decision_id,))}
-            markets.append({"symbol": symbol, "decision": vote, "price": price, "votes": votes})
+            info = json.loads(db.execute("SELECT meta FROM decisions WHERE id = ?",
+                                         (decision_id,)).fetchone()[0] or "{}")
+            net = sum({"BUY": 1, "SELL": -1}.get(v, 0) for v in votes.values())
+            markets.append({"symbol": symbol, "decision": vote, "price": price, "votes": votes,
+                            "net": net, "bot": info.get("bot_signal") or 0})
         settled = db.execute("SELECT COUNT(*) FROM decisions WHERE settled_at IS NOT NULL"
                              ).fetchone()[0]
         total = db.execute("SELECT COUNT(*) FROM decisions").fetchone()[0]
