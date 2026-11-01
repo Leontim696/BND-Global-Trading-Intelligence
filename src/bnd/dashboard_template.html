@@ -191,6 +191,29 @@ tr[data-m]{cursor:pointer}tr[data-m]:hover td{background:var(--accent-soft)}
 .sys{display:grid;gap:8px;margin-top:10px}
 .sys div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
 .sys small{color:var(--muted);font:400 11.5px var(--font-data)}
+.meter{margin-top:12px}
+.meter .top{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.meter .bar2{height:8px;border-radius:99px;background:var(--line);margin-top:6px;overflow:hidden}
+.meter .bar2 span{display:block;height:100%;border-radius:99px;background:var(--accent)}
+.meter.warn .bar2 span{background:var(--warn)}.meter.bad .bar2 span{background:var(--loss)}
+.brief{display:grid;gap:9px;margin-top:10px}
+.brief p{margin:0;font-size:14.5px}
+.brief b{font-weight:800}
+.next{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.next span{border:1px solid var(--line-2);border-radius:12px;padding:7px 11px;font:500 12px var(--font-data);background:var(--glass)}
+.next b{color:var(--accent)}
+input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0}
+.shock{display:grid;grid-template-columns:110px 1fr 54px;gap:10px;align-items:center;font-size:13px;margin-top:6px}
+.shock output{font:600 12px var(--font-data);text-align:right}
+.big-delta{font:500 26px var(--font-display);margin-top:6px}
+.note{width:100%;min-height:78px;border:1px solid var(--line-2);border-radius:12px;background:var(--glass);padding:10px 12px;resize:vertical}
+.conf{height:4px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}
+.conf span{display:block;height:100%;background:var(--muted)}
+.agent.BUY .conf span{background:var(--gain)}.agent.SELL .conf span{background:var(--loss)}
+.help{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--line-2);background:none;color:var(--muted);font:700 11px var(--font-body);padding:0;margin-left:6px;vertical-align:1px}
+.help:hover{border-color:var(--accent);color:var(--accent)}
+.term{padding:12px 0;border-bottom:1px solid var(--line)}
+.term b{display:block;font:700 14px var(--font-body)}.term.on{background:var(--accent-soft);margin-inline:-8px;padding-inline:8px;border-radius:10px}
 .foot{color:var(--muted);font-size:12px;margin-top:30px}
 kbd{font:500 10.5px var(--font-data);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px;color:var(--muted)}
 /* foaie (detaliu piață / căutare rapidă) */
@@ -445,11 +468,12 @@ function openMarket(sym) {
   const m = councilMarket(sym), hold = holdings(sym), t = top50Row(sym), g = GROUPS.find(x => x.key === ((m && m.group) || (t && (t.meme ? "memecoin" : "crypto")) || "")) || null;
   const vote = v => ({BUY:"cumpără", SELL:"vinde", HOLD:"așteaptă"}[v] || v);
   const council = m ? `<h2>Consiliul AI</h2>
-      <div class="pillrow"><span class="tag ${m.net > 0 ? "gain" : m.net < 0 ? "loss" : ""}">înclinație netă ${m.net > 0 ? "+" : ""}${m.net} din 5</span>
+      <div class="pillrow"><span class="tag ${m.net > 0 ? "gain" : m.net < 0 ? "loss" : ""}">înclinație netă ${m.net > 0 ? "+" : ""}${m.net} din 5</span>${help("net")}
         <span class="tag">decizie: ${esc(vote(m.decision))}</span>${m.bot ? `<span class="tag ${m.bot > 0 ? "gain" : "loss"}">reguli: ${m.bot > 0 ? "▲ cumpără" : "▼ vinde"}</span>` : `<span class="tag">reguli: –</span>`}</div>
       <div class="gauge" role="img" aria-label="Înclinația netă ${m.net} pe o scară de la -5 la +5"><i style="left:${50 + 10 * m.net}%"></i></div>
       <div class="sub" style="display:flex;justify-content:space-between"><span>vinde</span><span>neutru</span><span>cumpără</span></div>
-      <div class="agents">${Object.entries(m.votes).map(([a, v]) => `<div class="agent ${esc(v)}"><b>${esc(a)}</b><span>${esc(vote(v))}</span></div>`).join("")}</div>`
+      <div class="agents">${Object.entries(m.votes).map(([a, v]) => `<div class="agent ${esc(v)}"><b>${esc(a)}</b><span>${esc(vote(v))}</span>${m.conf && m.conf[a] != null ? `<div class="conf" title="încredere ${Math.round(100 * m.conf[a])}%"><span style="width:${Math.round(100 * m.conf[a])}%"></span></div><div class="sub" style="font-size:11px">încredere ${Math.round(100 * m.conf[a])}%</div>` : ""}</div>`).join("")}</div>
+      <p class="sub" style="margin-top:12px">Semnal combinat estimat (50% reguli + 50% consiliu): <b class="${combo(m) > 0 ? "gain" : combo(m) < 0 ? "loss" : ""}">${combo(m) > 0 ? "+" : ""}${money2(combo(m))}</b>${help("combo")}</p>`
     : `<p class="sub" style="margin-top:14px">Consiliul nu a votat încă această piață.</p>`;
   const own = hold.length ? `<h2>În conturi</h2>` + hold.map(h => h.p
       ? `<div class="row" style="cursor:default"><div><span class="name">${esc(h.a.title)}</span><span class="pill ${h.p.quantity < 0 ? "short" : ""}">${h.p.quantity < 0 ? "short" : "long"}</span><div class="meta">intrare ${money2(h.p.avg)} · acum ${money2(h.p.last)}</div></div><div class="num">${money(h.p.value, "")}<div class="${h.p.pnl >= 0 ? "gain" : "loss"}">${h.p.pnl >= 0 ? "+" : ""}${money2(h.p.pnl)}</div></div></div>`
@@ -457,7 +481,7 @@ function openMarket(sym) {
     : `<p class="sub" style="margin-top:14px">Nicio poziție sau comandă în conturile active.</p>`;
   const cry = t ? `<h2>Top 50 cripto</h2><div class="pillrow"><span class="tag mono">$ ${t.price >= 1 ? money2(t.price) : t.price.toPrecision(3)}</span>${[["24h", t.d1], ["7z", t.d7], ["30z", t.d30]].map(([k, v]) => `<span class="tag ${v == null ? "" : v >= 0 ? "gain" : "loss"}">${k} ${v == null ? "–" : pct1(v)}</span>`).join("")}</div>` : "";
   openSheet(`<div class="label">${g ? esc(g.label) : "Piață"}</div><div class="hero-value" id="sheet-title" style="font-size:30px">${esc(label(sym))}</div>
-    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button></div>${council}${own}${cry}`);
+    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button></div>${council}${own}${cry}<h2>Notița ta</h2><textarea class="note" data-note="${esc(sym)}" placeholder="Scrie ce vrei să-ți amintești despre această piață (rămâne doar în acest browser)" aria-label="Notița ta">${esc(store("bnd-nota-" + sym) || "")}</textarea>`);
 }
 function openPalette() {
   openSheet(`<div class="label">Căutare rapidă</div><input class="pal" id="pal" type="search" placeholder="Scrie o piață sau o monedă…" aria-label="Caută o piață" autocomplete="off"><div id="pal-res"></div>`);
@@ -486,6 +510,149 @@ function summaryText() {
   if (c && c.exists && c.day) { const m = c.markets || []; lines.push("Consiliul " + c.day + ": " + m.length + " piețe, ▲ " + m.filter(x => x.net > 0).length + " ▼ " + m.filter(x => x.net < 0).length); }
   lines.push("Bani virtuali; nu dovedește un avantaj.");
   return lines.join("\n");
+}
+
+// --- semnal combinat, glosar, ceasul rulărilor ---
+const mc = (v, a) => money(v, esc(a.currency));   // sumă cu moneda contului, scăpată pentru HTML
+const sgn = x => x > 0 ? 1 : x < 0 ? -1 : 0;
+const cSig = m => sgn(m.net) * Math.min(1, Math.abs(m.net) / 2);       // semnalul consiliului, ca în cont
+const combo = m => 0.5 * (m.bot || 0) + 0.5 * cSig(m);                // amestec 50% reguli + 50% consiliu (estimare)
+const TERMS = {
+  leverage:["Leverage","Cât din valoarea contului e pusă în poziții. 1x = exact valoarea contului; 2x = de două ori. Cu cât e mai mare, cu atât mișcările prețurilor mută mai tare contul, în ambele sensuri."],
+  drawdown:["Drawdown","Cât a scăzut contul față de cel mai mare nivel atins. La 25% scădere, oprirea de siguranță blochează orice ordin nou."],
+  short:["Short (vânzare în lipsă)","Poziție care câștigă când prețul scade și pierde când urcă. În aplicație e doar virtual."],
+  net:["Înclinație netă","Câți dintre cei 5 agenți votează cumpărare minus câți votează vânzare. +3 înseamnă că trei agenți mai mulți vor să cumpere; 0 înseamnă neutru sau egal."],
+  combo:["Semnal combinat","Contul unic amestecă jumătate semnalul regulilor și jumătate semnalul consiliului. Dacă sunt de acord, poziția crește; dacă se contrazic, se anulează. Valoarea afișată e o estimare din datele de azi."],
+  brier:["Scor Brier","Măsoară cât de bine se potrivește încrederea unui agent cu realitatea. Mai mic e mai bun; 0 e perfect, iar 0,25 e cât ai nimeri aruncând cu banul."],
+  alpha:["Alpha","Cât a câștigat o decizie peste piață în aceeași perioadă. Fără ea, o decizie bună într-o piață care urcă tot ar părea reușită."],
+  sma:["SMA 20/50","Regulă simplă: dacă media pe 20 de zile e peste media pe 50, tendința e în sus. Nu e o recomandare."],
+  stres:["Test de stres","Estimare: cât ar câștiga sau pierde contul dacă piețele s-ar mișca cu procentele alese. Folosește pozițiile de acum sau pe cele de după comenzile de mâine. Nu prezice nimic."],
+  paper:["Bani virtuali","Nimic din aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj."]};
+const help = k => `<button class="help" type="button" data-term="${k}" aria-label="Ce înseamnă ${esc(TERMS[k][0])}?">?</button>`;
+function openGlossary(focus) {
+  openSheet(`<div class="label">Glosar</div><div class="hero-value" id="sheet-title" style="font-size:26px">Ce înseamnă termenii</div>` +
+    Object.entries(TERMS).map(([k, [n, d]]) => `<div class="term${k === focus ? " on" : ""}" id="term-${k}"><b>${esc(n)}</b><span class="sub">${esc(d)}</span></div>`).join(""));
+  const el = document.getElementById("term-" + focus); if (el) el.scrollIntoView({block: "center"});
+}
+function nextRuns() {
+  const now = new Date();
+  return (DATA.schedule || []).map(s => {
+    const [h, m] = s.utc.split(":").map(Number);
+    let at = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), h, m));
+    if (at <= now) at = new Date(at.getTime() + 864e5);
+    const mins = Math.round((at - now) / 60000);
+    const left = mins >= 60 ? Math.floor(mins / 60) + " h " + (mins % 60) + " min" : mins + " min";
+    const local = new Intl.DateTimeFormat("ro-RO", {timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit"}).format(at);
+    return {name: s.name, left, local, mins};
+  }).sort((a, b) => a.mins - b.mins);
+}
+const nextInner = () => nextRuns().map(r => `<span>${esc(r.name)} în <b>${r.left}</b> · ${r.local} (ora Germaniei)</span>`).join("");
+const nextRunsHtml = () => `<div class="next" id="next-runs">${nextInner()}</div>`;
+setInterval(() => { const el = document.getElementById("next-runs"); if (el) el.innerHTML = nextInner(); }, 30000);
+
+function riskRows(a) {
+  const L = a.limits || {}, equity = eq(a), rows = [];
+  const dd = a.drawdown_pct || 0;
+  if (L.max_drawdown_pct) rows.push({k:"drawdown", name:"Scădere față de vârf", cur:dd, max:L.max_drawdown_pct, fmt:v => money2(v) + "%", why:"la limită contul se oprește singur"});
+  if (L.max_leverage && a.leverage != null) rows.push({k:"leverage", name:"Leverage", cur:a.leverage, max:L.max_leverage, fmt:v => money2(v) + "x", why:"plafonul pus contului"});
+  const abs = a.positions.map(p => Math.abs(p.value || 0));
+  if (L.max_position_pct && equity > 0) rows.push({name:"Cea mai mare poziție", cur: abs.length ? 100 * Math.max(...abs) / equity : 0, max:L.max_position_pct, fmt:v => money2(v) + "%", why:"din valoarea contului"});
+  if (L.max_sector_pct && equity > 0) { const g = {}; for (const p of a.positions) g[p.group || "alte"] = (g[p.group || "alte"] || 0) + Math.abs(p.value || 0);
+    rows.push({name:"Cea mai mare categorie", cur: Object.keys(g).length ? 100 * Math.max(...Object.values(g)) / equity : 0, max:L.max_sector_pct, fmt:v => money2(v) + "%", why:"din valoarea contului"}); }
+  return rows.map(r => ({...r, ratio: r.max ? r.cur / r.max : 0}));
+}
+function riskPanel(a) {
+  const rows = riskRows(a); if (!rows.length) return "";
+  const L = a.limits || {}, equity = eq(a);
+  const stopAt = a.peak && L.max_drawdown_pct ? a.peak * (1 - L.max_drawdown_pct / 100) : null;
+  const dist = stopAt != null ? `<p class="sub" style="margin-top:14px">Oprirea de siguranță s-ar activa dacă valoarea contului scade sub <b>${mc(stopAt, a)}</b>, adică încă <b>${mc(Math.max(0, equity - stopAt), a)}</b> față de acum.</p>` : "";
+  return `<h2>Cât de aproape e de limite</h2><div class="panel">${rows.map(r => `<div class="meter ${r.ratio > .85 ? "bad" : r.ratio > .6 ? "warn" : ""}"><div class="top"><span>${esc(r.name)}${r.k ? help(r.k) : ""} <span class="sub">${esc(r.why)}</span></span><b class="mono">${r.fmt(r.cur)} <span class="sub">din ${r.fmt(r.max)}</span></b></div>
+    <div class="bar2" role="img" aria-label="${esc(r.name)}: ${Math.round(100 * r.ratio)}% din limită"><span style="width:${Math.min(100, 100 * r.ratio).toFixed(1)}%"></span></div></div>`).join("")}${dist}</div>`;
+}
+function orderNotional(o) {
+  const m = councilMarket(o.symbol); if (!m || !(m.price > 0)) return null;
+  return (o.side === "BUY" ? 1 : -1) * o.quantity * m.price;
+}
+function ordersPreview(a) {
+  if (!a.orders.length) return "";
+  const kinds = {long:0, short:0, "închide":0}; let buy = 0, sell = 0, unknown = 0;
+  const priced = a.orders.map(o => { kinds[o.kind] = (kinds[o.kind] || 0) + 1; const n = orderNotional(o); if (n == null) unknown++; else if (n > 0) buy += n; else sell += -n; return {o, n}; });
+  const top = priced.filter(x => x.n != null).sort((x, y) => Math.abs(y.n) - Math.abs(x.n)).slice(0, 5);
+  const topRows = top.map(x => `<button class="mover" type="button" data-m="${esc(x.o.symbol)}"><b>${esc(label(x.o.symbol))}</b><span class="mono ${x.n > 0 ? "gain" : "loss"}">${x.n > 0 ? "+" : "−"}${money(Math.abs(x.n), "$")}</span></button>`).join("");
+  return `<div class="panel hot"><div class="label">Mâine la deschidere</div>
+    <div class="pillrow"><span class="tag gain">${kinds.long} cumpărări (long)</span><span class="tag loss">${kinds.short} vânzări (short)</span><span class="tag">${kinds["închide"]} închideri</span></div>
+    <div class="stats" style="margin-bottom:0"><div><span class="label">Cumpărat (estimat)</span><b class="gain">${money(buy, "$")}</b></div><div><span class="label">Vândut (estimat)</span><b class="loss">${money(sell, "$")}</b></div></div>
+    ${top.length ? `<div class="label" style="margin-top:6px">Cele mai mari ordine</div>${topRows}` : ""}
+    <p class="sub">Valori estimate din prețul consiliului${unknown ? "; " + unknown + " ordine fără preț nu sunt incluse" : ""}. Ordinele se execută la deschiderea următoare, la prețul de atunci.</p></div>`;
+}
+
+let STRESS = {mode: "poz", shocks: {}};
+function exposureByGroup(a, mode) {
+  const g = {}; let missing = 0;
+  for (const p of a.positions) g[p.group || "alte"] = (g[p.group || "alte"] || 0) + (p.value || 0);
+  if (mode === "ord") for (const o of a.orders) { const n = orderNotional(o); if (n == null) missing++; else g[o.group || "alte"] = (g[o.group || "alte"] || 0) + n; }
+  return {g, missing};
+}
+function stressResult(a) {
+  const {g, missing} = exposureByGroup(a, STRESS.mode), equity = eq(a);
+  let total = 0; const lines = [];
+  for (const [k, v] of Object.entries(g)) { const s = STRESS.shocks[k] || 0, d = v * s / 100; total += d; if (s) lines.push([k, d]); }
+  const cls = total >= 0 ? "gain" : "loss";
+  return `<div class="big-delta ${cls}">${total >= 0 ? "+" : "−"}${mc(Math.abs(total), a)} <span class="sub">${equity > 0 ? pct(100 * total / equity) + " din cont" : ""}</span></div>
+    ${lines.length ? `<div class="legend">${lines.map(([k, d]) => `<span>${esc((GROUPS.find(x => x.key === k) || {label: k}).label)} <b class="${d >= 0 ? "gain" : "loss"}">${d >= 0 ? "+" : "−"}${money(Math.abs(d), "")}</b></span>`).join("")}</div>` : `<p class="sub">Mută un glisor ca să vezi efectul.</p>`}
+    ${missing ? `<p class="sub">${missing} ordine fără preț nu sunt incluse.</p>` : ""}`;
+}
+function stressPanel(a) {
+  const {g} = exposureByGroup(a, STRESS.mode);
+  const keys = GROUPS.filter(x => g[x.key]).map(x => x.key);
+  const seg = `<div class="seg" role="group" aria-label="Pe ce se calculează"><button type="button" data-stress-mode="poz" aria-pressed="${STRESS.mode === "poz"}">Pozițiile de acum</button><button type="button" data-stress-mode="ord" aria-pressed="${STRESS.mode === "ord"}">După comenzile de mâine</button></div>`;
+  const body = keys.length ? `<div class="shock"><span><b>Toate piețele</b></span><input type="range" min="-30" max="30" step="1" value="0" data-shock-all aria-label="Toate piețele"><output id="o-all">0%</output></div>` +
+    keys.map(k => `<div class="shock"><span>${esc(GROUPS.find(x => x.key === k).label)}</span><input type="range" min="-30" max="30" step="1" value="${STRESS.shocks[k] || 0}" data-shock="${esc(k)}" aria-label="${esc(GROUPS.find(x => x.key === k).label)}"><output>${STRESS.shocks[k] || 0}%</output></div>`).join("")
+    : `<p class="sub" style="margin-top:10px">${STRESS.mode === "poz" ? "Nu există poziții deschise încă. Alege „După comenzile de mâine” ca să vezi ce ar însemna ordinele planificate." : "Nu există nici ordine cu preț cunoscut."}</p>`;
+  return `<h2>Test de stres ${help("stres")}</h2><div class="panel">${seg}${body}<div id="stress-out" style="margin-top:12px">${stressResult(a)}</div></div>`;
+}
+document.addEventListener("input", e => {
+  const a = DATA.accounts.find(x => x.key === "unic"), t = e.target;
+  if (t.matches("[data-shock]")) { STRESS.shocks[t.dataset.shock] = +t.value; t.nextElementSibling.textContent = t.value + "%"; $("stress-out").innerHTML = stressResult(a); }
+  else if (t.matches("[data-shock-all]")) { view.querySelectorAll("[data-shock]").forEach(r => { r.value = t.value; STRESS.shocks[r.dataset.shock] = +t.value; r.nextElementSibling.textContent = t.value + "%"; }); $("o-all").textContent = t.value + "%"; $("stress-out").innerHTML = stressResult(a); }
+  else if (t.matches("[data-note]")) store("bnd-nota-" + t.dataset.note, t.value);
+});
+
+function convictionPanel(ms) {
+  const rows = ms.filter(m => m.bot).map(m => ({m, c: combo(m)}));
+  const agree = rows.filter(x => sgn(x.m.bot) === sgn(x.m.net)), clash = rows.filter(x => x.m.net && sgn(x.m.bot) !== sgn(x.m.net));
+  const longs = agree.filter(x => x.c > 0).sort((x, y) => y.c - x.c).slice(0, 6), shorts = agree.filter(x => x.c < 0).sort((x, y) => x.c - y.c).slice(0, 6);
+  const chip = x => `<button class="sig ${x.c > 0 ? "buy" : x.c < 0 ? "sell" : ""}" type="button" data-m="${esc(x.m.symbol)}" title="semnal combinat estimat ${money2(x.c)}">${esc(label(x.m.symbol))} ${x.c > 0 ? "▲" : "▼"}${money2(Math.abs(x.c))}</button>`;
+  const none = `<span class="sub">niciuna acum</span>`;
+  return `<h2>Reguli și consiliu ${help("combo")}</h2><div class="panel"><p class="sub" style="margin-top:0">Contul amestecă jumătate semnalul regulilor, jumătate pe cel al consiliului. Unde sunt de acord, poziția e mai mare; unde se contrazic, se anulează.</p>
+    <div class="label" style="margin-top:12px">De acord · spre cumpărare (${longs.length})</div><div class="filters" style="padding-top:6px;flex-wrap:wrap">${longs.map(chip).join("") || none}</div>
+    <div class="label" style="margin-top:12px">De acord · spre vânzare (${shorts.length})</div><div class="filters" style="padding-top:6px;flex-wrap:wrap">${shorts.map(chip).join("") || none}</div>
+    <div class="label" style="margin-top:12px">Se contrazic · pozițiile se anulează (${clash.length})</div><div class="filters" style="padding-top:6px;flex-wrap:wrap">${clash.slice(0, 14).map(x => chip({m: x.m, c: x.c || sgn(x.m.net) * .01})).join("") || none}</div>
+    <p class="sub">${agree.length} din ${rows.length} piețe cu semnal de la reguli au consiliul de aceeași parte. Valorile sunt estimări din datele de azi.</p></div>`;
+}
+
+function briefing() {
+  const a = DATA.accounts.find(x => x.key === "unic"), c = DATA.council, out = [];
+  if (a && a.exists) {
+    const v = eq(a), ch = 100 * (v / a.initial - 1);
+    out.push(`<p>Contul unic are <b>${fm(v, a)}</b> (<span class="${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</span> față de start), <b>${a.positions.length}</b> poziții deschise și <b>${a.orders.length}</b> ordine pentru mâine.</p>`);
+    if (a.orders.length) { const k = {long:0, short:0, "închide":0}; a.orders.forEach(o => k[o.kind] = (k[o.kind] || 0) + 1);
+      out.push(`<p>La deschiderea următoare: <b>${k.long}</b> cumpărări, <b>${k.short}</b> vânzări short, <b>${k["închide"]}</b> închideri.</p>`); }
+    const near = riskRows(a).sort((x, y) => y.ratio - x.ratio)[0];
+    if (near && a.positions.length) out.push(`<p>Cel mai aproape de o limită: <b>${esc(near.name.toLowerCase())}</b>, la ${Math.round(100 * near.ratio)}% din plafon.</p>`);
+    if (a.kill_switch) out.push(`<p class="loss"><b>Oprire de siguranță activă</b>: nu se mai deschid poziții noi.</p>`);
+  }
+  if (c && c.exists && c.day) {
+    const ms = c.markets || [], up = ms.filter(m => m.net > 0).length, down = ms.filter(m => m.net < 0).length;
+    const split = ms.filter(m => Object.values(m.votes).includes("BUY") && Object.values(m.votes).includes("SELL")).length;
+    out.push(`<p>Consiliul din <b>${esc(c.day)}</b>: <span class="gain">${up}</span> piețe spre cumpărare, <span class="loss">${down}</span> spre vânzare, ${split} cu dezacord între agenți.</p>`);
+    const strong = ms.filter(m => m.bot).map(m => ({m, c: combo(m)})).filter(x => x.c && sgn(x.m.bot) === sgn(x.m.net)).sort((x, y) => Math.abs(y.c) - Math.abs(x.c)).slice(0, 3);
+    const names = strong.map(x => "<b>" + esc(label(x.m.symbol)) + "</b> " + (x.c > 0 ? "▲" : "▼")).join(", ");
+    if (strong.length) out.push(`<p>Cele mai clare semnale (reguli și consiliu de acord): ${names}.</p>`);
+  }
+  const bad = (DATA.alerts || []).length;
+  if (bad) out.push(`<p class="loss"><b>${bad}</b> ${bad === 1 ? "alertă activă" : "alerte active"}: vezi sus.</p>`);
+  return `<div class="panel hot"><div class="label">Azi pe scurt</div><div class="brief">${out.join("") || `<p class="sub">Încă nu sunt date.</p>`}</div>${nextRunsHtml()}</div>`;
 }
 
 // --- blocuri ---
@@ -529,7 +696,7 @@ function account(a) {
   const ord = a.orders.length ? (byGroup(a.orders).map(g => groupHead(g, tally(g.items, o => o.kind === "închide" ? 0 : o.side === "BUY" ? 1 : -1)) + g.items.map(ordRow).join("")).join("") || noMatch())
     : `<p class="empty">Nicio comandă în așteptare.</p>`;
   const maxLev = (a.rules && a.rules.max_leverage) || 0;
-  const levRing = a.leverage != null && maxLev ? `<div class="ringbox">${ring(a.leverage / maxLev, money2(a.leverage) + "x", "din " + money2(maxLev) + "x", "Leverage folosit", 92)}<div><div class="label">Leverage</div><div class="sub">cât din plafonul permis e folosit acum</div></div></div>` : "";
+  const levRing = a.leverage != null && maxLev ? `<div class="ringbox">${ring(a.leverage / maxLev, money2(a.leverage) + "x", "din " + money2(maxLev) + "x", "Leverage folosit", 92)}<div><div class="label">Leverage${help("leverage")}</div><div class="sub">cât din plafonul permis e folosit acum</div></div></div>` : "";
   const dd = a.drawdown_pct || 0;
   return `${notice}<div class="grid"><div class="panel hot"><div class="label">${esc(a.title)} · ${esc(CUR || a.currency)}${a.live ? '<span class="tag" style="margin-left:8px;padding:1px 8px">preț de acum</span>' : '<span class="tag" style="margin-left:8px;padding:1px 8px;color:var(--muted)">ultima închidere</span>'}</div>
     <div class="hero-value">${hero(value, a)}</div>${euro(value, a)}
@@ -537,9 +704,9 @@ function account(a) {
     <div class="sub" style="margin-top:12px">${esc(a.subtitle)}</div>${rulesLine(a)}${spark(a.history, a.initial, a.key)}</div>
     <div class="panel">${levRing}<div class="stats" style="margin-bottom:0"><div><span class="label">Numerar</span><b>${fm(a.cash, a)}</b></div>
     <div><span class="label">Poziții</span><b>${a.positions.length}</b></div><div><span class="label">Tranzacții</span><b>${a.fills}</b></div>
-    <div><span class="label">Drawdown</span><b class="${dd ? "loss" : ""}">${dd ? "−" + money2(dd) + "%" : "0,00%"}</b></div>
+    <div><span class="label">Drawdown${help("drawdown")}</span><b class="${dd ? "loss" : ""}">${dd ? "−" + money2(dd) + "%" : "0,00%"}</b></div>
     <div><span class="label">Costuri plătite</span><b>${money2(a.costs_total)}</b></div></div></div></div>
-    ${allocation(a)}<h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}${exposureBlock(a.exposure)}`;
+    ${riskPanel(a)}${allocation(a)}<h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ordersPreview(a)}${ord}${a.key === "unic" ? stressPanel(a) : ""}${exposureBlock(a.exposure)}`;
 }
 
 function exposureBlock(x) {
@@ -621,7 +788,7 @@ function summary() {
     return `<tr><td>${esc(g.label)}</td><td>${g.items.length}</td><td class="gain">${up}</td><td class="loss">${down}</td><td>${g.items.length - up - down}</td></tr>`;
   }).join("")}</table></div></div>` : "";
   const old = DATA.accounts.filter(a => a.archived && a.exists).length;
-  return `<div class="grid">${cards}${testCard()}</div><div class="actions"><button class="btn" type="button" data-copy>Copiază rezumatul</button><button class="btn" type="button" data-pal>Caută o piață</button></div>
+  return `${briefing()}<div class="grid">${cards}${testCard()}</div><div class="actions"><button class="btn" type="button" data-copy>Copiază rezumatul</button><button class="btn" type="button" data-pal>Caută o piață</button><button class="btn" type="button" data-gloss>Glosar</button></div>
     <div class="grid" style="margin-top:12px">${councilSnapshot()}${favoritesPanel()}${feedPanel()}${systemPanel()}</div>${cats}${rate}
     <p class="sub">Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
 }
@@ -689,7 +856,7 @@ function council(c) {
     <div class="hero-value">${FILTER ? c.markets.filter(m => m.group === FILTER).length + " din " + c.markets.length : c.markets.length}<small>piețe</small></div>
     <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile). „Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div></div>
     ${c.costs ? `<div class="panel"><div class="label">Costuri</div><div class="stats" style="margin-bottom:0"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div></div>` : ""}</div>
-    <h2>Piețele</h2>${vseg}${seg}${body}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
+    <h2>Piețele</h2>${vseg}${seg}${body}${convictionPanel(c.markets)}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
 }
 
 function signalsBar() {
@@ -775,6 +942,9 @@ document.addEventListener("click", e => {
   const fav = t.closest("[data-fav]"); if (fav) { toggleFav(fav.dataset.fav); openMarket(fav.dataset.fav); render(); return; }
   const mk = t.closest("[data-m]"); if (mk) { openMarket(mk.dataset.m); return; }
   if (t.closest("[data-pal]")) { openPalette(); return; }
+  const term = t.closest("[data-term]"); if (term) { openGlossary(term.dataset.term); return; }
+  if (t.closest("[data-gloss]")) { openGlossary(); return; }
+  const sm = t.closest("[data-stress-mode]"); if (sm) { STRESS.mode = sm.dataset.stressMode; render(); return; }
   if (t.closest("[data-copy]")) { copyText(summaryText()); return; }
   const go = t.closest("[data-go]"); if (go) { location.hash = go.dataset.go; window.scrollTo({top:0}); return; }
   const cons = t.closest("[data-cons]"); if (cons) { CONS = cons.dataset.cons; render(); return; }

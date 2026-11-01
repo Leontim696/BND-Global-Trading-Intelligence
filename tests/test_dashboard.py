@@ -168,6 +168,7 @@ def test_council_markets_carry_the_net_buy_sell_signal_for_the_permanent_strip(t
     market = dashboard.collect(None, None, None, tmp_path, NOW)["council"]["markets"][0]
 
     assert market["symbol"] == "BITCOIN" and market["net"] == -2 and market["bot"] == -1
+    assert market["conf"] == {"claude": 0.6, "deepseek": 0.6, "gemini": 0.6, "gpt": 0.6, "grok": 0.6}   # încrederea fiecărui agent
     html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
     assert 'id="signals"' in html and "signalsBar()" in html
 
@@ -192,6 +193,7 @@ def test_account_shows_its_rules_the_planned_exposure_and_order_kinds(tmp_path):
 
     assert account["rules"]["shorts"] is True and account["rules"]["max_leverage"] == 2.0
     assert round(account["plan"]["gross"], 2) == 1.1 and round(account["plan"]["short"], 2) == 0.9
+    assert account["limits"]["max_drawdown_pct"] == 25.0 and account["limits"]["max_daily_loss_pct"] == 5.0   # pragurile oprii de siguranță
     assert {o["symbol"]: o["kind"] for o in account["orders"]} == {"AAA": "long", "BBB": "short"}
 
 
@@ -258,3 +260,22 @@ def test_template_modern_features_are_present_and_safe():
     assert "e.preventDefault(); const first" in html                # Enter în căutare nu declanșează butonul de închidere
     for token in ("--bg", "--fg", "--accent", "--glass", "--gain", "--loss"):   # jetoane definite pe :root, nu doar în teme
         assert html.index(token + ":") < html.index("@media (prefers-color-scheme")
+
+
+def test_schedule_in_the_app_matches_the_workflow_crons():
+    import re
+    root = __import__("pathlib").Path(dashboard.__file__).resolve().parents[2] / ".github" / "workflows"
+    crons = {"Consiliul AI": "consiliu-umbra.yml", "Cont unic": "cont-unic.yml"}
+    for entry in dashboard.SCHEDULE:
+        minute, hour = re.search(r"cron: '(\d+) (\d+) \* \* \*'", (root / crons[entry["name"]]).read_text()).groups()
+        assert entry["utc"] == f"{int(hour):02d}:{int(minute):02d}", entry
+
+
+def test_practical_blocks_are_in_the_template_and_data_carries_limits_and_confidence(tmp_path):
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    for needle in ("briefing()", "riskPanel(a)", "ordersPreview(a)", "stressPanel(a)", "convictionPanel(", "openGlossary(",
+                   "data-stress-mode", "data-note", "nextRuns()", "const TERMS", "bnd-nota-"):
+        assert needle in html, needle
+    assert "outerHTML" not in html                                   # nicio înlocuire de HTML brut
+    # semnalul combinat din aplicație folosește aceeași formulă ca contul (50% reguli + 50% consiliu)
+    assert "sgn(m.net) * Math.min(1, Math.abs(m.net) / 2)" in html and "0.5 * (m.bot || 0) + 0.5 * cSig(m)" in html
