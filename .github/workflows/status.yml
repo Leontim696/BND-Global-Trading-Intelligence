@@ -59,6 +59,7 @@ jobs:
           grab consiliu-umbra registry.sqlite out/k/registry.sqlite
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
           grab status alerts.json out/alerts.json
+          grab smart-money descoperite.csv out/descoperite.csv
           gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
       - name: Read the real OpenRouter balance (read-only, free)
         env:
@@ -73,7 +74,9 @@ jobs:
       - name: New alerts to the phone (no repeats)
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}      # doar aici; pasul de construire a stării nu îl vede
-        run: python -m src.bnd.alerting --status out/status.json --state out/alerts.json
+        run: |
+          python -m src.bnd.smart_alerts --descoperite out/descoperite.csv --out out/alerte-smart.json
+          python -m src.bnd.alerting --status out/status.json --state out/alerts.json --extra out/alerte-smart.json
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: bnd-status-${{ github.run_id }}
