@@ -24,6 +24,7 @@ import json
 import os
 import re
 import sys
+from time import sleep
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -105,18 +106,24 @@ def normalise(row: dict) -> dict | None:
     if win is not None and win > 1:
         win /= 100                                     # unele surse dau procente
     trades = _num(_pick(row, "trades", "total_trades", "totalTrades"))
+    if trades is None and (row.get("totalWins") is not None or row.get("totalLosses") is not None):
+        trades = (_num(row.get("totalWins")) or 0) + (_num(row.get("totalLosses")) or 0)    # poziții închise
     if trades is None:
         buys, sells = _num(_pick(row, "buys", "totalBuys")), _num(_pick(row, "sells", "totalSells"))
         trades = (buys or 0) + (sells or 0) if (buys is not None or sells is not None) else None
     invested = _num(_pick(row, "total_invested", "totalInvested", "invested"))
     pnl = _num(_pick(row, "realized", "realized_pnl_usd", "realizedPnl", "total", "pnl", "totalPnl"))
-    avg_buy = _num(_pick(row, "avg_buy_usd", "avgBuy", "average_buy"))
+    avg_buy = _num(_pick(row, "avg_buy_usd", "avgBuy", "average_buy", "averageBuyAmount"))
     if avg_buy is None and invested is not None and trades:
         avg_buy = invested / max(1.0, trades / 2)
     roi = _num(_pick(row, "roi", "ROI"))
     if roi is None and pnl is not None and invested:
         roi = pnl / invested
-    return {"wallet": wallet, "tokens": _num(_pick(row, "tokens", "token_count", "tokensTraded", "totalTokens")),
+    tokens = _num(_pick(row, "token_count", "tokensTraded", "totalTokens"))
+    listed = row.get("tokens")
+    if tokens is None:
+        tokens = float(len(listed)) if isinstance(listed, (dict, list)) else _num(listed)
+    return {"wallet": wallet, "tokens": tokens,
             "trades": trades, "win_rate": win, "realized_pnl_usd": pnl, "avg_buy_usd": avg_buy, "roi": roi,
             "median_hold_min": _num(_pick(row, "median_hold_min", "medianHoldMinutes", "avgHoldMinutes")),
             "age_days": _num(_pick(row, "age_days", "walletAgeDays")),
@@ -156,7 +163,7 @@ def _get(url: str, key: str, timeout: float = 30.0):
     request = Request(url, headers={"x-api-key": key, "User-Agent": "BND-research"}, method="GET")
     try:
         with build_opener(_NoRedirect).open(request, timeout=timeout) as response:  # nosec B310 - https, gazdă fixă, fără redirect
-            return json.loads(response.read(5_000_001))
+            return json.loads(response.read(30_000_001))      # detaliile unui wallet activ pot fi mari
     except HTTPError as exc:
         raise ValueError(f"{url.split('?')[0]} a răspuns HTTP {exc.code}") from exc
     except (URLError, TimeoutError, ValueError, OSError) as exc:
@@ -213,10 +220,17 @@ def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=
             status["leaderboard"] = {"ok": True, "wallets": len(candidates)}
             enriched = 0
             for wallet in list(candidates)[:ENRICH_LIMIT]:
-                try:
-                    detail = fetch(BASE_URL + WALLET_PATH.format(wallet=wallet), key)
-                except ValueError as exc:
-                    status["errors"].append(f"detalii {wallet[:6]}…: {exc}")
+                detail = None
+                for attempt in (1, 2):
+                    try:
+                        detail = fetch(BASE_URL + WALLET_PATH.format(wallet=wallet), key)
+                        break
+                    except ValueError as exc:
+                        if attempt == 2:
+                            status["errors"].append(f"detalii {wallet[:6]}…: {exc}")
+                        else:
+                            sleep(1.5)
+                if detail is None:
                     continue
                 if enriched == 0:
                     status["sample_keys"]["detalii"] = _keys(detail)

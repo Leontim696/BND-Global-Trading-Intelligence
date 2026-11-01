@@ -140,3 +140,30 @@ def test_a_failing_detail_call_keeps_the_leaderboard_row(tmp_path):
         return [{"wallet": W1, "realized": 5, "roi": 0.1}]
     status = sm.collect(tmp_path, "k", tmp_path / "lipsa.json", fetch=fetch)
     assert status["written"] == 1 and any("detalii" in e for e in status["errors"])
+
+
+def test_solana_tracker_field_names_seen_in_the_real_response_are_parsed():
+    detail = {"wallet": W1, "tokens": {"mintA": {}, "mintB": {}, "mintC": {}},
+              "summary": {"averageBuyAmount": 320.5, "realized": 41000.0, "total": 43000.0, "totalInvested": 9000.0,
+                          "totalWins": 14, "totalLosses": 22, "winPercentage": 38.9, "lossPercentage": 61.1}}
+    s = sm.normalise(detail)
+    assert s["tokens"] == 3 and s["trades"] == 36 and abs(s["win_rate"] - 0.389) < 1e-9
+    assert s["avg_buy_usd"] == 320.5 and abs(s["roi"] - 41000 / 9000) < 1e-9 and s["realized_pnl_usd"] == 41000.0
+
+
+def test_a_detail_call_is_retried_once(monkeypatch):
+    monkeypatch.setattr(sm, "sleep", lambda s: None)
+    calls = []
+
+    def fetch(url, key):
+        if "pnl" in url:
+            calls.append(1)
+            if len(calls) == 1:
+                raise ValueError("JSONDecodeError")
+            return {"summary": {"realized": 10, "totalInvested": 5}, "tokens": {"a": 1}}
+        return [{"wallet": W1, "realized": 10}]
+    import tempfile
+    from pathlib import Path
+    with tempfile.TemporaryDirectory() as tmp:
+        status = sm.collect(tmp, "k", Path(tmp) / "x.json", fetch=fetch)
+    assert len(calls) == 2 and status["leaderboard"]["enriched"] == 1 and not status["errors"]
