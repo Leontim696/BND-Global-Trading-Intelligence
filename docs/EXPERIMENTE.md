@@ -57,6 +57,8 @@ Auditul a găsit în laborator: semnalul se executa la închiderea care îl prod
 | E-008 | E-002 (3 ani) | respins | Meta 0,54 față de 1,37 (combo). |
 | E-009 | E-005 (12 ani) | neconcludent | Kelly bate volatilitatea-țintă în ambele perioade, p=0,047 > 0,0125; risc dublu față de ponderea egală. |
 | E-010 | E-006 (12 ani) | respins | Meta 1,00 față de 1,19 (combo). |
-| E-011 | E-003/E-004 | acceptat | Fals pozitive ≤ 4,6% (limită superioară), putere 97,5% la regularitate puternică; rata naivă 16%. |
+| E-011 | E-003/E-004 | acceptat (depășit de E-012) | Fals pozitive ≤ 4,6% (limită superioară), putere 97,5% la regularitate puternică; rata naivă 16%. |
 
 Regula nouă: o rulare care diferă de planul înregistrat (parametri, perioade) e refuzată sau cere `--accept-deviation` cu motivul; „acceptat” cere valoarea p sau o justificare.
+
+| E-012 | E-011 | **neconcludent** | Decis pe avantaj realist (0,1%/zi ≈ 25%/an): fals pozitive 0/80 (limită 4,6%), dar puterea e 0% la 25%/an, 20% la 63%/an, 87,5% la 126%/an. Procedura nu vede decât avantaje enorme. |
