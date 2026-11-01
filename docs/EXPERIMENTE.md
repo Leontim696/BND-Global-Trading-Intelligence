@@ -36,6 +36,10 @@ Date: arhiva `date-piete`, 10 piețe, 1.11.2023–30.10.2026 (≈666 de zile com
 | E-002 | Strategie aleasă pe piață × regim bate strategiile fixe? | **respins** | Sharpe 0,79 față de 1,50 (combo) și 1,48 (fixă aleasă în antrenare); p=0,96. Confirmă cercetarea anterioară. |
 | E-003 | Procedura de descoperire dă câștigători falși pe zgomot? | acceptat (slab) | 0 din 12 universuri; eșantion prea mic, vezi E-004. |
 | E-004 | Idem, 80 de universuri | **acceptat** | 0 din 80 (limita superioară 4,6%); rata naivă doar 1,25%. Nulul sintetic e prudent: nu dovedește nimic despre piețe reale. |
+| E-005 | E-001 repetat pe 12 ani (9 piețe, 2014–2026) | **neconcludent** | Kelly bate volatilitatea-țintă în ambele perioade (Sharpe 1,45/1,39 față de 1,18/1,12), dar p=0,071 > 0,025; cu risc mai mare. |
+| E-006 | E-002 repetat pe 12 ani | **respins** | Meta 1,20 față de combo 1,38; p=0,51. Aceeași concluzie ca pe 3 ani. |
+
+(E-003/E-004 sunt pe date sintetice, deci nu depind de istoric. Datele de 12 ani: ramura `date-12-ani`, fără ETHEREUM, care nu există din 2014.)
 
 **Ce NU s-a întâmplat:** nimic nu s-a promovat în conturi. E-001 a fost privit informal o dată înainte de înregistrare; criteriul scris cere de aceea consistență pe ambele perioade (transparent în registru). Cu 3 ani și 10 piețe, orice concluzie rămâne limitată; următorul pas e repetarea pe 12 ani de istoric, ca experimente noi.
 
