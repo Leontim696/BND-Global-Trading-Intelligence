@@ -246,7 +246,9 @@ function comparison(c) {
 function analysisNote(a) {
   if (!a || !a.oos) return "";
   const over = Object.entries(a.overconfidence || {}).map(([n, v]) => `${esc(n)} ${v > 0 ? "+" : ""}${Math.round(100 * v)}%`).join(", ");
-  return `<p class="sub">Supraîncredere (încrederea declarată minus rata reală): ${over || "–"}. ${a.note ? esc(a.note) : ""}
+  const al = a.alpha && a.alpha.alpha_next && a.alpha.alpha_next.calls
+    ? ` Față de piață (alpha, intrare după decizie): ${Math.round(100 * a.alpha.alpha_next.hit_rate)}% bine din ${a.alpha.alpha_next.calls} decizii, față de ${Math.round(100 * a.alpha.raw.hit_rate)}% brut.` : "";
+  return `<p class="sub">Supraîncredere (încrederea declarată minus rata reală): ${over || "–"}. ${a.note ? esc(a.note) : ""}${al}
     ${a.oos.evaluated ? "Ponderarea pe zile nevăzute: " + esc(a.oos.verdict) + "." : esc(a.oos.note || "")}</p>`;
 }
 

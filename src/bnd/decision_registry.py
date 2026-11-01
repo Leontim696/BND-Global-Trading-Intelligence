@@ -14,6 +14,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from . import settlement
 from .decision_rules import AgentScorebook, CouncilDecision
 from .fusion_council import AGENTS, FusionCouncil, Vote
 
@@ -126,10 +127,21 @@ class DecisionRegistry:
             if not later:
                 continue
             price = later[0].close
+            try:
+                extra = settlement.details(row["symbol"], datetime.fromisoformat(row["time"]),
+                                           row["horizon_days"], candles_by_symbol)
+            except (TypeError, ValueError, ArithmeticError):
+                extra = {}           # detaliile sunt un bonus: nu au voie să blocheze decontarea
             with self._db() as db:
-                db.execute("UPDATE decisions SET settled_at = ?, outcome_price = ?,"
-                           " outcome_return = ? WHERE id = ? AND settled_at IS NULL",
-                           (_iso(now), price, price / row["price"] - 1, row["id"]))
+                cursor = db.execute("UPDATE decisions SET settled_at = ?, outcome_price = ?,"
+                                    " outcome_return = ? WHERE id = ? AND settled_at IS NULL",
+                                    (_iso(now), price, price / row["price"] - 1, row["id"]))
+                if extra and cursor.rowcount:
+                    # Doar se adaugă o cheie în meta; coloanele existente și deciziile nu se schimbă.
+                    info = json.loads(db.execute("SELECT meta FROM decisions WHERE id = ?",
+                                                 (row["id"],)).fetchone()[0] or "{}")
+                    info["settle"] = extra
+                    db.execute("UPDATE decisions SET meta = ? WHERE id = ?", (json.dumps(info), row["id"]))
             settled += 1
         return settled
 
