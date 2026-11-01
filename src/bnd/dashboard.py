@@ -280,12 +280,15 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     return {"generated": now.isoformat(timespec="minutes"), "events": events, "fx": fx, "groups": market_groups.labels(),
             "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
             "quotes_time": quotes_time, "system": system_status(runs),
-            "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT},
+            "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
             "accounts": accounts, "council": council, "alerts": alerts}
 
 
 TEST_START = "2026-10-31"
 TEST_REPORT = "2026-11-17"
+TEST_MILESTONES = [{"date": "2026-11-06", "label": "Comparație intermediară"},
+                   {"date": "2026-11-16", "label": "Sfârșitul testului"},
+                   {"date": "2026-11-17", "label": "Raport final"}]
 
 
 def system_status(runs: list | None) -> list:

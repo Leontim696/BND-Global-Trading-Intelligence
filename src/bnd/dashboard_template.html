@@ -1,138 +1,238 @@
 <title>BND Trading</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@400;500;600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;800&family=Unbounded:wght@400;500;700&display=swap">
 <style>
-/* Layout: o coloană pentru telefon (lățime mare pe desktop), bară de file jos, rezumat înainte de detalii.
-   Culori: verde-petrol ca accent; roșu/verde doar pentru câștig/pierdere; categoriile au paleta lor (--c1..--c8). */
+/* Concept: panou de comandă pe întuneric (ink + cyan de gheață), sticlă mată, inele și hărți de căldură.
+   Dark-first; tema deschisă oglindește aceleași jetoane. Roșu/verde doar pentru pierdere/câștig, chihlimbar pentru atenție. */
 :root{
-  --bg:#f2f5f4; --surface:#ffffff; --surface-2:#eaf0ee; --line:#d9dfdc; --fg:#14201c; --muted:#5d6b66;
-  --accent:#0f6b5c; --accent-soft:#dcefe9; --on-accent:#ffffff; --gain:#16794a; --loss:#b3332b; --warn:#9a6a00;
-  --shadow:0 1px 2px rgba(20,32,28,.06),0 6px 18px rgba(20,32,28,.06);
-  --c1:#0f6b5c; --c2:#3b6fb6; --c3:#b5651d; --c4:#7a4fa3; --c5:#b3332b; --c6:#5f7f2a; --c7:#1f8aa0; --c8:#8a8f94;
-  --font-display:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --font-body:"Schibsted Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --font-data:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
-}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0c1311; --surface:#151e1b; --surface-2:#1b2723; --line:#26332f; --fg:#e6eeea; --muted:#8fa09a;
-  --accent:#4cc3a8; --accent-soft:#17352d; --on-accent:#0c1311; --gain:#4cc98a; --loss:#ee7a70; --warn:#e0b04a;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px rgba(0,0,0,.35);
-  --c1:#4cc3a8; --c2:#7aa5e6; --c3:#e0975a; --c4:#b894dc; --c5:#ee7a70; --c6:#9bc15a; --c7:#5fc0d6; --c8:#aab0b5; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#0c1311; --surface:#151e1b; --surface-2:#1b2723; --line:#26332f; --fg:#e6eeea; --muted:#8fa09a;
-  --accent:#4cc3a8; --accent-soft:#17352d; --on-accent:#0c1311; --gain:#4cc98a; --loss:#ee7a70; --warn:#e0b04a;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px rgba(0,0,0,.35);
-  --c1:#4cc3a8; --c2:#7aa5e6; --c3:#e0975a; --c4:#b894dc; --c5:#ee7a70; --c6:#9bc15a; --c7:#5fc0d6; --c8:#aab0b5; color-scheme:dark}
+  --bg:#060a12; --bg-2:#0a1120; --surface:#0e1626; --glass:rgba(16,26,44,.66); --raise:#142038;
+  --line:rgba(140,170,220,.15); --line-2:rgba(140,170,220,.30); --fg:#e9effc; --muted:#8c9dbd;
+  --accent:#69e2ff; --accent-2:#5b8cff; --accent-soft:rgba(105,226,255,.13); --on-accent:#031018;
+  --gain:#36d99a; --loss:#ff6b84; --warn:#ffb648;
+  --glow:0 0 0 1px var(--line),0 14px 40px rgba(0,0,0,.45);
+  --mesh-a:rgba(105,226,255,.15); --mesh-b:rgba(91,140,255,.13); --grid:rgba(140,170,220,.055);
+  --c1:#69e2ff; --c2:#5b8cff; --c3:#ffb648; --c4:#c78bff; --c5:#ff6b84; --c6:#9be564; --c7:#36d99a; --c8:#9aa7bd;
+  --font-display:"Unbounded","Manrope",system-ui,sans-serif;
+  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-data:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){
+  --bg:#edf2fa; --bg-2:#e4ecf8; --surface:#ffffff; --glass:rgba(255,255,255,.80); --raise:#f4f7fc;
+  --line:rgba(10,25,60,.12); --line-2:rgba(10,25,60,.24); --fg:#0a1224; --muted:#52638a;
+  --accent:#0877a0; --accent-2:#2f5fe0; --accent-soft:rgba(8,119,160,.10); --on-accent:#ffffff;
+  --gain:#0e8a5b; --loss:#c4304b; --warn:#9a6200;
+  --glow:0 0 0 1px var(--line),0 12px 32px rgba(20,40,90,.10);
+  --mesh-a:rgba(8,119,160,.11); --mesh-b:rgba(47,95,224,.09); --grid:rgba(10,25,60,.05);
+  --c1:#0877a0; --c2:#2f5fe0; --c3:#b06500; --c4:#8240c0; --c5:#c4304b; --c6:#4d7d12; --c7:#0e8a5b; --c8:#667085; color-scheme:light}}
+:root[data-theme="light"]{
+  --bg:#edf2fa; --bg-2:#e4ecf8; --surface:#ffffff; --glass:rgba(255,255,255,.80); --raise:#f4f7fc;
+  --line:rgba(10,25,60,.12); --line-2:rgba(10,25,60,.24); --fg:#0a1224; --muted:#52638a;
+  --accent:#0877a0; --accent-2:#2f5fe0; --accent-soft:rgba(8,119,160,.10); --on-accent:#ffffff;
+  --gain:#0e8a5b; --loss:#c4304b; --warn:#9a6200;
+  --glow:0 0 0 1px var(--line),0 12px 32px rgba(20,40,90,.10);
+  --mesh-a:rgba(8,119,160,.11); --mesh-b:rgba(47,95,224,.09); --grid:rgba(10,25,60,.05);
+  --c1:#0877a0; --c2:#2f5fe0; --c3:#b06500; --c4:#8240c0; --c5:#c4304b; --c6:#4d7d12; --c7:#0e8a5b; --c8:#667085; color-scheme:light}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:15px/1.45 var(--font-body);
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font:15px/1.5 var(--font-body);
   padding-block:0 96px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
-main{max-width:720px;margin:0 auto}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:60}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(60% 45% at 12% -8%,var(--mesh-a),transparent 70%),radial-gradient(55% 40% at 100% 8%,var(--mesh-b),transparent 70%),
+  linear-gradient(var(--grid) 1px,transparent 1px) 0 0/44px 44px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/44px 44px;
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+main{max-width:1080px;margin:0 auto}
 button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-block:18px 8px}
-.brand{min-width:0}
-h1{font:800 26px/1.1 var(--font-display);letter-spacing:-.02em;margin:0}
-.stamp{color:var(--muted);font:400 12px var(--font-data);margin-top:6px}
-.tools{display:flex;gap:8px;align-items:center;flex:0 0 auto}
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 11px;font:600 12.5px var(--font-body);cursor:pointer;white-space:nowrap}
-.chip i{width:8px;height:8px;border-radius:50%;background:var(--gain);display:inline-block}
-.chip.bad i{background:var(--loss)}.chip.bad{border-color:var(--loss);color:var(--loss)}
-.icon-btn{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;cursor:pointer;padding:0}
+.mono{font-family:var(--font-data);font-variant-numeric:tabular-nums}
+/* barul de sus */
+header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding-block:16px 8px}
+.brand{min-width:0;flex:1 1 260px}
+.mark{font:700 18px/1 var(--font-display);letter-spacing:.06em}
+.mark b{color:var(--accent);font-weight:700}
+.stamp{display:flex;align-items:center;gap:7px;color:var(--muted);font:400 11.5px var(--font-data);margin-top:7px}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--gain);box-shadow:0 0 0 0 var(--gain);flex:0 0 auto}
+.pulse.warn{background:var(--warn)}.pulse.old{background:var(--loss)}
+@media (prefers-reduced-motion:no-preference){.pulse{animation:ping 2.4s infinite}@keyframes ping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--gain) 55%,transparent)}70%,100%{box-shadow:0 0 0 8px transparent}}}
+.tools{display:flex;gap:8px;align-items:center;flex:0 1 auto;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;padding:6px 11px;font:600 12px var(--font-body);white-space:nowrap}
+.chip i{width:7px;height:7px;border-radius:50%;background:var(--gain);display:inline-block}
+.chip.bad{border-color:var(--loss);color:var(--loss)}.chip.bad i{background:var(--loss)}
+.icon-btn{width:38px;height:38px;border-radius:12px;border:1px solid var(--line-2);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:grid;place-items:center;padding:0}
 .icon-btn svg{width:18px;height:18px}
-.bar{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:20;padding-block:6px 8px}
+.icon-btn:hover,.chip:hover{border-color:var(--accent)}
+/* bara lipicioasă: căutare + categorii */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;padding-block:6px 8px;margin-inline:-6px;padding-inline:6px;
+  background:linear-gradient(var(--bg) 88%,transparent)}
 .search{display:flex;gap:8px;align-items:center}
-.search input,.search select{height:38px;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:0 12px;min-width:0}
-.search input{flex:1 1 auto}
-.search select{flex:0 0 auto;max-width:48%}
+.search input,.search select{height:40px;border:1px solid var(--line-2);background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:12px;padding:0 13px;min-width:0}
+.search input{flex:1 1 auto}.search input::placeholder{color:var(--muted)}
+.search select{flex:0 0 auto;max-width:44%}
 .filters,.signals,.seg{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
 .filters{padding-top:8px}.signals{padding-block:4px 2px}
 .filters::-webkit-scrollbar,.signals::-webkit-scrollbar,.seg::-webkit-scrollbar{display:none}
-.filters button,.seg button{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);font:600 12.5px var(--font-body);padding:6px 11px;border-radius:999px;cursor:pointer;white-space:nowrap}
-.filters button small{color:var(--muted);font-weight:400;margin-left:3px}
+.filters button,.seg button{flex:0 0 auto;border:1px solid var(--line-2);background:var(--glass);font:600 12.5px var(--font-body);padding:6px 12px;border-radius:999px;white-space:nowrap}
+.filters button small{color:var(--muted);font-weight:500;margin-left:4px}
 .filters button[aria-pressed="true"],.seg button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
 .seg{margin-block:10px 4px}
-.sig{flex:0 0 auto;font:500 12px var(--font-data);padding:4px 8px;border-radius:8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;background:var(--surface)}
+.sig{flex:0 0 auto;font:500 12px var(--font-data);padding:4px 9px;border-radius:8px;border:1px solid var(--line-2);color:var(--muted);white-space:nowrap;background:var(--glass)}
 .sig.buy{color:var(--gain);border-color:var(--gain)}.sig.sell{color:var(--loss);border-color:var(--loss)}
-.sg{flex:0 0 auto;align-self:center;font:700 10.5px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);padding:0 2px 0 8px;white-space:nowrap}
-.dock{position:fixed;left:0;right:0;bottom:0;z-index:25;display:flex;justify-content:center;
-  background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.sg{flex:0 0 auto;align-self:center;font:700 10.5px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);padding:0 2px 0 8px;white-space:nowrap}
+/* navigare: bară jos pe telefon, șină laterală pe ecran mare */
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;justify-content:center;
+  background:color-mix(in srgb,var(--bg-2) 86%,transparent);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line-2);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
 .dock-in{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;width:100%;max-width:720px}
-.dock button{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;color:var(--muted);font:600 11px var(--font-body);padding:7px 2px;border-radius:12px;cursor:pointer;min-width:0}
+.dock button{display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;color:var(--muted);font:600 10.5px var(--font-body);padding:8px 2px;border-radius:14px;min-width:0;position:relative}
 .dock button svg{width:22px;height:22px}
 .dock button[aria-selected="true"]{color:var(--accent);background:var(--accent-soft)}
-.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:16px;margin-block:12px}
-.hero{padding-block:12px 4px}
-.label{color:var(--muted);font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase}
-.big{font:500 38px/1.1 var(--font-data);font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:4px}
-.delta{font:500 15px var(--font-data);margin-top:4px;margin-bottom:8px}
+.dock button[aria-selected="true"]::after{content:"";position:absolute;top:0;left:30%;right:30%;height:2px;border-radius:2px;background:var(--accent);box-shadow:0 0 12px var(--accent)}
+@media (min-width:980px){
+  body{padding-left:max(104px,env(safe-area-inset-left,0px))}
+  .dock{inset:0 auto 0 0;width:84px;flex-direction:column;justify-content:center;border-top:0;border-right:1px solid var(--line-2);padding:16px 8px}
+  .dock-in{grid-template-columns:1fr;gap:8px}
+  .dock button[aria-selected="true"]::after{top:25%;bottom:25%;left:0;right:auto;width:2px;height:auto}
+  .bar{margin-inline:0}}
+/* carduri de sticlă */
+.panel{background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:20px;box-shadow:var(--glow);padding:18px;margin-block:12px;min-width:0}
+.panel.hot{border-color:var(--line-2);background:linear-gradient(160deg,var(--accent-soft),transparent 45%),var(--glass)}
+button.panel{color:inherit;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:12px;align-items:start}
+.grid>.panel{margin-block:0}
+.label{color:var(--muted);font:700 10.5px var(--font-body);letter-spacing:.12em;text-transform:uppercase}
+.hero-value{font:500 clamp(30px,8.4vw,46px)/1.05 var(--font-display);letter-spacing:-.02em;margin-top:8px}
+.hero-value small{font:500 .38em var(--font-data);color:var(--muted);letter-spacing:0;margin-left:6px}
+.pillrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.tag{display:inline-flex;align-items:center;gap:5px;font:600 12px var(--font-data);padding:4px 10px;border-radius:999px;border:1px solid var(--line-2)}
+.tag.gain{color:var(--gain);border-color:color-mix(in srgb,var(--gain) 55%,transparent);background:color-mix(in srgb,var(--gain) 10%,transparent)}
+.tag.loss{color:var(--loss);border-color:color-mix(in srgb,var(--loss) 55%,transparent);background:color-mix(in srgb,var(--loss) 10%,transparent)}
 .gain{color:var(--gain)}.loss{color:var(--loss)}
-.sub{color:var(--muted);font-size:13px;margin-top:2px}
-.chart{margin-block:14px 6px;position:relative;touch-action:pan-y}
-.chart svg{display:block;width:100%;height:auto}
-.tip{position:absolute;top:0;left:0;pointer-events:none;background:var(--fg);color:var(--bg);font:500 11.5px var(--font-data);padding:3px 7px;border-radius:7px;white-space:nowrap;transform:translate(-50%,-110%);opacity:0}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-block:14px}
-.stats div{background:var(--surface);padding:12px 14px;min-width:0}
-.stats b{display:block;font:500 17px var(--font-data);font-variant-numeric:tabular-nums;margin-top:3px}
-h2{font:800 17px var(--font-display);margin:24px 0 8px}
-.row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:11px 0;border-bottom:1px solid var(--line)}
-.row .name{font-weight:600}.row .num{font:500 14px var(--font-data);font-variant-numeric:tabular-nums;text-align:right}
-.row .meta{color:var(--muted);font-size:12.5px}
-.pill{display:inline-block;font:600 11px var(--font-body);letter-spacing:.04em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:1px}
-.pill.short{background:transparent;border:1px solid var(--loss);color:var(--loss)}
-.notice{border:1px solid var(--warn);color:var(--warn);border-radius:12px;padding:12px 14px;margin-block:14px}
+.sub{color:var(--muted);font-size:13px;margin-top:3px}
 .empty{color:var(--muted);padding:18px 0}
+h2{font:700 13px var(--font-display);letter-spacing:.08em;text-transform:uppercase;margin:28px 0 10px;color:var(--fg)}
+h2::before{content:"";display:inline-block;width:18px;height:2px;background:var(--accent);box-shadow:0 0 10px var(--accent);vertical-align:middle;margin-right:10px;border-radius:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.btn{border:1px solid var(--line-2);background:var(--glass);border-radius:12px;padding:8px 13px;font:600 12.5px var(--font-body)}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.alert{border:1px solid var(--loss);color:var(--loss);border-radius:14px;padding:10px 14px;margin-block:8px;font-weight:700;background:var(--glass)}
+.notice{border:1px solid var(--warn);color:var(--warn);border-radius:14px;padding:12px 14px;margin-block:14px;background:var(--glass)}
+/* grafice */
+.chart{margin-block:16px 4px;position:relative;touch-action:pan-y}
+.chart svg{display:block;width:100%;height:auto}
+.tip{position:absolute;top:0;left:0;pointer-events:none;background:var(--fg);color:var(--bg);font:500 11.5px var(--font-data);padding:3px 8px;border-radius:8px;white-space:nowrap;transform:translate(-50%,-115%);opacity:0}
+.ringbox{display:flex;align-items:center;gap:16px}
+.ring{flex:0 0 auto}
+.ring .arc{filter:drop-shadow(0 0 5px var(--accent));transition:stroke-dashoffset .6s ease}
+.ring text{fill:var(--fg);font:500 21px var(--font-display);text-anchor:middle}
+.ring text.s{fill:var(--muted);font:500 8px var(--font-data);letter-spacing:.06em}
+.tl{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:3px;margin-top:14px}
+.tl span{height:8px;border-radius:3px;background:var(--line)}
+.tl span.on{background:var(--accent);box-shadow:0 0 8px color-mix(in srgb,var(--accent) 60%,transparent)}
+.tl span.now{background:var(--fg)}
+.miles{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font:500 11.5px var(--font-data);color:var(--muted)}
+.miles span{display:inline-flex;gap:6px;align-items:center}.miles span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-block:14px}
+.stats div{background:var(--glass);border:1px solid var(--line);border-radius:14px;padding:12px 14px;min-width:0}
+.stats b{display:block;font:500 17px var(--font-data);font-variant-numeric:tabular-nums;margin-top:4px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
+.split{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--line);margin-top:8px}
+.split .l{background:var(--gain)}.split .s{background:var(--loss)}
+.row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--line);width:100%;text-align:left;background:none;border-inline:0;border-top:0}
+.row .name{font-weight:700}.row .num{font:500 14px var(--font-data);font-variant-numeric:tabular-nums;text-align:right}
+.row .meta{color:var(--muted);font-size:12.5px}
+.pbar{height:4px;border-radius:3px;background:var(--line);margin-top:8px;grid-column:1/-1;overflow:hidden}
+.pbar span{display:block;height:100%}
+.pill{display:inline-block;font:700 10.5px var(--font-body);letter-spacing:.05em;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);margin-left:6px;vertical-align:1px}
+.pill.short{background:transparent;border:1px solid var(--loss);color:var(--loss)}
+.grp{display:flex;justify-content:space-between;gap:8px;margin-top:20px;padding-bottom:5px;border-bottom:1px solid var(--line-2);font:700 12px var(--font-display);letter-spacing:.04em;text-transform:uppercase}
+.grp small{color:var(--muted);font-weight:400}.grp-t{font:500 12px var(--font-data);text-transform:none;letter-spacing:0}
+/* hartă de căldură */
+.heat{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:6px;margin-top:10px}
+.tile{--t:0;border:1px solid var(--line);border-radius:12px;padding:8px 6px 7px;text-align:center;background:var(--glass);min-width:0;position:relative}
+.tile.up{background:color-mix(in srgb,var(--gain) calc(var(--t)*62%),var(--glass));border-color:color-mix(in srgb,var(--gain) calc(var(--t)*80%),var(--line))}
+.tile.down{background:color-mix(in srgb,var(--loss) calc(var(--t)*62%),var(--glass));border-color:color-mix(in srgb,var(--loss) calc(var(--t)*80%),var(--line))}
+.tile b{display:block;font:700 11px var(--font-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tile span{display:block;font:600 12.5px var(--font-data);margin-top:2px}
+.tile.fav::after{content:"★";position:absolute;top:3px;right:5px;font-size:9px;color:var(--warn)}
+.tile:hover{border-color:var(--accent)}
+.strip{display:flex;flex-wrap:wrap;gap:3px;margin-top:12px}
+.strip i{width:10px;height:10px;border-radius:3px;background:var(--line);display:block}
+.strip i.up{background:var(--gain)}.strip i.down{background:var(--loss)}
 .votes{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
-.v{font:500 11.5px var(--font-data);padding:3px 7px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.v{font:500 11.5px var(--font-data);padding:3px 7px;border-radius:7px;border:1px solid var(--line-2);color:var(--muted)}
 .v.BUY{color:var(--gain);border-color:var(--gain)}.v.SELL{color:var(--loss);border-color:var(--loss)}
 .vbar{display:flex;gap:3px;margin-top:8px}
 .vbar span{flex:1;height:6px;border-radius:3px;background:var(--line)}
 .vbar .BUY{background:var(--gain)}.vbar .SELL{background:var(--loss)}
-.alert{border:1px solid var(--loss);color:var(--loss);border-radius:12px;padding:10px 14px;margin-block:8px;font-weight:600;background:var(--surface)}
-.cards{display:grid;gap:10px;margin-block:12px}
-.card{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;box-shadow:var(--shadow)}
-.card .big{font-size:30px}
-.live{display:inline-block;font:600 10.5px var(--font-body);letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-left:8px}
-.progress{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:10px}
-.progress span{display:block;height:100%;border-radius:99px;background:var(--accent)}
-.ticks{display:flex;justify-content:space-between;color:var(--muted);font:400 11px var(--font-data);margin-top:6px}
-.alloc{display:flex;height:12px;border-radius:99px;overflow:hidden;gap:2px;margin-top:10px;background:var(--surface-2)}
-.alloc span{display:block;height:100%;min-width:3px}
-.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px}
-.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px;vertical-align:0}
-.sys{display:grid;gap:8px;margin-top:10px}
-.sys div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
-.sys small{color:var(--muted);font:400 12px var(--font-data)}
+.matrix{display:grid;gap:4px;margin-top:10px}
+.matrix div{display:grid;gap:4px;grid-template-columns:70px repeat(var(--n),1fr)}
+.matrix span{font:500 11.5px var(--font-data);text-align:center;padding:7px 0;border-radius:8px;background:color-mix(in srgb,var(--accent) calc(var(--p,0)*55%),var(--glass))}
+.matrix b{font:700 11px var(--font-body);color:var(--muted);align-self:center;overflow:hidden;text-overflow:ellipsis}
+.matrix .h span{background:none;color:var(--muted);font:700 10px var(--font-body);padding:0}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
-th{color:var(--muted);font:600 11px var(--font-body);letter-spacing:.06em;text-transform:uppercase;text-align:right;padding:6px 4px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font:700 10.5px var(--font-body);letter-spacing:.08em;text-transform:uppercase;text-align:right;padding:6px 4px;border-bottom:1px solid var(--line-2)}
 th button{all:unset;cursor:pointer;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit}
 th button:focus-visible{outline:2px solid var(--accent)}
 th:first-child,td:first-child{text-align:left}
-td{padding:8px 3px;border-bottom:1px solid var(--line);text-align:right;font:500 12px var(--font-data);font-variant-numeric:tabular-nums}
-td:first-child{font-family:var(--font-body);font-weight:600}
+td{padding:9px 4px;border-bottom:1px solid var(--line);text-align:right;font:500 12px var(--font-data);font-variant-numeric:tabular-nums}
+td:first-child{font-family:var(--font-body);font-weight:700}
+tr[data-m]{cursor:pointer}tr[data-m]:hover td{background:var(--accent-soft)}
 .scroll{overflow-x:auto}
-.grp{display:flex;justify-content:space-between;gap:8px;margin-top:18px;padding-bottom:4px;border-bottom:2px solid var(--accent);font:800 14px var(--font-display)}
-.grp small{color:var(--muted);font-weight:400}.grp-t{font:500 12px var(--font-data)}
-.foot{color:var(--muted);font-size:12px;margin-top:28px}
-@media (prefers-reduced-motion:no-preference){.view-in{animation:rise .22s ease-out}@keyframes rise{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}}
+.mover{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);width:100%;background:none;border-inline:0;border-top:0;text-align:left}
+.mover:last-child{border-bottom:0}
+.feed{display:grid;gap:10px;margin-top:10px}
+.feed div{display:flex;gap:10px;font-size:13.5px}
+.feed i{flex:0 0 auto;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:7px;box-shadow:0 0 8px var(--accent)}
+.feed i.bad{background:var(--loss);box-shadow:0 0 8px var(--loss)}
+.sys{display:grid;gap:8px;margin-top:10px}
+.sys div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px}
+.sys small{color:var(--muted);font:400 11.5px var(--font-data)}
+.foot{color:var(--muted);font-size:12px;margin-top:30px}
+kbd{font:500 10.5px var(--font-data);border:1px solid var(--line-2);border-radius:5px;padding:1px 5px;color:var(--muted)}
+/* foaie (detaliu piață / căutare rapidă) */
+.sheet{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center}
+.sheet-bg{position:absolute;inset:0;background:rgba(2,6,14,.62);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.sheet-card{position:relative;width:100%;max-width:560px;max-height:88vh;overflow:auto;background:var(--bg-2);border:1px solid var(--line-2);border-radius:24px 24px 0 0;
+  padding:22px max(18px,env(safe-area-inset-left,0px)) calc(22px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-right,0px));box-shadow:0 -20px 60px rgba(0,0,0,.5)}
+.sheet-x{position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:12px;border:1px solid var(--line-2);background:var(--glass);font-size:20px;line-height:1}
+@media (min-width:700px){.sheet{align-items:center}.sheet-card{border-radius:24px}}
+@media (prefers-reduced-motion:no-preference){.sheet:not([hidden]) .sheet-card{animation:up .22s ease-out}.view-in>*{animation:rise .3s ease-out both}
+  @keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
+.gauge{position:relative;height:10px;border-radius:99px;background:linear-gradient(90deg,color-mix(in srgb,var(--loss) 45%,transparent),var(--line),color-mix(in srgb,var(--gain) 45%,transparent));margin-top:12px}
+.gauge i{position:absolute;top:-4px;width:4px;height:18px;border-radius:3px;background:var(--fg);transform:translateX(-50%);box-shadow:0 0 10px var(--fg)}
+.agents{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:8px;margin-top:14px}
+.agent{border:1px solid var(--line-2);border-radius:14px;padding:10px;background:var(--glass)}
+.agent b{display:block;font:700 12px var(--font-body)}.agent span{font:600 13px var(--font-data)}
+.agent.BUY{border-color:var(--gain)}.agent.BUY span{color:var(--gain)}.agent.SELL{border-color:var(--loss)}.agent.SELL span{color:var(--loss)}
+.pal{width:100%;height:46px;border-radius:14px;border:1px solid var(--line-2);background:var(--glass);padding:0 14px;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;background:var(--fg);color:var(--bg);font:600 13px var(--font-body);padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
 </style>
 <main>
   <header>
-    <div class="brand"><h1>BND Trading</h1><div class="stamp" id="stamp"></div></div>
-    <div class="tools"><button class="chip" id="health" type="button"></button>
+    <div class="brand"><div class="mark">BND<b>/</b>TRADING</div>
+      <div class="stamp"><span class="pulse" id="pulse"></span><span id="stamp"></span></div></div>
+    <div class="tools"><button class="chip" id="cur" type="button" hidden></button><button class="chip" id="health" type="button"></button>
+      <button class="icon-btn" id="pal-btn" type="button" aria-label="Căutare rapidă (Ctrl K)" title="Căutare rapidă (Ctrl K)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button>
       <button class="icon-btn" id="theme" type="button"></button></div>
   </header>
   <div id="alerts"></div>
   <div class="bar">
-    <div class="search" id="search"><input id="q" type="search" placeholder="Caută o piață (BTC, AAPL, GOLD…)" aria-label="Caută o piață" autocomplete="off">
+    <div class="search" id="search"><input id="q" type="search" placeholder="Filtrează lista (BTC, AAPL, GOLD…)" aria-label="Filtrează piețele din listă" autocomplete="off">
       <select id="sort" aria-label="Sortare"></select></div>
     <div id="filters" class="filters" role="group" aria-label="Filtrează pe categorie"></div></div>
   <div id="signals" class="signals" aria-label="Semnale buy/sell acum"></div>
   <section id="view"></section>
-  <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj.</p>
+  <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj. Scurtături: <kbd>/</kbd> filtrează, <kbd>Ctrl K</kbd> caută, <kbd>1</kbd>–<kbd>5</kbd> file, <kbd>T</kbd> temă.</p>
 </main>
 <div class="dock"><nav class="dock-in" id="tabs" role="tablist" aria-label="Secțiuni"></nav></div>
+<div class="sheet" id="sheet" hidden><div class="sheet-bg" data-close></div>
+  <section class="sheet-card" role="dialog" aria-modal="true" aria-label="Detalii"><button class="sheet-x" type="button" data-close aria-label="Închide">×</button><div id="sheet-body"></div></section></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <script>
 const DATA = /*DATA*/null;
 const view = document.getElementById("view"), tabs = document.getElementById("tabs");
@@ -146,20 +246,49 @@ const pct1 = v => (v >= 0 ? "+" : "") + nf(1,1).format(v) + "%";
 const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const when = iso => new Intl.DateTimeFormat("ro-RO",{timeZone:"Europe/Berlin",day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}).format(new Date(iso));
 const dayOnly = iso => new Intl.DateTimeFormat("ro-RO",{timeZone:"Europe/Berlin",day:"2-digit",month:"2-digit"}).format(new Date(iso));
+const $ = id => document.getElementById(id);
 function store(key, value) { try { if (value == null) return localStorage.getItem(key); localStorage.setItem(key, value); } catch (e) { /* fără stocare: rămâne doar cât e pagina deschisă */ } return null; }
+const SHORT = {SP500:"S&P500",NASDAQ100:"NASDAQ",CRUDE_OIL:"PETROL",US10Y_NOTE:"OBLIG.10A",BITCOIN:"BTC",ETHEREUM:"ETH",SOLANA:"SOL"};
+const label = s => SHORT[s] || s;
 
-document.getElementById("stamp").textContent = "Actualizat " + when(DATA.generated) + " (ora Germaniei)" +
-  (DATA.quotes_time ? " · prețuri de la " + when(DATA.quotes_time) : "");
-document.getElementById("alerts").innerHTML = (DATA.alerts || []).map(t => `<div class="alert" role="alert">${esc(t)}</div>`).join("");
+// --- antet: proaspătă, stare, monedă, temă ---
+const FX = DATA.fx;
+function freshness() {
+  const mins = Math.max(0, Math.round((Date.now() - new Date(DATA.generated).getTime()) / 60000));
+  const txt = mins < 1 ? "chiar acum" : mins < 90 ? mins + " min" : mins < 2880 ? Math.round(mins / 60) + " h" : Math.round(mins / 1440) + " zile";
+  $("pulse").className = "pulse" + (mins > 360 ? " old" : mins > 90 ? " warn" : "");
+  $("stamp").textContent = "Date de acum " + txt + " · " + when(DATA.generated) + (DATA.quotes_time ? " · prețuri " + when(DATA.quotes_time) : "");
+}
+freshness(); setInterval(freshness, 30000);
+$("alerts").innerHTML = (DATA.alerts || []).map(t => `<div class="alert" role="alert">${esc(t)}</div>`).join("");
+const nAlerts = (DATA.alerts || []).length;
+$("health").className = "chip" + (nAlerts ? " bad" : "");
+$("health").innerHTML = `<i></i>${nAlerts ? nAlerts + (nAlerts === 1 ? " alertă" : " alerte") : "Sistem ok"}`;
+$("health").addEventListener("click", () => { if (nAlerts) $("alerts").scrollIntoView({behavior:"smooth"}); else location.hash = "rezumat"; });
 
-// --- stare generală și temă ---
-const health = document.getElementById("health"), nAlerts = (DATA.alerts || []).length;
-health.className = "chip" + (nAlerts ? " bad" : "");
-health.innerHTML = `<i></i>${nAlerts ? nAlerts + (nAlerts === 1 ? " alertă" : " alerte") : "Sistem ok"}`;
-health.addEventListener("click", () => { if (nAlerts) document.getElementById("alerts").scrollIntoView({behavior:"smooth"}); else location.hash = "rezumat"; });
-const THEMES = ["auto","light","dark"], themeBtn = document.getElementById("theme");
+const CURS = ["", "USD", "EUR", "RON"];
+let CUR = CURS.includes(store("bnd-moneda")) ? store("bnd-moneda") : "";
+if (!FX) CUR = "";
+function conv(v, from) {
+  if (v == null || !CUR || !FX || from === CUR) return {v, c: from};
+  const usd = from === "EUR" ? v * FX.eurusd : v;
+  if (CUR === "USD") return {v: usd, c: "USD"};
+  if (CUR === "EUR") return {v: usd / FX.eurusd, c: "EUR"};
+  return FX.usdron ? {v: usd * FX.usdron, c: "RON"} : {v, c: from};
+}
+const fmt = (v, from) => { const r = conv(v, from); return money(r.v, esc(r.c)); };   // moneda e scăpată: se folosește doar în HTML
+const fm = (v, a) => fmt(v, a.currency);
+const hero = (v, a) => fm(v, a).replace(/ (\S+)$/, "<small>$1</small>");
+function curButton() {
+  const b = $("cur"); b.hidden = !FX;
+  b.textContent = CUR ? "Afișare: " + CUR : "Moneda contului"; b.title = "Schimbă moneda în care sunt afișate valorile conturilor";
+}
+$("cur").addEventListener("click", () => { CUR = CURS[(CURS.indexOf(CUR) + 1) % CURS.length]; store("bnd-moneda", CUR); curButton(); render(); });
+curButton();
+
+const THEMES = ["auto","light","dark"], themeBtn = $("theme");
 const ICON = {
-  auto:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 4v16" /><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>',
+  auto:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg>',
   light:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>',
   dark:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>'};
 let THEME = THEMES.includes(store("bnd-tema")) ? store("bnd-tema") : "auto";
@@ -167,7 +296,8 @@ function applyTheme() {
   if (THEME === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", THEME);
   themeBtn.innerHTML = ICON[THEME]; themeBtn.title = themeBtn.ariaLabel = "Temă: " + {auto:"automată",light:"deschisă",dark:"închisă"}[THEME];
 }
-themeBtn.addEventListener("click", () => { THEME = THEMES[(THEMES.indexOf(THEME) + 1) % 3]; store("bnd-tema", THEME); applyTheme(); });
+function cycleTheme() { THEME = THEMES[(THEMES.indexOf(THEME) + 1) % 3]; store("bnd-tema", THEME); applyTheme(); }
+themeBtn.addEventListener("click", cycleTheme);
 applyTheme();
 
 const I = {
@@ -180,23 +310,24 @@ const TABS = [["rezumat","Rezumat"],["unic","Cont"],["consiliu","Consiliul"],["t
 tabs.innerHTML = TABS.map(([id,t]) => `<button role="tab" data-id="${id}" id="tab-${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[id]}</svg>${t}</button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; window.scrollTo({top:0}); } });
 
-// --- grafic cu valoare la atingere ---
+// --- grafice: linie interactivă, inel, donut ---
 let CHARTS = {};
 function spark(history, initial, key) {
   const pts = history.map(h => ({v:h.equity, t:h.t})); if (initial != null) pts.unshift({v:initial, t:null});
   if (pts.length < 2 || Math.max(...pts.map(p => p.v)) === Math.min(...pts.map(p => p.v)))
-    return `<p class="sub" style="margin-block:12px">Graficul apare când valoarea contului începe să se miște.</p>`;
-  const W = 320, H = 96, P = 6, vals = pts.map(p => p.v), lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || 1;
+    return `<p class="sub" style="margin-block:14px">Graficul apare când valoarea contului începe să se miște.</p>`;
+  const W = 320, H = 100, P = 6, vals = pts.map(p => p.v), lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || 1;
   const x = i => P + i * (W - 2*P) / (pts.length - 1), y = v => H - P - (v - lo) / span * (H - 2*P);
   const line = vals.map((v,i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
-  const col = vals[vals.length-1] >= vals[0] ? "var(--gain)" : "var(--loss)";
+  const col = vals[vals.length-1] >= vals[0] ? "var(--gain)" : "var(--loss)", gid = "g" + key;
   CHARTS[key] = {pts, W, x, y};
   return `<div class="chart" data-chart="${key}"><div class="tip"></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Valoarea contului în timp">
-    <line x1="${P}" x2="${W-P}" y1="${y(vals[0])}" y2="${y(vals[0])}" stroke="var(--line)" stroke-dasharray="3 4"/>
-    <path d="${line} L${x(pts.length-1)} ${H-P} L${x(0)} ${H-P} Z" fill="${col}" opacity=".12"/>
-    <path d="${line}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>
+    <defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    <line x1="${P}" x2="${W-P}" y1="${y(vals[0])}" y2="${y(vals[0])}" stroke="var(--line-2)" stroke-dasharray="3 4"/>
+    <path d="${line} L${x(pts.length-1)} ${H-P} L${x(0)} ${H-P} Z" fill="url(#${gid})"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px ${col})"/>
     <line class="cur" x1="0" x2="0" y1="${P}" y2="${H-P}" stroke="var(--muted)" stroke-width="1" opacity="0"/>
-    <circle class="dot" cx="${x(pts.length-1)}" cy="${y(vals[vals.length-1])}" r="3.5" fill="${col}"/></svg></div>`;
+    <circle class="dot" cx="${x(pts.length-1)}" cy="${y(vals[vals.length-1])}" r="3.8" fill="${col}"/></svg></div>`;
 }
 view.addEventListener("pointermove", e => {
   const box = e.target.closest(".chart"); if (!box) return;
@@ -211,11 +342,30 @@ view.addEventListener("pointermove", e => {
 });
 view.addEventListener("pointerleave", () => view.querySelectorAll(".tip").forEach(t => t.style.opacity = 0), true);
 
-// --- filtre: categorie, căutare, sortare ---
+function ring(frac, big, small, name, size) {
+  const r = 40, len = 2 * Math.PI * r, f = Math.min(1, Math.max(0, frac));
+  return `<svg class="ring" viewBox="0 0 100 100" width="${size || 104}" height="${size || 104}" role="img" aria-label="${esc(name)}: ${esc(big)}">
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--line-2)" stroke-width="7"/>
+    <circle class="arc" cx="50" cy="50" r="${r}" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${len.toFixed(1)}" stroke-dashoffset="${(len * (1 - f)).toFixed(1)}" transform="rotate(-90 50 50)"/>
+    <text x="50" y="${small ? 52 : 58}" style="font-size:${big.length > 4 ? 15 : 21}px">${esc(big)}</text>${small ? `<text class="s" x="50" y="68">${esc(small)}</text>` : ""}</svg>`;
+}
+function donut(rows, total) {
+  const r = 38, len = 2 * Math.PI * r; let off = 0;
+  const arcs = rows.map(x => { const l = len * x.v / total, s = `<circle cx="50" cy="50" r="${r}" fill="none" stroke="${x.c}" stroke-width="13" stroke-dasharray="${Math.max(0, l - 1.2).toFixed(2)} ${(len - l + 1.2).toFixed(2)}" stroke-dashoffset="${(-off).toFixed(2)}" transform="rotate(-90 50 50)"/>`; off += l; return s; }).join("");
+  return `<svg viewBox="0 0 100 100" width="132" height="132" role="img" aria-label="Repartiția pe categorii">${arcs}</svg>`;
+}
+
+// --- filtre: categorie, căutare în listă, sortare, favorite ---
 const GROUPS = DATA.groups || [];
-let FILTER = "", QUERY = "", SORT = store("bnd-sortare") || "", CONS = "";
+let FILTER = "", QUERY = "", SORT = store("bnd-sortare") || "", CONS = "", CVIEW = store("bnd-vedere") === "lista" ? "lista" : "harta";
 try { FILTER = localStorage.getItem("bnd-filtru") || ""; } catch (e) { FILTER = ""; }
 if (!GROUPS.some(g => g.key === FILTER)) FILTER = "";
+let FAV = [];
+try { FAV = JSON.parse(store("bnd-fav") || "[]").filter(x => typeof x === "string"); } catch (e) { FAV = []; }
+const isFav = s => FAV.includes(s);
+const star = x => isFav(x.symbol) ? "★ " : "";
+const favCls = x => isFav(x.symbol) ? " fav" : "";
+function toggleFav(s) { FAV = isFav(s) ? FAV.filter(x => x !== s) : FAV.concat(s); store("bnd-fav", JSON.stringify(FAV)); }
 const sortKey = {
   valoare: x => x.value != null ? -Math.abs(x.value) : x.net != null ? -Math.abs(x.net) : -(x.quantity || 0),
   pnl: x => x.pnl != null ? -x.pnl : 0,
@@ -232,13 +382,9 @@ function byGroup(items) {
   return GROUPS.filter(g => !FILTER || g.key === FILTER)
     .map(g => ({...g, items: list.filter(x => (x.group || "alte") === g.key)})).filter(g => g.items.length);
 }
-function setFilter(key) {
-  FILTER = FILTER === key ? "" : key;
-  store("bnd-filtru", FILTER);
-  show();
-}
+function setFilter(key) { FILTER = FILTER === key ? "" : key; store("bnd-filtru", FILTER); show(); }
 function filtersBar() {
-  const box = document.getElementById("filters");
+  const box = $("filters");
   // Numărul din chip = piețele consiliului pe categorie; categoriile fără vot încă folosesc pozițiile și ordinele conturilor.
   const counts = {};
   for (const m of (DATA.council && DATA.council.markets) || []) counts[m.group || "alte"] = (counts[m.group || "alte"] || 0) + 1;
@@ -250,11 +396,11 @@ function filtersBar() {
   const chips = GROUPS.filter(g => counts[g.key]).map(g => `<button type="button" data-g="${esc(g.key)}" aria-pressed="${FILTER === g.key}">${esc(g.label)}<small>${counts[g.key]}</small></button>`);
   box.innerHTML = chips.length ? `<button type="button" data-g="" aria-pressed="${FILTER === ""}">Toate</button>` + chips.join("") : "";
 }
-document.getElementById("filters").addEventListener("click", e => {
+$("filters").addEventListener("click", e => {
   const b = e.target.closest("button");
   if (b) { if (b.dataset.g === "") { FILTER = ""; store("bnd-filtru", ""); show(); } else setFilter(b.dataset.g); }
 });
-const qBox = document.getElementById("q"), sortBox = document.getElementById("sort");
+const qBox = $("q"), sortBox = $("sort");
 qBox.addEventListener("input", () => { QUERY = qBox.value; render(); });
 sortBox.addEventListener("change", () => { SORT = sortBox.value; store("bnd-sortare", SORT); render(); });
 const SORTS = {account:[["","Implicit"],["valoare","Valoare"],["pnl","Profit / pierdere"],["nume","Nume"]],
@@ -267,6 +413,82 @@ function tally(items, net) {
 const groupHead = (g, extra) => `<div class="grp"><span>${esc(g.label)} <small>(${g.items.length})</small></span><span class="grp-t">${extra || ""}</span></div>`;
 const noMatch = () => QUERY.trim() ? `<p class="empty">Nicio piață nu se potrivește cu „${esc(QUERY.trim())}”.</p>` : "";
 
+// --- date despre o piață, din toate sursele ---
+const councilMarkets = () => (DATA.council && DATA.council.exists && DATA.council.markets) || [];
+const councilMarket = s => councilMarkets().find(m => m.symbol === s);
+function holdings(s) {
+  const out = [];
+  for (const a of DATA.accounts) if (a.exists && !a.archived) {
+    for (const p of a.positions) if (p.symbol === s) out.push({a, p});
+    for (const o of a.orders) if (o.symbol === s) out.push({a, o});
+  }
+  return out;
+}
+const top50Row = s => (DATA.top50 || []).find(r => r.name === s || r.name === label(s));
+function universe() {
+  const set = new Map();
+  for (const m of councilMarkets()) set.set(m.symbol, m.group);
+  for (const a of DATA.accounts) if (a.exists && !a.archived) for (const x of a.positions.concat(a.orders)) if (!set.has(x.symbol)) set.set(x.symbol, x.group);
+  for (const r of DATA.top50 || []) if (!set.has(r.name)) set.set(r.name, r.meme ? "memecoin" : "crypto");
+  return [...set.entries()].map(([symbol, group]) => ({symbol, group}));
+}
+
+// --- foaia: detaliu piață și căutare rapidă ---
+const sheet = $("sheet"), sheetBody = $("sheet-body");
+let lastFocus = null;
+function openSheet(html) {
+  lastFocus = document.activeElement; sheetBody.innerHTML = html; sheet.hidden = false; document.body.style.overflow = "hidden";
+  const first = sheet.querySelector(".pal") || sheet.querySelector(".sheet-x"); if (first) first.focus();
+}
+function closeSheet() { if (sheet.hidden) return; sheet.hidden = true; document.body.style.overflow = ""; if (lastFocus && lastFocus.focus) lastFocus.focus(); }
+function openMarket(sym) {
+  const m = councilMarket(sym), hold = holdings(sym), t = top50Row(sym), g = GROUPS.find(x => x.key === ((m && m.group) || (t && (t.meme ? "memecoin" : "crypto")) || "")) || null;
+  const vote = v => ({BUY:"cumpără", SELL:"vinde", HOLD:"așteaptă"}[v] || v);
+  const council = m ? `<h2>Consiliul AI</h2>
+      <div class="pillrow"><span class="tag ${m.net > 0 ? "gain" : m.net < 0 ? "loss" : ""}">înclinație netă ${m.net > 0 ? "+" : ""}${m.net} din 5</span>
+        <span class="tag">decizie: ${esc(vote(m.decision))}</span>${m.bot ? `<span class="tag ${m.bot > 0 ? "gain" : "loss"}">reguli: ${m.bot > 0 ? "▲ cumpără" : "▼ vinde"}</span>` : `<span class="tag">reguli: –</span>`}</div>
+      <div class="gauge" role="img" aria-label="Înclinația netă ${m.net} pe o scară de la -5 la +5"><i style="left:${50 + 10 * m.net}%"></i></div>
+      <div class="sub" style="display:flex;justify-content:space-between"><span>vinde</span><span>neutru</span><span>cumpără</span></div>
+      <div class="agents">${Object.entries(m.votes).map(([a, v]) => `<div class="agent ${esc(v)}"><b>${esc(a)}</b><span>${esc(vote(v))}</span></div>`).join("")}</div>`
+    : `<p class="sub" style="margin-top:14px">Consiliul nu a votat încă această piață.</p>`;
+  const own = hold.length ? `<h2>În conturi</h2>` + hold.map(h => h.p
+      ? `<div class="row" style="cursor:default"><div><span class="name">${esc(h.a.title)}</span><span class="pill ${h.p.quantity < 0 ? "short" : ""}">${h.p.quantity < 0 ? "short" : "long"}</span><div class="meta">intrare ${money2(h.p.avg)} · acum ${money2(h.p.last)}</div></div><div class="num">${money(h.p.value, "")}<div class="${h.p.pnl >= 0 ? "gain" : "loss"}">${h.p.pnl >= 0 ? "+" : ""}${money2(h.p.pnl)}</div></div></div>`
+      : `<div class="row" style="cursor:default"><div><span class="name">${esc(h.a.title)}</span><span class="pill">${h.o.kind === "închide" ? "închide" : h.o.kind === "short" ? "short" : "long"}</span><div class="meta">comandă pentru deschiderea următoare</div></div><div class="num">${money2(h.o.quantity)}</div></div>`).join("")
+    : `<p class="sub" style="margin-top:14px">Nicio poziție sau comandă în conturile active.</p>`;
+  const cry = t ? `<h2>Top 50 cripto</h2><div class="pillrow"><span class="tag mono">$ ${t.price >= 1 ? money2(t.price) : t.price.toPrecision(3)}</span>${[["24h", t.d1], ["7z", t.d7], ["30z", t.d30]].map(([k, v]) => `<span class="tag ${v == null ? "" : v >= 0 ? "gain" : "loss"}">${k} ${v == null ? "–" : pct1(v)}</span>`).join("")}</div>` : "";
+  openSheet(`<div class="label">${g ? esc(g.label) : "Piață"}</div><div class="hero-value" id="sheet-title" style="font-size:30px">${esc(label(sym))}</div>
+    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button></div>${council}${own}${cry}`);
+}
+function openPalette() {
+  openSheet(`<div class="label">Căutare rapidă</div><input class="pal" id="pal" type="search" placeholder="Scrie o piață sau o monedă…" aria-label="Caută o piață" autocomplete="off"><div id="pal-res"></div>`);
+  const input = $("pal"), box = $("pal-res"), all = universe();
+  const paint = () => {
+    const q = input.value.trim().toLowerCase();
+    const hits = (q ? all.filter(x => (x.symbol + " " + label(x.symbol)).toLowerCase().includes(q)) : all.filter(x => isFav(x.symbol)).concat(all.filter(x => !isFav(x.symbol)).slice(0, 8))).slice(0, 12);
+    box.innerHTML = hits.length ? hits.map(x => { const m = councilMarket(x.symbol);
+      return `<button class="mover" type="button" data-m="${esc(x.symbol)}"><span><b>${star(x)}${esc(label(x.symbol))}</b> <span class="sub">${esc((GROUPS.find(g => g.key === x.group) || {}).label || "")}</span></span><span class="mono ${m && m.net > 0 ? "gain" : m && m.net < 0 ? "loss" : ""}">${m ? (m.net > 0 ? "▲" : m.net < 0 ? "▼" : "–") + (m.net ? Math.abs(m.net) : "") : ""}</span></button>`; }).join("")
+      : `<p class="empty">Nu am găsit „${esc(input.value.trim())}”.</p>`;
+  };
+  input.addEventListener("input", paint);
+  input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); const first = box.querySelector("[data-m]"); if (first) openMarket(first.dataset.m); } });
+  paint();
+}
+let toastTimer = null;
+function toast(text) { const t = $("toast"); t.textContent = text; t.classList.add("on"); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("on"), 1800); }
+function copyText(text) {
+  const fallback = () => { const a = document.createElement("textarea"); a.value = text; a.style.position = "fixed"; a.style.opacity = "0"; document.body.appendChild(a); a.select();
+    let ok = false; try { ok = document.execCommand("copy"); } catch (e) { ok = false; } a.remove(); toast(ok ? "Copiat" : "Nu am putut copia"); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast("Copiat"), fallback); else fallback();
+}
+function summaryText() {
+  const a = DATA.accounts.find(x => x.key === "unic"), c = DATA.council, lines = ["BND Trading · " + when(DATA.generated) + " (ora Germaniei)"];
+  if (a && a.exists) lines.push(a.title + ": " + money(eq(a), a.currency) + " (" + pct(100 * (eq(a) / a.initial - 1)) + " față de start), " + a.positions.length + " poziții, " + a.orders.length + " comenzi");  // text simplu pentru clipboard, nu HTML
+  if (c && c.exists && c.day) { const m = c.markets || []; lines.push("Consiliul " + c.day + ": " + m.length + " piețe, ▲ " + m.filter(x => x.net > 0).length + " ▼ " + m.filter(x => x.net < 0).length); }
+  lines.push("Bani virtuali; nu dovedește un avantaj.");
+  return lines.join("\n");
+}
+
+// --- blocuri ---
 function rulesLine(a) {
   const r = a.rules || {}, p = a.plan || {};
   const dir = r.shorts ? "poate face long și short" : "doar long (fără short)";
@@ -274,42 +496,49 @@ function rulesLine(a) {
   const plan = p.gross ? ` · plan acum: long ${Math.round(100 * p.long)}%, short ${Math.round(100 * p.short)}%, expunere ${money2(p.gross)}x din cont` : "";
   return `<div class="sub">${dir}, ${lev}${plan}</div>`;
 }
-
 function allocation(a) {
   const sums = {};
   for (const p of a.positions) sums[p.group || "alte"] = (sums[p.group || "alte"] || 0) + Math.abs(p.value || 0);
   const total = Object.values(sums).reduce((x, y) => x + y, 0);
   if (!total) return "";
   const rows = GROUPS.filter(g => sums[g.key]).map((g, i) => ({g, v: sums[g.key], c: `var(--c${(i % 8) + 1})`}));
-  return `<h2>Unde sunt banii</h2><div class="panel" style="margin-top:0"><div class="alloc" role="img" aria-label="Repartiția pe categorii">${rows.map(r => `<span style="width:${(100*r.v/total).toFixed(2)}%;background:${r.c}"></span>`).join("")}</div>
-    <div class="legend">${rows.map(r => `<span><i style="background:${r.c}"></i>${esc(r.g.label)} <b>${Math.round(100*r.v/total)}%</b></span>`).join("")}</div></div>`;
+  const long = a.positions.filter(p => p.quantity > 0).reduce((s, p) => s + Math.abs(p.value || 0), 0), short = total - long;
+  return `<h2>Unde sunt banii</h2><div class="panel"><div class="ringbox" style="align-items:center;flex-wrap:wrap">${donut(rows, total)}
+    <div style="flex:1;min-width:180px"><div class="legend" style="margin:0">${rows.map(r => `<span><i style="background:${r.c}"></i>${esc(r.g.label)} <b>${Math.round(100*r.v/total)}%</b></span>`).join("")}</div>
+    <div class="label" style="margin-top:14px">Long față de short</div><div class="split" role="img" aria-label="Long ${Math.round(100*long/total)}%, short ${Math.round(100*short/total)}%"><span class="l" style="width:${(100*long/total).toFixed(1)}%"></span><span class="s" style="width:${(100*short/total).toFixed(1)}%"></span></div>
+    <div class="sub">long ${Math.round(100*long/total)}% · short ${Math.round(100*short/total)}%</div></div></div></div>`;
 }
+const euro = (v, acc) => CUR ? "" : (DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}${DATA.fx.usdron ? " · " + money(v * DATA.fx.usdron, "lei") : ""}</div>` : "");
 
 function account(a) {
   if (!a.exists) return `<p class="empty">Contul „${esc(a.title)}” nu există încă.</p>`;
   const value = eq(a), ch = 100 * (value / a.initial - 1), cls = ch >= 0 ? "gain" : "loss";
   const notice = a.kill_switch ? `<div class="notice"><b>Oprire de siguranță activă.</b> ${esc(a.kill_reason || "")}</div>` : "";
+  const maxPnl = Math.max(1, ...a.positions.map(p => Math.abs(p.pnl || 0)));
   const posRow = p => {
     const side = p.quantity < 0 ? "short" : "long";
-    return `<div class="row"><div><span class="name">${esc(p.symbol)}</span><span class="pill ${side}">${side}</span>
+    return `<button class="row" type="button" data-m="${esc(p.symbol)}"><div><span class="name">${star(p)}${esc(label(p.symbol))}</span><span class="pill ${side}">${side}</span>
       <div class="meta">intrare ${money2(p.avg)} · acum ${money2(p.last)}${p.stop ? " · stop " + money2(p.stop) : ""}</div></div>
-      <div class="num">${money(p.value, "")}<div class="${p.pnl >= 0 ? "gain" : "loss"}">${p.pnl >= 0 ? "+" : ""}${money2(p.pnl)}</div></div></div>`;
+      <div class="num">${money(p.value, "")}<div class="${p.pnl >= 0 ? "gain" : "loss"}">${p.pnl >= 0 ? "+" : ""}${money2(p.pnl)}</div></div>
+      <div class="pbar"><span style="width:${(100 * Math.abs(p.pnl || 0) / maxPnl).toFixed(1)}%;background:${p.pnl >= 0 ? "var(--gain)" : "var(--loss)"}"></span></div></button>`;
   };
   const pos = a.positions.length ? (byGroup(a.positions).map(g => groupHead(g, tally(g.items, p => p.quantity)) + g.items.map(posRow).join("")).join("") || noMatch())
     : `<p class="empty">Nicio poziție deschisă: banii stau în numerar.</p>`;
-  const ordRow = o => `<div class="row"><div><span class="name">${esc(o.symbol)}</span><span class="pill ${o.kind==="short"?"short":""}">${o.kind === "închide" ? "închide poziția" : o.kind === "short" ? "vinde (short)" : "cumpără (long)"}</span>
-      <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></div>`;
+  const ordRow = o => `<button class="row" type="button" data-m="${esc(o.symbol)}"><div><span class="name">${esc(label(o.symbol))}</span><span class="pill ${o.kind==="short"?"short":""}">${o.kind === "închide" ? "închide poziția" : o.kind === "short" ? "vinde (short)" : "cumpără (long)"}</span>
+      <div class="meta">se execută la deschiderea următoare</div></div><div class="num">${money2(o.quantity)}</div></button>`;
   const ord = a.orders.length ? (byGroup(a.orders).map(g => groupHead(g, tally(g.items, o => o.kind === "închide" ? 0 : o.side === "BUY" ? 1 : -1)) + g.items.map(ordRow).join("")).join("") || noMatch())
     : `<p class="empty">Nicio comandă în așteptare.</p>`;
-  return `${notice}<div class="hero"><div class="label">${esc(a.title)} · ${esc(a.currency)}${a.live ? '<span class="live">preț de acum</span>' : '<span class="live" style="color:var(--muted)">ultima închidere</span>'}</div>
-    <div class="big">${money(value, "")}</div>${euro(value, a)}<div class="delta ${cls}">${pct(ch)} față de start (${money(a.initial,"")})</div>
-    <div class="sub">${esc(a.subtitle)}</div>${rulesLine(a)}</div>${spark(a.history, a.initial, a.key)}
-    <div class="stats"><div><span class="label">Numerar</span><b>${money(a.cash,"")}</b></div>
-    <div><span class="label">Leverage</span><b>${a.leverage == null ? "–" : money2(a.leverage) + "x"}</b></div>
-    <div><span class="label">Poziții</span><b>${a.positions.length}</b></div>
-    <div><span class="label">Tranzacții</span><b>${a.fills}</b></div>
-    <div><span class="label">Drawdown</span><b>${a.drawdown_pct ? "−" + money2(a.drawdown_pct) + "%" : "0,00%"}</b></div>
-    <div><span class="label">Costuri plătite</span><b>${money2(a.costs_total)}</b></div></div>
+  const maxLev = (a.rules && a.rules.max_leverage) || 0;
+  const levRing = a.leverage != null && maxLev ? `<div class="ringbox">${ring(a.leverage / maxLev, money2(a.leverage) + "x", "din " + money2(maxLev) + "x", "Leverage folosit", 92)}<div><div class="label">Leverage</div><div class="sub">cât din plafonul permis e folosit acum</div></div></div>` : "";
+  const dd = a.drawdown_pct || 0;
+  return `${notice}<div class="grid"><div class="panel hot"><div class="label">${esc(a.title)} · ${esc(CUR || a.currency)}${a.live ? '<span class="tag" style="margin-left:8px;padding:1px 8px">preț de acum</span>' : '<span class="tag" style="margin-left:8px;padding:1px 8px;color:var(--muted)">ultima închidere</span>'}</div>
+    <div class="hero-value">${hero(value, a)}</div>${euro(value, a)}
+    <div class="pillrow"><span class="tag ${cls}">${pct(ch)}</span><span class="tag">start ${fm(a.initial, a)}</span></div>
+    <div class="sub" style="margin-top:12px">${esc(a.subtitle)}</div>${rulesLine(a)}${spark(a.history, a.initial, a.key)}</div>
+    <div class="panel">${levRing}<div class="stats" style="margin-bottom:0"><div><span class="label">Numerar</span><b>${fm(a.cash, a)}</b></div>
+    <div><span class="label">Poziții</span><b>${a.positions.length}</b></div><div><span class="label">Tranzacții</span><b>${a.fills}</b></div>
+    <div><span class="label">Drawdown</span><b class="${dd ? "loss" : ""}">${dd ? "−" + money2(dd) + "%" : "0,00%"}</b></div>
+    <div><span class="label">Costuri plătite</span><b>${money2(a.costs_total)}</b></div></div></div></div>
     ${allocation(a)}<h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}${exposureBlock(a.exposure)}`;
 }
 
@@ -323,10 +552,8 @@ function exposureBlock(x) {
       ${r.warnings.map(w => `<p class="loss">${esc(w)}</p>`).join("")}
       ${rows ? `<div class="scroll"><table><tr><th>Grup care se mișcă împreună</th><th>Din capital</th><th>Din risc</th></tr>${rows}</table></div>` : ""}`;
   };
-  return `<h2>Expuneri corelate</h2>${part("Acum", x.current)}${part("Planificat", x.planned)}<p class="sub">Doar informare: nu schimbă nicio poziție.</p>`;
+  return `<h2>Expuneri corelate</h2><div class="panel">${part("Acum", x.current)}${part("Planificat", x.planned)}<p class="sub">Doar informare: nu schimbă nicio poziție.</p></div>`;
 }
-
-const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}${DATA.fx.usdron ? " · " + money(v * DATA.fx.usdron, "lei") : ""}</div>` : "";
 
 function testCard() {
   const t = DATA.test; if (!t) return "";
@@ -335,11 +562,13 @@ function testCard() {
   const done = Math.min(total, Math.max(0, Math.round((today - day(t.start)) / 864e5)));
   const left = Math.max(0, total - done), finished = done >= total;
   const f = iso => iso.slice(8,10) + "." + iso.slice(5,7);
-  return `<div class="panel"><div class="label">Testul de ${total} zile</div>
-    <div style="font:800 22px var(--font-display);margin-top:4px">${finished ? "Încheiat" : "Ziua " + done + " din " + total}</div>
-    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${done}"><span style="width:${(100*done/total).toFixed(1)}%"></span></div>
-    <div class="ticks"><span>${f(t.start)}</span><span>${finished ? "raportul final: " + f(t.report) : "mai sunt " + left + (left === 1 ? " zi" : " zile")}</span><span>${f(t.end)}</span></div>
-    <p class="sub" style="margin-top:10px">Raportul final: ${f(t.report)}. Regulile și limitele de risc nu se schimbă pe durata testului.</p></div>`;
+  const ticks = Array.from({length: total + 1}, (_, i) => `<span class="${i < done ? "on" : i === done ? "now" : ""}"></span>`).join("");
+  const miles = (t.milestones || []).map(m => `<span>${f(m.date)} ${esc(m.label)}</span>`).join("");
+  return `<div class="panel"><div class="ringbox">${ring(done / total, finished ? "gata" : done + "/" + total, "ZILE", "Progresul testului", 112)}
+    <div><div class="label">Testul de ${total} zile</div><div style="font:500 20px var(--font-display);margin-top:6px">${finished ? "Încheiat" : "Ziua " + done + " din " + total}</div>
+    <div class="sub">${finished ? "Raportul final: " + f(t.report) : "mai sunt " + left + (left === 1 ? " zi" : " zile") + " până pe " + f(t.end) + ", raportul pe " + f(t.report)}</div></div></div>
+    <div class="tl" style="--n:${total + 1}" aria-hidden="true">${ticks}</div><div class="miles">${miles}</div>
+    <p class="sub">Regulile și limitele de risc nu se schimbă pe durata testului.</p></div>`;
 }
 
 function systemPanel() {
@@ -350,24 +579,51 @@ function systemPanel() {
   return rows ? `<div class="panel"><div class="label">Stare sistem · ultima rulare programată</div><div class="sys">${rows}</div></div>` : "";
 }
 
+function feedPanel() {
+  const items = (DATA.alerts || []).map(t => ({t, bad: true})).concat((DATA.events || []).map(t => ({t, bad: false})));
+  if (!items.length) return "";
+  return `<div class="panel"><div class="label">Activitate</div><div class="feed">${items.map(x => `<div><i class="${x.bad ? "bad" : ""}"></i><span>${esc(x.t)}</span></div>`).join("")}</div></div>`;
+}
+
+function favoritesPanel() {
+  const known = universe();
+  const favs = FAV.filter(s => known.some(u => u.symbol === s));
+  if (!favs.length) return `<div class="panel"><div class="label">Favorite</div><p class="sub">Deschide o piață și apasă „Adaugă la favorite”: apare aici cu semnalul consiliului și poziția ta.</p></div>`;
+  return `<div class="panel"><div class="label">Favorite</div>${favs.map(s => { const m = councilMarket(s), h = holdings(s).find(x => x.p);
+    return `<button class="mover" type="button" data-m="${esc(s)}"><span><b>${esc(label(s))}</b> <span class="sub">${h ? (h.p.quantity < 0 ? "short" : "long") + " · " + money2(h.p.pnl) : "fără poziție"}</span></span><span class="mono ${m && m.net > 0 ? "gain" : m && m.net < 0 ? "loss" : ""}">${m ? (m.net > 0 ? "▲" : m.net < 0 ? "▼" : "–") + (m.net ? Math.abs(m.net) : "") : "–"}</span></button>`; }).join("")}</div>`;
+}
+
+function councilSnapshot() {
+  const c = DATA.council; if (!c || !c.exists || !c.day) return `<div class="panel"><div class="label">Consiliul AI</div><p class="empty">Consiliul nu a votat încă.</p></div>`;
+  const ms = c.markets || [], up = ms.filter(m => m.net > 0).length, down = ms.filter(m => m.net < 0).length;
+  const split = ms.filter(m => Object.values(m.votes).includes("BUY") && Object.values(m.votes).includes("SELL")).length;
+  const cost = c.costs ? `<div class="stats" style="margin-bottom:0"><div><span class="label">Azi</span><b>${money2(c.costs.today)} $</b></div>
+    <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b></div>
+    <div><span class="label">Ritm</span><b>${c.costs.today > 0 ? "≈ " + Math.floor(c.costs.remaining / c.costs.today) + " zile" : "–"}</b></div></div>` : "";
+  return `<button class="panel" type="button" data-go="consiliu" style="width:100%;text-align:left;display:block"><div class="label">Consiliul AI · ${esc(c.day)}</div>
+    <div class="pillrow"><span class="tag gain">▲ ${up}</span><span class="tag loss">▼ ${down}</span><span class="tag">– ${ms.length - up - down}</span><span class="tag" style="color:var(--warn)">dezacord ${split}</span></div>
+    <div class="strip" aria-hidden="true">${ms.map(m => `<i class="${m.net > 0 ? "up" : m.net < 0 ? "down" : ""}"></i>`).join("")}</div>
+    <div style="margin-top:14px">${cost}</div></button>`;
+}
+
 function summary() {
   const cards = DATA.accounts.filter(a => !a.archived).map(a => {
-    const id = "unic";
-    if (!a.exists) return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}</div><div class="sub">Nu există încă.</div></button>`;
+    if (!a.exists) return `<div class="panel hot"><div class="label">${esc(a.title)}</div><div class="sub">Nu există încă.</div></div>`;
     const v = eq(a), ch = 100 * (v / a.initial - 1);
-    return `<button class="card" data-go="${id}"><div class="label">${esc(a.title)}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
-      <div class="big">${money(v, "")}</div>${euro(v, a)}<div class="delta ${ch >= 0 ? "gain" : "loss"}">${pct(ch)} · ${a.positions.length} poziții · ${a.orders.length} comenzi</div>${spark(a.history, a.initial, "s" + a.key)}</button>`;
+    return `<button class="panel hot" type="button" data-go="unic" style="width:100%;text-align:left;display:block"><div class="label">${esc(a.title)}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
+      <div class="hero-value">${hero(v, a)}</div>${euro(v, a)}
+      <div class="pillrow"><span class="tag ${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</span><span class="tag">${a.positions.length} poziții</span><span class="tag">${a.orders.length} comenzi</span></div>${spark(a.history, a.initial, "s" + a.key)}</button>`;
   }).join("");
-  const c = DATA.council, cost = c.exists && c.costs ? `<div class="stats"><div><span class="label">Consiliu azi</span><b>${money2(c.costs.today)} $</b></div>
-    <div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "citit de la OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div>` : "";
   const rate = DATA.fx ? `<p class="sub">Curs EUR/USD: <b>${DATA.fx.eurusd.toFixed(4)}</b> (1 € = ${DATA.fx.eurusd.toFixed(2)} $)${DATA.fx.eurron ? " · EUR/RON: <b>" + DATA.fx.eurron.toFixed(4) + "</b>" : ""}, la ${when(DATA.fx.time)}.</p>` : "";
   const cm = DATA.council && DATA.council.exists ? DATA.council.markets || [] : [];
-  const cats = cm.length ? `<h2>Semnale pe categorii</h2><div class="scroll"><table><tr><th>Categorie</th><th>Piețe</th><th>▲</th><th>▼</th><th>–</th></tr>${byGroup(cm).map(g => {
+  const cats = cm.length ? `<h2>Semnale pe categorii</h2><div class="panel"><div class="scroll"><table><tr><th>Categorie</th><th>Piețe</th><th>▲</th><th>▼</th><th>–</th></tr>${byGroup(cm).map(g => {
     const up = g.items.filter(m => m.net > 0).length, down = g.items.filter(m => m.net < 0).length;
     return `<tr><td>${esc(g.label)}</td><td>${g.items.length}</td><td class="gain">${up}</td><td class="loss">${down}</td><td>${g.items.length - up - down}</td></tr>`;
-  }).join("")}</table></div>` : "";
+  }).join("")}</table></div></div>` : "";
   const old = DATA.accounts.filter(a => a.archived && a.exists).length;
-  return `${testCard()}<div class="cards">${cards}</div>${systemPanel()}${cost}${rate}${cats}<p class="sub">Atinge contul pentru detalii. Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
+  return `<div class="grid">${cards}${testCard()}</div><div class="actions"><button class="btn" type="button" data-copy>Copiază rezumatul</button><button class="btn" type="button" data-pal>Caută o piață</button></div>
+    <div class="grid" style="margin-top:12px">${councilSnapshot()}${favoritesPanel()}${feedPanel()}${systemPanel()}</div>${cats}${rate}
+    <p class="sub">Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
 }
 
 function comparison(c) {
@@ -375,12 +631,11 @@ function comparison(c) {
   if (!cmp || !cmp.settled_decisions) return `<h2>Cine a ghicit mai des</h2><p class="empty">Nicio decizie încheiată încă: prima se închide după 5 zile.</p>`;
   const line = (label, r) => `<tr><td>${label}</td><td>${r.calls}</td><td>${r.hit_rate == null ? "–" : Math.round(100 * r.hit_rate) + "%"}</td><td>${r.mean_return_pct == null ? "–" : pct(r.mean_return_pct)}</td></tr>`;
   const ag = Object.entries(c.agents).map(([n, a]) => `<tr><td>${esc(n)}</td><td>${a.calls}</td><td>${a.hit_rate == null ? "–" : Math.round(100 * a.hit_rate) + "%"}</td><td>${a.mean_brier == null ? "–" : a.mean_brier.toFixed(2)}</td></tr>`).join("");
-  return `<h2>Cine a ghicit mai des</h2><div class="scroll"><table><tr><th></th><th>Apeluri</th><th>Bine</th><th>Medie</th></tr>
+  return `<h2>Cine a ghicit mai des</h2><div class="panel"><div class="scroll"><table><tr><th></th><th>Apeluri</th><th>Bine</th><th>Medie</th></tr>
     ${line("Consiliul (majoritate)", cmp.council)}${line("Înclinația consiliului", cmp.lean)}${line("Botul pe reguli", cmp.bot)}${line("Doar cumpără", cmp.always_long)}</table></div>
-    <p class="sub">${cmp.settled_decisions} decizii încheiate. Cu puține decizii, diferențele pot fi noroc.</p>
-    <h2>Pe agenți</h2><div class="scroll"><table><tr><th>Agent</th><th>Păreri</th><th>Bine</th><th>Brier</th></tr>${ag}</table></div>${analysisNote(c.analysis)}`;
+    <p class="sub">${cmp.settled_decisions} decizii încheiate. Cu puține decizii, diferențele pot fi noroc.</p></div>
+    <h2>Pe agenți</h2><div class="panel"><div class="scroll"><table><tr><th>Agent</th><th>Păreri</th><th>Bine</th><th>Brier</th></tr>${ag}</table></div></div>${analysisNote(c.analysis)}`;
 }
-
 function analysisNote(a) {
   if (!a || !a.oos) return "";
   const over = Object.entries(a.overconfidence || {}).map(([n, v]) => `${esc(n)} ${v > 0 ? "+" : ""}${Math.round(100 * v)}%`).join(", ");
@@ -389,7 +644,6 @@ function analysisNote(a) {
   return `<p class="sub">Supraîncredere (încrederea declarată minus rata reală): ${over || "–"}. ${a.note ? esc(a.note) : ""}${al}
     ${a.oos.evaluated ? "Ponderarea pe zile nevăzute: " + esc(a.oos.verdict) + "." : esc(a.oos.note || "")}</p>`;
 }
-
 function agentsPanel(c) {
   const rows = Object.entries(c.models || {}).map(([name, m]) => {
     const r = ((c.last_round || {}).agents || {})[name];
@@ -397,7 +651,17 @@ function agentsPanel(c) {
     const lat = r && r.mean_latency_s != null ? r.mean_latency_s.toFixed(1) + " s" : "–";
     return `<tr><td>${esc(name)}</td><td>${state}</td><td>${lat}</td><td>${money2(m.total_cost_usd)}</td></tr>`;
   }).join("");
-  return rows ? `<h2>Cei cinci agenți</h2><div class="scroll"><table><tr><th>Agent</th><th>Ultima rundă</th><th>Latență</th><th>Cost $</th></tr>${rows}</table></div>` : "";
+  return rows ? `<h2>Cei cinci agenți</h2><div class="panel"><div class="scroll"><table><tr><th>Agent</th><th>Ultima rundă</th><th>Latență</th><th>Cost $</th></tr>${rows}</table></div></div>` : "";
+}
+function agreement(ms) {
+  const agents = ms.length ? Object.keys(ms[0].votes) : [];
+  if (agents.length < 2) return "";
+  const pair = (a, b) => { let both = 0, same = 0; for (const m of ms) { const x = m.votes[a], y = m.votes[b]; if (x && y) { both++; if (x === y) same++; } } return both ? same / both : null; };
+  const mean = a => { const v = agents.filter(b => b !== a).map(b => pair(a, b)).filter(x => x != null); return v.length ? v.reduce((s, x) => s + x, 0) / v.length : null; };
+  const rows = agents.map(a => `<div><b>${esc(a)}</b>${agents.map(b => { const p = a === b ? 1 : pair(a, b); return `<span style="--p:${p == null ? 0 : p}" title="${esc(a)} și ${esc(b)} votează la fel în ${p == null ? "–" : Math.round(100 * p)}% din piețe">${a === b ? "–" : p == null ? "–" : Math.round(100 * p)}</span>`; }).join("")}</div>`).join("");
+  const means = agents.map(a => ({a, v: mean(a)})).filter(x => x.v != null).sort((x, y) => x.v - y.v);
+  const odd = means.length ? `<p class="sub">Cel mai des în dezacord cu ceilalți: <b>${esc(means[0].a)}</b> (${Math.round(100 * means[0].v)}% acord mediu). Cel mai aliniat: <b>${esc(means[means.length - 1].a)}</b> (${Math.round(100 * means[means.length - 1].v)}%).</p>` : "";
+  return `<h2>Cât de des cad de acord agenții</h2><div class="panel"><div class="matrix" style="--n:${agents.length}"><div class="h"><b></b>${agents.map(a => `<span>${esc(a)}</span>`).join("")}</div>${rows}</div>${odd}</div>`;
 }
 
 // „Cumpără/Vinde/Neutru” după înclinația netă (aceeași ca ▲/▼ din bara de semnale); „Dezacord” = cineva a votat BUY și altcineva SELL.
@@ -409,28 +673,33 @@ function council(c) {
   const marketRow = m => {
     const votes = Object.entries(m.votes).map(([a,v]) => `<span class="v ${esc(v)}">${esc(a)} ${esc(v)}</span>`).join("");
     const bar = Object.values(m.votes).map(v => `<span class="${esc(v)}"></span>`).join("");
-    return `<div class="row" style="grid-template-columns:1fr"><div><span class="name">${esc(m.symbol)}</span>
+    return `<button class="row" type="button" data-m="${esc(m.symbol)}" style="grid-template-columns:1fr"><div><span class="name">${star(m)}${esc(m.symbol)}</span>
       <span class="pill ${m.decision==="SELL"?"short":""}">${m.decision==="HOLD"?"nu tranzacționa":m.decision==="BUY"?"cumpără":"vinde"}</span>
-      <div class="vbar" aria-hidden="true">${bar}</div><div class="votes">${votes}</div></div></div>`;
+      <div class="vbar" aria-hidden="true">${bar}</div><div class="votes">${votes}</div></div></button>`;
   };
+  const tile = m => `<button class="tile ${m.net > 0 ? "up" : m.net < 0 ? "down" : ""}${favCls(m)}" type="button" data-m="${esc(m.symbol)}" style="--t:${Math.min(1, Math.abs(m.net) / 5)}" title="${esc(m.symbol)}: ${m.net > 0 ? "+" : ""}${m.net} net"><b>${esc(label(m.symbol))}</b><span>${m.net > 0 ? "+" : ""}${m.net}</span></button>`;
   const shown = c.markets.filter(consMatch);
-  const rows = byGroup(shown).map(g => groupHead(g, tally(g.items, m => m.net)) + g.items.map(marketRow).join("")).join("") || noMatch() || `<p class="empty">Nicio piață în această categorie de voturi.</p>`;
+  const groups = byGroup(shown);
+  const body = !groups.length ? (noMatch() || `<p class="empty">Nicio piață în această categorie de voturi.</p>`)
+    : CVIEW === "harta" ? groups.map(g => groupHead(g, tally(g.items, m => m.net)) + `<div class="heat">${g.items.map(tile).join("")}</div>`).join("")
+    : groups.map(g => groupHead(g, tally(g.items, m => m.net)) + g.items.map(marketRow).join("")).join("");
   const seg = `<div class="seg" role="group" aria-label="Filtrează după vot">${CONS_FILTERS.map(([k, t]) => `<button type="button" data-cons="${k}" aria-pressed="${CONS === k}">${t}</button>`).join("")}</div>`;
-  return `<div class="hero"><div class="label">Consiliul AI · ${esc(c.day)}</div>
-    <div class="sub">„Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div>
-    <div class="big">${FILTER ? c.markets.filter(m => m.group === FILTER).length + " din " + c.markets.length : c.markets.length} piețe</div>
-    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile)</div></div>${c.costs ? `<div class="stats"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "citit de la OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div>` : ""}${agentsPanel(c)}${seg}${rows}${comparison(c)}`;
+  const vseg = `<div class="seg" role="group" aria-label="Mod de afișare"><button type="button" data-cview="harta" aria-pressed="${CVIEW === "harta"}">Hartă</button><button type="button" data-cview="lista" aria-pressed="${CVIEW === "lista"}">Listă</button></div>`;
+  return `<div class="grid"><div class="panel hot"><div class="label">Consiliul AI · ${esc(c.day)}</div>
+    <div class="hero-value">${FILTER ? c.markets.filter(m => m.group === FILTER).length + " din " + c.markets.length : c.markets.length}<small>piețe</small></div>
+    <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile). „Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div></div>
+    ${c.costs ? `<div class="panel"><div class="label">Costuri</div><div class="stats" style="margin-bottom:0"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div></div>` : ""}</div>
+    <h2>Piețele</h2>${vseg}${seg}${body}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
 }
 
-const SHORT = {SP500:"S&P500",NASDAQ100:"NASDAQ",CRUDE_OIL:"PETROL",US10Y_NOTE:"OBLIG.10A",BITCOIN:"BTC",ETHEREUM:"ETH",SOLANA:"SOL"};
 function signalsBar() {
   const c = DATA.council;
-  const box = document.getElementById("signals");
+  const box = $("signals");
   if (!c || !c.exists || !c.markets || !c.markets.length) { box.innerHTML = ""; return; }
   const chip = m => {
     const kind = m.net > 0 ? "buy" : m.net < 0 ? "sell" : "hold";
-    const label = m.net > 0 ? "▲" : m.net < 0 ? "▼" : "–";
-    return `<span class="sig ${kind}" title="${esc(m.symbol)}: ${m.net > 0 ? "cumpără" : m.net < 0 ? "vinde" : "hold"}, ${Math.abs(m.net)} net din 5 agenți">${esc(SHORT[m.symbol] || m.symbol)} ${label}${m.net ? Math.abs(m.net) : ""}</span>`;
+    const lab = m.net > 0 ? "▲" : m.net < 0 ? "▼" : "–";
+    return `<span class="sig ${kind}" title="${esc(m.symbol)}: ${m.net > 0 ? "cumpără" : m.net < 0 ? "vinde" : "hold"}, ${Math.abs(m.net)} net din 5 agenți">${esc(label(m.symbol))} ${lab}${m.net ? Math.abs(m.net) : ""}</span>`;
   };
   box.innerHTML = byGroup(c.markets).map(g => `<span class="sg">${esc(g.label)}</span>` + g.items.map(chip).join("")).join("");
 }
@@ -443,6 +712,7 @@ function top50() {
   if (FILTER === "crypto") rows = rows.filter(r => !r.meme);
   if (FILTER === "memecoin") rows = rows.filter(r => r.meme);
   if (!rows.length) return `<p class="empty">Arhiva cu top 50 cripto nu are încă date. Apare după prima colectare de seară.</p>`;
+  const base = rows;
   const q = QUERY.trim().toLowerCase();
   if (q) rows = rows.filter(r => String(r.name).toLowerCase().includes(q));
   if (T50.key) rows = rows.slice().sort((a, b) => T50.dir * ((a[T50.key] == null ? -Infinity : a[T50.key]) - (b[T50.key] == null ? -Infinity : b[T50.key])));
@@ -450,21 +720,24 @@ function top50() {
   const sig = s => s > 0 ? `<span class="gain" title="cumpără">▲</span>` : s < 0 ? `<span class="loss" title="vinde">▼</span>` : "–";
   const price = p => p >= 100 ? money2(p) : p >= 1 ? p.toFixed(3) : p >= 0.01 ? p.toFixed(5) : p.toExponential(2);
   const all = DATA.top50 || [], memes = all.filter(r => r.meme).length;
+  const rank = base.filter(r => r.d1 != null).slice().sort((a, b) => b.d1 - a.d1), ups = rank.slice(0, 3), downs = rank.slice(-3).reverse();
+  const mv = r => `<button class="mover" type="button" data-m="${esc(r.name)}"><b>${esc(r.name)}</b><span class="mono ${r.d1 >= 0 ? "gain" : "loss"}">${pct1(r.d1)}</span></button>`;
   const th = (key, t) => `<th><button type="button" data-sort="${key}" aria-label="Sortează după ${t}">${t}${T50.key === key ? (T50.dir < 0 ? " ↓" : " ↑") : ""}</button></th>`;
-  return `<div class="hero"><div class="label">Top 50 cripto · ${all.length} monede, ${memes} memecoin-uri</div>
-    <div class="sub">Date de la ${esc(all[0].date)}. Doar privire de ansamblu: nu intră în consiliu și nu în conturi. Coloana SMA: ▲ cumpără / ▼ vinde după regula simplă SMA 20/50, nu o recomandare; M = memecoin. Atinge un antet ca să sortezi.</div></div>
-    <div class="scroll"><table><tr><th>Monedă</th>${th("price","Preț $")}${th("d1","24h")}${th("d7","7z")}${th("d30","30z")}${th("signal","SMA")}</tr>
-    ${rows.map(r => `<tr><td>${esc(r.name)}${r.meme ? ' <span class="pill short" style="margin-left:3px;padding:0 5px" title="memecoin">M</span>' : ""}</td><td>${price(r.price)}</td><td>${cell(r.d1)}</td><td>${cell(r.d7)}</td><td>${cell(r.d30)}</td><td>${sig(r.signal)}</td></tr>`).join("") || `<tr><td colspan="6" class="empty">Nicio monedă nu se potrivește.</td></tr>`}</table></div>`;
+  return `<div class="grid"><div class="panel hot"><div class="label">Top 50 cripto · ${all.length} monede, ${memes} memecoin-uri</div>
+    <div class="sub" style="margin-top:8px">Date de la ${esc(all[0].date)}. Doar privire de ansamblu: nu intră în consiliu și nu în conturi. Coloana SMA: ▲ cumpără / ▼ vinde după regula simplă SMA 20/50, nu o recomandare; M = memecoin. Atinge un antet ca să sortezi, un rând ca să vezi detalii.</div></div>
+    ${ups.length ? `<div class="panel"><div class="label">Cele mai mari urcări · 24h</div>${ups.map(mv).join("")}</div><div class="panel"><div class="label">Cele mai mari scăderi · 24h</div>${downs.map(mv).join("")}</div>` : ""}</div>
+    <div class="panel"><div class="scroll"><table><tr><th>Monedă</th>${th("price","Preț $")}${th("d1","24h")}${th("d7","7z")}${th("d30","30z")}${th("signal","SMA")}</tr>
+    ${rows.map(r => `<tr data-m="${esc(r.name)}"><td>${esc(r.name)}${r.meme ? ' <span class="pill short" style="margin-left:3px;padding:0 5px" title="memecoin">M</span>' : ""}</td><td>${price(r.price)}</td><td>${cell(r.d1)}</td><td>${cell(r.d7)}</td><td>${cell(r.d30)}</td><td>${sig(r.signal)}</td></tr>`).join("") || `<tr><td colspan="6" class="empty">Nicio monedă nu se potrivește.</td></tr>`}</table></div></div>`;
 }
 
 function archive() {
   const rows = DATA.accounts.filter(a => a.archived).map(a => {
-    if (!a.exists) return `<div class="row"><div><span class="name">${esc(a.title)}</span><div class="meta">nu a fost pornit</div></div><div class="num">–</div></div>`;
+    if (!a.exists) return `<div class="row" style="cursor:default"><div><span class="name">${esc(a.title)}</span><div class="meta">nu a fost pornit</div></div><div class="num">–</div></div>`;
     const v = eq(a), ch = 100 * (v / a.initial - 1);
-    return `<div class="row"><div><span class="name">${esc(a.title)}</span><div class="meta">${esc(a.rules && a.rules.shorts ? "long și short" : "doar long")} · ${a.positions.length} poziții · ${a.fills} tranzacții · oprit</div></div>
-      <div class="num">${money(v, "")} ${esc(a.currency)}<div class="${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</div></div></div>`;
+    return `<div class="row" style="cursor:default"><div><span class="name">${esc(a.title)}</span><div class="meta">${esc(a.rules && a.rules.shorts ? "long și short" : "doar long")} · ${a.positions.length} poziții · ${a.fills} tranzacții · oprit</div></div>
+      <div class="num">${fm(v, a)}<div class="${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</div></div></div>`;
   }).join("");
-  return `<div class="hero"><div class="label">Arhivă · conturi oprite la 1 noiembrie</div><div class="sub">Starea lor finală e păstrată. Nu mai rulează zilnic.</div></div>${rows}`;
+  return `<div class="panel hot"><div class="label">Arhivă · conturi oprite la 1 noiembrie</div><div class="sub" style="margin-top:6px">Starea lor finală e păstrată. Nu mai rulează zilnic.</div></div>${rows}`;
 }
 
 function currentKey() {
@@ -473,8 +746,7 @@ function currentKey() {
 }
 function controls(key) {
   const kind = key === "unic" ? "account" : key === "consiliu" ? "consiliu" : null;
-  const searchable = key !== "arhiva";
-  document.getElementById("search").hidden = !searchable;
+  $("search").hidden = key === "arhiva";
   sortBox.hidden = !kind;
   if (kind) {
     const opts = SORTS[kind];
@@ -497,11 +769,28 @@ function show() {
   render();
   view.classList.remove("view-in"); void view.offsetWidth; view.classList.add("view-in");
 }
-view.addEventListener("click", e => {
-  const go = e.target.closest("[data-go]"); if (go) { location.hash = go.dataset.go; window.scrollTo({top:0}); return; }
-  const cons = e.target.closest("[data-cons]"); if (cons) { CONS = cons.dataset.cons; render(); return; }
-  const srt = e.target.closest("[data-sort]");
+document.addEventListener("click", e => {
+  const t = e.target;
+  if (t.closest("[data-close]")) { closeSheet(); return; }
+  const fav = t.closest("[data-fav]"); if (fav) { toggleFav(fav.dataset.fav); openMarket(fav.dataset.fav); render(); return; }
+  const mk = t.closest("[data-m]"); if (mk) { openMarket(mk.dataset.m); return; }
+  if (t.closest("[data-pal]")) { openPalette(); return; }
+  if (t.closest("[data-copy]")) { copyText(summaryText()); return; }
+  const go = t.closest("[data-go]"); if (go) { location.hash = go.dataset.go; window.scrollTo({top:0}); return; }
+  const cons = t.closest("[data-cons]"); if (cons) { CONS = cons.dataset.cons; render(); return; }
+  const cv = t.closest("[data-cview]"); if (cv) { CVIEW = cv.dataset.cview; store("bnd-vedere", CVIEW); render(); return; }
+  const srt = t.closest("[data-sort]");
   if (srt) { T50 = T50.key === srt.dataset.sort ? {key: T50.key, dir: -T50.dir} : {key: srt.dataset.sort, dir: -1}; render(); }
+});
+$("pal-btn").addEventListener("click", openPalette);
+document.addEventListener("keydown", e => {
+  const typing = /^(INPUT|SELECT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
+  if (e.key === "Escape") { if (!sheet.hidden) closeSheet(); else if (typing) document.activeElement.blur(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); return; }
+  if (typing || e.ctrlKey || e.metaKey || e.altKey || !sheet.hidden) return;
+  if (e.key === "/") { e.preventDefault(); if (!$("search").hidden) qBox.focus(); }
+  else if (/^[1-5]$/.test(e.key)) { location.hash = TABS[+e.key - 1][0]; window.scrollTo({top:0}); }
+  else if (e.key.toLowerCase() === "t") cycleTheme();
 });
 addEventListener("hashchange", show); show();
 </script>

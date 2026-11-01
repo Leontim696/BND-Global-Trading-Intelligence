@@ -240,14 +240,21 @@ def test_data_has_the_test_window_and_the_latest_scheduled_runs():
     assert status == [{"name": "contul unic", "conclusion": "success", "time": "2026-11-01T22:25:00Z"}]
     data = dashboard.collect(None, None, None, None, NOW, runs=runs)
     assert data["system"] == status
-    assert data["test"] == {"start": "2026-10-31", "end": "2026-11-16", "report": "2026-11-17"}
+    assert {k: data["test"][k] for k in ("start", "end", "report")} == {"start": "2026-10-31", "end": "2026-11-16", "report": "2026-11-17"}
+    assert [m["date"] for m in data["test"]["milestones"]] == ["2026-11-06", "2026-11-16", "2026-11-17"]
     assert dashboard.system_status(None) == []
 
 
 def test_template_modern_features_are_present_and_safe():
     html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
     for needle in ('class="dock-in"', 'id="theme"', 'id="q"', 'id="sort"', "testCard()", "systemPanel()", "allocation(a)",
-                   "data-cons", "data-sort", "bnd-tema", "prefers-reduced-motion", "env(safe-area-inset-bottom"):
+                   "data-cons", "data-sort", "bnd-tema", "prefers-reduced-motion", "env(safe-area-inset-bottom",
+                   "openPalette()", "openMarket(", "agreement(", "data-fav", "bnd-fav", "bnd-moneda", "bnd-vedere",
+                   'class="heat"', "favoritesPanel()", "feedPanel()", "[hidden]{display:none!important}",
+                   "navigator.clipboard", "prefers-color-scheme: light"):
         assert needle in html, needle
-    assert "innerHTML = el.value" not in html and "eval(" not in html and "document.write" not in html
+    assert "eval(" not in html and "document.write" not in html and "outerHTML =" not in html
     assert html.count("localStorage") <= 4                         # doar prin store() și blocul try
+    assert "e.preventDefault(); const first" in html                # Enter în căutare nu declanșează butonul de închidere
+    for token in ("--bg", "--fg", "--accent", "--glass", "--gain", "--loss"):   # jetoane definite pe :root, nu doar în teme
+        assert html.index(token + ":") < html.index("@media (prefers-color-scheme")
