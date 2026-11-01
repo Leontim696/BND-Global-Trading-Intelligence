@@ -19,7 +19,7 @@ mkdir -p "$state" data
 out="${GITHUB_OUTPUT:-/dev/stdout}"
 summary="${GITHUB_STEP_SUMMARY:-/dev/null}"
 rc=0
-git_net ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1 || rc=$?
+git_net ls-remote --exit-code origin "refs/heads/$branch" >/dev/null 2>&1 || rc=$?
 if [ "$rc" = 0 ]; then
   fetched=0
   for attempt in 1 2 3; do

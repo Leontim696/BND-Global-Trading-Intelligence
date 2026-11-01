@@ -121,3 +121,12 @@ def test_a_token_is_not_added_when_the_checkout_already_kept_credentials(repos):
     proc = subprocess.run(["bash", str(ROOT / "scripts" / "restore_branch.sh"), "stare", "dest", "registry.sqlite"],
                           cwd=work, env=env, capture_output=True, text=True)
     assert proc.returncode == 0 and (work / "dest" / "registry.sqlite").read_text() == "R"
+
+
+def test_a_branch_with_a_similar_name_is_not_mistaken_for_the_state_branch(repos):
+    _, work = repos
+    publish(work, "feat/stare", {"x.txt": "x"})                 # ramură cu același final de nume
+    proc, out = run("restore_account.sh", work, "stare", "nu exista", capital="10000")
+    assert proc.returncode == 0 and "account=new" in out         # `stare` nu există: pornire nouă, nu eroare
+    proc, _ = run("restore_branch.sh", work, "stare", "dest", "a.txt")
+    assert proc.returncode == 0 and "nu există încă" in proc.stdout
