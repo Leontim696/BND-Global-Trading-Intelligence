@@ -279,3 +279,36 @@ def test_practical_blocks_are_in_the_template_and_data_carries_limits_and_confid
     assert "outerHTML" not in html                                   # nicio înlocuire de HTML brut
     # semnalul combinat din aplicație folosește aceeași formulă ca contul (50% reguli + 50% consiliu)
     assert "sgn(m.net) * Math.min(1, Math.abs(m.net) / 2)" in html and "0.5 * (m.bot || 0) + 0.5 * cSig(m)" in html
+
+
+def test_council_history_counts_days_series_and_flips(tmp_path):
+    from src.bnd.decision_rules import CouncilDecision, DecisionRule
+    from src.bnd.fusion_council import FusionCouncil, Opinion, Vote
+    registry = DecisionRegistry(tmp_path / "registry.sqlite")
+
+    def day(key, symbol, votes):
+        council = FusionCouncil()
+        for agent, vote in zip(("gpt", "claude", "gemini", "grok", "deepseek"), votes):
+            council.submit(Opinion(agent, vote, "x", 0.6))
+        registry.record(f"{key}:{symbol}", NOW, symbol, 10.0, council,
+                        CouncilDecision(Vote.HOLD, DecisionRule.MAJORITY, {}, (), (), False, ()), meta={})
+    B, S, H = Vote.BUY, Vote.SELL, Vote.HOLD
+    day("2026-11-01", "BITCOIN", (B, B, B, H, H))          # +3
+    day("2026-11-01", "GOLD", (S, S, H, H, H))             # -2
+    day("2026-11-01", "SP500", (H, H, H, H, H))            # 0
+    day("2026-11-02", "BITCOIN", (S, S, H, H, H))          # -2: și-a schimbat partea
+    day("2026-11-02", "GOLD", (S, B, H, H, H))             # 0 cu dezacord: tot schimbare (de la -2)
+    day("2026-11-02", "SP500", (H, H, H, H, B))            # +1: schimbare (de la 0)
+    h = dashboard.read_council(tmp_path, None, NOW)["history"]
+    assert [d["day"] for d in h["days"]] == ["2026-11-01", "2026-11-02"]
+    assert h["days"][0] == {"day": "2026-11-01", "n": 3, "up": 1, "down": 1, "split": 0}
+    assert h["days"][1]["split"] == 1 and h["days"][1]["n"] == 3
+    assert h["series"]["BITCOIN"] == [3, -2] and h["series_days"] == ["2026-11-01", "2026-11-02"]
+    assert {f["symbol"] for f in h["flips"]} == {"BITCOIN", "GOLD", "SP500"}
+    assert h["flips"][0]["symbol"] == "BITCOIN" and h["flips_between"] == ["2026-11-01", "2026-11-02"]
+
+
+def test_pulse_blocks_are_in_the_template():
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    for needle in ("pulsePanel(c)", "marketHistory(sym)", "moodWord(", "Pulsul consiliului", "Ultimele zile"):
+        assert needle in html, needle
