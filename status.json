@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-01T06:17+00:00",
+  "generated": "2026-11-01T07:36+00:00",
   "ok": true,
   "alerts": [],
   "accounts": {
@@ -30,6 +30,26 @@
       "drawdown_pct": 0.0,
       "positions": 0,
       "orders": 9,
+      "kill_switch": false,
+      "reconciled": true
+    },
+    "rls": {
+      "equity": 11183.0,
+      "currency": "USD",
+      "return_pct": 0.0,
+      "drawdown_pct": 0.0,
+      "positions": 0,
+      "orders": 20,
+      "kill_switch": false,
+      "reconciled": true
+    },
+    "unic": {
+      "equity": 11183.0,
+      "currency": "USD",
+      "return_pct": 0.0,
+      "drawdown_pct": 0.0,
+      "positions": 0,
+      "orders": 44,
       "kill_switch": false,
       "reconciled": true
     }
