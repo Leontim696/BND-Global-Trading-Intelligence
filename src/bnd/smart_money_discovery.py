@@ -96,10 +96,10 @@ def probe(key: str, fetch=get, pause: float = 1.2) -> dict:
 # --- descoperire ----------------------------------------------------------------------------
 
 LISTS = ("/tokens/trending", "/tokens/volume", "/tokens/multi/graduated", "/tokens/latest")
-MAX_TOKENS = 45                      # câte monede se cercetează (un apel pe monedă)
+MAX_TOKENS = 100                     # câte monede se cercetează (un apel pe monedă)
 MIN_INVESTED, MAX_INVESTED = 15.0, 3000.0     # „sume mici” pe o monedă, în dolari
 MIN_TOKEN_ROI, MIN_TOKEN_PROFIT = 5.0, 2000.0  # câștig de cel puțin 500% și 2.000 $ pe moneda respectivă
-MIN_HITS = 2                         # câștigător pe cel puțin 2 monede diferite (repetarea scade rolul norocului)
+MIN_HITS = 1                         # un singur câștig nu dovedește nimic singur: trece prin filtrele pe tot istoricul (/pnl)
 INSIDER_HITS = 3                     # primii cumpărători câștigători pe cel puțin 3 monede = tipar de intrare timpurie
 ENRICH_MAX = 30
 HEADER = ["time", "wallet", "hits", "tokens_seen", "best_token_roi", "profit_in_batch", "avg_invested", "tokens",
@@ -177,9 +177,9 @@ def discover(key: str, fetch=get, pause: float = 1.2, now=None) -> dict:
         seen += 1
         for wallet, (roi, profit, invested) in winners_of(_items(payload)).items():
             hits.setdefault(wallet, []).append((roi, profit, invested))
-    candidates = {w: v for w, v in hits.items() if len(v) >= MIN_HITS}
+    candidates = {w: v for w, v in hits.items() if len(v) >= MIN_HITS}   # cele repetate (hits mai mare) primele
     rows = []
-    for wallet, v in sorted(candidates.items(), key=lambda kv: -len(kv[1]))[:ENRICH_MAX]:
+    for wallet, v in sorted(candidates.items(), key=lambda kv: (-len(kv[1]), -sum(p for _, p, _ in kv[1])))[:ENRICH_MAX]:
         code, detail = fetch(f"/pnl/{wallet}", key)
         sleep(pause)
         stats = normalise({**detail, "wallet": wallet}) if code == 200 and isinstance(detail, dict) else {"wallet": wallet}
