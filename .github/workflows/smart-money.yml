@@ -1,0 +1,82 @@
+name: Smart-Money (colector walleturi)
+
+# Colectează zilnic statistici publice despre walleturi Solana de meme-coinuri (clasament + lista ta manuală din
+# smart_money/wallete.json) și le arhivează pe ramura smart-money. Nu ia nicio decizie, nu atinge conturile și
+# nu e dat consiliului. Fără cheia SOLANATRACKER_API_KEY colectează doar lista manuală.
+
+on:
+  schedule:
+    - cron: '50 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-smart-money
+  cancel-in-progress: false
+
+jobs:
+  colecteaza:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Restore the history
+        run: |
+          mkdir -p arhiva
+          if git fetch -q --depth=1 origin smart-money 2>/dev/null; then
+            git archive FETCH_HEAD | tar -x -C arhiva
+          fi
+      - name: Collect
+        env:
+          SOLANATRACKER_API_KEY: ${{ secrets.SOLANATRACKER_API_KEY }}
+        run: |
+          python -m src.bnd.smart_money --out arhiva || true
+          cat arhiva/smart_money/status.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: bnd-smart-money-${{ github.run_id }}
+          path: arhiva/smart_money/
+          if-no-files-found: ignore
+          retention-days: 3
+
+  # Separate job: the write token never runs project code.
+  publica:
+    needs: colecteaza
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        continue-on-error: true
+        with:
+          name: bnd-smart-money-${{ github.run_id }}
+          path: smart_money
+      - name: Save on the smart-money branch
+        run: |
+          set -euo pipefail
+          [ -f smart_money/wallete.csv ] || { echo "::warning::Nothing to save"; exit 0; }
+          git init -q out && cd out
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          for attempt in 1 2 3; do
+            if git fetch -q --depth=1 origin smart-money 2>/dev/null; then
+              git checkout -q -f -B smart-money FETCH_HEAD
+            else
+              git checkout -q --orphan smart-money 2>/dev/null || true
+            fi
+            cp ../smart_money/wallete.csv ../smart_money/status.json .
+            git add -A
+            git commit -q -m "Smart-Money $(date -u +%Y-%m-%d)" || true
+            if git push -q origin HEAD:refs/heads/smart-money; then break; fi
+            sleep $((attempt * 5))
+          done
