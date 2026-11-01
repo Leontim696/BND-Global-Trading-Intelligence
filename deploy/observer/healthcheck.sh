@@ -9,5 +9,7 @@ python3 - "$f" <<'P'
 import json, sys
 s = json.load(open(sys.argv[1]))
 assert s.get("observer_only") is True, "nu e în mod observer"
+assert s.get("data_ok") is True, f"datele nu sunt valide: {s.get('problems')}"
+assert s.get("sync_ok") is True, f"sincronizarea cu GitHub nu e sănătoasă: {s.get('sync_error')} (ultima reușită: {s.get('last_successful_sync')})"
 assert s.get("ok") is True and s.get("verdict") == "ok", f"verdict={s.get('verdict')} probleme={s.get('problems')}"
 P

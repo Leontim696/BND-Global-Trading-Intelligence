@@ -8,35 +8,47 @@ set -euo pipefail
 DATA="${BND_DATA_DIR:-/var/lib/bnd-observer}"
 REMOTE="${BND_REMOTE:-https://github.com/Leontim696/BND-Global-Trading-Intelligence.git}"
 BRANCH="${BND_BRANCH:-cont-unic}"
-git_net() {
-  if [ -n "${BND_TOKEN_FILE:-}" ] && [ -r "$BND_TOKEN_FILE" ]; then
-    git -c "http.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$(cat "$BND_TOKEN_FILE")" | base64 -w0)" "$@"
+# Starea sincronizării se scrie MEREU (sync.json): un eșec nu poate trece drept reușită.
+reason="oprit_neasteptat"
+finish() {
+  local rc=$?
+  [ -n "${work:-}" ] && rm -rf "$work"
+  [ "$rc" = 4 ] && return 0                      # altă sincronizare rulează: nu e un eșec al acesteia
+  if [ "$rc" = 0 ]; then
+    python3 -m src.bnd.observer --record-sync ok --data-dir "$DATA" || true
   else
-    git "$@"
+    python3 -m src.bnd.observer --record-sync fail --reason "$reason" --data-dir "$DATA" || true
   fi
 }
+# shellcheck source=deploy/observer/gitauth.sh
+source "$(dirname "${BASH_SOURCE[0]}")/gitauth.sh"
 mkdir -p "$DATA"
 exec 9>"$DATA/.sync.lock"
 flock -n 9 || { echo "Altă sincronizare rulează; ies."; exit 4; }
+trap finish EXIT
+if [ -n "${BND_TOKEN_FILE:-}" ] && [ ! -r "$BND_TOKEN_FILE" ]; then
+  reason="token_ilizibil"
+  echo "BND_TOKEN_FILE=$BND_TOKEN_FILE nu poate fi citit de acest utilizator ($(id -un)); vezi docs/PROXMOX.md (permisiuni token)."
+  exit 1
+fi
 work="$(mktemp -d "$DATA/.sync.XXXXXX")"
-trap 'rm -rf "$work"' EXIT
 git init -q "$work/repo"
 git -C "$work/repo" remote add origin "$REMOTE"
 ok=0
 for attempt in 1 2 3; do
-  if GIT_TERMINAL_PROMPT=0 git_net -C "$work/repo" fetch -q --depth=1 origin "refs/heads/$BRANCH"; then ok=1; break; fi
+  if git_net -C "$work/repo" fetch -q --depth=1 origin "refs/heads/$BRANCH"; then ok=1; break; fi
   sleep $((attempt * ${BND_RETRY_SLEEP:-3}))
 done
-[ "$ok" = 1 ] || { echo "Nu pot descărca $BRANCH; păstrez oglinda veche."; exit 1; }
+[ "$ok" = 1 ] || { reason="remote_indisponibil"; echo "Nu pot descărca $BRANCH; păstrez oglinda veche."; exit 1; }
 mkdir "$work/new"
 for f in paper.sqlite audit.jsonl; do
-  git -C "$work/repo" cat-file -e "FETCH_HEAD:$f" || { echo "Lipsește $f pe $BRANCH; păstrez oglinda veche."; exit 1; }
+  git -C "$work/repo" cat-file -e "FETCH_HEAD:$f" || { reason="lipseste_$f"; echo "Lipsește $f pe $BRANCH; păstrez oglinda veche."; exit 1; }
   git -C "$work/repo" show "FETCH_HEAD:$f" > "$work/new/$f"
 done
 git -C "$work/repo" rev-parse FETCH_HEAD > "$work/new/COMMIT"
 # Verificare înainte de înlocuire (aceeași unealtă ca la citire): oglinda stricată nu înlocuiește una bună.
 BND_OBSERVER_ONLY=true python3 -m src.bnd.observer --mirror "$work/new" --out "$work/new.status.json" --stale-hours 100000 \
-  || { echo "Oglinda nouă nu trece verificarea; păstrez oglinda veche."; exit 1; }
+  || { reason="oglinda_noua_invalida"; echo "Oglinda nouă nu trece verificarea; păstrez oglinda veche."; exit 1; }
 rm -f "$work/new/.observer.lock"
 rm -rf "$DATA/mirror.prev"
 [ -d "$DATA/mirror" ] && mv "$DATA/mirror" "$DATA/mirror.prev"
