@@ -18,6 +18,7 @@ variante de nume, iar `status.json` arată exact ce a răspuns sursa.
     python -m src.bnd.smart_money --out arhiva
 """
 
+import math
 import argparse
 import csv
 import json
@@ -92,7 +93,7 @@ def _num(value):
         number = float(value)
     except (TypeError, ValueError):
         return None
-    return number if number == number and abs(number) != float("inf") else None
+    return number if math.isfinite(number) else None
 
 
 def normalise(row: dict) -> dict | None:

@@ -30,7 +30,6 @@ from .ai_gateway import (
     AIResponse,
     GatewayMode,
     LiveAuthorization,
-    MockAIProvider,
 )
 from .council_context import HORIZON_DAYS, bot_signal, build_context
 from .council_runner import CouncilRunner

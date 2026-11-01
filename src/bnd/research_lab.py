@@ -25,7 +25,7 @@ from pathlib import Path
 from statistics import mean, stdev
 
 from . import experiments, regimes, strategies
-from .universe import CLASS_COSTS, UNIVERSES
+from .universe import UNIVERSES
 from .market_data import Candle, load_csv
 from .portfolio import _History
 from .significance import bootstrap_difference, daily_returns

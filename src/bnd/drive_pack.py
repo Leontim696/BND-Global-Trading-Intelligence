@@ -77,7 +77,7 @@ def council_docs(markets: list[dict], day: str, suffix: str = "", first_number: 
         items = sorted(by_group.get(key, []), key=lambda m: m["market"])
         if not items:
             continue
-        chunk, size, part = [], 0, 1
+        chunk, size = [], 0
         pieces = []
         for m in items:
             block = market_html(m)
@@ -103,7 +103,7 @@ def council_docs(markets: list[dict], day: str, suffix: str = "", first_number: 
 def investments_html(day: str, run: dict, council_signals: dict, council_votes: dict | None = None) -> str:
     """Explicația fiecărui ordin: semnalul regulilor, votul consiliului, semnalul combinat, ponderea."""
     esc = html.escape
-    signals, weights = run.get("signals", {}), run.get("weights", {})
+    signals = run.get("signals", {})
     orders = run.get("orders", [])
     ai_weight = 0.5
     rows, explanations = [], []
