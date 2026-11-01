@@ -229,3 +229,25 @@ def test_template_has_a_category_filter_bar_that_filters_every_grouped_view():
         assert view in html, view
     assert "FILTER === \"memecoin\"" in html                        # și fila Top 50 se filtrează
     assert "try { FILTER = localStorage" in html                    # stocarea poate lipsi
+
+
+def test_data_has_the_test_window_and_the_latest_scheduled_runs():
+    runs = [{"workflowName": "Cont unic (virtual)", "event": "schedule", "conclusion": "failure", "createdAt": "2026-10-31T22:25:00Z"},
+            {"workflowName": "Cont unic (virtual)", "event": "schedule", "conclusion": "success", "createdAt": "2026-11-01T22:25:00Z"},
+            {"workflowName": "Cont unic (virtual)", "event": "workflow_dispatch", "conclusion": "failure", "createdAt": "2026-11-02T01:00:00Z"},
+            {"workflowName": "Alt flux", "event": "schedule", "conclusion": "failure", "createdAt": "2026-11-01T01:00:00Z"}]
+    status = dashboard.system_status(runs)
+    assert status == [{"name": "contul unic", "conclusion": "success", "time": "2026-11-01T22:25:00Z"}]
+    data = dashboard.collect(None, None, None, None, NOW, runs=runs)
+    assert data["system"] == status
+    assert data["test"] == {"start": "2026-10-31", "end": "2026-11-16", "report": "2026-11-17"}
+    assert dashboard.system_status(None) == []
+
+
+def test_template_modern_features_are_present_and_safe():
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    for needle in ('class="dock-in"', 'id="theme"', 'id="q"', 'id="sort"', "testCard()", "systemPanel()", "allocation(a)",
+                   "data-cons", "data-sort", "bnd-tema", "prefers-reduced-motion", "env(safe-area-inset-bottom"):
+        assert needle in html, needle
+    assert "innerHTML = el.value" not in html and "eval(" not in html and "document.write" not in html
+    assert html.count("localStorage") <= 4                         # doar prin store() și blocul try

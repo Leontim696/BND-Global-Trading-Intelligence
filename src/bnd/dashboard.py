@@ -279,8 +279,23 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     events = events_from(accounts, council if council.get("exists") else None, now)
     return {"generated": now.isoformat(timespec="minutes"), "events": events, "fx": fx, "groups": market_groups.labels(),
             "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
-            "quotes_time": quotes_time,
+            "quotes_time": quotes_time, "system": system_status(runs),
+            "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT},
             "accounts": accounts, "council": council, "alerts": alerts}
+
+
+TEST_START = "2026-10-31"
+TEST_REPORT = "2026-11-17"
+
+
+def system_status(runs: list | None) -> list:
+    """Ultima rulare programată a fiecărui flux urmărit: nume, rezultat, ora (pentru panoul „Stare sistem”)."""
+    latest = {}
+    for run in sorted(runs or [], key=lambda r: r.get("createdAt", "")):
+        if run.get("event") == "schedule" and run.get("workflowName") in WATCHED:
+            latest[run["workflowName"]] = run
+    return [{"name": WATCHED[name], "conclusion": run.get("conclusion") or "în curs", "time": run.get("createdAt")}
+            for name, run in latest.items()]
 
 
 DAILY_MOVE_ALERT_PCT = 2.0        # variație zilnică a contului de la care se trimite o notificare
