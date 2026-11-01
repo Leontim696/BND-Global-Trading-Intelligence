@@ -159,7 +159,7 @@
       "rows": 12,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
-      "repaired_high_low": 0,
+      "repaired_high_low": 1,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
       "candles": 11,
