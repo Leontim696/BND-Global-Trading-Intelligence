@@ -125,6 +125,9 @@ jobs:
           BND_ALLOW_LIVE_AI: 'true'
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           # Empty = the defaults in council_daily.py; a repository variable overrides.
+          # Plafoane de cost: implicit 2,50 $/zi și 38 $/lună; se pot ridica din variabilele de depozit.
+          DAILY_CAP: ${{ vars.BND_COUNCIL_DAILY_CAP }}
+          MONTHLY_CAP: ${{ vars.BND_COUNCIL_MONTHLY_CAP }}
           BND_MODEL_GPT: ${{ vars.BND_MODEL_GPT }}
           BND_MODEL_CLAUDE: ${{ vars.BND_MODEL_CLAUDE }}
           BND_MODEL_GEMINI: ${{ vars.BND_MODEL_GEMINI }}
@@ -133,7 +136,7 @@ jobs:
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
-            --round-budget 0.60 --daily-budget 2.50 --monthly-budget 38 \
+            --round-budget 0.60 --daily-budget "${DAILY_CAP:-2.50}" --monthly-budget "${MONTHLY_CAP:-38}" \
             --audit-log state/audit.jsonl --report state/raport.md --report-short state/raport-scurt.md \
             --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"

@@ -103,9 +103,9 @@ def plans(now: datetime, council: dict) -> list:
 
 
 def build(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
-          quotes=None, runs=None) -> dict:
+          quotes=None, runs=None, balance=None) -> dict:
     now = now or datetime.now(timezone.utc)
-    data = dashboard.collect(paper, crypto, ai, council, now, quotes, runs)
+    data = dashboard.collect(paper, crypto, ai, council, now, quotes, runs, balance=balance)
     folders = {"paper": paper, "crypto": crypto, "ai": ai}
     fx = data.get("fx")
     rate = fx["eurusd"] if fx else None
@@ -136,7 +136,8 @@ def build(paper=None, crypto=None, ai=None, council=None, now: datetime | None =
     lines += council_lines(data["council"])
     costs = data["council"].get("costs") if data["council"].get("exists") else None
     if costs:
-        lines.append(f"Cost AI ieri-azi: {costs['today']:.2f} $; sold cheie: {costs['remaining']:.2f} $.")
+        origin = "citit de la OpenRouter" if costs.get("source") == "openrouter" else "estimare"
+        lines.append(f"Cost AI azi: {costs['today']:.2f} $; sold cheie: {costs['remaining']:.2f} $ ({origin}).")
     lines.append("Alerte: " + ("niciuna." if not data["alerts"] else "; ".join(data["alerts"]) + "."))
     lines += ["", "Planuri azi (ora Germaniei):"] + plans(now, data["council"])
     day_no = min(max((now.date() - TEST_START).days + 1, 1), TEST_DAYS)
@@ -150,12 +151,15 @@ def main(argv=None, sender=notify.send) -> int:
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes")
     parser.add_argument("--runs")
+    parser.add_argument("--balance")
     parser.add_argument("--send", action="store_true")
     args = parser.parse_args(argv)
     try:
         quotes = json.loads(Path(args.quotes).read_text()) if args.quotes and Path(args.quotes).exists() else None
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
-        result = build(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs)
+        balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
+        result = build(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
+                       balance=balance)
     except (OSError, ValueError, sqlite3.Error) as exc:
         print("Error:", exc, file=sys.stderr)
         return 2

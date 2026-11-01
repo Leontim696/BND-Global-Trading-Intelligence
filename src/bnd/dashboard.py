@@ -87,7 +87,7 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
         engine.close()
 
 
-def read_council(folder) -> dict:
+def read_council(folder, balance: dict | None = None, now: datetime | None = None) -> dict:
     path = Path(folder) / "registry.sqlite" if folder else None
     if not path or not path.exists():
         return {"exists": False}
@@ -96,7 +96,7 @@ def read_council(folder) -> dict:
         days = [r[0] for r in db.execute(
             "SELECT DISTINCT substr(id, 1, 10) d FROM decisions ORDER BY d DESC LIMIT 1")]
         if not days:
-            return {"exists": True, "day": None, "markets": [], "costs": read_costs(folder)}
+            return {"exists": True, "day": None, "markets": [], "costs": read_costs(folder, balance, now)}
         day = days[0]
         markets = []
         for decision_id, symbol, vote, price in db.execute(
@@ -118,7 +118,7 @@ def read_council(folder) -> dict:
     registry = DecisionRegistry(path)
     return {"exists": True, "day": day, "markets": markets, "settled": settled,
             "decisions": total, "comparison": registry.comparison(),
-            "agents": registry.performance()["agents"], "costs": read_costs(folder),
+            "agents": registry.performance()["agents"], "costs": read_costs(folder, balance, now),
             "models": model_registry.build(path, Path(folder) / "costs.sqlite")["agents"],
             "last_round": last_round(path)}
 
@@ -147,7 +147,21 @@ def last_round(path) -> dict:
                                    for k, v in state.items()}}
 
 
-def read_costs(folder) -> dict | None:
+BALANCE_MAX_AGE = timedelta(hours=8)
+
+
+def live_balance(balance: dict | None, now: datetime) -> float | None:
+    """Soldul real de la OpenRouter, dacă citirea e recentă și reușită; altfel None."""
+    if not balance or not balance.get("ok") or balance.get("effective_remaining") is None:
+        return None
+    try:
+        age = now - datetime.fromisoformat(balance["time"])
+    except (KeyError, ValueError):
+        return None
+    return float(balance["effective_remaining"]) if timedelta(0) <= age <= BALANCE_MAX_AGE else None
+
+
+def read_costs(folder, balance: dict | None = None, now: datetime | None = None) -> dict | None:
     """Cât a cheltuit consiliul (registrul de costuri) și cât a rămas din cheia de 10 $."""
     path = Path(folder) / "costs.sqlite"
     if not path.exists():
@@ -160,9 +174,12 @@ def read_costs(folder) -> dict | None:
     spent = sum(Decimal(cost) for cost, _ in rows)
     today = datetime.now(timezone.utc).date().isoformat()
     spent_today = sum(Decimal(cost) for cost, stamp in rows if stamp[:10] == today)
-    remaining = ANCHOR_REMAINING_USD - (spent - ANCHOR_LEDGER_USD)
+    remaining = float(ANCHOR_REMAINING_USD - (spent - ANCHOR_LEDGER_USD))
+    real = live_balance(balance, now or datetime.now(timezone.utc))
     return {"spent": float(spent), "today": float(spent_today), "limit": KEY_LIMIT_USD,
-            "remaining": float(remaining)}
+            "remaining": real if real is not None else remaining,
+            "source": "openrouter" if real is not None else "estimare",
+            "balance_time": balance.get("time") if real is not None else None}
 
 
 def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
@@ -189,12 +206,13 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 
 
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
-            quotes: dict | None = None, runs: list | None = None, top50=None) -> dict:
+            quotes: dict | None = None, runs: list | None = None, top50=None,
+            balance: dict | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
     folders = {"paper": paper, "crypto": crypto, "ai": ai}
     prices = (quotes or {}).get("quotes", {})
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
-    council = read_council(council)
+    council = read_council(council, balance, now)
     alerts = alerts_from(accounts, runs, now)
     quotes_time = (quotes or {}).get("time")
     if quotes_time and now - datetime.fromisoformat(quotes_time) > timedelta(hours=6):
@@ -248,6 +266,7 @@ def main(argv=None) -> int:
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
+    parser.add_argument("--balance", help="JSON de la openrouter_balance (soldul real al cheii)")
     parser.add_argument("--top50", help="folderul cu CSV-urile top 50 cripto (arhiva)")
     parser.add_argument("--template", required=True)
     parser.add_argument("--out", required=True)
@@ -256,8 +275,9 @@ def main(argv=None) -> int:
     try:
         quotes = json.loads(Path(args.quotes).read_text()) if args.quotes and Path(args.quotes).exists() else None
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
+        balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
-                       top50=args.top50)
+                       top50=args.top50, balance=balance)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

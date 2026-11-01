@@ -200,7 +200,7 @@ def test_workflow_default_is_the_thirteen_base_markets_plus_the_forty_five_extra
     text = open(".github/workflows/consiliu-umbra.yml", encoding="utf-8").read()
     expected = ",".join(cd.BASE_PEERS + EXTRA)
     assert text.count(expected) == 2                    # intrarea manuală și valoarea implicită
-    assert "--daily-budget 2.50 --monthly-budget 38" in text and "timeout-minutes: 45" in text
+    assert '--daily-budget "${DAILY_CAP:-2.50}" --monthly-budget "${MONTHLY_CAP:-38}"' in text and "timeout-minutes: 45" in text
 
 
 def test_new_coins_get_a_class_and_a_label_and_old_markets_keep_the_same_context(tmp_path, series):
