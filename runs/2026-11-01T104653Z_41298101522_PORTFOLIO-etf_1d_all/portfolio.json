@@ -1,0 +1,1671 @@
+{
+  "mode": "portfolio",
+  "universe": "etf",
+  "markets": [
+    {
+      "name": "GOLD",
+      "asset_class": "commodity",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "SILVER",
+      "asset_class": "commodity",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "CRUDE_OIL",
+      "asset_class": "commodity",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "NATURAL_GAS",
+      "asset_class": "commodity",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "COPPER",
+      "asset_class": "commodity",
+      "candles": 3761,
+      "first": "2011-11-15T00:00:00+00:00"
+    },
+    {
+      "name": "AGRICULTURE",
+      "asset_class": "commodity",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "BROAD_COMMODITIES",
+      "asset_class": "commodity",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "SP500",
+      "asset_class": "index",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "NASDAQ100",
+      "asset_class": "index",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "GERMANY",
+      "asset_class": "index",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "JAPAN",
+      "asset_class": "index",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "UK",
+      "asset_class": "index",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "EMERGING",
+      "asset_class": "index",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "US10Y_NOTE",
+      "asset_class": "bond",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "US20Y_BOND",
+      "asset_class": "bond",
+      "candles": 4233,
+      "first": "2010-01-04T00:00:00+00:00"
+    },
+    {
+      "name": "EURUSD",
+      "asset_class": "forex",
+      "candles": 4381,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "GBPUSD",
+      "asset_class": "forex",
+      "candles": 4381,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDJPY",
+      "asset_class": "forex",
+      "candles": 4381,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "AUDUSD",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDCHF",
+      "asset_class": "forex",
+      "candles": 4378,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "USDCAD",
+      "asset_class": "forex",
+      "candles": 4380,
+      "first": "2010-01-01T00:00:00+00:00"
+    },
+    {
+      "name": "BITCOIN",
+      "asset_class": "crypto",
+      "candles": 4428,
+      "first": "2014-09-17T00:00:00+00:00"
+    },
+    {
+      "name": "ETHEREUM",
+      "asset_class": "crypto",
+      "candles": 3279,
+      "first": "2017-11-09T00:00:00+00:00"
+    }
+  ],
+  "skipped_missing": [],
+  "in_sample_markets": [
+    "GOLD",
+    "SILVER",
+    "CRUDE_OIL",
+    "NATURAL_GAS",
+    "COPPER",
+    "AGRICULTURE",
+    "BROAD_COMMODITIES",
+    "SP500",
+    "NASDAQ100",
+    "GERMANY",
+    "JAPAN",
+    "UK",
+    "EMERGING",
+    "US10Y_NOTE",
+    "US20Y_BOND",
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY",
+    "AUDUSD",
+    "USDCHF",
+    "USDCAD",
+    "BITCOIN",
+    "ETHEREUM"
+  ],
+  "out_of_sample_start": "2022-01-26T00:00:00+00:00",
+  "settings": {
+    "sizing": "volatility",
+    "portfolio_vol_pct": 15.0,
+    "max_leverage": 3.0,
+    "max_weight": 1.0,
+    "financing_pct_annual": 5.0,
+    "cash_rate_pct_annual": 0.0,
+    "max_drawdown_pct": 30.0,
+    "allow_short": true,
+    "params": {}
+  },
+  "equal_weight_basket_out_of_sample": {
+    "net_profit": 4562.7752,
+    "total_return_pct": 45.6278,
+    "cagr_pct": 8.21,
+    "sharpe": 0.7853,
+    "sortino": 1.1075,
+    "calmar": 0.4842,
+    "volatility_pct": 10.7903,
+    "max_drawdown_pct": 16.9556,
+    "turnover": 0.4605,
+    "fills": 49,
+    "avg_gross_leverage": 0.9476,
+    "max_gross_leverage": 1.0046,
+    "total_fees": 3.6899,
+    "total_financing": 427.5938,
+    "total_interest": 0.0,
+    "kill_switch_at": null,
+    "years": 4.7639
+  },
+  "regime_market": "SP500",
+  "equal_weight_basket_regimes": {
+    "urcare calm\u0103": {
+      "days": 737,
+      "return_pct": 16.9325,
+      "annual_return_pct": 8.055,
+      "annual_vol_pct": 9.3212,
+      "sharpe": 0.8779
+    },
+    "urcare agitat\u0103": {
+      "days": 605,
+      "return_pct": 19.4007,
+      "annual_return_pct": 11.2907,
+      "annual_vol_pct": 9.6234,
+      "sharpe": 1.1599
+    },
+    "sc\u0103dere calm\u0103": {
+      "days": 0,
+      "return_pct": null,
+      "annual_return_pct": null,
+      "annual_vol_pct": null,
+      "sharpe": null
+    },
+    "sc\u0103dere agitat\u0103": {
+      "days": 397,
+      "return_pct": 5.1758,
+      "annual_return_pct": 4.7489,
+      "annual_vol_pct": 14.4045,
+      "sharpe": 0.3939
+    }
+  },
+  "base_currency": "EUR",
+  "equal_weight_basket_out_of_sample_base_currency": {
+    "total_return_pct": 47.2131,
+    "cagr_pct": 8.4562,
+    "sharpe": 0.731,
+    "sortino": 1.0332,
+    "volatility_pct": 12.1093,
+    "max_drawdown_pct": 14.5863
+  },
+  "data_diagnostics": [
+    {
+      "market": "ETHEREUM",
+      "largest_move_pct": -42.3472,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 35
+    },
+    {
+      "market": "BITCOIN",
+      "largest_move_pct": -37.1695,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 20
+    },
+    {
+      "market": "SILVER",
+      "largest_move_pct": -28.5403,
+      "largest_move_date": "2026-01-30",
+      "days_over_15pct": 2
+    },
+    {
+      "market": "CRUDE_OIL",
+      "largest_move_pct": -25.315,
+      "largest_move_date": "2020-03-09",
+      "days_over_15pct": 5
+    },
+    {
+      "market": "NATURAL_GAS",
+      "largest_move_pct": -24.8521,
+      "largest_move_date": "2026-02-02",
+      "days_over_15pct": 7
+    },
+    {
+      "market": "COPPER",
+      "largest_move_pct": -19.3143,
+      "largest_move_date": "2025-07-30",
+      "days_over_15pct": 1
+    },
+    {
+      "market": "USDCHF",
+      "largest_move_pct": -16.1473,
+      "largest_move_date": "2015-01-16",
+      "days_over_15pct": 1
+    },
+    {
+      "market": "GERMANY",
+      "largest_move_pct": -12.6888,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "EMERGING",
+      "largest_move_pct": -12.4792,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "NASDAQ100",
+      "largest_move_pct": 12.0031,
+      "largest_move_date": "2025-04-09",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "UK",
+      "largest_move_pct": -11.99,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "SP500",
+      "largest_move_pct": -10.9424,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "GOLD",
+      "largest_move_pct": -10.2742,
+      "largest_move_date": "2026-01-30",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "JAPAN",
+      "largest_move_pct": -9.8047,
+      "largest_move_date": "2020-03-12",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "BROAD_COMMODITIES",
+      "largest_move_pct": -7.9444,
+      "largest_move_date": "2022-03-09",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "GBPUSD",
+      "largest_move_pct": -7.6038,
+      "largest_move_date": "2016-06-26",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "US20Y_BOND",
+      "largest_move_pct": 7.5196,
+      "largest_move_date": "2020-03-20",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "AGRICULTURE",
+      "largest_move_pct": 6.2546,
+      "largest_move_date": "2010-10-08",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "AUDUSD",
+      "largest_move_pct": -5.3105,
+      "largest_move_date": "2025-04-06",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "USDJPY",
+      "largest_move_pct": 3.8196,
+      "largest_move_date": "2013-04-04",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "EURUSD",
+      "largest_move_pct": 3.1756,
+      "largest_move_date": "2013-07-10",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "USDCAD",
+      "largest_move_pct": -3.1434,
+      "largest_move_date": "2021-01-01",
+      "days_over_15pct": 0
+    },
+    {
+      "market": "US10Y_NOTE",
+      "largest_move_pct": 2.6417,
+      "largest_move_date": "2020-03-16",
+      "days_over_15pct": 0
+    }
+  ],
+  "ranking": [
+    {
+      "strategy": "volatility_target",
+      "in_sample": {
+        "net_profit": -1229.1429,
+        "total_return_pct": -12.2914,
+        "cagr_pct": -1.0808,
+        "sharpe": -0.077,
+        "sortino": -0.1043,
+        "calmar": -0.0346,
+        "volatility_pct": 8.9278,
+        "max_drawdown_pct": 31.2671,
+        "turnover": 1.7769,
+        "fills": 228,
+        "avg_gross_leverage": 0.9077,
+        "max_gross_leverage": 3.1663,
+        "total_fees": 8.1891,
+        "total_financing": 4176.9984,
+        "total_interest": 0.0,
+        "kill_switch_at": "2015-03-06T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": 1846.4856,
+        "total_return_pct": 18.4649,
+        "cagr_pct": 3.6209,
+        "sharpe": 0.3048,
+        "sortino": 0.4273,
+        "calmar": 0.125,
+        "volatility_pct": 15.7325,
+        "max_drawdown_pct": 28.964,
+        "turnover": 3.7224,
+        "fills": 238,
+        "avg_gross_leverage": 2.6908,
+        "max_gross_leverage": 3.2455,
+        "total_fees": 7.6726,
+        "total_financing": 4157.787,
+        "total_interest": 0.0,
+        "kill_switch_at": null,
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -3.4946,
+        "ci95_low_pct_annual": -10.7924,
+        "ci95_high_pct_annual": 3.1879,
+        "p_not_better": 0.8345,
+        "sharpe_of_difference": -0.4783
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": 4.3279,
+          "annual_return_pct": 2.1205,
+          "annual_vol_pct": 13.5021,
+          "sharpe": 0.223
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": 27.5302,
+          "annual_return_pct": 15.8022,
+          "annual_vol_pct": 13.9762,
+          "sharpe": 1.1197
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -9.4209,
+          "annual_return_pct": -8.6956,
+          "annual_vol_pct": 21.1145,
+          "sharpe": -0.3254
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": 19.7545,
+        "cagr_pct": 3.8567,
+        "sharpe": 0.3199,
+        "sortino": 0.4476,
+        "volatility_pct": 15.6733,
+        "max_drawdown_pct": 22.2453
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": 0.3048,
+        "shuffled_median_sharpe": 0.2936,
+        "shuffled_p95_sharpe": 0.3364,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.3415
+      },
+      "p_value": 0.3415,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "cross_momentum",
+      "in_sample": {
+        "net_profit": -2203.2504,
+        "total_return_pct": -22.0325,
+        "cagr_pct": -2.0411,
+        "sharpe": -0.3041,
+        "sortino": -0.3894,
+        "calmar": -0.066,
+        "volatility_pct": 6.1538,
+        "max_drawdown_pct": 30.9263,
+        "turnover": 17.7578,
+        "fills": 1004,
+        "avg_gross_leverage": 0.3344,
+        "max_gross_leverage": 3.4179,
+        "total_fees": 77.7542,
+        "total_financing": 1325.6437,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-11-08T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -510.099,
+        "total_return_pct": -5.101,
+        "cagr_pct": -1.093,
+        "sharpe": -0.0293,
+        "sortino": -0.0412,
+        "calmar": -0.0357,
+        "volatility_pct": 12.182,
+        "max_drawdown_pct": 30.6358,
+        "turnover": 59.2402,
+        "fills": 1488,
+        "avg_gross_leverage": 1.7363,
+        "max_gross_leverage": 3.5088,
+        "total_fees": 209.4431,
+        "total_financing": 3187.2593,
+        "total_interest": 0.0,
+        "kill_switch_at": "2025-03-10T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -8.9997,
+        "ci95_low_pct_annual": -23.4072,
+        "ci95_high_pct_annual": 5.6266,
+        "p_not_better": 0.891,
+        "sharpe_of_difference": -0.5999
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -3.7811,
+          "annual_return_pct": -1.8908,
+          "annual_vol_pct": 10.9675,
+          "sharpe": -0.1192
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -6.7212,
+          "annual_return_pct": -4.1108,
+          "annual_vol_pct": 12.0943,
+          "sharpe": -0.2866
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": 5.7536,
+          "annual_return_pct": 5.2778,
+          "annual_vol_pct": 14.2976,
+          "sharpe": 0.431
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -4.0679,
+        "cagr_pct": -0.868,
+        "sharpe": 0.0233,
+        "sortino": 0.0326,
+        "volatility_pct": 15.7402,
+        "max_drawdown_pct": 43.3855
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.0293,
+        "shuffled_median_sharpe": 0.4584,
+        "shuffled_p95_sharpe": 1.1527,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.9268
+      },
+      "p_value": 0.9268,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "donchian_breakout",
+      "in_sample": {
+        "net_profit": -1715.5387,
+        "total_return_pct": -17.1554,
+        "cagr_pct": -1.5473,
+        "sharpe": -0.0735,
+        "sortino": -0.1021,
+        "calmar": -0.05,
+        "volatility_pct": 11.7745,
+        "max_drawdown_pct": 30.92,
+        "turnover": 24.5548,
+        "fills": 2156,
+        "avg_gross_leverage": 1.2809,
+        "max_gross_leverage": 3.4775,
+        "total_fees": 151.3814,
+        "total_financing": 5021.4434,
+        "total_interest": 0.0,
+        "kill_switch_at": "2016-09-22T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -854.1751,
+        "total_return_pct": -8.5418,
+        "cagr_pct": -1.8568,
+        "sharpe": -0.1633,
+        "sortino": -0.2227,
+        "calmar": -0.0608,
+        "volatility_pct": 8.995,
+        "max_drawdown_pct": 30.5302,
+        "turnover": 11.2193,
+        "fills": 422,
+        "avg_gross_leverage": 0.5093,
+        "max_gross_leverage": 3.282,
+        "total_fees": 40.7734,
+        "total_financing": 743.9349,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-04-03T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -10.3124,
+        "ci95_low_pct_annual": -24.0942,
+        "ci95_high_pct_annual": 3.934,
+        "p_not_better": 0.9215,
+        "sharpe_of_difference": -0.6786
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": 0.0,
+          "annual_return_pct": 0.0,
+          "annual_vol_pct": 0.0,
+          "sharpe": null
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -9.9657,
+          "annual_return_pct": -6.1371,
+          "annual_vol_pct": 6.9988,
+          "sharpe": -0.8699
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": 0.6351,
+          "annual_return_pct": 0.5837,
+          "annual_vol_pct": 16.7152,
+          "sharpe": 0.1185
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -7.5461,
+        "cagr_pct": -1.6335,
+        "sharpe": -0.0606,
+        "sortino": -0.0847,
+        "volatility_pct": 13.0731,
+        "max_drawdown_pct": 41.9595
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.1633,
+        "shuffled_median_sharpe": 1.0007,
+        "shuffled_p95_sharpe": 1.493,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.9268
+      },
+      "p_value": 0.9268,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "adx_trend",
+      "in_sample": {
+        "net_profit": -2658.2861,
+        "total_return_pct": -26.5829,
+        "cagr_pct": -2.528,
+        "sharpe": -0.2462,
+        "sortino": -0.332,
+        "calmar": -0.0832,
+        "volatility_pct": 8.8166,
+        "max_drawdown_pct": 30.3699,
+        "turnover": 38.6112,
+        "fills": 1706,
+        "avg_gross_leverage": 0.4493,
+        "max_gross_leverage": 3.2877,
+        "total_fees": 186.2694,
+        "total_financing": 1335.6295,
+        "total_interest": 0.0,
+        "kill_switch_at": "2013-07-11T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -1362.9311,
+        "total_return_pct": -13.6293,
+        "cagr_pct": -3.0289,
+        "sharpe": -0.2488,
+        "sortino": -0.3463,
+        "calmar": -0.0979,
+        "volatility_pct": 10.2496,
+        "max_drawdown_pct": 30.9382,
+        "turnover": 41.5506,
+        "fills": 835,
+        "avg_gross_leverage": 0.5314,
+        "max_gross_leverage": 3.0302,
+        "total_fees": 144.6606,
+        "total_financing": 673.3562,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-08-02T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -11.423,
+        "ci95_low_pct_annual": -24.8299,
+        "ci95_high_pct_annual": 2.2264,
+        "p_not_better": 0.9495,
+        "sharpe_of_difference": -0.7319
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -14.3766,
+          "annual_return_pct": -7.3988,
+          "annual_vol_pct": 4.2788,
+          "sharpe": -1.7748
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": 1.1816,
+          "annual_return_pct": 0.7112,
+          "annual_vol_pct": 8.8266,
+          "sharpe": 0.1244
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -1.3698,
+          "annual_return_pct": -1.2601,
+          "annual_vol_pct": 17.5176,
+          "sharpe": 0.015
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -12.6891,
+        "cagr_pct": -2.8082,
+        "sharpe": -0.1467,
+        "sortino": -0.2065,
+        "volatility_pct": 13.351,
+        "max_drawdown_pct": 42.3855
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.2488,
+        "shuffled_median_sharpe": -0.25,
+        "shuffled_p95_sharpe": 0.6471,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.4878
+      },
+      "p_value": 0.4878,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "keltner_breakout",
+      "in_sample": {
+        "net_profit": -193.0629,
+        "total_return_pct": -1.9306,
+        "cagr_pct": -0.1614,
+        "sharpe": 0.0306,
+        "sortino": 0.0439,
+        "calmar": -0.0054,
+        "volatility_pct": 9.5257,
+        "max_drawdown_pct": 30.1032,
+        "turnover": 37.1197,
+        "fills": 2345,
+        "avg_gross_leverage": 0.5684,
+        "max_gross_leverage": 3.5706,
+        "total_fees": 262.7686,
+        "total_financing": 2270.7879,
+        "total_interest": 0.0,
+        "kill_switch_at": "2014-04-25T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -1524.4877,
+        "total_return_pct": -15.2449,
+        "cagr_pct": -3.4125,
+        "sharpe": -0.2874,
+        "sortino": -0.3911,
+        "calmar": -0.1096,
+        "volatility_pct": 10.25,
+        "max_drawdown_pct": 31.1379,
+        "turnover": 34.1464,
+        "fills": 1002,
+        "avg_gross_leverage": 0.5933,
+        "max_gross_leverage": 3.1478,
+        "total_fees": 127.3131,
+        "total_financing": 719.1141,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-09-21T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -11.9755,
+        "ci95_low_pct_annual": -26.1952,
+        "ci95_high_pct_annual": 2.1194,
+        "p_not_better": 0.952,
+        "sharpe_of_difference": -0.7494
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -20.3495,
+          "annual_return_pct": -10.6564,
+          "annual_vol_pct": 5.6617,
+          "sharpe": -1.9615
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": 0.5138,
+          "annual_return_pct": 0.3097,
+          "annual_vol_pct": 8.2445,
+          "sharpe": 0.0787
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": 3.9649,
+          "annual_return_pct": 3.6395,
+          "annual_vol_pct": 17.1503,
+          "sharpe": 0.2942
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -14.3222,
+        "cagr_pct": -3.1927,
+        "sharpe": -0.1713,
+        "sortino": -0.2356,
+        "volatility_pct": 13.562,
+        "max_drawdown_pct": 41.7326
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.2874,
+        "shuffled_median_sharpe": 0.8819,
+        "shuffled_p95_sharpe": 1.5722,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 1.0
+      },
+      "p_value": 1.0,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "momentum",
+      "in_sample": {
+        "net_profit": -1437.2576,
+        "total_return_pct": -14.3726,
+        "cagr_pct": -1.2775,
+        "sharpe": -0.1656,
+        "sortino": -0.2168,
+        "calmar": -0.0426,
+        "volatility_pct": 6.4881,
+        "max_drawdown_pct": 30.01,
+        "turnover": 9.193,
+        "fills": 508,
+        "avg_gross_leverage": 0.3492,
+        "max_gross_leverage": 3.108,
+        "total_fees": 39.8604,
+        "total_financing": 1460.4337,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-08-30T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -1398.1998,
+        "total_return_pct": -13.982,
+        "cagr_pct": -3.1121,
+        "sharpe": -0.2996,
+        "sortino": -0.4265,
+        "calmar": -0.1028,
+        "volatility_pct": 9.1554,
+        "max_drawdown_pct": 30.2775,
+        "turnover": 18.8931,
+        "fills": 446,
+        "avg_gross_leverage": 0.9477,
+        "max_gross_leverage": 3.1757,
+        "total_fees": 78.2976,
+        "total_financing": 1471.2096,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-11-08T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -11.3593,
+        "ci95_low_pct_annual": -25.552,
+        "ci95_high_pct_annual": 2.7789,
+        "p_not_better": 0.9405,
+        "sharpe_of_difference": -0.745
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -5.0248,
+          "annual_return_pct": -2.5209,
+          "annual_vol_pct": 6.483,
+          "sharpe": -0.3615
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -9.6867,
+          "annual_return_pct": -5.9617,
+          "annual_vol_pct": 6.585,
+          "sharpe": -0.9005
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": 0.4249,
+          "annual_return_pct": 0.3906,
+          "annual_vol_pct": 14.9492,
+          "sharpe": 0.1007
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -13.0456,
+        "cagr_pct": -2.8917,
+        "sharpe": -0.1566,
+        "sortino": -0.2218,
+        "volatility_pct": 13.1869,
+        "max_drawdown_pct": 43.8216
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.2996,
+        "shuffled_median_sharpe": -0.051,
+        "shuffled_p95_sharpe": 0.525,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.7561
+      },
+      "p_value": 0.7561,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "sma_crossover",
+      "in_sample": {
+        "net_profit": -1951.4322,
+        "total_return_pct": -19.5143,
+        "cagr_pct": -1.7827,
+        "sharpe": -0.1434,
+        "sortino": -0.1972,
+        "calmar": -0.0593,
+        "volatility_pct": 9.4347,
+        "max_drawdown_pct": 30.0722,
+        "turnover": 16.7373,
+        "fills": 959,
+        "avg_gross_leverage": 1.0494,
+        "max_gross_leverage": 3.2478,
+        "total_fees": 79.8495,
+        "total_financing": 4173.7264,
+        "total_interest": 0.0,
+        "kill_switch_at": "2015-05-30T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -1402.75,
+        "total_return_pct": -14.0275,
+        "cagr_pct": -3.1229,
+        "sharpe": -0.3242,
+        "sortino": -0.4348,
+        "calmar": -0.1019,
+        "volatility_pct": 8.6341,
+        "max_drawdown_pct": 30.6385,
+        "turnover": 11.9964,
+        "fills": 329,
+        "avg_gross_leverage": 0.61,
+        "max_gross_leverage": 3.1133,
+        "total_fees": 40.6084,
+        "total_financing": 960.2614,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-04-14T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -11.4687,
+        "ci95_low_pct_annual": -25.987,
+        "ci95_high_pct_annual": 3.2159,
+        "p_not_better": 0.946,
+        "sharpe_of_difference": -0.7638
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": 0.0,
+          "annual_return_pct": 0.0,
+          "annual_vol_pct": 0.0,
+          "sharpe": null
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -9.0567,
+          "annual_return_pct": -5.5665,
+          "annual_vol_pct": 6.9178,
+          "sharpe": -0.7932
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -5.5708,
+          "annual_return_pct": -5.1335,
+          "annual_vol_pct": 15.9395,
+          "sharpe": -0.2509
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -13.0916,
+        "cagr_pct": -2.9025,
+        "sharpe": -0.1622,
+        "sortino": -0.2241,
+        "volatility_pct": 12.969,
+        "max_drawdown_pct": 42.1354
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.3242,
+        "shuffled_median_sharpe": -0.5307,
+        "shuffled_p95_sharpe": 0.3533,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.1951
+      },
+      "p_value": 0.1951,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "regime_switch",
+      "in_sample": {
+        "net_profit": -2831.9166,
+        "total_return_pct": -28.3192,
+        "cagr_pct": -2.7211,
+        "sharpe": -0.4245,
+        "sortino": -0.5463,
+        "calmar": -0.0904,
+        "volatility_pct": 6.0635,
+        "max_drawdown_pct": 30.1061,
+        "turnover": 23.2931,
+        "fills": 1313,
+        "avg_gross_leverage": 0.2882,
+        "max_gross_leverage": 3.4354,
+        "total_fees": 94.0273,
+        "total_financing": 1001.6678,
+        "total_interest": 0.0,
+        "kill_switch_at": "2011-10-12T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -2131.8499,
+        "total_return_pct": -21.3185,
+        "cagr_pct": -4.9084,
+        "sharpe": -0.4065,
+        "sortino": -0.5478,
+        "calmar": -0.1614,
+        "volatility_pct": 10.9127,
+        "max_drawdown_pct": 30.402,
+        "turnover": 110.6646,
+        "fills": 2965,
+        "avg_gross_leverage": 1.7158,
+        "max_gross_leverage": 3.9298,
+        "total_fees": 320.2061,
+        "total_financing": 2428.2308,
+        "total_interest": 0.0,
+        "kill_switch_at": "2025-03-10T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -13.0535,
+        "ci95_low_pct_annual": -25.6751,
+        "ci95_high_pct_annual": 0.15,
+        "p_not_better": 0.973,
+        "sharpe_of_difference": -0.924
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": 13.6973,
+          "annual_return_pct": 6.5639,
+          "annual_vol_pct": 9.1043,
+          "sharpe": 0.7438
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -20.357,
+          "annual_return_pct": -12.831,
+          "annual_vol_pct": 11.0952,
+          "sharpe": -1.1819
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -12.9888,
+          "annual_return_pct": -12.0075,
+          "annual_vol_pct": 13.4038,
+          "sharpe": -0.8872
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -20.462,
+        "cagr_pct": -4.692,
+        "sharpe": -0.2691,
+        "sortino": -0.3625,
+        "volatility_pct": 14.1379,
+        "max_drawdown_pct": 37.1719
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.4065,
+        "shuffled_median_sharpe": -0.7124,
+        "shuffled_p95_sharpe": -0.2738,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0976
+      },
+      "p_value": 0.0976,
+      "p_value_adjusted": 0.878
+    },
+    {
+      "strategy": "ema_crossover",
+      "in_sample": {
+        "net_profit": -2017.5382,
+        "total_return_pct": -20.1754,
+        "cagr_pct": -1.8498,
+        "sharpe": -0.1894,
+        "sortino": -0.2583,
+        "calmar": -0.0615,
+        "volatility_pct": 8.1166,
+        "max_drawdown_pct": 30.0559,
+        "turnover": 14.2091,
+        "fills": 864,
+        "avg_gross_leverage": 0.4928,
+        "max_gross_leverage": 3.1372,
+        "total_fees": 61.8203,
+        "total_financing": 1907.9984,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-12-07T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -2001.7819,
+        "total_return_pct": -20.0178,
+        "cagr_pct": -4.5805,
+        "sharpe": -0.4588,
+        "sortino": -0.6248,
+        "calmar": -0.1464,
+        "volatility_pct": 9.28,
+        "max_drawdown_pct": 31.2793,
+        "turnover": 20.6112,
+        "fills": 489,
+        "avg_gross_leverage": 0.8026,
+        "max_gross_leverage": 3.1521,
+        "total_fees": 62.9066,
+        "total_financing": 1223.8031,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-08-02T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -13.0537,
+        "ci95_low_pct_annual": -26.3386,
+        "ci95_high_pct_annual": 0.2619,
+        "p_not_better": 0.973,
+        "sharpe_of_difference": -0.8677
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -11.2836,
+          "annual_return_pct": -5.7571,
+          "annual_vol_pct": 4.3453,
+          "sharpe": -1.3426
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -2.8585,
+          "annual_return_pct": -1.7345,
+          "annual_vol_pct": 7.3662,
+          "sharpe": -0.2007
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -7.8512,
+          "annual_return_pct": -7.2419,
+          "annual_vol_pct": 16.1097,
+          "sharpe": -0.3862
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -19.1471,
+        "cagr_pct": -4.3634,
+        "sharpe": -0.2797,
+        "sortino": -0.3884,
+        "volatility_pct": 12.9527,
+        "max_drawdown_pct": 42.8532
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.4588,
+        "shuffled_median_sharpe": -0.7217,
+        "shuffled_p95_sharpe": 0.1834,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.3171
+      },
+      "p_value": 0.3171,
+      "p_value_adjusted": 1.0
+    },
+    {
+      "strategy": "rsi_reversion",
+      "in_sample": {
+        "net_profit": -2713.0289,
+        "total_return_pct": -27.1303,
+        "cagr_pct": -2.5884,
+        "sharpe": -0.3836,
+        "sortino": -0.5531,
+        "calmar": -0.0821,
+        "volatility_pct": 6.3176,
+        "max_drawdown_pct": 31.5089,
+        "turnover": 9.233,
+        "fills": 468,
+        "avg_gross_leverage": 0.1765,
+        "max_gross_leverage": 4.0579,
+        "total_fees": 38.3859,
+        "total_financing": 462.1612,
+        "total_interest": 0.0,
+        "kill_switch_at": "2011-08-08T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -2691.9223,
+        "total_return_pct": -26.9192,
+        "cagr_pct": -6.371,
+        "sharpe": -0.4773,
+        "sortino": -0.6768,
+        "calmar": -0.2095,
+        "volatility_pct": 12.2266,
+        "max_drawdown_pct": 30.4035,
+        "turnover": 37.147,
+        "fills": 912,
+        "avg_gross_leverage": 0.8376,
+        "max_gross_leverage": 3.2407,
+        "total_fees": 115.8683,
+        "total_financing": 968.5724,
+        "total_interest": 0.0,
+        "kill_switch_at": "2024-04-15T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -14.1402,
+        "ci95_low_pct_annual": -28.9021,
+        "ci95_high_pct_annual": -0.5477,
+        "p_not_better": 0.9775,
+        "sharpe_of_difference": -0.8974
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -16.603,
+          "annual_return_pct": -8.5993,
+          "annual_vol_pct": 9.613,
+          "sharpe": -0.8873
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -6.9304,
+          "annual_return_pct": -4.2405,
+          "annual_vol_pct": 10.4603,
+          "sharpe": -0.3619
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -4.2854,
+          "annual_return_pct": -3.9469,
+          "annual_vol_pct": 17.7453,
+          "sharpe": -0.1387
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -26.1236,
+        "cagr_pct": -6.158,
+        "sharpe": -0.3982,
+        "sortino": -0.5601,
+        "volatility_pct": 13.6296,
+        "max_drawdown_pct": 34.3751
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.4773,
+        "shuffled_median_sharpe": -0.9978,
+        "shuffled_p95_sharpe": -0.5708,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0244
+      },
+      "p_value": 0.0244,
+      "p_value_adjusted": 0.3171
+    },
+    {
+      "strategy": "macd",
+      "in_sample": {
+        "net_profit": -2551.064,
+        "total_return_pct": -25.5106,
+        "cagr_pct": -2.4108,
+        "sharpe": -0.4466,
+        "sortino": -0.5738,
+        "calmar": -0.0785,
+        "volatility_pct": 5.1643,
+        "max_drawdown_pct": 30.7035,
+        "turnover": 16.31,
+        "fills": 789,
+        "avg_gross_leverage": 0.2367,
+        "max_gross_leverage": 3.1396,
+        "total_fees": 68.0102,
+        "total_financing": 892.9666,
+        "total_interest": 0.0,
+        "kill_switch_at": "2011-07-11T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -2837.8541,
+        "total_return_pct": -28.3785,
+        "cagr_pct": -6.7666,
+        "sharpe": -0.5484,
+        "sortino": -0.7425,
+        "calmar": -0.2213,
+        "volatility_pct": 11.5553,
+        "max_drawdown_pct": 30.5707,
+        "turnover": 85.3338,
+        "fills": 1880,
+        "avg_gross_leverage": 1.8036,
+        "max_gross_leverage": 3.1442,
+        "total_fees": 242.0315,
+        "total_financing": 2516.3183,
+        "total_interest": 0.0,
+        "kill_switch_at": "2025-04-03T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -15.1389,
+        "ci95_low_pct_annual": -29.4634,
+        "ci95_high_pct_annual": -0.3262,
+        "p_not_better": 0.9775,
+        "sharpe_of_difference": -0.9032
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": -15.5733,
+          "annual_return_pct": -8.0421,
+          "annual_vol_pct": 8.7606,
+          "sharpe": -0.9131
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -5.5124,
+          "annual_return_pct": -3.363,
+          "annual_vol_pct": 11.2753,
+          "sharpe": -0.247
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -10.8816,
+          "annual_return_pct": -10.0502,
+          "annual_vol_pct": 15.7728,
+          "sharpe": -0.5924
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -27.5989,
+        "cagr_pct": -6.5544,
+        "sharpe": -0.4195,
+        "sortino": -0.5715,
+        "volatility_pct": 13.8627,
+        "max_drawdown_pct": 43.4235
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.5484,
+        "shuffled_median_sharpe": -0.9761,
+        "shuffled_p95_sharpe": -0.4879,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0732
+      },
+      "p_value": 0.0732,
+      "p_value_adjusted": 0.7317
+    },
+    {
+      "strategy": "stochastic_reversion",
+      "in_sample": {
+        "net_profit": -2897.7356,
+        "total_return_pct": -28.9774,
+        "cagr_pct": -2.7954,
+        "sharpe": -0.39,
+        "sortino": -0.5294,
+        "calmar": -0.091,
+        "volatility_pct": 6.6935,
+        "max_drawdown_pct": 30.7246,
+        "turnover": 17.0644,
+        "fills": 1409,
+        "avg_gross_leverage": 0.2472,
+        "max_gross_leverage": 3.6958,
+        "total_fees": 68.4399,
+        "total_financing": 791.9281,
+        "total_interest": 0.0,
+        "kill_switch_at": "2011-10-03T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -2597.7651,
+        "total_return_pct": -25.9777,
+        "cagr_pct": -6.1191,
+        "sharpe": -0.6181,
+        "sortino": -0.851,
+        "calmar": -0.2038,
+        "volatility_pct": 9.4875,
+        "max_drawdown_pct": 30.0223,
+        "turnover": 31.3164,
+        "fills": 1165,
+        "avg_gross_leverage": 0.5314,
+        "max_gross_leverage": 3.3023,
+        "total_fees": 84.6286,
+        "total_financing": 634.7384,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-04-13T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -14.2657,
+        "ci95_low_pct_annual": -25.71,
+        "ci95_high_pct_annual": -3.0477,
+        "p_not_better": 0.991,
+        "sharpe_of_difference": -1.073
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": 0.0,
+          "annual_return_pct": 0.0,
+          "annual_vol_pct": 0.0,
+          "sharpe": null
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -15.9752,
+          "annual_return_pct": -9.9685,
+          "annual_vol_pct": 7.0262,
+          "sharpe": -1.4592
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -10.8668,
+          "annual_return_pct": -10.0365,
+          "annual_vol_pct": 17.8387,
+          "sharpe": -0.5039
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -25.1718,
+        "cagr_pct": -5.9054,
+        "sharpe": -0.4575,
+        "sortino": -0.6304,
+        "volatility_pct": 11.787,
+        "max_drawdown_pct": 34.1113
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.6181,
+        "shuffled_median_sharpe": -1.0413,
+        "shuffled_p95_sharpe": -0.6802,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0488
+      },
+      "p_value": 0.0488,
+      "p_value_adjusted": 0.5366
+    },
+    {
+      "strategy": "bollinger_reversion",
+      "in_sample": {
+        "net_profit": -3000.126,
+        "total_return_pct": -30.0013,
+        "cagr_pct": -2.9123,
+        "sharpe": -0.3577,
+        "sortino": -0.4967,
+        "calmar": -0.0928,
+        "volatility_pct": 7.4799,
+        "max_drawdown_pct": 31.3888,
+        "turnover": 23.0195,
+        "fills": 1485,
+        "avg_gross_leverage": 0.3025,
+        "max_gross_leverage": 3.3386,
+        "total_fees": 91.6507,
+        "total_financing": 848.0879,
+        "total_interest": 0.0,
+        "kill_switch_at": "2012-05-14T00:00:00+00:00",
+        "years": 12.0687
+      },
+      "out_of_sample": {
+        "net_profit": -2529.6222,
+        "total_return_pct": -25.2962,
+        "cagr_pct": -5.9383,
+        "sharpe": -0.6458,
+        "sortino": -0.8793,
+        "calmar": -0.1965,
+        "volatility_pct": 8.8699,
+        "max_drawdown_pct": 30.2201,
+        "turnover": 23.9412,
+        "fills": 735,
+        "avg_gross_leverage": 0.386,
+        "max_gross_leverage": 3.1464,
+        "total_fees": 63.2719,
+        "total_financing": 415.5955,
+        "total_interest": 0.0,
+        "kill_switch_at": "2023-01-29T00:00:00+00:00",
+        "years": 4.7639
+      },
+      "vs_basket_bootstrap": {
+        "days": 1739,
+        "block": 10,
+        "samples": 2000,
+        "mean_difference_pct_annual": -14.0438,
+        "ci95_low_pct_annual": -26.3295,
+        "ci95_high_pct_annual": -3.0584,
+        "p_not_better": 0.992,
+        "sharpe_of_difference": -1.1058
+      },
+      "regimes_out_of_sample": {
+        "urcare calm\u0103": {
+          "days": 737,
+          "return_pct": 0.0,
+          "annual_return_pct": 0.0,
+          "annual_vol_pct": 0.0,
+          "sharpe": null
+        },
+        "urcare agitat\u0103": {
+          "days": 605,
+          "return_pct": -8.7207,
+          "annual_return_pct": -5.3561,
+          "annual_vol_pct": 5.2961,
+          "sharpe": -1.0129
+        },
+        "sc\u0103dere calm\u0103": {
+          "days": 0,
+          "return_pct": null,
+          "annual_return_pct": null,
+          "annual_vol_pct": null,
+          "sharpe": null
+        },
+        "sc\u0103dere agitat\u0103": {
+          "days": 397,
+          "return_pct": -16.8502,
+          "annual_return_pct": -15.6043,
+          "annual_vol_pct": 17.3151,
+          "sharpe": -0.8933
+        }
+      },
+      "out_of_sample_base_currency": {
+        "total_return_pct": -24.483,
+        "cagr_pct": -5.7243,
+        "sharpe": -0.4826,
+        "sortino": -0.6606,
+        "volatility_pct": 10.9683,
+        "max_drawdown_pct": 34.2297
+      },
+      "permutation_test_out_of_sample": {
+        "actual_sharpe": -0.6458,
+        "shuffled_median_sharpe": -1.1314,
+        "shuffled_p95_sharpe": -0.7597,
+        "permutations": 40,
+        "seed": 7,
+        "p_value": 0.0244
+      },
+      "p_value": 0.0244,
+      "p_value_adjusted": 0.3171
+    }
+  ],
+  "note": "Paper research. With --universe futures, futures series are not roll-adjusted and indices stand in for futures/CFDs; --universe etf uses tradable, adjusted ETFs. The permutation test shuffles each market's signal timing; p_value_adjusted (Holm) accounts for comparing several strategies. Always-long strategies get p = 1: their result comes from diversification and leverage, not timing."
+}
