@@ -1,0 +1,18 @@
+{
+  "time": "2026-11-01T14:07+00:00",
+  "sources": {
+    "polymarket": {
+      "ok": true,
+      "markets": 8,
+      "added": 8
+    },
+    "fred": {
+      "ok": false,
+      "error": "fără cheie FRED_API_KEY"
+    },
+    "edgar": {
+      "ok": false,
+      "error": "https://www.sec.gov/files/company_tickers.json a răspuns HTTP 403"
+    }
+  }
+}
