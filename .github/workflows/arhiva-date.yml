@@ -1,0 +1,85 @@
+name: Arhivă date de piață
+
+# În fiecare seară păstrează într-o ramură proprie (`date-piete`) prețurile zilnice ale celor
+# 13 piețe ale consiliului (indici, metale, petrol, forex, obligațiuni, 5 monede crypto), ca
+# fișiere CSV, plus ultimele cursuri (EUR/USD, EUR/RON). Așa rămân datele cu care au decis
+# conturile, chiar dacă sursa gratuită le schimbă sau le șterge. Doar citire de prețuri publice;
+# nu tranzacționează și nu cheamă AI.
+
+on:
+  schedule:
+    - cron: '45 23 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-arhiva
+  cancel-in-progress: false
+
+jobs:
+  colecteaza:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BND_ALLOW_LIVE_AI: "false"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Restore the archive built so far
+        run: |
+          mkdir -p arhiva
+          if git fetch -q --depth=1 origin date-piete 2>/dev/null; then
+            git archive FETCH_HEAD | tar -x -C arhiva
+          fi
+      - name: Download and add the new days
+        run: |
+          python -m src.bnd.backtest_cli fetch-universe --universe ai --update \
+            --start "$(date -u -d '-3 years' +%Y-%m-%d)" --out-dir arhiva/zilnic
+          python -m src.bnd.quotes_snapshot --out arhiva/ultimele-cursuri.json
+          date -u +%Y-%m-%dT%H:%MZ > arhiva/ultima-actualizare.txt
+          find arhiva/zilnic -name "*.csv" | wc -l >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: bnd-arhiva-${{ github.run_id }}
+          path: arhiva/
+          retention-days: 3
+
+  # Separate job: the write token never runs project code.
+  publica:
+    needs: colecteaza
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: bnd-arhiva-${{ github.run_id }}
+          path: arhiva
+      - name: Save the archive on the date-piete branch
+        run: |
+          set -euo pipefail
+          git init -q a && cd a
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          for attempt in 1 2 3; do
+            if git fetch -q --depth=1 origin date-piete 2>/dev/null; then
+              git checkout -q -f -B date-piete FETCH_HEAD
+            else
+              git checkout -q --orphan date-piete 2>/dev/null || true
+            fi
+            rm -rf zilnic ultimele-cursuri.json ultima-actualizare.txt
+            cp -r ../arhiva/zilnic ../arhiva/ultimele-cursuri.json ../arhiva/ultima-actualizare.txt .
+            git add -A
+            git commit -q -m "Date $(date -u +%Y-%m-%d)" || true
+            if git push -q origin HEAD:refs/heads/date-piete; then break; fi
+            sleep $((attempt * 5))
+          done
