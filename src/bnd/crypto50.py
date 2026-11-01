@@ -33,10 +33,15 @@ def split_markets(markets) -> dict:
     markets = list(markets)
     if not all(re.fullmatch(r"[A-Z0-9_]{1,20}", m) for m in markets):
         raise ValueError("Nume de piață invalid (doar litere mari, cifre și _)")
+    from .universe import DEFENSE_NAMES, STOCK_UNIVERSE
+    stock_names = {m.name for m in STOCK_UNIVERSE}
     binance = [m for m in markets if m in EXTRA]
     yahoo = [m for m in markets if m in YAHOO_CRYPTO]
-    return {"etf": [m for m in markets if m not in binance and m not in yahoo],
-            "yahoo_crypto": yahoo, "binance": binance}
+    defense = [m for m in markets if m in DEFENSE_NAMES]
+    stocks = [m for m in markets if m in stock_names and m not in defense]
+    return {"etf": [m for m in markets if m not in binance and m not in yahoo and m not in defense
+                    and m not in stocks],
+            "yahoo_crypto": yahoo, "binance": binance, "defense": defense, "stocks": stocks}
 
 
 def update(out, fetch=fetch_binance_klines, now: datetime | None = None, years: int = 3,

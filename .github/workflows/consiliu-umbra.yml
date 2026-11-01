@@ -24,7 +24,7 @@ on:
         type: string
       markets:
         description: 'Piețele, cu virgulă (litere mari)'
-        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA'
+        default: 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA,RHEINMETALL,HENSOLDT,RENK,BAE,THALES,LEONARDO,SAAB,KONGSBERG,LOCKHEED,NORTHROP,RTX,GENERAL_DYNAMICS,L3HARRIS,ITA'
         type: string
 
 permissions:
@@ -46,7 +46,7 @@ jobs:
       MODE_INPUT: ${{ inputs.mode }}
       CONFIRMATION: ${{ inputs.paid_test_confirmation }}
       DAILY_SWITCH: ${{ vars.BND_COUNCIL_DAILY }}
-      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA' }}
+      MARKETS: ${{ inputs.markets || 'SP500,NASDAQ100,GOLD,SILVER,CRUDE_OIL,BITCOIN,ETHEREUM,EURUSD,USDJPY,US10Y_NOTE,SOLANA,BNB,XRP,TRX,DOGE,ADA,LINK,AVAX,XLM,SUI,TON,SHIB,BCH,LTC,DOT,HBAR,UNI,PEPE,AAVE,NEAR,ICP,ETC,APT,ONDO,ATOM,POL,ARB,FIL,ALGO,VET,OP,INJ,RENDER,TAO,FET,SEI,STX,BONK,WIF,FLOKI,TRUMP,PENGU,ENA,WLD,JUP,LDO,CRV,TIA,RHEINMETALL,HENSOLDT,RENK,BAE,THALES,LEONARDO,SAAB,KONGSBERG,LOCKHEED,NORTHROP,RTX,GENERAL_DYNAMICS,L3HARRIS,ITA' }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -97,6 +97,7 @@ jobs:
           etf="$(echo "$groups" | sed -n 's/^etf=//p')"
           yahoo_crypto="$(echo "$groups" | sed -n 's/^yahoo_crypto=//p')"
           binance="$(echo "$groups" | sed -n 's/^binance=//p')"
+          defense="$(echo "$groups" | sed -n 's/^defense=//p')"
           start="$(date -u -d '-2 years' +%Y-%m-%d)"
           python -m src.bnd.backtest_cli fetch-universe --universe etf --update \
             --markets "$etf" --start "$start" --out-dir data
@@ -106,6 +107,10 @@ jobs:
           fi
           if [ -n "$binance" ]; then
             python -m src.bnd.crypto50 --out data --only "$binance"
+          fi
+          if [ -n "$defense" ]; then
+            python -m src.bnd.backtest_cli fetch-universe --universe defense --update \
+              --markets "$defense" --start "$start" --out-dir data
           fi
       - name: Keep the candles for tomorrow
         if: steps.mode.outputs.run == 'true'

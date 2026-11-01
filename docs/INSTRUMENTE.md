@@ -52,6 +52,20 @@ Generat cu `python -m src.bnd.instruments`. Nu e o recomandare de produs sau bro
 | SOLANA | crypto | SOL spot | SOL (CME) | SOLUSD | 50.00% | 0.150% |
 | BNB | crypto | BNB spot | – | BNBUSD | 50.00% | 0.150% |
 | XRP | crypto | XRP spot | XRP (CME) | XRPUSD | 50.00% | 0.150% |
+| RHEINMETALL | stock | RHEINMETALL | – | RHEINMETALL (CFD pe acțiune) | 20.00% | 0.050% |
+| HENSOLDT | stock | HENSOLDT | – | HENSOLDT (CFD pe acțiune) | 20.00% | 0.050% |
+| RENK | stock | RENK | – | RENK (CFD pe acțiune) | 20.00% | 0.050% |
+| BAE | stock | BAE | – | BAE (CFD pe acțiune) | 20.00% | 0.050% |
+| THALES | stock | THALES | – | THALES (CFD pe acțiune) | 20.00% | 0.050% |
+| LEONARDO | stock | LEONARDO | – | LEONARDO (CFD pe acțiune) | 20.00% | 0.050% |
+| SAAB | stock | SAAB | – | SAAB (CFD pe acțiune) | 20.00% | 0.050% |
+| KONGSBERG | stock | KONGSBERG | – | KONGSBERG (CFD pe acțiune) | 20.00% | 0.050% |
+| LOCKHEED | stock | LOCKHEED | – | LOCKHEED (CFD pe acțiune) | 20.00% | 0.050% |
+| NORTHROP | stock | NORTHROP | – | NORTHROP (CFD pe acțiune) | 20.00% | 0.050% |
+| RTX | stock | RTX | – | RTX (CFD pe acțiune) | 20.00% | 0.050% |
+| GENERAL_DYNAMICS | stock | GENERAL_DYNAMICS | – | GENERAL_DYNAMICS (CFD pe acțiune) | 20.00% | 0.050% |
+| L3HARRIS | stock | L3HARRIS | – | L3HARRIS (CFD pe acțiune) | 20.00% | 0.050% |
+| ITA | stock | ITA | – | ITA (CFD pe acțiune) | 20.00% | 0.050% |
 | TRX | crypto | TRX spot | – | TRXUSD | 50.00% | 0.150% |
 | DOGE | crypto | DOGE spot | – | DOGEUSD | 50.00% | 0.250% |
 | ADA | crypto | ADA spot | – | ADAUSD | 50.00% | 0.150% |

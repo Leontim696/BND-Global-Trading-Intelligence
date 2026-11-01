@@ -55,7 +55,9 @@ def test_extra_coins_are_the_forty_five_not_already_covered_and_the_split_is_saf
     assert len(crypto50.EXTRA) == 45 and not set(crypto50.EXTRA) & set(crypto50.COVERED)
     groups = crypto50.split_markets(["SP500", "SOLANA", "DOGE", "PEPE", "BITCOIN", "XRP"])
     assert groups == {"etf": ["SP500", "BITCOIN"], "yahoo_crypto": ["SOLANA", "XRP"],
-                      "binance": ["DOGE", "PEPE"]}
+                      "binance": ["DOGE", "PEPE"], "defense": [], "stocks": []}
+    mixed = crypto50.split_markets(["AAPL", "RHEINMETALL", "LOCKHEED", "GOLD"])
+    assert mixed["stocks"] == ["AAPL"] and mixed["defense"] == ["RHEINMETALL", "LOCKHEED"] and mixed["etf"] == ["GOLD"]
     import pytest
     for bad in ("SP500;rm", "a b", "$(x)", "bnb"):
         with pytest.raises(ValueError):
@@ -67,3 +69,16 @@ def test_update_only_fetches_the_requested_coins(tmp_path):
     status = crypto50.update(tmp_path, fake_fetch, NOW, years=1, only={"DOGE"})
     assert list(status["coins"]) == ["DOGE"] and (tmp_path / "DOGE.csv").exists()
     assert not (tmp_path / "BTC.csv").exists()
+
+
+def test_unified_universe_has_us_stocks_and_defense_with_their_own_sector():
+    from src.bnd.universe import DEFENSE_CURRENCY, DEFENSE_NAMES, UNIVERSES
+    unic = {m.name: m for m in UNIVERSES["unic"]}
+    assert len(unic) == 101 and {"AAPL", "NVDA", "RHEINMETALL", "LOCKHEED", "ITA"} <= set(unic)
+    assert all(unic[n].sector == "armament" and unic[n].asset_class == "stock" for n in DEFENSE_NAMES)
+    assert unic["AAPL"].sector == "tehnologie"
+    assert DEFENSE_CURRENCY["RHEINMETALL"] == "EUR" and DEFENSE_CURRENCY["LOCKHEED"] == "USD"
+    from src.bnd.council_context import label
+    assert "apărare" in label("RHEINMETALL") and "EUR" in label("RHEINMETALL")
+    from src.bnd.council_daily import ASSET_CLASS
+    assert ASSET_CLASS["SAAB"] == "armament"

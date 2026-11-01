@@ -57,3 +57,5 @@ Consiliul votează acum pe cele 13 piețe de bază și pe încă 45 de monede di
 `status.yml` citește în fiecare oră, direct de la OpenRouter, soldul real (`openrouter_balance.py`: limita cheii și creditul contului, nu consumă credit) și îl salvează în `balance.json` pe ramura `status`. Aplicația și rezumatul de dimineață îl folosesc cât timp citirea are mai puțin de 8 ore; altfel revin la estimarea din registru și o marchează „estimare". Când reîncarci creditul sau ridici plafonul cheii, soldul nou apare singur în cel mult o oră și jumătate. Soldul afișat e minimul dintre ce mai are voie cheia și ce credit mai e în cont.
 
 Plafoanele de cost ale consiliului sunt un control separat: implicit 0,60 $ pe piață, 2,50 $ pe zi și 38 $ pe lună. Se ridică fără cod din variabilele de depozit `BND_COUNCIL_DAILY_CAP` și `BND_COUNCIL_MONTHLY_CAP` (Settings → Secrets and variables → Actions → Variables).
+
+Actualizare 1.11.2026: consiliul votează acum pe 72 de piețe (cele 13 de bază, 45 de monede și 14 titluri de apărare). Cost estimat ~2,0 $/zi; plafoanele implicite (2,50 $/zi, 38 $/lună) rămân valabile.

@@ -57,7 +57,7 @@ def instrument(name: str) -> tuple[str, str, str]:
     from .coins import COINS
     if name in {c[0] for c in COINS}:
         return (f"{name} spot", "–", f"{name}USD")
-    stock_names = {m.name for m in UNIVERSES["stocks"]}
+    stock_names = {m.name for m in UNIVERSES["stocks"]} | {m.name for m in UNIVERSES["defense"]}
     if name in stock_names:
         return (name, "–", f"{name} (CFD pe acțiune)")
     raise KeyError(name)
@@ -65,7 +65,7 @@ def instrument(name: str) -> tuple[str, str, str]:
 
 def table() -> str:
     seen, rows = set(), []
-    for universe in ("etf", "futures", "stocks", "crypto", "unic"):
+    for universe in ("etf", "futures", "stocks", "crypto", "unic", "defense"):
         for market in UNIVERSES[universe]:
             if market.name in seen:
                 continue

@@ -57,8 +57,11 @@ BASE_PEERS = DEFAULT_MARKETS + ("SOLANA", "BNB", "XRP")
 
 def _extend_asset_classes() -> None:
     from .crypto50 import COINS
+    from .universe import DEFENSE_NAMES
     for name, _, meme in COINS:
         ASSET_CLASS.setdefault(name, "memecoin" if meme else "crypto")
+    for name in DEFENSE_NAMES:
+        ASSET_CLASS.setdefault(name, "armament")
 
 
 _extend_asset_classes()

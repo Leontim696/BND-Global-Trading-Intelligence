@@ -195,10 +195,11 @@ def test_lean_is_the_direction_of_the_non_hold_votes_and_is_compared_after_settl
     assert "înclină spre" in text or "fără înclinație" in text
 
 
-def test_workflow_default_is_the_thirteen_base_markets_plus_the_forty_five_extra_coins():
+def test_workflow_default_is_the_base_markets_plus_the_extra_coins_and_the_defense_stocks():
     from src.bnd.crypto50 import EXTRA
+    from src.bnd.universe import DEFENSE_NAMES
     text = open(".github/workflows/consiliu-umbra.yml", encoding="utf-8").read()
-    expected = ",".join(cd.BASE_PEERS + EXTRA)
+    expected = ",".join(cd.BASE_PEERS + EXTRA + DEFENSE_NAMES)
     assert text.count(expected) == 2                    # intrarea manuală și valoarea implicită
     assert '--daily-budget "${DAILY_CAP:-2.50}" --monthly-budget "${MONTHLY_CAP:-38}"' in text and "timeout-minutes: 45" in text
 
