@@ -7,7 +7,8 @@ set -euo pipefail
 
 # Dacă GH_TOKEN e dat doar acestui pas, îl folosim pentru rețea fără să-l lăsăm în .git/config.
 git_net() {
-  if [ -n "${GH_TOKEN:-}" ]; then
+  # Dacă checkout-ul a păstrat deja credențiale (antet extra), nu adăugăm un al doilea: GitHub respinge antetele duble.
+  if [ -n "${GH_TOKEN:-}" ] && ! git config --get-regexp 'http\..*extraheader' >/dev/null 2>&1; then
     git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)" "$@"
   else
     git "$@"

@@ -109,3 +109,15 @@ def test_audit_required_for_the_unified_account(repos, monkeypatch):
     monkeypatch.setenv("REQUIRE_AUDIT", "1")
     proc, out = run("restore_account.sh", work, "cont", "x")
     assert proc.returncode == 1 and "GENESIS" in proc.stdout + proc.stderr and "account=existing" not in out
+
+
+def test_a_token_is_not_added_when_the_checkout_already_kept_credentials(repos):
+    _, work = repos
+    publish(work, "stare", {"registry.sqlite": "R"})
+    git(work, "config", "http.https://github.com/.extraheader", "AUTHORIZATION: basic eHg6eHg=")
+    script = (ROOT / "scripts" / "restore_branch.sh").read_text()
+    assert "extraheader" in script                                     # protecția împotriva antetelor duble există
+    env = {**os.environ, "GH_TOKEN": "t"}
+    proc = subprocess.run(["bash", str(ROOT / "scripts" / "restore_branch.sh"), "stare", "dest", "registry.sqlite"],
+                          cwd=work, env=env, capture_output=True, text=True)
+    assert proc.returncode == 0 and (work / "dest" / "registry.sqlite").read_text() == "R"
