@@ -39,6 +39,7 @@ from .decision_registry import DecisionRegistry
 from .decision_rules import DecisionRule, decide
 from .fusion_council import AGENTS, Vote
 from .market_data import MarketDataError, load_csv
+from .regimes import label_regimes
 from .openrouter_adapter import OpenRouterAdapter
 from .openrouter_models import fetch, parse
 
@@ -141,6 +142,14 @@ def live_gateway(models: dict, pricing: dict, costs_path, now: datetime,
     return gateway
 
 
+def _regime_now(candles):
+    """Regimul pieței la ultima închidere (doar din date până atunci); None dacă istoricul e scurt."""
+    try:
+        return label_regimes(candles).get(candles[-1].open_time)
+    except (ValueError, ZeroDivisionError):
+        return None
+
+
 def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegistry,
                 now: datetime, round_budget: Decimal, horizon_days: int = HORIZON_DAYS,
                 sleep=None, peers=None) -> dict:
@@ -185,6 +194,7 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
                         horizon_days, meta={"bot_signal": bot_signal(candles),
                                             "lean": lean,
                                             "net": buys - sells,
+                                            "regime": _regime_now(candles),
                                             "voters": len(opinions),
                                             "weighted": weighted.vote.value,
                                             "weighted_uncertain": weighted.uncertain,

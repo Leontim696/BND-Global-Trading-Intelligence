@@ -150,6 +150,8 @@ jobs:
             --audit-log state/audit.jsonl --report state/raport.md --report-short state/raport-scurt.md \
             --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"
+          # Analiza agenților: doar citire din registru, fără apeluri AI.
+          python -m src.bnd.council_analytics --registry state/registry.sqlite > state/analiza.json || true
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         if: always() && steps.mode.outputs.run == 'true'
         with:
@@ -198,6 +200,7 @@ jobs:
             if [ "$LIVE" = true ]; then
               cp ../state/registry.sqlite ../state/costs.sqlite .
               if [ -f ../state/audit.jsonl ]; then cp ../state/audit.jsonl .; fi
+              if [ -s ../state/analiza.json ]; then cp ../state/analiza.json consiliu/analiza.json; fi
               cp ../state/raport.md "consiliu/${day}.md"
               cp ../state/raport.md consiliu/LATEST.md
               if [ -f ../state/raport-scurt.md ]; then

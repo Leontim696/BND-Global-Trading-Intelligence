@@ -227,7 +227,14 @@ function comparison(c) {
   return `<h2>Cine a ghicit mai des</h2><div class="scroll"><table><tr><th></th><th>Apeluri</th><th>Bine</th><th>Medie</th></tr>
     ${line("Consiliul (majoritate)", cmp.council)}${line("Înclinația consiliului", cmp.lean)}${line("Botul pe reguli", cmp.bot)}${line("Doar cumpără", cmp.always_long)}</table></div>
     <p class="sub">${cmp.settled_decisions} decizii încheiate. Cu puține decizii, diferențele pot fi noroc.</p>
-    <h2>Pe agenți</h2><div class="scroll"><table><tr><th>Agent</th><th>Păreri</th><th>Bine</th><th>Brier</th></tr>${ag}</table></div>`;
+    <h2>Pe agenți</h2><div class="scroll"><table><tr><th>Agent</th><th>Păreri</th><th>Bine</th><th>Brier</th></tr>${ag}</table></div>${analysisNote(c.analysis)}`;
+}
+
+function analysisNote(a) {
+  if (!a || !a.oos) return "";
+  const over = Object.entries(a.overconfidence || {}).map(([n, v]) => `${esc(n)} ${v > 0 ? "+" : ""}${Math.round(100 * v)}%`).join(", ");
+  return `<p class="sub">Supraîncredere (încrederea declarată minus rata reală): ${over || "–"}. ${a.note ? esc(a.note) : ""}
+    ${a.oos.evaluated ? "Ponderarea pe zile nevăzute: " + esc(a.oos.verdict) + "." : esc(a.oos.note || "")}</p>`;
 }
 
 function agentsPanel(c) {

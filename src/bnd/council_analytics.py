@@ -15,7 +15,10 @@ import argparse
 import json
 import sqlite3
 import sys
-from math import isfinite
+from math import comb, isfinite
+
+from .decision_rules import AgentScorebook
+from .fusion_council import AGENTS, Vote
 
 HOLD_BAND = 0.01          # HOLD e „corect” dacă prețul s-a mișcat sub 1% în 5 zile
 MIN_SAMPLE = 20           # sub atâtea decizii încheiate, concluziile sunt doar orientative
@@ -31,9 +34,10 @@ def _rows(path):
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     try:
         decisions = {r[0]: {"symbol": r[1], "vote": r[2], "uncertain": bool(r[3]),
-                            "outcome": r[4], "meta": json.loads(r[5] or "{}"), "votes": {}}
-                     for r in db.execute("SELECT id, symbol, vote, uncertain, outcome_return, meta"
-                                         " FROM decisions WHERE settled_at IS NOT NULL"
+                            "outcome": r[4], "meta": json.loads(r[5] or "{}"), "votes": {},
+                            "day": r[0][:10], "horizon": r[6]}
+                     for r in db.execute("SELECT id, symbol, vote, uncertain, outcome_return, meta,"
+                                         " horizon_days FROM decisions WHERE settled_at IS NOT NULL"
                                          " AND outcome_return IS NOT NULL")}
         for decision_id, agent, stage, vote, confidence in db.execute(
                 "SELECT decision_id, agent, stage, vote, confidence FROM votes"):
@@ -58,7 +62,8 @@ def agent_scoreboard(decisions: dict) -> dict:
             vote, confidence = stages.get("initial", stages.get("final", ("HOLD", 0.0)))
             entry = out.setdefault(agent, {"calls": 0, "hits": 0, "net": 0.0, "holds": 0,
                                            "holds_right": 0, "minority": 0, "minority_right": 0,
-                                           "bins": {}, "by_class": {}, "by_market": {}})
+                                           "bins": {}, "by_class": {}, "by_market": {},
+                                           "declared": 0.0, "brier": 0.0})
             side = SIDE[vote]
             if side == 0:
                 entry["holds"] += 1
@@ -69,6 +74,8 @@ def agent_scoreboard(decisions: dict) -> dict:
             entry["hits"] += hit
             entry["net"] += side * outcome
             if isfinite(confidence):
+                entry["declared"] += confidence
+                entry["brier"] += (confidence - (1.0 if hit else 0.0)) ** 2
                 bucket = min(int(confidence * 10), 9) / 10
                 b = entry["bins"].setdefault(bucket, [0, 0, 0.0])
                 b[0] += 1
@@ -94,6 +101,9 @@ def agent_scoreboard(decisions: dict) -> dict:
             "holds": e["holds"], "hold_correct_rate": _rate(e["holds_right"], e["holds"]),
             "minority_calls": e["minority"], "minority_right": e["minority_right"],
             "calibration_gap": gap, "calibration": bins,
+            # Pozitiv = mai încrezător decât merită (încrederea medie minus rata reală).
+            "overconfidence": (e["declared"] / e["calls"] - e["hits"] / e["calls"]) if e["calls"] else None,
+            "mean_brier": e["brier"] / e["calls"] if e["calls"] else None,
             "by_class": {k: {"calls": n, "hit_rate": h / n} for k, (n, h) in e["by_class"].items()},
             "by_market": {k: {"calls": n, "hit_rate": h / n} for k, (n, h) in e["by_market"].items()},
         }
@@ -174,6 +184,133 @@ def cost_to_value(decisions: dict, cost_per_agent: dict | None = None) -> dict:
     return result
 
 
+def _vote(stages, stage):
+    pair = stages.get(stage) or stages.get("final") or stages.get("initial")
+    return pair if pair else ("HOLD", 0.0)
+
+
+def by_regime(decisions: dict) -> dict:
+    """Rata fiecărui agent (și a înclinației consiliului) pe regimul pieței la decizie.
+
+    Regimul vine din ``meta["regime"]`` (decizii noi) sau lipsește („necunoscut”).
+    Nu se trag concluzii sub MIN_SAMPLE apeluri pe celulă: ``reliable`` spune dacă s-a atins."""
+    cells = {}
+    for d in decisions.values():
+        regime = d["meta"].get("regime") or "necunoscut"
+        out = d["outcome"]
+        for agent, stages in d["votes"].items():
+            side = SIDE[_vote(stages, "initial")[0]]
+            if side and out:
+                cell = cells.setdefault(agent, {}).setdefault(regime, [0, 0])
+                cell[0] += 1
+                cell[1] += side * out > 0
+    return {agent: {reg: {"calls": n, "hit_rate": h / n, "reliable": n >= MIN_SAMPLE}
+                    for reg, (n, h) in regs.items()} for agent, regs in cells.items()}
+
+
+def by_horizon(decisions: dict) -> dict:
+    """Înclinația consiliului (BUY minus SELL, voturi inițiale) pe orizontul deciziei."""
+    cells = {}
+    for d in decisions.values():
+        net = sum(SIDE[_vote(st, "initial")[0]] for st in d["votes"].values())
+        if net and d["outcome"]:
+            cell = cells.setdefault(d["horizon"], [0, 0, 0.0])
+            side = 1 if net > 0 else -1
+            cell[0] += 1
+            cell[1] += side * d["outcome"] > 0
+            cell[2] += side * d["outcome"]
+    return {f"{h} zile": {"calls": n, "hit_rate": hits / n, "mean_return_pct": 100 * net / n,
+                           "reliable": n >= MIN_SAMPLE} for h, (n, hits, net) in sorted(cells.items())}
+
+
+def revision_value(decisions: dict) -> dict:
+    """Înainte/după revizuire: dacă schimbarea de vot a ajutat (gol cât timp nu există dezbatere)."""
+    changed = better = worse = 0
+    for d in decisions.values():
+        out = d["outcome"]
+        if not out:
+            continue
+        for stages in d["votes"].values():
+            if "initial" in stages and "final" in stages and stages["initial"][0] != stages["final"][0]:
+                changed += 1
+                before, after = (SIDE[stages[k][0]] * out for k in ("initial", "final"))
+                better += after > before
+                worse += after < before
+    return {"changed_votes": changed, "improved": better, "worsened": worse,
+            "note": None if changed else "Nicio revizuire de vot încă (producția face o singură rundă)."}
+
+
+def penalized_weights(decisions: dict) -> dict:
+    """Ponderi calculate cu penalizarea supraîncrederii (doar raportate, nu folosite în decizii).
+
+    pondere ∝ ponderea după Brier netezit × (1 − penalizare), penalizare = supraîncrederea
+    tăiată la [0, 0,5]. Un agent care declară 0,8 și nimerește 0,5 pierde 0,3 din pondere."""
+    board = agent_scoreboard(decisions)
+    book = AgentScorebook()
+    for d in decisions.values():
+        if not d["outcome"]:
+            continue
+        for agent, stages in d["votes"].items():
+            vote, conf = _vote(stages, "initial")
+            if agent in AGENTS and vote != "HOLD" and isfinite(conf) and 0 <= conf <= 1:
+                book.record(agent, Vote(vote), conf, d["outcome"] > 0)
+    base = book.weights()
+    raw = {a: base[a] * (1 - min(0.5, max(0.0, (board.get(a, {}).get("overconfidence") or 0.0))))
+           for a in AGENTS}
+    total = sum(raw.values())
+    return {"base": base, "penalized": {a: v / total for a, v in raw.items()}}
+
+
+def _sign_test_p(wins: int, losses: int) -> float | None:
+    n = wins + losses
+    if n == 0:
+        return None
+    k = min(wins, losses)
+    return min(1.0, 2 * sum(comb(n, i) for i in range(k + 1)) / 2 ** n)
+
+
+def out_of_sample_weighting(decisions: dict, train_share: float = 0.6, min_days: int = 8) -> dict:
+    """Ponderarea după istoric bate votul egal pe zile NEVĂZUTE?
+
+    Zilele se ordonează în timp; primele ``train_share`` calculează ponderile (Brier netezit),
+    ultimele sunt de test. Pe testul nevăzut se compară direcția voturilor ponderate (pondere ×
+    încredere) cu a celor egale. ``sign_test_p`` privește doar cazurile în care cele două
+    metode au ales direcții diferite. Valid doar cu multe zile; sub ``min_days`` nu se concluzionează."""
+    days = sorted({d["day"] for d in decisions.values()})
+    if len(days) < min_days:
+        return {"evaluated": False, "days": len(days),
+                "note": f"Doar {len(days)} zile cu decizii încheiate (minim {min_days}): nu se poate "
+                        "testa ponderarea pe date nevăzute."}
+    cut = days[max(1, int(len(days) * train_share)) - 1]
+    train = {k: d for k, d in decisions.items() if d["day"] <= cut}
+    test = [d for d in decisions.values() if d["day"] > cut and d["outcome"]]
+    weights = penalized_weights(train)["base"]
+    stats = {"equal": [0, 0, 0.0], "weighted": [0, 0, 0.0]}
+    wins = losses = 0
+    for d in test:
+        eq = sum(SIDE[_vote(st, "initial")[0]] for st in d["votes"].values())
+        wt = sum(weights.get(a, 0.0) * SIDE[_vote(st, "initial")[0]] * _vote(st, "initial")[1]
+                 for a, st in d["votes"].items())
+        sides = {"equal": (eq > 0) - (eq < 0), "weighted": (wt > 0) - (wt < 0)}
+        for name, side in sides.items():
+            if side:
+                stats[name][0] += 1
+                stats[name][1] += side * d["outcome"] > 0
+                stats[name][2] += side * d["outcome"]
+        if sides["equal"] and sides["weighted"] and sides["equal"] != sides["weighted"]:
+            wins += sides["weighted"] * d["outcome"] > 0
+            losses += sides["weighted"] * d["outcome"] < 0
+    out = {name: {"calls": n, "hit_rate": _rate(h, n), "mean_return_pct": 100 * net / n if n else None}
+           for name, (n, h, net) in stats.items()}
+    p = _sign_test_p(wins, losses)
+    return {"evaluated": True, "train_days": len([x for x in days if x <= cut]),
+            "test_days": len([x for x in days if x > cut]), "weights_from_train": weights, **out,
+            "disagreements": wins + losses, "weighted_right": wins, "sign_test_p": p,
+            "verdict": ("neconcludent" if p is None or p > 0.05 or wins + losses < MIN_SAMPLE else
+                        "ponderarea bate votul egal" if wins > losses else "votul egal bate ponderarea"),
+            "note": "Deciziile din aceeași zi sunt corelate între piețe: p e optimist, tratează-l ca limită."}
+
+
 def analyse(path, cost_per_agent: dict | None = None) -> dict:
     decisions = _rows(path)
     return {"settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
@@ -181,7 +318,10 @@ def analyse(path, cost_per_agent: dict | None = None) -> dict:
             f"Doar {len(decisions)} decizii încheiate (sub {MIN_SAMPLE}): rezultatele sunt orientative, nu concluzii.",
             "agents": agent_scoreboard(decisions), "disagreement": disagreement(decisions),
             "strategies": strategy_comparison(decisions),
-            "cost_to_value": cost_to_value(decisions, cost_per_agent)}
+            "cost_to_value": cost_to_value(decisions, cost_per_agent),
+            "by_regime": by_regime(decisions), "by_horizon": by_horizon(decisions),
+            "revision": revision_value(decisions), "weights": penalized_weights(decisions),
+            "out_of_sample": out_of_sample_weighting(decisions)}
 
 
 def main(argv=None) -> int:
