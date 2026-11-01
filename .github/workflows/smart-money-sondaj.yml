@@ -20,6 +20,8 @@ jobs:
   sondeaza:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    outputs:
+      rc: ${{ steps.discover.outputs.rc }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -28,9 +30,19 @@ jobs:
       - name: Restore the history
         run: bash scripts/restore_branch.sh smart-money arhiva
       - name: Discover
+        id: discover
         env:
           SOLANATRACKER_API_KEY: ${{ secrets.SOLANATRACKER_API_KEY }}
-        run: python -m src.bnd.smart_money_discovery --discover --out arhiva
+        run: |
+          # Codul de ieșire se păstrează: rezultatul se salvează oricum, verdictul final îl reflectă.
+          rc=0
+          python -m src.bnd.smart_money_discovery --discover --out arhiva || rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Descoperire Smart-Money: cod de ieșire $rc (0 = ok/parțial, 2 = fără date, 3 = cheie lipsă)"
+            echo "Candidații NU sunt walleturi validate și nu sunt „insideri”: vezi coloana status din descoperite.csv."
+            cat arhiva/smart_money/descoperire.json 2>/dev/null || true
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: bnd-sondaj-${{ github.run_id }}
@@ -43,6 +55,7 @@ jobs:
   # Separate job: the write token never runs project code.
   publica:
     needs: sondeaza
+    if: always() && needs.sondeaza.result != 'cancelled' && needs.sondeaza.result != 'skipped'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -50,6 +63,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
+      DISCOVER_RC: ${{ needs.sondeaza.outputs.rc }}
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         continue-on-error: true
@@ -82,3 +96,12 @@ jobs:
             sleep $((attempt * 5))
           done
           [ "$pushed" = 1 ] || { echo "::error::Nu am putut salva pe ramură după 3 încercări."; exit 1; }
+      - name: Final verdict (discovery result, separate from publishing)
+        if: always()
+        run: |
+          case "${DISCOVER_RC:-missing}" in
+            0) echo "Descoperire încheiată (vezi outcome: ok sau partial)." ;;
+            2) echo "::error::Descoperirea nu a obținut date (API indisponibil, 429 sau răspuns invalid)."; exit 1 ;;
+            3) echo "::error::Lipsește SOLANATRACKER_API_KEY."; exit 1 ;;
+            *) echo "::error::Descoperirea s-a oprit neașteptat (cod ${DISCOVER_RC:-lipsă})."; exit 1 ;;
+          esac

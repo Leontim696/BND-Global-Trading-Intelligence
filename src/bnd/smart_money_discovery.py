@@ -38,6 +38,8 @@ def get(path: str, key: str, timeout: float = 30.0) -> tuple[int, object]:
             body = response.read(8_000_000)
             status = response.status
     except HTTPError as exc:
+        if exc.code == 429:                                # pauza cerută de sursă, ca text: "retry_after=7"
+            return 429, f"retry_after={exc.headers.get('Retry-After', '') if exc.headers else ''}"
         return exc.code, exc.read(400).decode("utf-8", "replace")
     except (URLError, TimeoutError, OSError) as exc:
         return 0, type(exc).__name__
@@ -68,6 +70,28 @@ def shape(payload) -> dict:
                 info["item_keys"] = keys(payload[name][0])
         return info
     return {"type": type(payload).__name__, "text": str(payload)[:200]}
+
+
+MAX_WAIT = 30.0
+PAUSE = 1.2
+RATE_ATTEMPTS = 3
+MAX_CONSECUTIVE_ERRORS = 5          # după atâtea erori la rând oprim rularea (cheie revocată, API căzut, limită epuizată)
+
+
+def fetch_retry(fetch, path: str, key: str, stats: dict):
+    """Ca `fetch`, dar la HTTP 429 așteaptă (Retry-After plafonat) și reîncearcă de până la 3 ori."""
+    for attempt in range(1, RATE_ATTEMPTS + 1):
+        code, payload = fetch(path, key)
+        if code != 429:
+            return code, payload
+        stats["rate_limited"] = stats.get("rate_limited", 0) + 1
+        if attempt < RATE_ATTEMPTS:
+            try:
+                wait = float(str(payload).split("=", 1)[1])
+            except (IndexError, ValueError):
+                wait = 2.0 * attempt
+            sleep(min(max(wait, 0.0), MAX_WAIT))
+    return 429, payload
 
 
 def probe(key: str, fetch=get, pause: float = 1.2) -> dict:
@@ -103,7 +127,14 @@ MIN_HITS = 1                         # un singur câștig nu dovedește nimic si
 INSIDER_HITS = 3                     # primii cumpărători câștigători pe cel puțin 3 monede = tipar de intrare timpurie
 ENRICH_MAX = 30
 HEADER = ["time", "wallet", "hits", "tokens_seen", "best_token_roi", "profit_in_batch", "avg_invested", "tokens",
-          "trades", "win_rate", "avg_buy_usd", "realized_pnl_usd", "roi", "passes", "tags", "reasons"]
+          "trades", "win_rate", "avg_buy_usd", "realized_pnl_usd", "roi", "passes", "tags", "reasons", "status"]
+# status (coloană adăugată la sfârșit; rândurile vechi o au goală):
+#   validat           = a trecut TOATE filtrele pe tot istoricul (/pnl): monede, tranzacții, rată de succes, profit, ROI...
+#   candidat          = a câștigat mult pe o monedă, dar istoricul complet NU trece filtrele (rămâne doar de urmărit înainte în timp)
+#   date_insuficiente = istoricul complet nu a putut fi citit sau îi lipsesc câmpuri esențiale; nu se poate judeca
+# Nicio rută din descoperire nu atribuie „insider”: first-buyers nu dă momentul cumpărăturii față de lansare.
+EARLY_HINT_TAG = "indiciu_intrare_timpurie"         # ≥3 monede cu câștig mare ca prim cumpărător; DOAR indiciu, nu dovadă
+CORE_FIELDS = ("tokens", "trades", "win_rate", "realized_pnl_usd")
 
 
 def _items(payload) -> list:
@@ -154,13 +185,22 @@ def winners_of(buyers: list) -> dict:
     return out
 
 
-def discover(key: str, fetch=get, pause: float = 1.2, now=None) -> dict:
+def status_of(stats: dict | None, verdict: dict) -> str:
+    if not stats or any(stats.get(k) is None for k in CORE_FIELDS):
+        return "date_insuficiente"
+    return "validat" if verdict["passes"] else "candidat"
+
+
+def discover(key: str, fetch=None, pause: float = 1.2, now=None) -> dict:
     from datetime import datetime, timezone
+
     from .smart_money import assess, normalise
     now = now or datetime.now(timezone.utc)
-    lists, errors = {}, []
+    fetch = fetch or get                   # `get` citit la apel: poate fi înlocuit în teste
+    lists, errors, rate = {}, [], {}
+    consecutive, aborted = 0, False
     for path in LISTS:
-        code, payload = fetch(path, key)
+        code, payload = fetch_retry(fetch, path, key, rate)
         if code == 200:
             lists[path] = _items(payload)
         else:
@@ -169,29 +209,50 @@ def discover(key: str, fetch=get, pause: float = 1.2, now=None) -> dict:
     mints = pick_tokens(lists)
     hits, seen = {}, 0
     for mint in mints:
-        code, payload = fetch(f"/first-buyers/{mint}", key)
+        code, payload = fetch_retry(fetch, f"/first-buyers/{mint}", key, rate)
         sleep(pause)
         if code != 200:
             errors.append(f"first-buyers: HTTP {code}")
+            consecutive += 1
+            if consecutive >= MAX_CONSECUTIVE_ERRORS:
+                errors.append(f"oprit după {consecutive} erori la rând (nu epuizăm limita API-ului)")
+                aborted = True
+                break
             continue
+        consecutive = 0
         seen += 1
         for wallet, (roi, profit, invested) in winners_of(_items(payload)).items():
             hits.setdefault(wallet, []).append((roi, profit, invested))
     candidates = {w: v for w, v in hits.items() if len(v) >= MIN_HITS}   # cele repetate (hits mai mare) primele
     rows = []
     for wallet, v in sorted(candidates.items(), key=lambda kv: (-len(kv[1]), -sum(p for _, p, _ in kv[1])))[:ENRICH_MAX]:
-        code, detail = fetch(f"/pnl/{wallet}", key)
+        if aborted:
+            break
+        code, detail = fetch_retry(fetch, f"/pnl/{wallet}", key, rate)
         sleep(pause)
+        if code != 200:
+            errors.append(f"pnl {wallet[:6]}…: HTTP {code}")
         stats = normalise({**detail, "wallet": wallet}) if code == 200 and isinstance(detail, dict) else {"wallet": wallet}
         verdict = assess({**(stats or {}), "early_share": None})
-        tags = ["tipar_insider"] if len(v) >= INSIDER_HITS else []
+        state = status_of(stats, verdict)
+        if state == "date_insuficiente":
+            missing = [k for k in CORE_FIELDS if not stats or stats.get(k) is None]
+            verdict = {**verdict, "passes": False, "reasons": verdict["reasons"] + ["date insuficiente: lipsesc " + ",".join(missing)]}
+        tags = [EARLY_HINT_TAG] if len(v) >= INSIDER_HITS else []
         rows.append([now.isoformat(timespec="minutes"), wallet, len(v), seen, f"{max(r for r, _, _ in v):.1f}",
                      f"{sum(p for _, p, _ in v):.0f}", f"{sum(i for _, _, i in v) / len(v):.0f}"]
                     + [("" if (stats or {}).get(k) is None else stats[k]) for k in
                        ("tokens", "trades", "win_rate", "avg_buy_usd", "realized_pnl_usd", "roi")]
-                    + [int(verdict["passes"]), ";".join(tags), "; ".join(verdict["reasons"])])
-    return {"tokens_checked": seen, "wallets_with_hits": len(hits), "candidates": len(candidates),
-            "rows": rows, "errors": errors[:10]}
+                    + [int(verdict["passes"]), ";".join(tags), "; ".join(verdict["reasons"]), state])
+    if not lists or seen == 0:
+        outcome = "failed"                       # nicio listă citită sau nicio monedă cercetată = nu avem date
+    elif aborted or errors or rate.get("rate_limited"):
+        outcome = "partial"
+    else:
+        outcome = "ok"
+    return {"outcome": outcome, "tokens_checked": seen, "wallets_with_hits": len(hits), "candidates": len(candidates),
+            "validated": sum(r[-1] == "validat" for r in rows), "insufficient": sum(r[-1] == "date_insuficiente" for r in rows),
+            "rate_limited": rate.get("rate_limited", 0), "aborted": aborted, "rows": rows, "errors": errors[:10]}
 
 
 def main(argv=None) -> int:
@@ -202,8 +263,8 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     key = os.getenv("SOLANATRACKER_API_KEY")
     if not key:
-        print("::warning::fără SOLANATRACKER_API_KEY")
-        return 0
+        print("::error::Lipsește SOLANATRACKER_API_KEY: nu s-a descoperit nimic.")
+        return 3
     out = Path(args.out) / "smart_money"
     out.mkdir(parents=True, exist_ok=True)
     if args.probe:
@@ -212,12 +273,17 @@ def main(argv=None) -> int:
         print(json.dumps({p: r["status"] for p, r in report.items()}, ensure_ascii=False))
     if args.discover:
         from .context_data import merge_csv
-        result = discover(key)
+        result = discover(key, pause=PAUSE)
         path = out / "descoperite.csv"
-        added = merge_csv(path, ["id"] + HEADER, [[f"{r[1]}|{r[0][:10]}"] + r for r in result["rows"]])
+        added = merge_csv(path, ["id"] + HEADER, [[f"{r[1]}|{r[0][:10]}"] + r for r in result["rows"]])    # id = wallet|zi: fără dubluri
         (out / "descoperire.json").write_text(json.dumps({k: v for k, v in result.items() if k != "rows"} | {"added": added},
                                                          indent=2, ensure_ascii=False), encoding="utf-8")
         print(json.dumps({k: v for k, v in result.items() if k != "rows"}, ensure_ascii=False))
+        if result["outcome"] == "failed":
+            print("::error::Descoperirea nu a obținut date (liste necitite sau nicio monedă cercetată).")
+            return 2
+        if result["outcome"] == "partial":
+            print(f"::warning::Descoperire parțială: {len(result['errors'])} erori, {result['rate_limited']} limitări 429.")
     return 0
 
 
