@@ -245,11 +245,14 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
-            balance: dict | None = None, rls=None, unic=None) -> dict:
+            balance: dict | None = None, rls=None, unic=None, exposure: dict | None = None) -> dict:
     now = now or datetime.now(timezone.utc)
     folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic}
     prices = (quotes or {}).get("quotes", {})
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
+    for account in accounts:
+        if account["key"] == "unic" and account.get("exists") and exposure and "error" not in exposure:
+            account["exposure"] = exposure
     council = read_council(council, balance, now)
     alerts = alerts_from(accounts, runs, now)
     quotes_time = (quotes or {}).get("time")
@@ -305,6 +308,7 @@ def main(argv=None) -> int:
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
     parser.add_argument("--balance", help="JSON de la openrouter_balance (soldul real al cheii)")
+    parser.add_argument("--exposure", help="JSON de la exposure (expuneri corelate, contul unic)")
     parser.add_argument("--top50", help="folderul cu CSV-urile top 50 cripto (arhiva)")
     parser.add_argument("--template", required=True)
     parser.add_argument("--out", required=True)
@@ -314,8 +318,9 @@ def main(argv=None) -> int:
         quotes = json.loads(Path(args.quotes).read_text()) if args.quotes and Path(args.quotes).exists() else None
         runs = json.loads(Path(args.runs).read_text()) if args.runs and Path(args.runs).exists() else None
         balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
+        exposure = json.loads(Path(args.exposure).read_text()) if args.exposure and Path(args.exposure).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
-                       top50=args.top50, balance=balance, rls=args.rls, unic=args.unic)
+                       top50=args.top50, balance=balance, rls=args.rls, unic=args.unic, exposure=exposure)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

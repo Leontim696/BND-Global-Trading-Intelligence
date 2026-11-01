@@ -194,7 +194,20 @@ function account(a) {
     <div><span class="label">Tranzacții</span><b>${a.fills}</b></div>
     <div><span class="label">Drawdown</span><b>${a.drawdown_pct ? "−" + money2(a.drawdown_pct) + "%" : "0,00%"}</b></div>
     <div><span class="label">Costuri plătite</span><b>${money2(a.costs_total)}</b></div></div>
-    <h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}`;
+    <h2>Poziții</h2>${pos}<h2>Comenzi pentru mâine</h2>${ord}${exposureBlock(a.exposure)}`;
+}
+
+function exposureBlock(x) {
+  if (!x) return "";
+  const part = (title, r) => {
+    if (!r || !r.positions) return `<p class="sub">${title}: nicio poziție.</p>`;
+    if (r.note) return `<p class="sub">${title}: ${esc(r.note)}</p>`;
+    const rows = r.clusters.filter(c => c.members.length > 1).map(c => `<tr><td>${c.members.map(esc).join(", ")}</td><td>${Math.round(100 * c.gross)}%</td><td>${c.risk_share == null ? "–" : Math.round(100 * c.risk_share) + "%"}</td></tr>`).join("");
+    return `<p class="sub">${title}: ${r.positions} poziții, expunere brută ${Math.round(100 * r.gross)}%, volatilitate zilnică ~${r.portfolio_vol_daily_pct == null ? "–" : r.portfolio_vol_daily_pct.toFixed(2) + "%"}. ${r.warnings.length ? "" : "Niciun grup corelat peste prag."}${r.missing_data && r.missing_data.length ? " Fără istoric de preț pentru " + r.missing_data.length + " piețe (neincluse)." : ""}</p>
+      ${r.warnings.map(w => `<p class="loss">${esc(w)}</p>`).join("")}
+      ${rows ? `<div class="scroll"><table><tr><th>Grup care se mișcă împreună</th><th>Din capital</th><th>Din risc</th></tr>${rows}</table></div>` : ""}`;
+  };
+  return `<h2>Expuneri corelate</h2>${part("Acum", x.current)}${part("Planificat", x.planned)}<p class="sub">Doar informare: nu schimbă nicio poziție.</p>`;
 }
 
 const euro = (v, acc) => DATA.fx && acc.currency === "USD" ? `<div class="sub">≈ ${money(v / DATA.fx.eurusd, "€")}${DATA.fx.usdron ? " · " + money(v * DATA.fx.usdron, "lei") : ""}</div>` : "";
