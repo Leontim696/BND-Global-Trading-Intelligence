@@ -1,4 +1,4 @@
-# Consiliul AI în umbră, 2026-11-01 05:34 UTC
+# Consiliul AI în umbră, 2026-11-01 07:07 UTC
 
 Cei 5 agenți votează independent; **nu se tranzacționează nimic**, doar notăm și comparăm după 5 zile.
 
@@ -8,638 +8,792 @@ Preț 755.7200 (închidere 2026-10-30); regula simplă a botului: cumpără; cos
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.86 | Simulare pentru SP500. |
-| claude | HOLD | 0.77 | Simulare pentru SP500. |
-| gemini | HOLD | 0.72 | Simulare pentru SP500. |
-| grok | SELL | 0.78 | Simulare pentru SP500. |
-| deepseek | HOLD | 0.72 | Simulare pentru SP500. |
+| gpt | SELL | 0.68 | Simulare pentru SP500. |
+| claude | HOLD | 0.63 | Simulare pentru SP500. |
+| gemini | BUY | 0.63 | Simulare pentru SP500. |
+| grok | SELL | 0.80 | Simulare pentru SP500. |
+| deepseek | BUY | 0.64 | Simulare pentru SP500. |
 
 ## NASDAQ100: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 690.4900 (închidere 2026-10-30); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.82 | Simulare pentru NASDAQ100. |
-| claude | BUY | 0.65 | Simulare pentru NASDAQ100. |
-| gemini | BUY | 0.62 | Simulare pentru NASDAQ100. |
-| grok | HOLD | 0.85 | Simulare pentru NASDAQ100. |
-| deepseek | BUY | 0.63 | Simulare pentru NASDAQ100. |
+| gpt | HOLD | 0.71 | Simulare pentru NASDAQ100. |
+| claude | HOLD | 0.64 | Simulare pentru NASDAQ100. |
+| gemini | BUY | 0.74 | Simulare pentru NASDAQ100. |
+| grok | BUY | 0.62 | Simulare pentru NASDAQ100. |
+| deepseek | BUY | 0.82 | Simulare pentru NASDAQ100. |
 
-## GOLD: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## GOLD: **VINDE** (înclină spre vânzare)
 Preț 355.7800 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.74 | Simulare pentru GOLD. |
-| claude | HOLD | 0.66 | Simulare pentru GOLD. |
-| gemini | HOLD | 0.85 | Simulare pentru GOLD. |
-| grok | BUY | 0.70 | Simulare pentru GOLD. |
-| deepseek | SELL | 0.69 | Simulare pentru GOLD. |
+| gpt | HOLD | 0.82 | Simulare pentru GOLD. |
+| claude | SELL | 0.70 | Simulare pentru GOLD. |
+| gemini | SELL | 0.83 | Simulare pentru GOLD. |
+| grok | HOLD | 0.66 | Simulare pentru GOLD. |
+| deepseek | SELL | 0.80 | Simulare pentru GOLD. |
 
-## SILVER: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## SILVER: **NU TRANZACȚIONA** (fără înclinație)
 Preț 44.6000 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.67 | Simulare pentru SILVER. |
-| claude | BUY | 0.76 | Simulare pentru SILVER. |
-| gemini | SELL | 0.74 | Simulare pentru SILVER. |
-| grok | HOLD | 0.75 | Simulare pentru SILVER. |
-| deepseek | BUY | 0.65 | Simulare pentru SILVER. |
+| gpt | HOLD | 0.75 | Simulare pentru SILVER. |
+| claude | BUY | 0.61 | Simulare pentru SILVER. |
+| gemini | SELL | 0.60 | Simulare pentru SILVER. |
+| grok | BUY | 0.90 | Simulare pentru SILVER. |
+| deepseek | SELL | 0.60 | Simulare pentru SILVER. |
 
 ## CRUDE_OIL: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 168.8300 (închidere 2026-10-30); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.70 | Simulare pentru CRUDE_OIL. |
-| claude | SELL | 0.71 | Simulare pentru CRUDE_OIL. |
-| gemini | BUY | 0.87 | Simulare pentru CRUDE_OIL. |
-| grok | HOLD | 0.74 | Simulare pentru CRUDE_OIL. |
-| deepseek | HOLD | 0.62 | Simulare pentru CRUDE_OIL. |
+| gpt | SELL | 0.69 | Simulare pentru CRUDE_OIL. |
+| claude | BUY | 0.68 | Simulare pentru CRUDE_OIL. |
+| gemini | HOLD | 0.85 | Simulare pentru CRUDE_OIL. |
+| grok | BUY | 0.87 | Simulare pentru CRUDE_OIL. |
+| deepseek | HOLD | 0.87 | Simulare pentru CRUDE_OIL. |
 
-## BITCOIN: **VINDE** (înclină spre vânzare)
-Preț 77198.2109 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+## BITCOIN: **NU TRANZACȚIONA** (fără înclinație)
+Preț 77434.7500 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Simulare pentru BITCOIN. |
-| claude | HOLD | 0.66 | Simulare pentru BITCOIN. |
-| gemini | SELL | 0.65 | Simulare pentru BITCOIN. |
-| grok | SELL | 0.77 | Simulare pentru BITCOIN. |
-| deepseek | SELL | 0.89 | Simulare pentru BITCOIN. |
+| gpt | BUY | 0.62 | Simulare pentru BITCOIN. |
+| claude | SELL | 0.66 | Simulare pentru BITCOIN. |
+| gemini | SELL | 0.69 | Simulare pentru BITCOIN. |
+| grok | BUY | 0.88 | Simulare pentru BITCOIN. |
+| deepseek | HOLD | 0.68 | Simulare pentru BITCOIN. |
 
 ## ETHEREUM: **CUMPĂRĂ** (înclină spre cumpărare)
-Preț 2241.0544 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+Preț 2252.7478 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.78 | Simulare pentru ETHEREUM. |
-| claude | SELL | 0.80 | Simulare pentru ETHEREUM. |
-| gemini | BUY | 0.76 | Simulare pentru ETHEREUM. |
-| grok | SELL | 0.77 | Simulare pentru ETHEREUM. |
-| deepseek | BUY | 0.62 | Simulare pentru ETHEREUM. |
+| gpt | SELL | 0.76 | Simulare pentru ETHEREUM. |
+| claude | BUY | 0.70 | Simulare pentru ETHEREUM. |
+| gemini | BUY | 0.73 | Simulare pentru ETHEREUM. |
+| grok | BUY | 0.74 | Simulare pentru ETHEREUM. |
+| deepseek | BUY | 0.71 | Simulare pentru ETHEREUM. |
 
 ## EURUSD: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 1.1183 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.73 | Simulare pentru EURUSD. |
-| claude | SELL | 0.74 | Simulare pentru EURUSD. |
-| gemini | HOLD | 0.78 | Simulare pentru EURUSD. |
-| grok | BUY | 0.67 | Simulare pentru EURUSD. |
-| deepseek | HOLD | 0.88 | Simulare pentru EURUSD. |
+| gpt | HOLD | 0.81 | Simulare pentru EURUSD. |
+| claude | SELL | 0.62 | Simulare pentru EURUSD. |
+| gemini | BUY | 0.86 | Simulare pentru EURUSD. |
+| grok | HOLD | 0.67 | Simulare pentru EURUSD. |
+| deepseek | SELL | 0.73 | Simulare pentru EURUSD. |
 
-## USDJPY: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## USDJPY: **NU TRANZACȚIONA** (fără înclinație)
 Preț 157.8040 (închidere 2026-10-30); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Simulare pentru USDJPY. |
-| claude | BUY | 0.62 | Simulare pentru USDJPY. |
-| gemini | BUY | 0.86 | Simulare pentru USDJPY. |
-| grok | SELL | 0.80 | Simulare pentru USDJPY. |
-| deepseek | HOLD | 0.73 | Simulare pentru USDJPY. |
+| gpt | HOLD | 0.81 | Simulare pentru USDJPY. |
+| claude | BUY | 0.86 | Simulare pentru USDJPY. |
+| gemini | HOLD | 0.68 | Simulare pentru USDJPY. |
+| grok | HOLD | 0.75 | Simulare pentru USDJPY. |
+| deepseek | SELL | 0.67 | Simulare pentru USDJPY. |
 
-## US10Y_NOTE: **NU TRANZACȚIONA** (fără înclinație)
+## US10Y_NOTE: **VINDE** (înclină spre vânzare)
 Preț 91.7600 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.79 | Simulare pentru US10Y_NOTE. |
-| claude | HOLD | 0.72 | Simulare pentru US10Y_NOTE. |
-| gemini | BUY | 0.72 | Simulare pentru US10Y_NOTE. |
-| grok | HOLD | 0.78 | Simulare pentru US10Y_NOTE. |
-| deepseek | HOLD | 0.73 | Simulare pentru US10Y_NOTE. |
+| gpt | SELL | 0.83 | Simulare pentru US10Y_NOTE. |
+| claude | BUY | 0.75 | Simulare pentru US10Y_NOTE. |
+| gemini | SELL | 0.79 | Simulare pentru US10Y_NOTE. |
+| grok | SELL | 0.83 | Simulare pentru US10Y_NOTE. |
+| deepseek | BUY | 0.73 | Simulare pentru US10Y_NOTE. |
 
-## SOLANA: **CUMPĂRĂ** (înclină spre cumpărare)
-Preț 96.2188 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | BUY | 0.89 | Simulare pentru SOLANA. |
-| claude | BUY | 0.64 | Simulare pentru SOLANA. |
-| gemini | BUY | 0.84 | Simulare pentru SOLANA. |
-| grok | BUY | 0.72 | Simulare pentru SOLANA. |
-| deepseek | SELL | 0.64 | Simulare pentru SOLANA. |
-
-## BNB: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 703.3541 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+## SOLANA: **VINDE** (înclină spre vânzare)
+Preț 95.3482 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.67 | Simulare pentru BNB. |
-| claude | BUY | 0.79 | Simulare pentru BNB. |
-| gemini | SELL | 0.61 | Simulare pentru BNB. |
-| grok | BUY | 0.65 | Simulare pentru BNB. |
-| deepseek | HOLD | 0.64 | Simulare pentru BNB. |
+| gpt | SELL | 0.80 | Simulare pentru SOLANA. |
+| claude | HOLD | 0.63 | Simulare pentru SOLANA. |
+| gemini | SELL | 0.68 | Simulare pentru SOLANA. |
+| grok | SELL | 0.75 | Simulare pentru SOLANA. |
+| deepseek | SELL | 0.75 | Simulare pentru SOLANA. |
 
-## XRP: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 1.2544 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+## BNB: **CUMPĂRĂ** (înclină spre cumpărare)
+Preț 702.6133 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.71 | Simulare pentru XRP. |
-| claude | HOLD | 0.64 | Simulare pentru XRP. |
-| gemini | HOLD | 0.71 | Simulare pentru XRP. |
-| grok | SELL | 0.85 | Simulare pentru XRP. |
-| deepseek | HOLD | 0.84 | Simulare pentru XRP. |
+| gpt | BUY | 0.63 | Simulare pentru BNB. |
+| claude | BUY | 0.73 | Simulare pentru BNB. |
+| gemini | BUY | 0.77 | Simulare pentru BNB. |
+| grok | HOLD | 0.78 | Simulare pentru BNB. |
+| deepseek | BUY | 0.61 | Simulare pentru BNB. |
+
+## XRP: **CUMPĂRĂ** (înclină spre cumpărare)
+Preț 1.2501 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | SELL | 0.84 | Simulare pentru XRP. |
+| claude | BUY | 0.79 | Simulare pentru XRP. |
+| gemini | SELL | 0.65 | Simulare pentru XRP. |
+| grok | BUY | 0.73 | Simulare pentru XRP. |
+| deepseek | BUY | 0.75 | Simulare pentru XRP. |
 
 ## TRX: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.3038 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.87 | Simulare pentru TRX. |
-| claude | HOLD | 0.83 | Simulare pentru TRX. |
-| gemini | BUY | 0.80 | Simulare pentru TRX. |
-| grok | SELL | 0.80 | Simulare pentru TRX. |
-| deepseek | BUY | 0.64 | Simulare pentru TRX. |
+| gpt | SELL | 0.76 | Simulare pentru TRX. |
+| claude | BUY | 0.65 | Simulare pentru TRX. |
+| gemini | BUY | 0.77 | Simulare pentru TRX. |
+| grok | BUY | 0.83 | Simulare pentru TRX. |
+| deepseek | SELL | 0.83 | Simulare pentru TRX. |
 
 ## DOGE: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.0756 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.66 | Simulare pentru DOGE. |
-| claude | BUY | 0.62 | Simulare pentru DOGE. |
-| gemini | HOLD | 0.74 | Simulare pentru DOGE. |
-| grok | BUY | 0.80 | Simulare pentru DOGE. |
-| deepseek | BUY | 0.84 | Simulare pentru DOGE. |
+| gpt | BUY | 0.70 | Simulare pentru DOGE. |
+| claude | HOLD | 0.89 | Simulare pentru DOGE. |
+| gemini | BUY | 0.88 | Simulare pentru DOGE. |
+| grok | BUY | 0.90 | Simulare pentru DOGE. |
+| deepseek | HOLD | 0.89 | Simulare pentru DOGE. |
 
-## ADA: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## ADA: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.1930 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.68 | Simulare pentru ADA. |
-| claude | BUY | 0.70 | Simulare pentru ADA. |
-| gemini | HOLD | 0.86 | Simulare pentru ADA. |
-| grok | HOLD | 0.67 | Simulare pentru ADA. |
-| deepseek | HOLD | 0.84 | Simulare pentru ADA. |
+| gpt | HOLD | 0.75 | Simulare pentru ADA. |
+| claude | SELL | 0.68 | Simulare pentru ADA. |
+| gemini | BUY | 0.70 | Simulare pentru ADA. |
+| grok | BUY | 0.86 | Simulare pentru ADA. |
+| deepseek | SELL | 0.83 | Simulare pentru ADA. |
 
 ## LINK: **VINDE** (înclină spre vânzare)
 Preț 11.6700 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.75 | Simulare pentru LINK. |
-| claude | BUY | 0.69 | Simulare pentru LINK. |
-| gemini | SELL | 0.85 | Simulare pentru LINK. |
-| grok | SELL | 0.83 | Simulare pentru LINK. |
-| deepseek | BUY | 0.74 | Simulare pentru LINK. |
+| gpt | SELL | 0.83 | Simulare pentru LINK. |
+| claude | HOLD | 0.88 | Simulare pentru LINK. |
+| gemini | SELL | 0.87 | Simulare pentru LINK. |
+| grok | HOLD | 0.82 | Simulare pentru LINK. |
+| deepseek | SELL | 0.78 | Simulare pentru LINK. |
 
-## AVAX: **NU TRANZACȚIONA** (fără înclinație)
+## AVAX: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 8.5790 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.86 | Simulare pentru AVAX. |
-| claude | HOLD | 0.83 | Simulare pentru AVAX. |
-| gemini | SELL | 0.85 | Simulare pentru AVAX. |
-| grok | BUY | 0.81 | Simulare pentru AVAX. |
-| deepseek | SELL | 0.68 | Simulare pentru AVAX. |
+| gpt | BUY | 0.68 | Simulare pentru AVAX. |
+| claude | BUY | 0.70 | Simulare pentru AVAX. |
+| gemini | BUY | 0.83 | Simulare pentru AVAX. |
+| grok | SELL | 0.61 | Simulare pentru AVAX. |
+| deepseek | SELL | 0.85 | Simulare pentru AVAX. |
 
-## XLM: **VINDE** (înclină spre vânzare)
+## XLM: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.1695 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.67 | Simulare pentru XLM. |
-| claude | HOLD | 0.85 | Simulare pentru XLM. |
-| gemini | SELL | 0.76 | Simulare pentru XLM. |
-| grok | SELL | 0.74 | Simulare pentru XLM. |
-| deepseek | SELL | 0.79 | Simulare pentru XLM. |
+| gpt | BUY | 0.77 | Simulare pentru XLM. |
+| claude | SELL | 0.78 | Simulare pentru XLM. |
+| gemini | SELL | 0.61 | Simulare pentru XLM. |
+| grok | HOLD | 0.69 | Simulare pentru XLM. |
+| deepseek | BUY | 0.67 | Simulare pentru XLM. |
 
 ## SUI: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 0.8994 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.63 | Simulare pentru SUI. |
-| claude | HOLD | 0.88 | Simulare pentru SUI. |
-| gemini | HOLD | 0.89 | Simulare pentru SUI. |
-| grok | HOLD | 0.85 | Simulare pentru SUI. |
-| deepseek | HOLD | 0.75 | Simulare pentru SUI. |
+| gpt | SELL | 0.78 | Simulare pentru SUI. |
+| claude | BUY | 0.86 | Simulare pentru SUI. |
+| gemini | HOLD | 0.65 | Simulare pentru SUI. |
+| grok | HOLD | 0.84 | Simulare pentru SUI. |
+| deepseek | BUY | 0.64 | Simulare pentru SUI. |
 
-## TON: **VINDE** (înclină spre vânzare)
+## TON: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 1.6000 (închidere 2026-06-30); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.74 | Simulare pentru TON. |
-| claude | SELL | 0.68 | Simulare pentru TON. |
+| gpt | SELL | 0.77 | Simulare pentru TON. |
+| claude | BUY | 0.83 | Simulare pentru TON. |
 | gemini | SELL | 0.85 | Simulare pentru TON. |
-| grok | SELL | 0.62 | Simulare pentru TON. |
-| deepseek | BUY | 0.89 | Simulare pentru TON. |
+| grok | BUY | 0.70 | Simulare pentru TON. |
+| deepseek | BUY | 0.76 | Simulare pentru TON. |
 
-## SHIB: **NU TRANZACȚIONA** (înclină spre vânzare)
+## SHIB: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 0.0000 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.88 | Simulare pentru SHIB. |
-| claude | SELL | 0.68 | Simulare pentru SHIB. |
-| gemini | SELL | 0.84 | Simulare pentru SHIB. |
-| grok | BUY | 0.75 | Simulare pentru SHIB. |
-| deepseek | HOLD | 0.76 | Simulare pentru SHIB. |
+| gpt | SELL | 0.73 | Simulare pentru SHIB. |
+| claude | HOLD | 0.66 | Simulare pentru SHIB. |
+| gemini | BUY | 0.84 | Simulare pentru SHIB. |
+| grok | HOLD | 0.62 | Simulare pentru SHIB. |
+| deepseek | BUY | 0.66 | Simulare pentru SHIB. |
 
 ## BCH: **VINDE** (înclină spre vânzare)
 Preț 285.3000 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.88 | Simulare pentru BCH. |
-| claude | SELL | 0.82 | Simulare pentru BCH. |
-| gemini | HOLD | 0.75 | Simulare pentru BCH. |
-| grok | SELL | 0.86 | Simulare pentru BCH. |
-| deepseek | SELL | 0.86 | Simulare pentru BCH. |
+| gpt | BUY | 0.86 | Simulare pentru BCH. |
+| claude | SELL | 0.76 | Simulare pentru BCH. |
+| gemini | BUY | 0.84 | Simulare pentru BCH. |
+| grok | SELL | 0.76 | Simulare pentru BCH. |
+| deepseek | SELL | 0.81 | Simulare pentru BCH. |
 
 ## LTC: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 55.7800 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.87 | Simulare pentru LTC. |
-| claude | SELL | 0.70 | Simulare pentru LTC. |
-| gemini | SELL | 0.63 | Simulare pentru LTC. |
-| grok | HOLD | 0.87 | Simulare pentru LTC. |
-| deepseek | HOLD | 0.83 | Simulare pentru LTC. |
+| gpt | HOLD | 0.64 | Simulare pentru LTC. |
+| claude | HOLD | 0.82 | Simulare pentru LTC. |
+| gemini | SELL | 0.79 | Simulare pentru LTC. |
+| grok | SELL | 0.65 | Simulare pentru LTC. |
+| deepseek | HOLD | 0.60 | Simulare pentru LTC. |
 
 ## DOT: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 0.9470 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.77 | Simulare pentru DOT. |
-| claude | HOLD | 0.82 | Simulare pentru DOT. |
+| gpt | HOLD | 0.70 | Simulare pentru DOT. |
+| claude | HOLD | 0.78 | Simulare pentru DOT. |
 | gemini | BUY | 0.64 | Simulare pentru DOT. |
-| grok | SELL | 0.70 | Simulare pentru DOT. |
-| deepseek | HOLD | 0.85 | Simulare pentru DOT. |
+| grok | HOLD | 0.77 | Simulare pentru DOT. |
+| deepseek | BUY | 0.77 | Simulare pentru DOT. |
 
-## HBAR: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## HBAR: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.0719 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.62 | Simulare pentru HBAR. |
-| claude | SELL | 0.63 | Simulare pentru HBAR. |
-| gemini | HOLD | 0.66 | Simulare pentru HBAR. |
-| grok | BUY | 0.71 | Simulare pentru HBAR. |
-| deepseek | HOLD | 0.69 | Simulare pentru HBAR. |
+| gpt | BUY | 0.81 | Simulare pentru HBAR. |
+| claude | SELL | 0.72 | Simulare pentru HBAR. |
+| gemini | BUY | 0.82 | Simulare pentru HBAR. |
+| grok | BUY | 0.67 | Simulare pentru HBAR. |
+| deepseek | SELL | 0.72 | Simulare pentru HBAR. |
 
-## UNI: **VINDE** (înclină spre vânzare)
+## UNI: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 7.1030 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.72 | Simulare pentru UNI. |
-| claude | HOLD | 0.80 | Simulare pentru UNI. |
-| gemini | SELL | 0.70 | Simulare pentru UNI. |
-| grok | BUY | 0.78 | Simulare pentru UNI. |
-| deepseek | SELL | 0.62 | Simulare pentru UNI. |
+| gpt | HOLD | 0.63 | Simulare pentru UNI. |
+| claude | HOLD | 0.84 | Simulare pentru UNI. |
+| gemini | HOLD | 0.70 | Simulare pentru UNI. |
+| grok | SELL | 0.61 | Simulare pentru UNI. |
+| deepseek | SELL | 0.90 | Simulare pentru UNI. |
 
-## PEPE: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## PEPE: **VINDE** (înclină spre vânzare)
 Preț 0.0000 (închidere 2026-10-31); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
 | gpt | HOLD | 0.63 | Simulare pentru PEPE. |
-| claude | HOLD | 0.61 | Simulare pentru PEPE. |
-| gemini | BUY | 0.79 | Simulare pentru PEPE. |
-| grok | HOLD | 0.81 | Simulare pentru PEPE. |
-| deepseek | BUY | 0.78 | Simulare pentru PEPE. |
+| claude | SELL | 0.60 | Simulare pentru PEPE. |
+| gemini | SELL | 0.81 | Simulare pentru PEPE. |
+| grok | BUY | 0.83 | Simulare pentru PEPE. |
+| deepseek | SELL | 0.65 | Simulare pentru PEPE. |
 
-## AAVE: **CUMPĂRĂ** (înclină spre cumpărare)
+## AAVE: **NU TRANZACȚIONA** (fără înclinație)
 Preț 133.9100 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.82 | Simulare pentru AAVE. |
-| claude | SELL | 0.77 | Simulare pentru AAVE. |
+| gpt | SELL | 0.79 | Simulare pentru AAVE. |
+| claude | BUY | 0.71 | Simulare pentru AAVE. |
 | gemini | BUY | 0.67 | Simulare pentru AAVE. |
-| grok | HOLD | 0.74 | Simulare pentru AAVE. |
-| deepseek | BUY | 0.82 | Simulare pentru AAVE. |
+| grok | SELL | 0.84 | Simulare pentru AAVE. |
+| deepseek | HOLD | 0.89 | Simulare pentru AAVE. |
 
-## NEAR: **NU TRANZACȚIONA** (înclină spre vânzare)
+## NEAR: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 4.4360 (închidere 2026-10-31); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.80 | Simulare pentru NEAR. |
-| claude | HOLD | 0.86 | Simulare pentru NEAR. |
-| gemini | SELL | 0.66 | Simulare pentru NEAR. |
-| grok | HOLD | 0.63 | Simulare pentru NEAR. |
-| deepseek | SELL | 0.81 | Simulare pentru NEAR. |
+| gpt | HOLD | 0.79 | Simulare pentru NEAR. |
+| claude | BUY | 0.88 | Simulare pentru NEAR. |
+| gemini | BUY | 0.83 | Simulare pentru NEAR. |
+| grok | BUY | 0.87 | Simulare pentru NEAR. |
+| deepseek | BUY | 0.62 | Simulare pentru NEAR. |
 
-## ICP: **NU TRANZACȚIONA** (înclină spre vânzare)
+## ICP: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 2.5180 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.78 | Simulare pentru ICP. |
-| claude | HOLD | 0.78 | Simulare pentru ICP. |
-| gemini | SELL | 0.86 | Simulare pentru ICP. |
-| grok | BUY | 0.69 | Simulare pentru ICP. |
-| deepseek | HOLD | 0.68 | Simulare pentru ICP. |
+| gpt | BUY | 0.85 | Simulare pentru ICP. |
+| claude | HOLD | 0.86 | Simulare pentru ICP. |
+| gemini | HOLD | 0.66 | Simulare pentru ICP. |
+| grok | HOLD | 0.69 | Simulare pentru ICP. |
+| deepseek | HOLD | 0.60 | Simulare pentru ICP. |
 
-## ETC: **NU TRANZACȚIONA** (înclină spre vânzare)
+## ETC: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 7.1000 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.63 | Simulare pentru ETC. |
-| claude | HOLD | 0.78 | Simulare pentru ETC. |
-| gemini | SELL | 0.65 | Simulare pentru ETC. |
-| grok | SELL | 0.64 | Simulare pentru ETC. |
-| deepseek | BUY | 0.81 | Simulare pentru ETC. |
+| gpt | HOLD | 0.86 | Simulare pentru ETC. |
+| claude | BUY | 0.61 | Simulare pentru ETC. |
+| gemini | SELL | 0.80 | Simulare pentru ETC. |
+| grok | BUY | 0.90 | Simulare pentru ETC. |
+| deepseek | HOLD | 0.72 | Simulare pentru ETC. |
 
-## APT: **CUMPĂRĂ** (înclină spre cumpărare)
+## APT: **VINDE** (înclină spre vânzare)
 Preț 0.6330 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.65 | Simulare pentru APT. |
-| claude | BUY | 0.61 | Simulare pentru APT. |
-| gemini | BUY | 0.61 | Simulare pentru APT. |
-| grok | BUY | 0.64 | Simulare pentru APT. |
-| deepseek | BUY | 0.76 | Simulare pentru APT. |
+| gpt | HOLD | 0.68 | Simulare pentru APT. |
+| claude | SELL | 0.62 | Simulare pentru APT. |
+| gemini | HOLD | 0.88 | Simulare pentru APT. |
+| grok | SELL | 0.76 | Simulare pentru APT. |
+| deepseek | SELL | 0.83 | Simulare pentru APT. |
 
 ## ONDO: **VINDE** (înclină spre vânzare)
 Preț 0.4102 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.72 | Simulare pentru ONDO. |
-| claude | SELL | 0.88 | Simulare pentru ONDO. |
-| gemini | SELL | 0.80 | Simulare pentru ONDO. |
-| grok | SELL | 0.80 | Simulare pentru ONDO. |
-| deepseek | SELL | 0.75 | Simulare pentru ONDO. |
+| gpt | SELL | 0.82 | Simulare pentru ONDO. |
+| claude | SELL | 0.86 | Simulare pentru ONDO. |
+| gemini | SELL | 0.78 | Simulare pentru ONDO. |
+| grok | HOLD | 0.60 | Simulare pentru ONDO. |
+| deepseek | BUY | 0.63 | Simulare pentru ONDO. |
 
-## ATOM: **CUMPĂRĂ** (înclină spre cumpărare)
+## ATOM: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 1.4970 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.70 | Simulare pentru ATOM. |
-| claude | BUY | 0.69 | Simulare pentru ATOM. |
-| gemini | SELL | 0.82 | Simulare pentru ATOM. |
-| grok | HOLD | 0.87 | Simulare pentru ATOM. |
-| deepseek | BUY | 0.68 | Simulare pentru ATOM. |
+| gpt | HOLD | 0.80 | Simulare pentru ATOM. |
+| claude | BUY | 0.71 | Simulare pentru ATOM. |
+| gemini | HOLD | 0.76 | Simulare pentru ATOM. |
+| grok | BUY | 0.88 | Simulare pentru ATOM. |
+| deepseek | SELL | 0.70 | Simulare pentru ATOM. |
 
-## POL: **CUMPĂRĂ** (înclină spre cumpărare)
+## POL: **VINDE** (înclină spre vânzare)
 Preț 0.0922 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.88 | Simulare pentru POL. |
-| claude | SELL | 0.79 | Simulare pentru POL. |
-| gemini | BUY | 0.88 | Simulare pentru POL. |
-| grok | HOLD | 0.74 | Simulare pentru POL. |
-| deepseek | BUY | 0.61 | Simulare pentru POL. |
+| gpt | SELL | 0.75 | Simulare pentru POL. |
+| claude | HOLD | 0.70 | Simulare pentru POL. |
+| gemini | SELL | 0.76 | Simulare pentru POL. |
+| grok | SELL | 0.70 | Simulare pentru POL. |
+| deepseek | HOLD | 0.90 | Simulare pentru POL. |
 
-## ARB: **VINDE** (înclină spre vânzare)
+## ARB: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 0.1640 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
 | gpt | SELL | 0.61 | Simulare pentru ARB. |
-| claude | HOLD | 0.81 | Simulare pentru ARB. |
-| gemini | SELL | 0.80 | Simulare pentru ARB. |
-| grok | BUY | 0.81 | Simulare pentru ARB. |
-| deepseek | SELL | 0.89 | Simulare pentru ARB. |
+| claude | HOLD | 0.76 | Simulare pentru ARB. |
+| gemini | HOLD | 0.88 | Simulare pentru ARB. |
+| grok | HOLD | 0.64 | Simulare pentru ARB. |
+| deepseek | HOLD | 0.81 | Simulare pentru ARB. |
 
-## FIL: **VINDE** (înclină spre vânzare)
+## FIL: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 0.8722 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.74 | Simulare pentru FIL. |
-| claude | SELL | 0.61 | Simulare pentru FIL. |
-| gemini | SELL | 0.73 | Simulare pentru FIL. |
-| grok | HOLD | 0.63 | Simulare pentru FIL. |
-| deepseek | HOLD | 0.90 | Simulare pentru FIL. |
+| gpt | HOLD | 0.87 | Simulare pentru FIL. |
+| claude | BUY | 0.61 | Simulare pentru FIL. |
+| gemini | BUY | 0.77 | Simulare pentru FIL. |
+| grok | HOLD | 0.60 | Simulare pentru FIL. |
+| deepseek | SELL | 0.80 | Simulare pentru FIL. |
 
-## ALGO: **VINDE** (înclină spre vânzare)
+## ALGO: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 0.0953 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.72 | Simulare pentru ALGO. |
-| claude | SELL | 0.62 | Simulare pentru ALGO. |
-| gemini | SELL | 0.63 | Simulare pentru ALGO. |
-| grok | HOLD | 0.63 | Simulare pentru ALGO. |
-| deepseek | HOLD | 0.86 | Simulare pentru ALGO. |
+| gpt | HOLD | 0.74 | Simulare pentru ALGO. |
+| claude | HOLD | 0.66 | Simulare pentru ALGO. |
+| gemini | BUY | 0.65 | Simulare pentru ALGO. |
+| grok | SELL | 0.82 | Simulare pentru ALGO. |
+| deepseek | SELL | 0.68 | Simulare pentru ALGO. |
 
-## VET: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## VET: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.0059 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Simulare pentru VET. |
-| claude | HOLD | 0.88 | Simulare pentru VET. |
-| gemini | BUY | 0.61 | Simulare pentru VET. |
-| grok | HOLD | 0.61 | Simulare pentru VET. |
-| deepseek | BUY | 0.63 | Simulare pentru VET. |
+| gpt | BUY | 0.65 | Simulare pentru VET. |
+| claude | BUY | 0.89 | Simulare pentru VET. |
+| gemini | SELL | 0.87 | Simulare pentru VET. |
+| grok | HOLD | 0.67 | Simulare pentru VET. |
+| deepseek | BUY | 0.82 | Simulare pentru VET. |
 
-## OP: **NU TRANZACȚIONA** (fără înclinație)
+## OP: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.1132 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.62 | Simulare pentru OP. |
-| claude | HOLD | 0.71 | Simulare pentru OP. |
-| gemini | SELL | 0.87 | Simulare pentru OP. |
-| grok | BUY | 0.61 | Simulare pentru OP. |
-| deepseek | HOLD | 0.90 | Simulare pentru OP. |
+| gpt | BUY | 0.70 | Simulare pentru OP. |
+| claude | SELL | 0.63 | Simulare pentru OP. |
+| gemini | BUY | 0.81 | Simulare pentru OP. |
+| grok | BUY | 0.76 | Simulare pentru OP. |
+| deepseek | HOLD | 0.71 | Simulare pentru OP. |
 
-## INJ: **NU TRANZACȚIONA** (înclină spre vânzare)
+## INJ: **VINDE** (înclină spre vânzare)
 Preț 7.2310 (închidere 2026-10-31); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.65 | Simulare pentru INJ. |
-| claude | HOLD | 0.89 | Simulare pentru INJ. |
-| gemini | HOLD | 0.74 | Simulare pentru INJ. |
-| grok | HOLD | 0.85 | Simulare pentru INJ. |
-| deepseek | HOLD | 0.78 | Simulare pentru INJ. |
+| gpt | SELL | 0.62 | Simulare pentru INJ. |
+| claude | SELL | 0.85 | Simulare pentru INJ. |
+| gemini | BUY | 0.81 | Simulare pentru INJ. |
+| grok | SELL | 0.72 | Simulare pentru INJ. |
+| deepseek | BUY | 0.83 | Simulare pentru INJ. |
 
-## RENDER: **CUMPĂRĂ** (înclină spre cumpărare)
+## RENDER: **NU TRANZACȚIONA** (fără înclinație)
 Preț 1.5610 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.78 | Simulare pentru RENDER. |
-| claude | BUY | 0.83 | Simulare pentru RENDER. |
-| gemini | BUY | 0.86 | Simulare pentru RENDER. |
-| grok | SELL | 0.75 | Simulare pentru RENDER. |
-| deepseek | BUY | 0.83 | Simulare pentru RENDER. |
+| gpt | SELL | 0.71 | Simulare pentru RENDER. |
+| claude | BUY | 0.88 | Simulare pentru RENDER. |
+| gemini | HOLD | 0.74 | Simulare pentru RENDER. |
+| grok | HOLD | 0.64 | Simulare pentru RENDER. |
+| deepseek | HOLD | 0.85 | Simulare pentru RENDER. |
 
-## TAO: **CUMPĂRĂ** (înclină spre cumpărare)
+## TAO: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 237.1000 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.71 | Simulare pentru TAO. |
-| claude | BUY | 0.71 | Simulare pentru TAO. |
-| gemini | BUY | 0.80 | Simulare pentru TAO. |
-| grok | SELL | 0.64 | Simulare pentru TAO. |
-| deepseek | BUY | 0.64 | Simulare pentru TAO. |
+| gpt | HOLD | 0.66 | Simulare pentru TAO. |
+| claude | SELL | 0.88 | Simulare pentru TAO. |
+| gemini | BUY | 0.66 | Simulare pentru TAO. |
+| grok | HOLD | 0.64 | Simulare pentru TAO. |
+| deepseek | SELL | 0.66 | Simulare pentru TAO. |
 
-## FET: **VINDE** (înclină spre vânzare)
+## FET: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.1596 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.62 | Simulare pentru FET. |
-| claude | SELL | 0.85 | Simulare pentru FET. |
-| gemini | SELL | 0.84 | Simulare pentru FET. |
-| grok | SELL | 0.61 | Simulare pentru FET. |
-| deepseek | HOLD | 0.62 | Simulare pentru FET. |
+| gpt | SELL | 0.85 | Simulare pentru FET. |
+| claude | HOLD | 0.63 | Simulare pentru FET. |
+| gemini | BUY | 0.90 | Simulare pentru FET. |
+| grok | HOLD | 0.64 | Simulare pentru FET. |
+| deepseek | HOLD | 0.80 | Simulare pentru FET. |
 
 ## SEI: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.0477 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.63 | Simulare pentru SEI. |
-| claude | BUY | 0.88 | Simulare pentru SEI. |
-| gemini | BUY | 0.74 | Simulare pentru SEI. |
-| grok | HOLD | 0.88 | Simulare pentru SEI. |
-| deepseek | SELL | 0.63 | Simulare pentru SEI. |
+| gpt | BUY | 0.87 | Simulare pentru SEI. |
+| claude | BUY | 0.83 | Simulare pentru SEI. |
+| gemini | SELL | 0.89 | Simulare pentru SEI. |
+| grok | SELL | 0.75 | Simulare pentru SEI. |
+| deepseek | HOLD | 0.73 | Simulare pentru SEI. |
 
-## STX: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## STX: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.3251 (închidere 2026-10-31); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.79 | Simulare pentru STX. |
-| claude | HOLD | 0.61 | Simulare pentru STX. |
-| gemini | BUY | 0.72 | Simulare pentru STX. |
-| grok | HOLD | 0.88 | Simulare pentru STX. |
-| deepseek | BUY | 0.64 | Simulare pentru STX. |
+| gpt | HOLD | 0.74 | Simulare pentru STX. |
+| claude | HOLD | 0.78 | Simulare pentru STX. |
+| gemini | BUY | 0.79 | Simulare pentru STX. |
+| grok | SELL | 0.73 | Simulare pentru STX. |
+| deepseek | HOLD | 0.63 | Simulare pentru STX. |
 
-## BONK: **CUMPĂRĂ** (înclină spre cumpărare)
+## BONK: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.0000 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.89 | Simulare pentru BONK. |
-| claude | BUY | 0.68 | Simulare pentru BONK. |
-| gemini | SELL | 0.83 | Simulare pentru BONK. |
-| grok | HOLD | 0.62 | Simulare pentru BONK. |
-| deepseek | BUY | 0.67 | Simulare pentru BONK. |
+| gpt | HOLD | 0.66 | Simulare pentru BONK. |
+| claude | HOLD | 0.77 | Simulare pentru BONK. |
+| gemini | SELL | 0.72 | Simulare pentru BONK. |
+| grok | BUY | 0.71 | Simulare pentru BONK. |
+| deepseek | HOLD | 0.74 | Simulare pentru BONK. |
 
-## WIF: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## WIF: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.1762 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.72 | Simulare pentru WIF. |
-| claude | SELL | 0.64 | Simulare pentru WIF. |
-| gemini | BUY | 0.75 | Simulare pentru WIF. |
-| grok | BUY | 0.65 | Simulare pentru WIF. |
-| deepseek | HOLD | 0.84 | Simulare pentru WIF. |
+| gpt | BUY | 0.65 | Simulare pentru WIF. |
+| claude | BUY | 0.89 | Simulare pentru WIF. |
+| gemini | BUY | 0.81 | Simulare pentru WIF. |
+| grok | HOLD | 0.80 | Simulare pentru WIF. |
+| deepseek | SELL | 0.77 | Simulare pentru WIF. |
 
-## FLOKI: **CUMPĂRĂ** (înclină spre cumpărare)
+## FLOKI: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 0.0000 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.82 | Simulare pentru FLOKI. |
-| claude | BUY | 0.69 | Simulare pentru FLOKI. |
-| gemini | SELL | 0.62 | Simulare pentru FLOKI. |
-| grok | SELL | 0.76 | Simulare pentru FLOKI. |
-| deepseek | BUY | 0.62 | Simulare pentru FLOKI. |
+| gpt | BUY | 0.87 | Simulare pentru FLOKI. |
+| claude | SELL | 0.67 | Simulare pentru FLOKI. |
+| gemini | HOLD | 0.84 | Simulare pentru FLOKI. |
+| grok | SELL | 0.61 | Simulare pentru FLOKI. |
+| deepseek | HOLD | 0.63 | Simulare pentru FLOKI. |
 
-## TRUMP: **CUMPĂRĂ** (înclină spre cumpărare)
+## TRUMP: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 1.5760 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.68 | Simulare pentru TRUMP. |
-| claude | BUY | 0.82 | Simulare pentru TRUMP. |
-| gemini | BUY | 0.66 | Simulare pentru TRUMP. |
-| grok | BUY | 0.66 | Simulare pentru TRUMP. |
-| deepseek | HOLD | 0.88 | Simulare pentru TRUMP. |
+| gpt | HOLD | 0.83 | Simulare pentru TRUMP. |
+| claude | HOLD | 0.79 | Simulare pentru TRUMP. |
+| gemini | SELL | 0.63 | Simulare pentru TRUMP. |
+| grok | HOLD | 0.73 | Simulare pentru TRUMP. |
+| deepseek | SELL | 0.88 | Simulare pentru TRUMP. |
 
 ## PENGU: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.0073 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.66 | Simulare pentru PENGU. |
-| claude | BUY | 0.75 | Simulare pentru PENGU. |
-| gemini | SELL | 0.83 | Simulare pentru PENGU. |
-| grok | SELL | 0.68 | Simulare pentru PENGU. |
-| deepseek | HOLD | 0.70 | Simulare pentru PENGU. |
+| gpt | HOLD | 0.72 | Simulare pentru PENGU. |
+| claude | SELL | 0.76 | Simulare pentru PENGU. |
+| gemini | BUY | 0.80 | Simulare pentru PENGU. |
+| grok | BUY | 0.64 | Simulare pentru PENGU. |
+| deepseek | SELL | 0.88 | Simulare pentru PENGU. |
 
-## ENA: **NU TRANZACȚIONA** (înclină spre vânzare)
+## ENA: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.1889 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.82 | Simulare pentru ENA. |
-| claude | HOLD | 0.67 | Simulare pentru ENA. |
-| gemini | HOLD | 0.62 | Simulare pentru ENA. |
-| grok | SELL | 0.82 | Simulare pentru ENA. |
-| deepseek | HOLD | 0.67 | Simulare pentru ENA. |
+| gpt | HOLD | 0.78 | Simulare pentru ENA. |
+| claude | BUY | 0.89 | Simulare pentru ENA. |
+| gemini | SELL | 0.78 | Simulare pentru ENA. |
+| grok | HOLD | 0.84 | Simulare pentru ENA. |
+| deepseek | HOLD | 0.62 | Simulare pentru ENA. |
 
 ## WLD: **CUMPĂRĂ** (înclină spre cumpărare)
 Preț 0.3987 (închidere 2026-10-31); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.64 | Simulare pentru WLD. |
-| claude | BUY | 0.72 | Simulare pentru WLD. |
-| gemini | BUY | 0.61 | Simulare pentru WLD. |
-| grok | HOLD | 0.71 | Simulare pentru WLD. |
-| deepseek | BUY | 0.60 | Simulare pentru WLD. |
+| gpt | BUY | 0.64 | Simulare pentru WLD. |
+| claude | BUY | 0.75 | Simulare pentru WLD. |
+| gemini | BUY | 0.62 | Simulare pentru WLD. |
+| grok | SELL | 0.72 | Simulare pentru WLD. |
+| deepseek | SELL | 0.66 | Simulare pentru WLD. |
 
-## JUP: **NU TRANZACȚIONA** (fără înclinație)
+## JUP: **NU TRANZACȚIONA** (înclină spre vânzare)
 Preț 0.2585 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.89 | Simulare pentru JUP. |
-| claude | BUY | 0.86 | Simulare pentru JUP. |
-| gemini | SELL | 0.78 | Simulare pentru JUP. |
-| grok | BUY | 0.74 | Simulare pentru JUP. |
-| deepseek | HOLD | 0.67 | Simulare pentru JUP. |
+| gpt | SELL | 0.68 | Simulare pentru JUP. |
+| claude | HOLD | 0.72 | Simulare pentru JUP. |
+| gemini | BUY | 0.86 | Simulare pentru JUP. |
+| grok | SELL | 0.82 | Simulare pentru JUP. |
+| deepseek | HOLD | 0.72 | Simulare pentru JUP. |
 
-## LDO: **NU TRANZACȚIONA** (înclină spre cumpărare)
+## LDO: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.3342 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.79 | Simulare pentru LDO. |
-| claude | HOLD | 0.76 | Simulare pentru LDO. |
-| gemini | BUY | 0.62 | Simulare pentru LDO. |
-| grok | SELL | 0.75 | Simulare pentru LDO. |
-| deepseek | HOLD | 0.76 | Simulare pentru LDO. |
+| gpt | HOLD | 0.82 | Simulare pentru LDO. |
+| claude | BUY | 0.85 | Simulare pentru LDO. |
+| gemini | SELL | 0.60 | Simulare pentru LDO. |
+| grok | BUY | 0.84 | Simulare pentru LDO. |
+| deepseek | SELL | 0.72 | Simulare pentru LDO. |
 
 ## CRV: **NU TRANZACȚIONA** (fără înclinație)
 Preț 0.2839 (închidere 2026-10-31); regula simplă a botului: vinde; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.66 | Simulare pentru CRV. |
-| claude | SELL | 0.70 | Simulare pentru CRV. |
-| gemini | HOLD | 0.79 | Simulare pentru CRV. |
-| grok | BUY | 0.78 | Simulare pentru CRV. |
-| deepseek | BUY | 0.84 | Simulare pentru CRV. |
+| gpt | SELL | 0.87 | Simulare pentru CRV. |
+| claude | BUY | 0.68 | Simulare pentru CRV. |
+| gemini | BUY | 0.61 | Simulare pentru CRV. |
+| grok | SELL | 0.85 | Simulare pentru CRV. |
+| deepseek | HOLD | 0.84 | Simulare pentru CRV. |
 
-## TIA: **NU TRANZACȚIONA** (fără înclinație)
+## TIA: **NU TRANZACȚIONA** (înclină spre cumpărare)
 Preț 0.4740 (închidere 2026-10-31); regula simplă a botului: cumpără; cost 0.000 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | BUY | 0.83 | Simulare pentru TIA. |
-| claude | SELL | 0.64 | Simulare pentru TIA. |
-| gemini | SELL | 0.86 | Simulare pentru TIA. |
-| grok | BUY | 0.80 | Simulare pentru TIA. |
-| deepseek | HOLD | 0.86 | Simulare pentru TIA. |
+| gpt | HOLD | 0.82 | Simulare pentru TIA. |
+| claude | BUY | 0.89 | Simulare pentru TIA. |
+| gemini | HOLD | 0.89 | Simulare pentru TIA. |
+| grok | HOLD | 0.83 | Simulare pentru TIA. |
+| deepseek | BUY | 0.86 | Simulare pentru TIA. |
+
+## RHEINMETALL: **VINDE** (înclină spre vânzare)
+Preț 1037.6000 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.84 | Simulare pentru RHEINMETALL. |
+| claude | SELL | 0.63 | Simulare pentru RHEINMETALL. |
+| gemini | SELL | 0.75 | Simulare pentru RHEINMETALL. |
+| grok | SELL | 0.79 | Simulare pentru RHEINMETALL. |
+| deepseek | HOLD | 0.69 | Simulare pentru RHEINMETALL. |
+
+## HENSOLDT: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 85.6200 (închidere 2026-10-30); regula simplă a botului: cumpără; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.85 | Simulare pentru HENSOLDT. |
+| claude | HOLD | 0.67 | Simulare pentru HENSOLDT. |
+| gemini | BUY | 0.67 | Simulare pentru HENSOLDT. |
+| grok | BUY | 0.64 | Simulare pentru HENSOLDT. |
+| deepseek | HOLD | 0.66 | Simulare pentru HENSOLDT. |
+
+## RENK: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 36.9150 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | BUY | 0.84 | Simulare pentru RENK. |
+| claude | BUY | 0.82 | Simulare pentru RENK. |
+| gemini | SELL | 0.72 | Simulare pentru RENK. |
+| grok | HOLD | 0.85 | Simulare pentru RENK. |
+| deepseek | HOLD | 0.77 | Simulare pentru RENK. |
+
+## BAE: **VINDE** (înclină spre vânzare)
+Preț 2070.0000 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | SELL | 0.75 | Simulare pentru BAE. |
+| claude | HOLD | 0.68 | Simulare pentru BAE. |
+| gemini | SELL | 0.73 | Simulare pentru BAE. |
+| grok | SELL | 0.62 | Simulare pentru BAE. |
+| deepseek | BUY | 0.89 | Simulare pentru BAE. |
+
+## THALES: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 235.7000 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | BUY | 0.81 | Simulare pentru THALES. |
+| claude | SELL | 0.62 | Simulare pentru THALES. |
+| gemini | HOLD | 0.73 | Simulare pentru THALES. |
+| grok | HOLD | 0.64 | Simulare pentru THALES. |
+| deepseek | SELL | 0.67 | Simulare pentru THALES. |
+
+## LEONARDO: **NU TRANZACȚIONA** (fără înclinație)
+Preț 51.7600 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | BUY | 0.90 | Simulare pentru LEONARDO. |
+| claude | HOLD | 0.72 | Simulare pentru LEONARDO. |
+| gemini | SELL | 0.84 | Simulare pentru LEONARDO. |
+| grok | HOLD | 0.67 | Simulare pentru LEONARDO. |
+| deepseek | HOLD | 0.81 | Simulare pentru LEONARDO. |
+
+## SAAB: **NU TRANZACȚIONA** (fără înclinație)
+Preț 675.2000 (închidere 2026-10-30); regula simplă a botului: cumpără; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.70 | Simulare pentru SAAB. |
+| claude | HOLD | 0.87 | Simulare pentru SAAB. |
+| gemini | HOLD | 0.76 | Simulare pentru SAAB. |
+| grok | BUY | 0.88 | Simulare pentru SAAB. |
+| deepseek | SELL | 0.89 | Simulare pentru SAAB. |
+
+## KONGSBERG: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 355.8000 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.83 | Simulare pentru KONGSBERG. |
+| claude | SELL | 0.80 | Simulare pentru KONGSBERG. |
+| gemini | HOLD | 0.74 | Simulare pentru KONGSBERG. |
+| grok | SELL | 0.80 | Simulare pentru KONGSBERG. |
+| deepseek | BUY | 0.78 | Simulare pentru KONGSBERG. |
+
+## LOCKHEED: **VINDE** (înclină spre vânzare)
+Preț 636.9500 (închidere 2026-10-30); regula simplă a botului: cumpără; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | BUY | 0.62 | Simulare pentru LOCKHEED. |
+| claude | SELL | 0.85 | Simulare pentru LOCKHEED. |
+| gemini | SELL | 0.78 | Simulare pentru LOCKHEED. |
+| grok | SELL | 0.86 | Simulare pentru LOCKHEED. |
+| deepseek | SELL | 0.90 | Simulare pentru LOCKHEED. |
+
+## NORTHROP: **NU TRANZACȚIONA** (fără înclinație)
+Preț 557.5400 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | SELL | 0.87 | Simulare pentru NORTHROP. |
+| claude | BUY | 0.67 | Simulare pentru NORTHROP. |
+| gemini | BUY | 0.63 | Simulare pentru NORTHROP. |
+| grok | SELL | 0.68 | Simulare pentru NORTHROP. |
+| deepseek | HOLD | 0.85 | Simulare pentru NORTHROP. |
+
+## RTX: **CUMPĂRĂ** (înclină spre cumpărare)
+Preț 199.8000 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.88 | Simulare pentru RTX. |
+| claude | BUY | 0.67 | Simulare pentru RTX. |
+| gemini | BUY | 0.90 | Simulare pentru RTX. |
+| grok | BUY | 0.67 | Simulare pentru RTX. |
+| deepseek | SELL | 0.79 | Simulare pentru RTX. |
+
+## GENERAL_DYNAMICS: **CUMPĂRĂ** (înclină spre cumpărare)
+Preț 372.5900 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | SELL | 0.60 | Simulare pentru GENERAL_DYNAMICS. |
+| claude | BUY | 0.76 | Simulare pentru GENERAL_DYNAMICS. |
+| gemini | BUY | 0.63 | Simulare pentru GENERAL_DYNAMICS. |
+| grok | BUY | 0.79 | Simulare pentru GENERAL_DYNAMICS. |
+| deepseek | BUY | 0.66 | Simulare pentru GENERAL_DYNAMICS. |
+
+## L3HARRIS: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 277.6100 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.73 | Simulare pentru L3HARRIS. |
+| claude | SELL | 0.70 | Simulare pentru L3HARRIS. |
+| gemini | HOLD | 0.66 | Simulare pentru L3HARRIS. |
+| grok | SELL | 0.75 | Simulare pentru L3HARRIS. |
+| deepseek | BUY | 0.77 | Simulare pentru L3HARRIS. |
+
+## ITA: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 209.7400 (închidere 2026-10-30); regula simplă a botului: vinde; cost 0.000 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | SELL | 0.67 | Simulare pentru ITA. |
+| claude | BUY | 0.85 | Simulare pentru ITA. |
+| gemini | SELL | 0.64 | Simulare pentru ITA. |
+| grok | HOLD | 0.85 | Simulare pentru ITA. |
+| deepseek | HOLD | 0.64 | Simulare pentru ITA. |
 
 Cost total azi: **0.000 $**.
 
