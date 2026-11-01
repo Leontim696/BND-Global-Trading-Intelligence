@@ -92,3 +92,20 @@ def test_restore_branch_distinguishes_absent_from_failed(repos):
     assert (work / "tot" / "registry.sqlite").exists()
     git(work, "remote", "set-url", "origin", str(bare) + "-lipsa")
     assert run("restore_branch.sh", work, "stare", "d2", "registry.sqlite")[0].returncode == 1
+
+
+def test_required_file_missing_on_existing_branch_stops_the_job(repos):
+    _, work = repos
+    publish(work, "stare", {"registry.sqlite": "R"})                  # costs.sqlite lipsește
+    proc, _ = run("restore_branch.sh", work, "stare", "dest", "!registry.sqlite", "!costs.sqlite")
+    assert proc.returncode == 1 and "obligatoriu" in proc.stdout + proc.stderr
+    ok, _ = run("restore_branch.sh", work, "stare", "dest2", "!registry.sqlite", "audit.jsonl")
+    assert ok.returncode == 0                                          # opțional lipsă = doar avertisment
+
+
+def test_audit_required_for_the_unified_account(repos, monkeypatch):
+    _, work = repos
+    publish(work, "cont", {"paper.sqlite": "DB"})
+    monkeypatch.setenv("REQUIRE_AUDIT", "1")
+    proc, out = run("restore_account.sh", work, "cont", "x")
+    assert proc.returncode == 1 and "GENESIS" in proc.stdout + proc.stderr and "account=existing" not in out

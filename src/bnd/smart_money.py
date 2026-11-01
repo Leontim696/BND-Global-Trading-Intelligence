@@ -27,9 +27,29 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.request import Request, urlopen
+from urllib.parse import urlparse
+from urllib.request import HTTPRedirectHandler, Request, build_opener
 
-BASE_URL = os.getenv("SMART_MONEY_BASE_URL", "https://data.solanatracker.io")
+ALLOWED_HOSTS = ("data.solanatracker.io",)
+
+
+def checked_base_url(value: str) -> str:
+    """Doar https și gazde cunoscute: cheia API nu trebuie să poată pleca pe http sau pe alt server."""
+    parsed = urlparse(value)
+    if parsed.scheme != "https" or parsed.hostname not in ALLOWED_HOSTS or parsed.username or parsed.port not in (None, 443):
+        raise ValueError(f"SMART_MONEY_BASE_URL refuzat: doar https către {', '.join(ALLOWED_HOSTS)}")
+    return f"https://{parsed.hostname}"
+
+
+BASE_URL = checked_base_url(os.getenv("SMART_MONEY_BASE_URL", "https://data.solanatracker.io"))
+
+
+class _NoRedirect(HTTPRedirectHandler):
+    """Un redirect ar putea duce cheia pe alt host: se refuză."""
+
+    def redirect_request(self, *args, **kwargs):
+        return None
+
 LEADERBOARD_PATH = os.getenv("SMART_MONEY_LEADERBOARD_PATH", "/top-traders/all")
 WALLET_PATH = os.getenv("SMART_MONEY_WALLET_PATH", "/pnl/{wallet}")
 ADDRESS = re.compile(r"^[1-9A-HJ-NP-Za-km-z]{32,44}$")
@@ -120,7 +140,7 @@ def assess(stats: dict) -> dict:
 def _get(url: str, key: str, timeout: float = 30.0):
     request = Request(url, headers={"x-api-key": key, "User-Agent": "BND-research"}, method="GET")
     try:
-        with urlopen(request, timeout=timeout) as response:  # nosec B310 - https fix, date publice, doar citire
+        with build_opener(_NoRedirect).open(request, timeout=timeout) as response:  # nosec B310 - https, gazdă fixă, fără redirect
             return json.loads(response.read(5_000_001))
     except HTTPError as exc:
         raise ValueError(f"{url.split('?')[0]} a răspuns HTTP {exc.code}") from exc

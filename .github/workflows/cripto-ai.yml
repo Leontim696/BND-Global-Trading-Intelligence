@@ -51,10 +51,8 @@ jobs:
       - name: Take the council's votes
         if: steps.restore.outputs.account != 'none'
         run: |
-          if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null \
-              && git cat-file -e FETCH_HEAD:registry.sqlite 2>/dev/null; then
-            git show FETCH_HEAD:registry.sqlite > state/registry.sqlite
-          fi
+          # Votul consiliului e obligatoriu: fără el contul hibrid ar deveni pe tăcute doar pe reguli.
+          bash scripts/restore_branch.sh consiliu-umbra state "!registry.sqlite"
           python -m src.bnd.crypto_signals --registry state/registry.sqlite --out state/semnale.json
       - name: Download the crypto candles
         if: steps.restore.outputs.account != 'none'

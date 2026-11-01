@@ -103,6 +103,56 @@ def test_accepted_needs_a_p_value_or_an_explicit_justification(tmp_path):
     ex.propose(path, **BASE)
     with pytest.raises(ex.RegistryError, match="cere valoarea p"):
         ex.finish(path, id="E-001", verdict="acceptat", concluzie="fără test")
-    row = ex.finish(path, id="E-001", verdict="acceptat", concluzie="control sintetic",
+    with pytest.raises(ex.RegistryError, match="cere valoarea p"):           # tip=backtest: justificarea nu ajută
+        ex.finish(path, id="E-001", verdict="acceptat", concluzie="x", justificare_fara_p="simulare cu limită Wilson")
+    ex.propose(path, **{**BASE, "tip": "simulare", "ipoteza": "control"})
+    row = ex.finish(path, id="E-002", verdict="acceptat", concluzie="control sintetic",
                     justificare_fara_p="simulare cu limită Wilson")
     assert row["justificare_fara_p"]
+
+
+def test_p_value_must_be_a_probability(tmp_path):
+    path = tmp_path / "r.jsonl"
+    ex.propose(path, **BASE)
+    for bad in (float("nan"), -0.1, 1.5, float("inf")):
+        with pytest.raises(ex.RegistryError, match="între 0 și 1"):
+            ex.finish(path, id="E-001", verdict="acceptat", concluzie="x", p_valoare=bad)
+
+
+def test_missing_p_is_only_excused_for_simulations_and_controls(tmp_path):
+    path = tmp_path / "r.jsonl"
+    ex.propose(path, **BASE)                                            # tip=backtest
+    with pytest.raises(ex.RegistryError, match="tipul|tipul „backtest”|backtest"):
+        ex.finish(path, id="E-001", verdict="acceptat", concluzie="x", justificare_fara_p="fiindcă da")
+    ex.propose(path, **{**BASE, "tip": "simulare", "ipoteza": "alta"})
+    with pytest.raises(ex.RegistryError, match="justificare"):
+        ex.finish(path, id="E-002", verdict="acceptat", concluzie="x")
+    assert ex.finish(path, id="E-002", verdict="acceptat", concluzie="x", justificare_fara_p="control sintetic")
+
+
+def test_ids_survive_a_corrupt_line_and_a_broken_registry_blocks_writes(tmp_path):
+    path = tmp_path / "r.jsonl"
+    ex.propose(path, **BASE)
+    ex.propose(path, **{**BASE, "ipoteza": "a doua"})
+    lines = path.read_text().splitlines()
+    path.write_text(lines[0] + "\n" + "{rupt\n" + lines[1] + "\n")      # rând corupt la mijloc
+    with pytest.raises(ex.RegistryError, match="repară"):
+        ex.propose(path, **{**BASE, "ipoteza": "a treia"})              # nu se scrie peste un registru stricat
+    with pytest.raises(ex.RegistryError, match="repară"):
+        ex.add_note(path, id="E-001", text="x")
+
+
+def test_concurrent_proposals_get_distinct_ids(tmp_path):
+    import threading
+    path = tmp_path / "r.jsonl"
+    ids, errors = [], []
+
+    def work(i):
+        try:
+            ids.append(ex.propose(path, **{**BASE, "ipoteza": f"ipoteza {i}"})["id"])
+        except Exception as exc:       # pragma: no cover
+            errors.append(exc)
+    threads = [threading.Thread(target=work, args=(i,)) for i in range(8)]
+    [t.start() for t in threads]; [t.join() for t in threads]
+    assert not errors and sorted(ids) == [f"E-{i:03d}" for i in range(1, 9)]
+    assert ex.audit_log.verify(path)[0]

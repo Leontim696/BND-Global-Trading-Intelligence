@@ -27,6 +27,9 @@ if [ "$rc" = 0 ]; then
   git show FETCH_HEAD:paper.sqlite > "$state/paper.sqlite"
   if git cat-file -e FETCH_HEAD:audit.jsonl 2>/dev/null; then
     git show FETCH_HEAD:audit.jsonl > "$state/audit.jsonl"
+  elif [ "${REQUIRE_AUDIT:-0}" = 1 ]; then
+    echo "::error::audit.jsonl lipsește pe $branch, deși e obligatoriu; nu repornesc lanțul de la GENESIS."
+    exit 1
   else
     echo "::warning::audit.jsonl lipsește pe $branch: jurnalul de audit începe un lanț nou."
   fi

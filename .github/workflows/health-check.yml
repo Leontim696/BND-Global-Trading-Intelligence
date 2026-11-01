@@ -40,15 +40,28 @@ jobs:
             else
               state_err="nu pot descărca paper.sqlite de pe ramura cont-unic"
             fi
-          elif [ "$rc" != 2 ]; then
+          elif [ "$rc" = 2 ]; then
+            # Ramura lipsește: normal doar dacă contul n-a rulat niciodată cu succes.
+            ever=$(gh run list -R "$REPO" --workflow cont-unic.yml --status success -L 1 --json conclusion \
+              -q 'length' 2>/dev/null) || ever=unknown
+            if [ "$ever" != 0 ]; then
+              state_err="ramura cont-unic lipsește, deși contul a rulat înainte (ștearsă din greșeală?)"
+            fi
+          else
             state_err="nu pot verifica ramura cont-unic (cod $rc)"
           fi
           conclusion=$(gh run list -R "$REPO" --workflow cont-unic.yml -L 1 \
             --json conclusion -q '.[0].conclusion // ""' 2>/dev/null) || conclusion="unknown"
+          # Dacă verificarea însăși crapă, tot trebuie să rezulte o alertă (nu tăcere).
           python -m src.bnd.health_check --state health/paper.sqlite --state-error "$state_err" \
-            --last-run-conclusion "$conclusion" --json health/health.json > health/health.md
+            --last-run-conclusion "$conclusion" --json health/health.json > health/health.md || {
+            echo '{"ok": false, "problems": ["verificarea de sănătate a crăpat"]}' > health/health.json
+            echo "**Probleme găsite:** verificarea de sănătate a crăpat (vezi jurnalul rulării)." > health/health.md
+          }
           cat health/health.md >> "$GITHUB_STEP_SUMMARY"
       - name: Phone alert through ntfy (only when something is wrong)
+        if: always()
+        continue-on-error: true
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
@@ -57,6 +70,7 @@ jobs:
               --message "$(head -c 900 health/health.md)" --priority high --require
           fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
         with:
           name: bnd-health-${{ github.run_id }}
           path: |
@@ -67,6 +81,7 @@ jobs:
   # Separate job: may write issues, never runs project code.
   alert:
     needs: check
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -77,12 +92,19 @@ jobs:
       TITLE: "Alertă: botul virtual are o problemă"
     steps:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        continue-on-error: true
         with:
           name: bnd-health-${{ github.run_id }}
           path: health
       - name: Open, update or close the alert issue
         run: |
           set -euo pipefail
+          if [ ! -f health/health.json ]; then
+            # Jobul de verificare n-a produs nimic: asta e o problemă, nu liniște.
+            mkdir -p health
+            echo '{"ok": false}' > health/health.json
+            echo "**Probleme găsite:** jobul de verificare nu a produs niciun rezultat (vezi rularea)." > health/health.md
+          fi
           ok=$(jq -r '.ok' health/health.json)
           open=$(gh api "repos/$REPO/issues?state=open&per_page=100" \
             -q "[.[] | select(.title == \"$TITLE\") | .number][0] // empty")

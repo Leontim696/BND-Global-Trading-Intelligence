@@ -64,7 +64,7 @@ jobs:
       - name: Restore the registries and the report
         if: steps.gate.outputs.run == 'true'
         run: |
-          bash scripts/restore_branch.sh consiliu-umbra state debate-registry.sqlite costs.sqlite
+          bash scripts/restore_branch.sh consiliu-umbra state debate-registry.sqlite "!costs.sqlite"
           bash scripts/restore_branch.sh consiliu-umbra state consiliu/LATEST.json
           if [ -f state/LATEST.json ]; then mv state/LATEST.json state/raport.json; fi
           if [ ! -f state/raport.json ] && [ "$MODE_INPUT" != settle ]; then
