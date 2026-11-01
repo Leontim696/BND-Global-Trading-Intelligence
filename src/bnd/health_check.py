@@ -19,9 +19,15 @@ from .paper_engine import PaperEngine, PaperEngineError
 
 
 def check(state_path, now: datetime, max_age_hours: float = 50,
-          last_run_conclusion: str | None = None) -> dict:
+          last_run_conclusion: str | None = None, state_error: str | None = None) -> dict:
     problems, summary = [], {}
-    if last_run_conclusion not in (None, "", "success", "skipped"):
+    if state_error:
+        # Nu putem spune că totul e bine dacă nu am putut citi contul.
+        return {"ok": False, "account": True, "summary": {},
+                "problems": [f"Verificarea nu a putut citi contul: {state_error}"]}
+    if last_run_conclusion == "unknown":
+        problems.append("Nu am putut citi starea ultimei rulări zilnice (GitHub nu a răspuns).")
+    elif last_run_conclusion not in (None, "", "success", "skipped"):
         problems.append(f"Ultima rulare zilnică a botului s-a terminat cu: {last_run_conclusion}")
     if not Path(state_path).exists():
         return {"ok": not problems, "account": False, "problems": problems,
@@ -69,10 +75,11 @@ def main(argv=None) -> int:
     parser.add_argument("--state", required=True)
     parser.add_argument("--max-age-hours", type=float, default=50)
     parser.add_argument("--last-run-conclusion")
+    parser.add_argument("--state-error", default="", help="motivul pentru care contul n-a putut fi citit")
     parser.add_argument("--json", help="also write the result here")
     args = parser.parse_args(argv)
     result = check(args.state, datetime.now(timezone.utc), args.max_age_hours,
-                   args.last_run_conclusion)
+                   args.last_run_conclusion, args.state_error or None)
     if args.json:
         Path(args.json).write_text(json.dumps(result, indent=2, ensure_ascii=False))
     sys.stdout.write(render(result))

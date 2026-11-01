@@ -31,13 +31,21 @@ jobs:
       - name: Check the account and the last daily run
         run: |
           mkdir -p health
-          if git fetch -q --depth=1 origin cont-unic 2>/dev/null \
-              && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
-            git show FETCH_HEAD:paper.sqlite > health/paper.sqlite
+          state_err=""
+          rc=0
+          git ls-remote --exit-code --heads origin cont-unic >/dev/null 2>&1 || rc=$?
+          if [ "$rc" = 0 ]; then
+            if git fetch -q --depth=1 origin cont-unic && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
+              git show FETCH_HEAD:paper.sqlite > health/paper.sqlite
+            else
+              state_err="nu pot descărca paper.sqlite de pe ramura cont-unic"
+            fi
+          elif [ "$rc" != 2 ]; then
+            state_err="nu pot verifica ramura cont-unic (cod $rc)"
           fi
           conclusion=$(gh run list -R "$REPO" --workflow cont-unic.yml -L 1 \
-            --json conclusion -q '.[0].conclusion // ""' 2>/dev/null || true)
-          python -m src.bnd.health_check --state health/paper.sqlite \
+            --json conclusion -q '.[0].conclusion // ""' 2>/dev/null) || conclusion="unknown"
+          python -m src.bnd.health_check --state health/paper.sqlite --state-error "$state_err" \
             --last-run-conclusion "$conclusion" --json health/health.json > health/health.md
           cat health/health.md >> "$GITHUB_STEP_SUMMARY"
       - name: Phone alert through ntfy (only when something is wrong)
@@ -46,7 +54,7 @@ jobs:
         run: |
           if [ -f health/health.json ] && [ "$(jq -r .ok health/health.json)" != true ]; then
             python -m src.bnd.notify --title "BND: botul virtual are o problemă" \
-              --message "$(head -c 900 health/health.md)" --priority high
+              --message "$(head -c 900 health/health.md)" --priority high --require
           fi
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:

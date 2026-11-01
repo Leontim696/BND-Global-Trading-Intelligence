@@ -53,19 +53,7 @@ jobs:
       - name: Restore the account from the paper-trading branch
         id: restore
         run: |
-          mkdir -p state
-          if git fetch -q --depth=1 origin paper-trading 2>/dev/null \
-              && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
-            git show FETCH_HEAD:paper.sqlite > state/paper.sqlite
-            git show FETCH_HEAD:audit.jsonl > state/audit.jsonl 2>/dev/null || true
-            echo "account=existing" >> "$GITHUB_OUTPUT"
-          elif [ -n "$CAPITAL" ]; then
-            echo "account=new" >> "$GITHUB_OUTPUT"
-          else
-            echo "account=none" >> "$GITHUB_OUTPUT"
-            echo "No paper account yet. Start one with a manual run and a virtual capital." \
-              >> "$GITHUB_STEP_SUMMARY"
-          fi
+          bash scripts/restore_account.sh paper-trading "No paper account yet. Start one with a manual run and a virtual capital."
       - name: Restore yesterday's candles
         if: steps.restore.outputs.account != 'none'
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4

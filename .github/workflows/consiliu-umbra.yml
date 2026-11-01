@@ -75,12 +75,7 @@ jobs:
           fi
       - name: Restore the registry and the costs
         if: steps.mode.outputs.run == 'true' && steps.mode.outputs.live == 'true'
-        run: |
-          if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
-            for f in registry.sqlite costs.sqlite audit.jsonl; do
-              if git cat-file -e "FETCH_HEAD:$f" 2>/dev/null; then git show "FETCH_HEAD:$f" > "state/$f"; fi
-            done
-          fi
+        run: bash scripts/restore_branch.sh consiliu-umbra state registry.sqlite costs.sqlite audit.jsonl
       - name: Restore yesterday's candles
         if: steps.mode.outputs.run == 'true'
         uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4

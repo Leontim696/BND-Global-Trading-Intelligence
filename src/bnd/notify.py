@@ -50,10 +50,15 @@ def main(argv=None) -> int:
     parser.add_argument("--title", required=True)
     parser.add_argument("--message", required=True)
     parser.add_argument("--priority", default="default", choices=sorted(PRIORITIES))
+    parser.add_argument("--require", action="store_true",
+                        help="o alertă importantă: fără subiect se afișează un avertisment vizibil în GitHub Actions")
     args = parser.parse_args(argv)
     topic = os.environ.get("NTFY_TOPIC", "").strip()
     if not topic:
-        print("NTFY_TOPIC nu e setat: nu se trimite nicio notificare.")
+        if args.require:
+            print("::warning::NTFY_TOPIC nu e setat: alerta NU a fost trimisă pe telefon (vezi issue-ul de alertă).")
+        else:
+            print("NTFY_TOPIC nu e setat: nu se trimite nicio notificare.")
         return 0
     try:
         send(topic, args.title, args.message, args.priority)

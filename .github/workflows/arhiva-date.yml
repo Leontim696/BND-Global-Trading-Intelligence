@@ -30,11 +30,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: Restore the archive built so far
-        run: |
-          mkdir -p arhiva
-          if git fetch -q --depth=1 origin date-piete 2>/dev/null; then
-            git archive FETCH_HEAD | tar -x -C arhiva
-          fi
+        run: bash scripts/restore_branch.sh date-piete arhiva
       - name: Download and add the new days
         run: |
           python -m src.bnd.backtest_cli fetch-universe --universe ai --update \
@@ -76,6 +72,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          pushed=0
           for attempt in 1 2 3; do
             if git fetch -q --depth=1 origin date-piete 2>/dev/null; then
               git checkout -q -f -B date-piete FETCH_HEAD
@@ -87,6 +84,7 @@ jobs:
             for extra in sentiment funding crypto50 calendar calendar-status.json context-status.json; do [ -e "../arhiva/$extra" ] && cp -r "../arhiva/$extra" . || true; done
             git add -A
             git commit -q -m "Date $(date -u +%Y-%m-%d)" || true
-            if git push -q origin HEAD:refs/heads/date-piete; then break; fi
+            if git push -q origin HEAD:refs/heads/date-piete; then pushed=1; break; fi
             sleep $((attempt * 5))
           done
+          [ "$pushed" = 1 ] || { echo "::error::Nu am putut salva pe ramură după 3 încercări."; exit 1; }
