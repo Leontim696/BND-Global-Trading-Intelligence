@@ -1,0 +1,16 @@
+# Imagine OBSERVER-ONLY: citește o oglindă a contului, nu are runner de tranzacționare în CMD,
+# nu primește chei de broker/AI și rulează fără privilegii. Stdlib Python + git (pentru sync).
+FROM python:3.13-slim
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && useradd --system --uid 10001 --no-create-home bnd \
+    && mkdir -p /data/mirror /data/public && chown -R bnd /data
+WORKDIR /app
+COPY src ./src
+COPY deploy/observer ./deploy/observer
+ENV BND_OBSERVER_ONLY=true BND_TRADING_MODE=PAPER BND_ALLOW_LIVE_AI=false PYTHONUNBUFFERED=1 \
+    BND_DATA_DIR=/data
+USER bnd
+VOLUME /data
+HEALTHCHECK --interval=15m --timeout=30s --retries=2 CMD ["bash", "/app/deploy/observer/healthcheck.sh"]
+CMD ["bash", "/app/deploy/observer/run-once.sh"]

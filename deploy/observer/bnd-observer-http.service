@@ -1,0 +1,18 @@
+[Unit]
+Description=BND observer: status.json pentru Home Assistant (doar LAN/VPN, doar citire)
+After=network.target
+
+[Service]
+User=bnd-observer
+EnvironmentFile=/etc/bnd-observer/env
+# Servește DOAR folderul public/ (status.json), pe loopback; expune-l în LAN/VPN printr-un proxy sau un firewall.
+ExecStart=/usr/bin/python3 -m http.server 8765 --bind 127.0.0.1 --directory /var/lib/bnd-observer/public
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadOnlyPaths=/var/lib/bnd-observer
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
