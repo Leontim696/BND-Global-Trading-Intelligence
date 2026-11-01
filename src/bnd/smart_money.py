@@ -99,11 +99,11 @@ def normalise(row: dict) -> dict | None:
     wallet = _pick(row, "wallet", "address", "owner", "walletAddress")
     if not valid_address(wallet):
         return None
+    summary = row.get("summary") if isinstance(row.get("summary"), dict) else {}
+    row = {**summary, **row}
     win = _num(_pick(row, "win_rate", "winRate", "winrate", "win_percentage", "winPercentage"))
     if win is not None and win > 1:
         win /= 100                                     # unele surse dau procente
-    summary = row.get("summary") if isinstance(row.get("summary"), dict) else {}
-    row = {**summary, **row}
     trades = _num(_pick(row, "trades", "total_trades", "totalTrades"))
     if trades is None:
         buys, sells = _num(_pick(row, "buys", "totalBuys")), _num(_pick(row, "sells", "totalSells"))
@@ -183,6 +183,19 @@ def manual_wallets(path) -> list[dict]:
             for i in items if valid_address(i.get("wallet"))]
 
 
+ENRICH_LIMIT = 25          # câte walleturi din clasament primesc și detalii (un apel fiecare)
+
+
+def _keys(obj) -> list:
+    """Doar NUMELE câmpurilor (nu valorile) unui răspuns, ca să putem potrivi parserul pe răspunsul real."""
+    if not isinstance(obj, dict):
+        return []
+    keys = sorted(obj)
+    if isinstance(obj.get("summary"), dict):
+        keys += ["summary." + k for k in sorted(obj["summary"])]
+    return keys
+
+
 def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=_get, now=None) -> dict:
     out = Path(out) / "smart_money"
     out.mkdir(parents=True, exist_ok=True)
@@ -191,11 +204,28 @@ def collect(out, key: str | None, manual_path="smart_money/wallete.json", fetch=
     candidates = {}
     if key:
         try:
-            for row in rows_of(fetch(BASE_URL + LEADERBOARD_PATH, key)):
+            board = rows_of(fetch(BASE_URL + LEADERBOARD_PATH, key))
+            status["sample_keys"] = {"clasament": _keys(board[0]) if board else []}
+            for row in board:
                 stats = normalise(row) if isinstance(row, dict) else None
                 if stats:
                     candidates[stats["wallet"]] = {**stats, "source": "clasament"}
             status["leaderboard"] = {"ok": True, "wallets": len(candidates)}
+            enriched = 0
+            for wallet in list(candidates)[:ENRICH_LIMIT]:
+                try:
+                    detail = fetch(BASE_URL + WALLET_PATH.format(wallet=wallet), key)
+                except ValueError as exc:
+                    status["errors"].append(f"detalii {wallet[:6]}…: {exc}")
+                    continue
+                if enriched == 0:
+                    status["sample_keys"]["detalii"] = _keys(detail)
+                found = normalise({**detail, "wallet": wallet}) if isinstance(detail, dict) else None
+                if found:
+                    base = candidates[wallet]
+                    candidates[wallet] = {**base, **{k: v for k, v in found.items() if v is not None}}
+                    enriched += 1
+            status["leaderboard"]["enriched"] = enriched
         except ValueError as exc:
             status["leaderboard"] = {"ok": False, "error": str(exc)}
             status["errors"].append(str(exc))
