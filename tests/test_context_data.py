@@ -70,3 +70,16 @@ def test_everything_down_still_writes_a_status_file(tmp_path):
 
     assert not any(v["ok"] for v in status["sources"].values())
     assert (tmp_path / "context-status.json").exists()
+
+
+def test_merge_csv_leaves_no_temp_file_and_keeps_old_on_failure(tmp_path, monkeypatch):
+    from src.bnd import context_data as cd
+    path = tmp_path / "a.csv"
+    cd.merge_csv(path, ["k", "v"], [("1", "a")])
+    assert not list(tmp_path.glob("*.tmp"))
+    monkeypatch.setattr(cd.os, "replace", lambda *a: (_ for _ in ()).throw(OSError("oprit")))
+    try:
+        cd.merge_csv(path, ["k", "v"], [("2", "b")])
+    except OSError:
+        pass
+    assert path.read_text().splitlines() == ["k,v", "1,a"]      # fișierul vechi e intact

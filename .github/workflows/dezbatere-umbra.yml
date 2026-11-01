@@ -64,14 +64,9 @@ jobs:
       - name: Restore the registries and the report
         if: steps.gate.outputs.run == 'true'
         run: |
-          if git fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then
-            for f in debate-registry.sqlite costs.sqlite; do
-              if git cat-file -e "FETCH_HEAD:$f" 2>/dev/null; then git show "FETCH_HEAD:$f" > "state/$f"; fi
-            done
-            if git cat-file -e "FETCH_HEAD:consiliu/LATEST.json" 2>/dev/null; then
-              git show "FETCH_HEAD:consiliu/LATEST.json" > state/raport.json
-            fi
-          fi
+          bash scripts/restore_branch.sh consiliu-umbra state debate-registry.sqlite costs.sqlite
+          bash scripts/restore_branch.sh consiliu-umbra state consiliu/LATEST.json
+          if [ -f state/LATEST.json ]; then mv state/LATEST.json state/raport.json; fi
           if [ ! -f state/raport.json ] && [ "$MODE_INPUT" != settle ]; then
             echo "::error::Lipsește consiliu/LATEST.json (apare după următoarea rulare a consiliului)."; exit 1
           fi

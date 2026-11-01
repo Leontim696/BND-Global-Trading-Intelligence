@@ -48,18 +48,7 @@ jobs:
       - name: Restore the account from the cont-unic branch
         id: restore
         run: |
-          mkdir -p state data
-          if git fetch -q --depth=1 origin cont-unic 2>/dev/null \
-              && git cat-file -e FETCH_HEAD:paper.sqlite 2>/dev/null; then
-            git show FETCH_HEAD:paper.sqlite > state/paper.sqlite
-            git show FETCH_HEAD:audit.jsonl > state/audit.jsonl 2>/dev/null || true
-            echo "account=existing" >> "$GITHUB_OUTPUT"
-          elif [ -n "$CAPITAL" ]; then
-            echo "account=new" >> "$GITHUB_OUTPUT"
-          else
-            echo "account=none" >> "$GITHUB_OUTPUT"
-            echo "Încă nu există contul unic. Pornește-l dintr-o rulare manuală cu capitalul virtual." >> "$GITHUB_STEP_SUMMARY"
-          fi
+          bash scripts/restore_account.sh cont-unic "Încă nu există contul unic. Pornește-l dintr-o rulare manuală cu capitalul virtual."
       - name: Take the council's votes
         if: steps.restore.outputs.account != 'none'
         run: |

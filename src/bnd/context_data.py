@@ -11,6 +11,7 @@ oprește restul. Fișierele se completează zi de zi, fără dubluri.
 import argparse
 import csv
 import json
+import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -70,10 +71,16 @@ def merge_csv(path: Path, header: list, rows: list) -> int:
     before = len(existing)
     for row in rows:
         existing[str(row[0])] = [str(x) for x in row]
-    with path.open("w", newline="", encoding="utf-8") as handle:
+    # Scriere atomică: fișierul nou se completează lângă cel vechi și îl înlocuiește dintr-o mișcare,
+    # deci o oprire la mijloc nu lasă un fișier trunchiat.
+    temporary = path.with_name(path.name + ".tmp")
+    with temporary.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.writer(handle)
         writer.writerow(header)
         writer.writerows(existing[k] for k in sorted(existing))
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary, path)
     return len(existing) - before
 
 
