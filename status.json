@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-01T05:21+00:00",
+  "generated": "2026-11-01T05:55+00:00",
   "ok": true,
   "alerts": [],
   "accounts": {
@@ -34,6 +34,6 @@
       "reconciled": true
     }
   },
-  "ai_balance_usd": 7.96792671908,
+  "ai_balance_usd": 36.8208,
   "ai_spent_today_usd": 0.0
 }
