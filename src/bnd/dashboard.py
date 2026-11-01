@@ -104,6 +104,12 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                           "target_vol": settings.get("portfolio_vol"),
                           "financing": settings.get("financing")},
                 "plan": {"long": longs, "short": shorts, "gross": longs + shorts, "net": longs - shorts},
+                "limits": {"max_drawdown_pct": engine.limits().max_drawdown_pct,
+                           "max_daily_loss_pct": engine.limits().max_daily_loss_pct,
+                           "max_leverage": settings.get("max_leverage"),
+                           "max_position_pct": 100 * settings["max_weight"] if settings.get("max_weight") else None,
+                           "max_sector_pct": settings.get("max_sector"),
+                           "target_vol_pct": settings.get("portfolio_vol")},
                 "drawdown_pct": 100 * (1 - live_equity / account_row["peak_equity"])
                 if account_row["peak_equity"] > 0 and live_equity < account_row["peak_equity"] else 0.0,
                 "reconciled": checked["ok"],
@@ -133,8 +139,10 @@ def read_council(folder, balance: dict | None = None, now: datetime | None = Non
                 (decision_id,))}
             info = json.loads(db.execute("SELECT meta FROM decisions WHERE id = ?",
                                          (decision_id,)).fetchone()[0] or "{}")
+            conf = {agent: round(c, 2) for agent, c in db.execute(
+                "SELECT agent, confidence FROM votes WHERE decision_id = ? AND stage = 'final'", (decision_id,))}
             net = sum({"BUY": 1, "SELL": -1}.get(v, 0) for v in votes.values())
-            markets.append({"symbol": symbol, "decision": vote, "price": price, "votes": votes,
+            markets.append({"symbol": symbol, "decision": vote, "price": price, "votes": votes, "conf": conf,
                             "net": net, "bot": info.get("bot_signal") or 0,
                             "group": market_groups.group_of(symbol)})
         settled = db.execute("SELECT COUNT(*) FROM decisions WHERE settled_at IS NOT NULL"
@@ -280,10 +288,12 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     return {"generated": now.isoformat(timespec="minutes"), "events": events, "fx": fx, "groups": market_groups.labels(),
             "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
             "quotes_time": quotes_time, "system": system_status(runs),
-            "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
+            "schedule": SCHEDULE, "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
             "accounts": accounts, "council": council, "alerts": alerts}
 
 
+# Orele rulărilor zilnice (UTC), aceleași ca în cron-urile workflow-urilor; aplicația numără timpul până la următoarea.
+SCHEDULE = [{"name": "Consiliul AI", "utc": "21:40"}, {"name": "Cont unic", "utc": "22:25"}]
 TEST_START = "2026-10-31"
 TEST_REPORT = "2026-11-17"
 TEST_MILESTONES = [{"date": "2026-11-06", "label": "Comparație intermediară"},
