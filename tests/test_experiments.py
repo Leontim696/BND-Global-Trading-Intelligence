@@ -81,3 +81,18 @@ def test_cli(tmp_path, capsys):
     assert ex.main(["--registru", path, "verifica"]) == 0
     assert ex.main(["--registru", path, "rezultat", "E-001", "--verdict", "respins", "--concluzie", "nu"]) == 2
     capsys.readouterr()
+
+
+def test_notes_are_added_without_changing_the_verdict(tmp_path):
+    path = tmp_path / "r.jsonl"
+    ex.propose(path, **BASE)
+    ex.finish(path, id="E-001", verdict="respins", concluzie="nu")
+    ex.add_note(path, id="E-001", text="Interpretare ulterioară despre eșantion")
+    state = ex.experiments(path)["E-001"]
+    assert state["rezultat"]["verdict"] == "respins" and len(state["note"]) == 1
+    assert "Interpretare ulterioară" in ex.report(path)
+    assert ex.search(path, "interpretare")[0]["id"] == "E-001"
+    with pytest.raises(ex.RegistryError):
+        ex.add_note(path, id="E-009", text="x")
+    with pytest.raises(ex.RegistryError):
+        ex.add_note(path, id="E-001", text=" ")
