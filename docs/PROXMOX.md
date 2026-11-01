@@ -18,19 +18,33 @@ Garanții (testate în `tests/test_observer.py`):
 
 ## Resurse și LXC neprivilegiat
 - Debian 12/13, **neprivilegiat** (implicit în Proxmox), 1–2 vCPU, 512 MB–1 GB RAM, 5–10 GB disc (oglinda e de ordinul MB). Valorile se rafinează după măsurători; serviciul are `MemoryMax=512M`.
-- Dependențe: `python3` ≥ 3.11 și `git` ≥ 2.31 (autentificarea trece prin variabile de mediu `GIT_CONFIG_*`); modulele BND folosesc doar biblioteca standard.
+- Dependențe: `python3` ≥ 3.11 și `git` ≥ 2.31 (autentificarea trece prin `GIT_ASKPASS`); modulele BND folosesc doar biblioteca standard.
 - Fără Docker obligatoriu. Dacă totuși îl folosești într-un LXC neprivilegiat: `nesting=1,keyctl=1`; volumele sunt „mapate” (uid din container = 100000 + uid) și trebuie să aparțină utilizatorului `bnd` (uid 10001). `docker build -f deploy/Dockerfile.observer -t bnd-observer .` și `-v /srv/bnd-observer:/data`.
 - Rețea: doar ieșire HTTPS către github.com. Niciun port expus public.
 
 ## Repository privat: bootstrap sigur și token de citire
-Regula: **tokenul nu apare niciodată** în URL, în argumentele unei comenzi (se văd cu `ps`), în `~/.gitconfig`, în `.git/config` sau în istoricul shell. Scripturile din `deploy/observer/` respectă asta (`gitauth.sh` îl trimite lui git prin variabile de mediu, doar pentru acel proces).
+Regula: **tokenul nu apare niciodată** în URL, în argumentele unei comenzi (se văd cu `ps`), în mediul procesului git, în `~/.gitconfig`, în `.git/config`, în `~/.git-credentials` sau în istoricul shell.
 
+### Cum se autentifică git (și de ce `GIT_ASKPASS`)
+| Variantă | Unde ajunge tokenul | Verdict |
+|---|---|---|
+| `git -c http.extraheader=...` | în argumentele procesului (`ps`) | respins |
+| `GIT_CONFIG_VALUE_0=...` (varianta din #227) | în mediul lui git **și al fiecărui proces copil** (`git-remote-https`, hook-uri), citibil din `/proc/<pid>/environ` de același utilizator și de root | respins după evaluare |
+| `credential.helper=store` | scris pe disc în `~/.git-credentials` | respins |
+| **`GIT_ASKPASS` (`askpass.sh`)** | doar în fișierul de token (permisiuni restrânse) și în stdout-ul helperului, citit de git; nu în mediul sau argumentele lui git | **folosit** |
+| credential systemd (`LoadCredential=`) | tmpfs privat al serviciului; fișierul din `/etc` poate rămâne `root:root 0600` | **recomandat în plus** (vezi mai jos) |
+
+`gitauth.sh` setează pentru fiecare apel `GIT_ASKPASS=askpass.sh`, `GIT_TERMINAL_PROMPT=0` și `credential.helper=` (gol), ca `credential approve` să nu poată salva tokenul. `askpass.sh` răspunde doar la cererile „Username” (`x-access-token`) și „Password” (conținutul fișierului); orice altă cerere e refuzată. Dacă `GIT_TRACE`/`GIT_CURL_VERBOSE` sunt activate, git mascheză singur antetul `Authorization`; scripturile nu dezactivează niciodată `GIT_TRACE_REDACT`. Testele (`tests/test_observer_hardening.py`) pornesc un server HTTP real cu autentificare Basic peste `git http-backend` și verifică: serverul primește tokenul, dar în timpul rulării nicio intrare din `/proc` (mediu sau argumente) nu îl conține; logurile cu trasări active, fișierele din datele observerului și din `HOME` nu îl conțin; `credential.helper=store` nu îl poate persista.
+
+**Rămâne:** tokenul există în fișierul lui și, pentru o clipă, în memoria helperului. Un atacator cu root pe LXC îl poate citi oricum. Pentru a nu-l face citibil de utilizatorul serviciului, folosește varianta cu credential systemd: `deploy/observer/bnd-observer-credential.conf.example` (`LoadCredential=github-token:/etc/bnd-observer/github-read-token`, fișierul rămâne `root:root 0600`). Cerințe: git ≥ 2.31 (pentru `GIT_CONFIG_COUNT`, folosit doar la dezactivarea `credential.helper`, fără secret în el) și systemd ≥ 250 pentru credențiale.
+
+### Pași
 1. **Creează tokenul** pe GitHub (Settings → Developer settings → Fine-grained tokens): repo selectat = doar acest repo, permisiune **Contents: Read** (nimic altceva), expirare scurtă (30–90 de zile). Nu folosi tokenuri clasice `ghp_...`.
 2. **Salvează-l** pe LXC, ca root: `sudo bash deploy/observer/set-token.sh` (te întreabă tokenul fără ecou sau îl citește de pe stdin; nu primește argumente, deci nu intră în istoric). Fișierul `/etc/bnd-observer/github-read-token` devine `root:bnd-observer`, mod `0640`.
-   - **Important:** serviciul rulează ca `bnd-observer`. Dacă fișierul ar fi `root:root 0600`, serviciul nu l-ar putea citi; `sync.sh` nu mai continuă pe tăcute fără autentificare, ci eșuează cu `sync_error = token_ilizibil` și mesaj clar.
+   - **Important:** serviciul rulează ca `bnd-observer`. Dacă fișierul ar fi `root:root 0600` (fără varianta cu credential systemd), serviciul nu l-ar putea citi; `sync.sh` nu mai continuă pe tăcute fără autentificare, ci eșuează cu `sync_error = token_ilizibil` și mesaj clar.
 3. **Clonează repo-ul** fără token în URL: `sudo bash deploy/observer/bootstrap.sh /root/bnd` (după ce ai copiat scriptul sau ai pus doar `deploy/observer/` pe server). Alternativa fără niciun token pe server: pe calculatorul tău `git archive --format=tar.gz -o bnd.tgz HEAD src deploy`, apoi `scp bnd.tgz` și dezarhivare în `/root/bnd`.
 4. **Verifică** (nu afișează tokenul): `sudo bash deploy/observer/check-token.sh`. Controlează: permisiunile fișierului (nu e citibil de „alții”), că utilizatorul `bnd-observer` îl poate citi, tipul tokenului (avertizează la token clasic), că citirea ramurii `cont-unic` funcționează (doar `ls-remote`) și că tokenul nu a rămas în `~/.bash_history` (dacă a rămas: șterge linia și **revocă** tokenul).
-5. **Activează-l** în `/etc/bnd-observer/env`: decomentează `BND_TOKEN_FILE=/etc/bnd-observer/github-read-token`.
+5. **Activează-l** în `/etc/bnd-observer/env`: decomentează `BND_TOKEN_FILE=/etc/bnd-observer/github-read-token` (sau folosește credentialul systemd și lasă variabila comentată).
 6. **Rotire / revocare:** repetă pasul 2 cu un token nou, rulează `check-token.sh`, revocă-l pe cel vechi pe GitHub.
 
 ## Instalare (o faci tu, ca root în LXC; nimic nu rulează automat)
@@ -58,6 +72,15 @@ Nu expune portul pe internet. Câmpuri utile pentru senzor: `ok`, `verdict`, `da
 - **date** (`data_ok`, `verdict` ∈ ok / stale / integrity / missing): oglinda are SQLite valid, lanț de audit corect, ultima rulare zilnică sub 36 h.
 - **sincronizare** (`sync_ok`, `last_successful_sync`, `mirror_commit`, `sync_error`, `consecutive_failures`): `sync.sh` scrie `sync.json` la FIECARE încercare, inclusiv la eșec (`remote_indisponibil`, `token_ilizibil`, `lipseste_<fișier>`, `oglinda_noua_invalida`). La eșec păstrează `last_successful_sync` și `mirror_commit` ale ultimei reușite. Dacă ultima reușită e mai veche de 3 ore, `sync_ok` devine false.
 Un eșec GitHub dă `verdict = sync_failed`, `ok = false` și cod de ieșire 7 (unitatea systemd apare ca eșuată), chiar dacă datele din oglindă sunt încă valide. `healthcheck.sh` cere `data_ok`, `sync_ok`, `ok` și `status.json` mai nou de 2 ore. Pentru Home Assistant: alertă pe `ok != true` și, separat, pe `sync_ok != true`. Imaginea Docker are `HEALTHCHECK` echivalent. După o întrerupere: `Persistent=true` și `OnBootSec=2min` refac oglinda.
+
+## Sincronizare întreruptă brusc
+`sync.sh` poate fi oprit oricând (oprire LXC, `kill -9`, OOM, pană de curent). Garanții, testate prin `SIGKILL` în fiecare etapă (`fetch`, `before_verify`, `after_verify`, `after_switch`):
+- **Comutare atomică.** Oglinda e o legătură simbolică `mirror -> releases/<ts>-<commit>`; se schimbă cu `ln -sfn` + `mv -T` (rename atomic). După oprire există întotdeauna fie oglinda veche, fie cea nouă, **întregi**; vechea oglindă nu mai e ștearsă înainte de noua copie (varianta veche făcea `rm -rf mirror.prev; mv mirror mirror.prev; mv new mirror` și o oprire între cele două `mv` lăsa serverul fără oglindă).
+- **Tentativa e marcată.** La pornire, `sync.sh` scrie `sync.attempt`; îl șterge doar la ieșire normală. Dacă marcajul există dar lacătul `.sync.lock` nu mai e ținut de nimeni, `status.json` arată `sync_ok = false`, `sync_interrupted = true`, `verdict = sync_failed` (cod 7) **înainte de orice nouă rulare**, iar `last_successful_sync` rămâne ora ultimei sincronizări reale. `mirror_commit` se citește din oglinda efectivă (nu din `sync.json`), deci arată adevărul și după o oprire imediat după comutare.
+- **Următoarea rulare** observă marcajul, înregistrează tentativa (`interrupted_attempts`, `last_interrupted`), curăță resturile (`.work.*`, legături temporare, versiuni neatinse de legături) și abia apoi încearcă din nou. Succesul pune `sync_ok = true`, dar contorul `interrupted_attempts` rămâne ca istoric.
+- **Recuperare.** Dacă `mirror` lipsește sau e o legătură ruptă (de exemplu după o migrare întreruptă din versiunea veche cu folder real), se reia cea mai nouă versiune validă din `releases/`, chiar dacă GitHub e indisponibil; recuperarea nu e raportată ca sincronizare reușită.
+- `SIGTERM`/`SIGINT` (oprire normală systemd) sunt interceptate: curăță, scriu `sync_error = intrerupt_semnal` și șterg marcajul.
+- Se păstrează cel mult două versiuni (`mirror` și `mirror.prev`).
 
 ## Backup / restore (etapa A: oglinda se poate reface oricând din GitHub)
 - Oglinda e **dispensabilă**: ștergi `/var/lib/bnd-observer/mirror` și rulezi serviciul.

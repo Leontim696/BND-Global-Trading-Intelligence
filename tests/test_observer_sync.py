@@ -170,21 +170,24 @@ def test_observe_distinguishes_old_sync_from_failed_sync(tmp_path):
 
 # -- token: fără urme în argumente, URL, istoric ----------------------------------------------------
 
-def test_token_never_appears_in_git_arguments_or_remote_url(tmp_path):
+def test_token_never_appears_in_git_arguments_or_environment(tmp_path):
     log, envlog = tmp_path / "args.log", tmp_path / "env.log"
     fake = tmp_path / "bin"
     fake.mkdir()
-    (fake / "git").write_text(f'#!/bin/sh\necho "$@" >> {log}\necho "$GIT_CONFIG_COUNT $GIT_CONFIG_KEY_0 $GIT_CONFIG_VALUE_0" >> {envlog}\nexit 0\n')
+    (fake / "git").write_text(f'#!/bin/sh\necho "$@" >> {log}\nenv >> {envlog}\nexit 0\n')
     (fake / "git").chmod(0o755)
     tokfile = tmp_path / "tok"
     tokfile.write_text(TOKEN + "\n")
     env = {**os.environ, "PATH": f"{fake}:{os.environ['PATH']}", "BND_TOKEN_FILE": str(tokfile)}
     subprocess.run(["bash", "-c", f"source {OBS}/gitauth.sh; git_net ls-remote https://github.com/x/y.git refs/heads/cont-unic"],
                    env=env, check=True)
-    args, envs = log.read_text(), envlog.read_text()
     import base64
-    assert TOKEN not in args and base64.b64encode(f"x-access-token:{TOKEN}".encode()).decode() not in args
-    assert envs.startswith("1 http.extraheader AUTHORIZATION: basic ")        # doar prin mediu, pentru acest proces
+    args, envs = log.read_text(), envlog.read_text()
+    encoded = base64.b64encode(f"x-access-token:{TOKEN}".encode()).decode()
+    for secret in (TOKEN, encoded):
+        assert secret not in args and secret not in envs                # nici în argumente, nici în mediul lui git
+    assert f"GIT_ASKPASS={OBS}/askpass.sh" in envs and "GIT_TERMINAL_PROMPT=0" in envs
+    assert "GIT_CONFIG_KEY_0=credential.helper" in envs and "GIT_CONFIG_VALUE_0=\n" in envs + "\n"
     assert "https://github.com/x/y.git" in args and "@" not in args
 
 
@@ -193,6 +196,7 @@ def test_sources_never_put_a_token_in_urls_or_arguments():
         text = script.read_text()
         assert "x-access-token:${" not in text.replace("printf 'x-access-token:%s'", ""), script.name
         assert "http.extraheader=AUTHORIZATION" not in text, script.name       # forma veche, vizibilă în ps (git -c ...)
+        assert 'GIT_CONFIG_VALUE_0="AUTHORIZATION' not in text, script.name    # forma din #227: token în mediul lui git
         assert "https://x-access-token" not in text and "ghp_${" not in text, script.name
 
 
