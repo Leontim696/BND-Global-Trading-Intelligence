@@ -40,7 +40,7 @@ jobs:
           echo "rc=$rc" >> "$GITHUB_OUTPUT"
           {
             echo "### Descoperire Smart-Money: cod de ieșire $rc (0 = ok/parțial, 2 = fără date, 3 = cheie lipsă)"
-            echo "Candidații NU sunt walleturi validate și nu sunt „insideri”: vezi coloana status din descoperite.csv."
+            echo "Candidații NU sunt walleturi validate și nu sunt insideri: vezi coloana status din descoperite.csv."
             cat arhiva/smart_money/descoperire.json 2>/dev/null || true
           } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
