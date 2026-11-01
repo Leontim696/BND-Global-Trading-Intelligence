@@ -1,0 +1,90 @@
+name: Date macro și context (arhivă)
+
+# Colectează zilnic (EDGAR duminica) probabilități Polymarket, serii FRED (dacă există cheia) și fapte SEC EDGAR cu data
+# depunerii, și le arhivează pe ramura date-macro. Nu ia decizii, nu atinge conturile și nu e dat consiliului.
+
+on:
+  schedule:
+    - cron: '20 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-date-macro
+  cancel-in-progress: false
+
+jobs:
+  colecteaza:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      EVENT: ${{ github.event_name }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Restore the history
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: bash scripts/restore_branch.sh date-macro arhiva
+      - name: Collect
+        env:
+          FRED_API_KEY: ${{ secrets.FRED_API_KEY }}
+        run: |
+          only="polymarket,fred"
+          # Bilanțurile se schimbă rar: săptămânal (duminica) sau la rularea manuală.
+          if [ "$EVENT" = workflow_dispatch ] || [ "$(date -u +%u)" = 7 ]; then only="$only,edgar"; fi
+          python -m src.bnd.macro_data --out arhiva --only "$only" || echo "::warning::macro_data a eșuat"
+          cat arhiva/macro/status.json >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: bnd-date-macro-${{ github.run_id }}
+          path: arhiva/macro/
+          if-no-files-found: ignore
+          retention-days: 3
+
+  # Separate job: the write token never runs project code.
+  publica:
+    needs: colecteaza
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        continue-on-error: true
+        with:
+          name: bnd-date-macro-${{ github.run_id }}
+          path: macro
+      - name: Save on the date-macro branch
+        run: |
+          set -euo pipefail
+          [ -f macro/status.json ] || { echo "::warning::Nothing to save"; exit 0; }
+          git init -q out && cd out
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git"
+          pushed=0
+          for attempt in 1 2 3; do
+            if git fetch -q --depth=1 origin date-macro 2>/dev/null; then
+              git checkout -q -f -B date-macro FETCH_HEAD
+            else
+              git checkout -q --orphan date-macro 2>/dev/null || true
+            fi
+            cp ../macro/*.csv ../macro/status.json . 2>/dev/null || cp ../macro/status.json .
+            git add -A
+            if ! git diff --cached --quiet; then
+              git commit -q -m "Date macro $(date -u +%Y-%m-%d)"
+            else
+              echo "Nimic nou de salvat."
+            fi
+            if git push -q origin HEAD:refs/heads/date-macro; then pushed=1; break; fi
+            sleep $((attempt * 5))
+          done
+          [ "$pushed" = 1 ] || { echo "::error::Nu am putut salva pe ramură după 3 încercări."; exit 1; }
