@@ -79,8 +79,9 @@ def test_events_report_first_fills_big_daily_moves_council_summary_and_test_end(
     assert any(e.startswith("Cont unic: variație zilnică +3.0%") and e.endswith("la 2026-11-03") for e in events)
     assert "Consiliul AI 2026-11-03: 88 piețe votate, cost azi 2.41 $, rămas 33.50 $" in events
     assert not any("încheiat" in e for e in events)
-    end = dashboard.events_from([], None, datetime(2026, 11, 16, 8, tzinfo=timezone.utc))
-    assert end == ["Testul de 16 zile s-a încheiat: raportul final urmează (17.11)"]
+    assert dashboard.events_from([], None, datetime(2026, 11, 16, 8, tzinfo=timezone.utc)) == []   # prelungit la 30.11
+    end = dashboard.events_from([], None, datetime(2026, 11, 30, 8, tzinfo=timezone.utc))
+    assert end == ["Testul de 30 de zile s-a încheiat: raportul final urmează (1.12)"]
 
 
 def test_small_moves_archived_accounts_and_missing_data_produce_no_events():

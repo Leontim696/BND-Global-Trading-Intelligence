@@ -1,4 +1,4 @@
-"""Raportul final al testului oficial (31.10–16.11.2026): doar citire, nu tranzacționează.
+"""Raportul testului oficial (31.10–30.11.2026; preliminar pe 17.11): doar citire, nu tranzacționează.
 
 Adună într-un singur document, cu structură fixată dinainte (vezi docs/RAPORT_FINAL.md):
 contul unic (curba de capital, randament, scădere maximă, execuții, comisioane),
@@ -7,7 +7,7 @@ consiliului AI (din council_analytics), costul AI și verdictul după criterii s
 ÎNAINTE de a vedea rezultatele. Lipsa datelor se spune explicit, nu se ascunde.
 
     python -m src.bnd.final_report --unic paper.sqlite --registry registry.sqlite \
-        [--costs costs.sqlite] [--benchmark SP500.csv] --out raport-final [--end 2026-11-16]
+        [--costs costs.sqlite] [--benchmark SP500.csv] --out raport-final [--end 2026-11-30] [--preliminar]
 
 Scrie <out>.md și <out>.html (UTC peste tot).
 """
@@ -25,7 +25,8 @@ from . import council_analytics
 from .market_data import MarketDataError, load_csv
 
 TEST_START = date(2026, 10, 31)
-TEST_END = date(2026, 11, 16)
+TEST_END = date(2026, 11, 30)
+PRELIMINARY_END = date(2026, 11, 16)
 # Criterii fixate pe 2.11.2026, înainte de rezultate (pre-înregistrare). Nu se schimbă după.
 MIN_SETTLED = council_analytics.MIN_SAMPLE
 MAX_P = 0.05
@@ -108,7 +109,7 @@ def verdict(acc: dict, bench: dict | None, council: dict) -> dict:
         (f"Testul semnului: p < {MAX_P}", None if p is None else p < MAX_P),
     ]
     passed = all(ok is True for _, ok in checks)
-    text = ("Indiciu de avantaj (NU dovadă): toate criteriile sunt îndeplinite, dar 16 zile și decizii corelate "
+    text = ("Indiciu de avantaj (NU dovadă): toate criteriile sunt îndeplinite, dar câteva săptămâni și decizii corelate "
             "între piețe nu ajung pentru o concluzie. Urmează un test mai lung, cu aceleași reguli."
             if passed else
             "Fără dovezi de avantaj: cel puțin un criteriu pre-înregistrat nu e îndeplinit sau nu are date.")
@@ -123,14 +124,17 @@ def _mark(ok):
     return "da" if ok is True else "nu" if ok is False else "fără date"
 
 
-def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now: datetime) -> list:
+def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now: datetime,
+          end: date = TEST_END, preliminary: bool = False) -> list:
     """Secțiunile raportului ca (titlu, blocuri); un bloc e text sau tabel (antet, rânduri)."""
     ver = verdict(acc, bench, council)
     cur = acc["currency"]
     s = council["strategies"]
     sections = [
         ("Rezumat", [
-            f"Test oficial {TEST_START:%d.%m}–{TEST_END:%d.%m.%Y}, doar bani virtuali. Raport generat {now:%Y-%m-%d %H:%M} UTC.",
+            (f"Raport PRELIMINAR pe {TEST_START:%d.%m}–{end:%d.%m.%Y}; testul continuă până pe {TEST_END:%d.%m.%Y}, "
+             "cu aceleași reguli și aceleași criterii. " if preliminary else
+             f"Test oficial {TEST_START:%d.%m}–{end:%d.%m.%Y}. ") + f"Doar bani virtuali. Raport generat {now:%Y-%m-%d %H:%M} UTC.",
             (["Indicator", "Valoare"], [
                 ["Capital inițial", f"{_fmt(acc['initial'])} {cur}"],
                 ["Capital final", f"{_fmt(acc['final'])} {cur}"],
@@ -171,7 +175,7 @@ def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now:
                                                   for p in acc["positions"]]) if acc["positions"] else "Nicio poziție deschisă.",
         ]),
         ("Limite", [
-            "16 zile sunt prea puține pentru o concluzie statistică; deciziile pe piețe diferite sunt corelate.",
+            "Câteva săptămâni sunt prea puține pentru o concluzie statistică; deciziile pe piețe diferite sunt corelate.",
             "Rezultatele sunt pe bani virtuali, cu comisioane și alunecare estimate, nu reale.",
             "Criteriile verdictului au fost fixate înainte de rezultate și nu se ajustează după.",
         ]),
@@ -218,7 +222,8 @@ def main(argv=None) -> int:
     p.add_argument("--registry", required=True, help="registry.sqlite al consiliului")
     p.add_argument("--costs", help="costs.sqlite (opțional)")
     p.add_argument("--benchmark", help="CSV zilnic S&P 500 (opțional)")
-    p.add_argument("--end", default=TEST_END.isoformat(), help="ultima zi a ferestrei (implicit 2026-11-16)")
+    p.add_argument("--preliminar", action="store_true", help="raportul intermediar din 17.11 (fereastra 31.10–16.11)")
+    p.add_argument("--end", default=None, help="ultima zi a ferestrei (implicit 2026-11-30, sau 2026-11-16 cu --preliminar)")
     p.add_argument("--out", required=True, help="prefixul fișierelor (.md și .html)")
     args = p.parse_args(argv)
     try:
@@ -227,9 +232,10 @@ def main(argv=None) -> int:
     except (sqlite3.Error, OSError, KeyError, ValueError) as exc:
         print(f"Raportul nu se poate genera: {exc}", file=sys.stderr)
         return 1
-    bench = benchmark(args.benchmark, TEST_START, date.fromisoformat(args.end)) if args.benchmark else None
-    sections = build(acc, bench, council, ai_cost(args.costs), datetime.now(timezone.utc))
-    title = "Raport final: testul oficial BND (paper trading)"
+    end = date.fromisoformat(args.end) if args.end else (PRELIMINARY_END if args.preliminar else TEST_END)
+    bench = benchmark(args.benchmark, TEST_START, end) if args.benchmark else None
+    sections = build(acc, bench, council, ai_cost(args.costs), datetime.now(timezone.utc), end, args.preliminar)
+    title = ("Raport preliminar" if args.preliminar else "Raport final") + ": testul oficial BND (paper trading)"
     Path(f"{args.out}.md").write_text(to_markdown(title, sections), encoding="utf-8")
     Path(f"{args.out}.html").write_text(to_html(title, sections), encoding="utf-8")
     print(f"Scris {args.out}.md și {args.out}.html")

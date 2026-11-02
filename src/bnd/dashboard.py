@@ -347,10 +347,11 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
 # Orele rulărilor zilnice (UTC), aceleași ca în cron-urile workflow-urilor; aplicația numără timpul până la următoarea.
 SCHEDULE = [{"name": "Consiliul AI", "utc": "21:40"}, {"name": "Cont unic", "utc": "22:25"}]
 TEST_START = "2026-10-31"
-TEST_REPORT = "2026-11-17"
+TEST_REPORT = "2026-12-01"
 TEST_MILESTONES = [{"date": "2026-11-06", "label": "Comparație intermediară"},
-                   {"date": "2026-11-16", "label": "Sfârșitul testului"},
-                   {"date": "2026-11-17", "label": "Raport final"}]
+                   {"date": "2026-11-17", "label": "Raport preliminar"},
+                   {"date": "2026-11-30", "label": "Sfârșitul testului"},
+                   {"date": "2026-12-01", "label": "Raport final"}]
 
 
 def system_status(runs: list | None) -> list:
@@ -364,7 +365,7 @@ def system_status(runs: list | None) -> list:
 
 
 DAILY_MOVE_ALERT_PCT = 2.0        # variație zilnică a contului de la care se trimite o notificare
-TEST_END = "2026-11-16"
+TEST_END = "2026-11-30"
 
 
 def events_from(accounts: list, council: dict | None, now: datetime) -> list:
@@ -388,7 +389,7 @@ def events_from(accounts: list, council: dict | None, now: datetime) -> list:
             line += f", cost azi {costs.get('today', 0):.2f} $, rămas {costs.get('remaining', 0):.2f} $"
         events.append(line)
     if now.date().isoformat() >= TEST_END:
-        events.append("Testul de 16 zile s-a încheiat: raportul final urmează (17.11)")
+        events.append("Testul de 30 de zile s-a încheiat: raportul final urmează (1.12)")
     return events
 
 

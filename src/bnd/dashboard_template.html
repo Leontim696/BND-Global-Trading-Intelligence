@@ -498,7 +498,7 @@ main{max-width:1640px}
     <div id="filters" class="filters" role="group" aria-label="Filtrează pe categorie"></div></div>
   <div id="signals" class="signals" aria-label="Semnale buy/sell acum"></div>
   <section id="view"></section>
-  <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj. Scurtături: <kbd>/</kbd> filtrează, <kbd>Ctrl K</kbd> caută, <kbd>1</kbd>–<kbd>5</kbd> file, <kbd>T</kbd> temă.</p>
+  <p class="foot">Bani virtuali. Nimic din această aplicație nu tranzacționează. Un rezultat bun în testul de 30 de zile nu dovedește un avantaj. Scurtături: <kbd>/</kbd> filtrează, <kbd>Ctrl K</kbd> caută, <kbd>1</kbd>–<kbd>5</kbd> file, <kbd>T</kbd> temă.</p>
 </main>
 <div class="dock"><nav class="dock-in" id="tabs" role="tablist" aria-label="Secțiuni"></nav></div>
 <div class="sheet" id="sheet" hidden><div class="sheet-bg" data-close></div>
@@ -786,7 +786,7 @@ const TERMS = {
   alpha:["Alpha","Cât a câștigat o decizie peste piață în aceeași perioadă. Fără ea, o decizie bună într-o piață care urcă tot ar părea reușită."],
   sma:["SMA 20/50","Regulă simplă: dacă media pe 20 de zile e peste media pe 50, tendința e în sus. Nu e o recomandare."],
   stres:["Test de stres","Estimare: cât ar câștiga sau pierde contul dacă piețele s-ar mișca cu procentele alese. Folosește pozițiile de acum sau pe cele de după comenzile de mâine. Nu prezice nimic."],
-  paper:["Bani virtuali","Nimic din aplicație nu tranzacționează. Un rezultat bun în testul de 16 zile nu dovedește un avantaj."]};
+  paper:["Bani virtuali","Nimic din aplicație nu tranzacționează. Un rezultat bun în testul de 30 de zile nu dovedește un avantaj."]};
 const help = k => `<button class="help" type="button" data-term="${k}" aria-label="Ce înseamnă ${esc(TERMS[k][0])}?">?</button>`;
 function openGlossary(focus) {
   openSheet(`<div class="label">Glosar</div><div class="hero-value" id="sheet-title" style="font-size:26px">Ce înseamnă termenii</div>` +

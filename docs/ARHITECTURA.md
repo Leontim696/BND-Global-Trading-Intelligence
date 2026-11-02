@@ -37,7 +37,7 @@ Consiliul: `consiliu-umbra.yml`, 21:40 UTC (plătit, plafoane implicite în work
 2. **Risc (în motor):** limită pe poziție, sector, monedă, volatilitatea portofoliului, leverage brut, risc pe tranzacție, pierdere zilnică și drawdown cu oprire de siguranță (kill switch), marjă ESMA cu lichidare la 50%, date vechi sau gap mare = fără risc nou.
 3. **Idempotență:** id de ordin = `<dată>:<piață>`; tranzacții SQLite `BEGIN IMMEDIATE`; jurnal de audit cu lanț de hash și blocare pe fișier.
 4. **Joburi de publicare separate:** jetonul cu drept de scriere nu rulează cod de proiect.
-5. **Costuri AI:** poartă de confirmare (`RUN-PAID-TEST`), comutator `BND_COUNCIL_DAILY`, dată de final 16.11.2026, buget pe scop, plafoane în cod.
+5. **Costuri AI:** poartă de confirmare (`RUN-PAID-TEST`), comutator `BND_COUNCIL_DAILY`, dată de final 30.11.2026 (testul prelungit), buget pe scop, plafoane în cod.
 
 ## Configurații
 Setările unui cont sunt înghețate la creare (jurnalul `runner_settings`); nu se pot schimba fără cont nou. Variabile: `BND_TRADING_MODE` (PAPER), `BND_ALLOW_LIVE_AI` (true doar în consiliu), `BND_MODEL_*` (modele), `BND_COUNCIL_DAILY` (on), secretele `OPENROUTER_API_KEY` și `NTFY_TOPIC`.

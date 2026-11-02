@@ -5,7 +5,7 @@ are ever placed.
 
 ## Starea actuală (noiembrie 2026)
 
-Doar bani virtuali: `safety.py` refuză orice mod în afară de MOCK/PAPER. Testul în timp real rulează între 31.10 și 16.11.2026 (raportul final pe 17.11); regulile și limitele de risc nu se schimbă pe durata lui. Rezultatele nu dovedesc un avantaj.
+Doar bani virtuali: `safety.py` refuză orice mod în afară de MOCK/PAPER. Testul în timp real rulează între 31.10 și 30.11.2026 (prelungit de la 16 la 30 de zile pe 2.11; raport preliminar pe 17.11, raportul final pe 1.12); regulile și limitele de risc nu se schimbă pe durata lui. Rezultatele nu dovedesc un avantaj.
 
 | Ce | Unde |
 | --- | --- |
@@ -357,9 +357,9 @@ direction, before costs). A market already decided today is not paid twice.
 
 Modes: `mock` (simulated agents, free) and `live` (OpenRouter; needs
 `BND_ALLOW_LIVE_AI=true`, a 3-hour authorisation, a per-round cap, a daily
-cap of 3.00 USD and a monthly cap of 38 USD (the workflow defaults; the repository variables
+cap of 3.00 USD and a monthly cap of 75 USD (the workflow defaults; the repository variables
 `BND_COUNCIL_DAILY_CAP` and `BND_COUNCIL_MONTHLY_CAP` override them) kept in `costs.sqlite`; the daily
-run also stops by itself after 2026-11-16). In the
+run also stops by itself after 2026-11-30, the end of the extended test). In the
 workflow a manual live run needs `RUN-PAID-TEST`; the daily run (21:40 UTC)
 does nothing unless the repository variable `BND_COUNCIL_DAILY` is `on`.
 State (`registry.sqlite`, `costs.sqlite`, `consiliu/`) lives on the

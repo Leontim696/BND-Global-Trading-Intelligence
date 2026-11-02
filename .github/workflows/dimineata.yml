@@ -3,7 +3,7 @@ name: Rezumat de dimineață
 # În fiecare dimineață, la 05:05 ora Germaniei (04:05 UTC iarna), trimite pe telefon prin ntfy
 # un rezumat: ce s-a întâmplat peste noapte (consiliu, ordine executate, valoarea conturilor,
 # alerte, costul AI) și planurile zilei. Fără apeluri AI plătite; nu tranzacționează. Se oprește
-# singur după 2026-11-17.
+# singur după 2026-12-01 (testul a fost prelungit la 30 de zile).
 
 on:
   schedule:
@@ -37,7 +37,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if [ "$(date -u +%Y-%m-%d)" \> "2026-11-17" ]; then
+          if [ "$(date -u +%Y-%m-%d)" \> "2026-12-01" ]; then
             echo "Testul s-a încheiat: nu se mai trimite rezumatul." >> "$GITHUB_STEP_SUMMARY"; exit 0
           fi
           # Token doar pentru comenzile de rețea (nu rămâne în .git/config pentru restul pașilor).
@@ -64,6 +64,6 @@ jobs:
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
-          if [ "$(date -u +%Y-%m-%d)" \> "2026-11-17" ]; then exit 0; fi
+          if [ "$(date -u +%Y-%m-%d)" \> "2026-12-01" ]; then exit 0; fi
           python -m src.bnd.morning --paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --council out/k \
             --quotes out/quotes.json --runs out/runs.json --balance out/balance.json --send | tee -a "$GITHUB_STEP_SUMMARY"

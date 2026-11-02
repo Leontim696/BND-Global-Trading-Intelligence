@@ -327,7 +327,7 @@ def main(argv=None) -> int:
     parser.add_argument("--mode", choices=["mock", "live"], default="mock")
     parser.add_argument("--round-budget", default="0.60", help="plafon pe rundă (o piață), dolari")
     parser.add_argument("--daily-budget", default="3.00")
-    parser.add_argument("--monthly-budget", default="38")
+    parser.add_argument("--monthly-budget", default="75")
     parser.add_argument("--report")
     parser.add_argument("--report-short", help="rezumat pe o linie per piață (pentru multe piețe)")
     parser.add_argument("--json")
