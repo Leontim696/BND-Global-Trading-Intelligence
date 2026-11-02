@@ -250,7 +250,7 @@ kbd{font:500 10.5px var(--font-data);border:1px solid var(--line-2);border-radiu
 .toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;background:var(--fg);color:var(--bg);font:600 13px var(--font-body);padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
 /* ===== Interfața 3.0: accent dinamic, aurora, reflector, bandă de semnale, punte de comandă ===== */
-:root{--ah:215}
+:root{--ah:290}
 @supports (color: oklch(0 0 0)){
   :root{--accent:oklch(.83 .13 var(--ah));--accent-2:oklch(.69 .17 calc(var(--ah) + 42));--on-accent:oklch(.2 .04 var(--ah));
     --accent-soft:oklch(.83 .13 var(--ah) / .13);--mesh-a:oklch(.83 .13 var(--ah) / .15);--mesh-b:oklch(.69 .17 calc(var(--ah) + 42) / .14)}
@@ -331,6 +331,120 @@ button.panel:hover,a.panel:hover{border-color:var(--line-2)}
 .cmd kbd{flex:0 0 auto}
 @media (prefers-reduced-motion:no-preference){.view-in>*{animation-delay:calc(var(--i,0)*45ms)}.bigval,.hero-value{transition:opacity .3s}}
 @media (max-width:520px){.clock{display:none}.tools{gap:6px;flex-wrap:nowrap}.icon-btn,.swatch{width:34px;height:34px;border-radius:10px}.chip{padding:5px 9px;font-size:11.5px}header{gap:8px}}
+/* ===== Terminal: paleta din referințe (bleumarin profund, neon violet/cyan, lumânări TradingView) ===== */
+:root{--bg:#04070e;--bg-2:#070c17;--surface:#0a111f;--glass:rgba(10,17,31,.84);--raise:#0f192c;
+  --line:rgba(118,138,226,.14);--line-2:rgba(118,138,226,.28);--fg:#e7ecfb;--muted:#8391b4;
+  --gain:#22c39a;--loss:#f23645;--warn:#ffb648;
+  --up:#26a69a;--down:#ef5350;--n-green:#2ee6a6;--n-yellow:#f5d547;--n-blue:#4da3ff;--n-orange:#ff9442;--n-violet:#a77bff;
+  --glow:0 0 0 1px var(--line),0 18px 50px rgba(0,0,0,.55)}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--up:#089981;--down:#e0313f;--n-green:#0e9f6e;--n-yellow:#a17c00;--n-blue:#1d6fe0;--n-orange:#d4600f;--n-violet:#7a4be0}}
+:root[data-theme="light"]{--up:#089981;--down:#e0313f;--n-green:#0e9f6e;--n-yellow:#a17c00;--n-blue:#1d6fe0;--n-orange:#d4600f;--n-violet:#7a4be0}
+main{max-width:1640px}
+.panel{border-radius:16px;border-color:color-mix(in srgb,var(--accent) 14%,var(--line))}
+.panel.neon{border-color:color-mix(in srgb,var(--accent) 45%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 25%,transparent),0 0 28px color-mix(in srgb,var(--accent) 16%,transparent),var(--glow)}
+.dock{background:color-mix(in srgb,var(--bg-2) 92%,transparent)}
+@media (max-width:979px){.dock-in{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(62px,1fr);overflow-x:auto;scrollbar-width:none;max-width:none}
+  .dock-in::-webkit-scrollbar{display:none}}
+.only-wide{display:none}@media (min-width:760px){.only-wide{display:flex}}
+/* bara de instrumente a terminalului */
+.tvbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:14px;background:var(--glass);margin-top:6px}
+.tvbar .seg{margin:0}
+.tvbar .sep{width:1px;height:22px;background:var(--line-2);margin-inline:4px}
+.tvsym{font:800 14px var(--font-body);padding:6px 12px;border-radius:10px;border:1px solid var(--line-2);background:var(--raise)}
+.term-note{color:var(--muted);font:500 11.5px var(--font-data);margin-left:auto}
+.tvwrap{display:grid;gap:10px;margin-top:10px;grid-template-columns:1fr;align-items:start}
+@media (min-width:1100px){.tvwrap{grid-template-columns:minmax(0,1fr) 340px}}
+.tvgrid{display:grid;gap:8px;grid-template-columns:1fr;min-width:0;align-content:start}
+.tvgrid.n2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tvgrid.n4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.tvcell{border:1px solid var(--line);border-radius:14px;background:var(--surface);min-width:0;overflow:hidden;position:relative}
+.tvcell.on{border-color:color-mix(in srgb,var(--accent) 60%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--accent) 30%,transparent),0 0 24px color-mix(in srgb,var(--accent) 14%,transparent)}
+.tvhead{display:flex;gap:8px 12px;align-items:baseline;flex-wrap:wrap;padding:8px 12px 0;font-size:12px}
+.tvhead b{font:800 13px var(--font-body)}.tvhead .mono{color:var(--muted);font-size:11px}
+.tvc{display:block;width:100%;height:clamp(300px,52vh,560px);touch-action:pan-y;cursor:crosshair}
+.tvgrid.n2 .tvc{height:clamp(260px,46vh,500px)}.tvgrid.n4 .tvc{height:clamp(200px,31vh,330px)}
+.tvside{display:grid;gap:10px;align-content:start;min-width:0}
+.tvside .panel{margin:0;padding:14px}
+.wl{display:grid;grid-template-columns:minmax(0,1.2fr) 1fr .8fr .8fr;gap:6px;align-items:center;width:100%;padding:7px 6px;border:0;border-radius:8px;background:none;text-align:right;font:500 12px var(--font-data)}
+.wl b{text-align:left;font:700 12.5px var(--font-body);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wl:hover{background:var(--accent-soft)}.wl.on{background:color-mix(in srgb,var(--accent) 16%,transparent);outline:1px solid color-mix(in srgb,var(--accent) 50%,transparent)}
+.wlh{display:grid;grid-template-columns:minmax(0,1.2fr) 1fr .8fr .8fr;gap:6px;padding:0 6px 6px;color:var(--muted);font:700 10px var(--font-body);letter-spacing:.08em;text-transform:uppercase;text-align:right}
+.wlh span:first-child{text-align:left}
+.wlg{color:var(--muted);font:700 10.5px var(--font-body);letter-spacing:.1em;text-transform:uppercase;padding:10px 6px 4px}
+.wlist{max-height:46vh;overflow:auto;scrollbar-width:thin}
+.perf{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.perf div{border-radius:10px;padding:8px 4px;text-align:center;font:600 12.5px var(--font-data);background:var(--raise)}
+.perf div small{display:block;color:var(--muted);font:600 10px var(--font-body);margin-top:2px}
+.perf .up{background:color-mix(in srgb,var(--up) 18%,var(--raise));color:var(--up)}.perf .dn{background:color-mix(in srgb,var(--down) 18%,var(--raise));color:var(--down)}
+.rng{margin-top:12px}.rng .top{display:flex;justify-content:space-between;font:500 11.5px var(--font-data);color:var(--muted)}
+.rng .tr{position:relative;height:4px;border-radius:3px;background:var(--line-2);margin-top:6px}
+.rng .tr span{position:absolute;inset:0 auto 0 0;border-radius:3px;background:var(--up)}
+.rng .tr i{position:absolute;top:-5px;width:2px;height:14px;background:var(--fg);transform:translateX(-50%)}
+.gauge2 text{fill:var(--muted);font:600 7px var(--font-body)}.gauge2 .v{fill:var(--fg);font:700 10px var(--font-body)}
+/* hartă de piață (treemap) */
+.hm{position:relative;width:100%;aspect-ratio:16/9;margin-top:10px;border-radius:14px;overflow:hidden;background:var(--bg)}
+@media (max-width:759px){.hm{aspect-ratio:3/4}}
+.hm button{position:absolute;border:1px solid var(--bg);padding:5px 6px;text-align:left;overflow:hidden;color:#fff;font:inherit;
+  background:color-mix(in srgb,var(--hc,var(--muted)) calc(var(--t,0)*78% + 14%),#1b2236)}
+.hm button:hover{filter:brightness(1.25);z-index:2}
+.hm button b{display:block;font:800 clamp(9px,1.05vw,15px)/1.1 var(--font-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+.hm button span{display:block;font:600 clamp(8.5px,.85vw,12px) var(--font-data);opacity:.92}
+.hm button.xs b{font-size:8.5px}.hm button.xs span{display:none}
+.hm .gl{position:absolute;pointer-events:none;border:1px solid rgba(255,255,255,.18);z-index:1}
+.hm .gl em{position:absolute;top:2px;left:4px;font:800 9.5px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.75);font-style:normal;text-shadow:0 1px 2px #000}
+.scale{display:flex;align-items:center;gap:8px;margin-top:10px;font:500 11px var(--font-data);color:var(--muted)}
+.scale i{flex:1;height:8px;border-radius:4px;background:linear-gradient(90deg,var(--down),#1b2236,var(--up))}
+/* X-Ray: conducta celor 5 agenți (stil „orchestra”) */
+.xr-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.xr-top select{height:38px;border:1px solid var(--line-2);background:var(--glass);border-radius:10px;padding:0 10px;min-width:0;max-width:100%}
+.pipe{display:grid;gap:26px;margin-top:16px;grid-template-columns:1fr;position:relative}
+@media (min-width:1100px){.pipe{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:1400px){.pipe{grid-template-columns:repeat(6,minmax(0,1fr));gap:22px}}
+.ag{--nc:var(--accent);position:relative;border:1px solid color-mix(in srgb,var(--nc) 70%,transparent);border-radius:16px;padding:14px;
+  background:linear-gradient(170deg,color-mix(in srgb,var(--nc) 14%,transparent),transparent 55%),var(--surface);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--nc) 25%,transparent),0 0 26px color-mix(in srgb,var(--nc) 22%,transparent);min-width:0}
+.ag h4{margin:0;display:flex;align-items:center;gap:8px;font:800 12.5px var(--font-body);letter-spacing:.06em;text-transform:uppercase}
+.ag h4 i{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;border:1px solid var(--nc);color:var(--nc);font:800 12px var(--font-display);font-style:normal}
+.ag .st{color:var(--nc);font:600 12px var(--font-body);margin-top:2px}
+.ag .bx{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:color-mix(in srgb,var(--bg) 60%,transparent)}
+.ag .bx .label{display:flex;justify-content:space-between}
+.ag .pb{height:4px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}.ag .pb span{display:block;height:100%;background:var(--nc);box-shadow:0 0 8px var(--nc)}
+.ag p{margin:8px 0 0;font-size:12.5px;line-height:1.45;color:color-mix(in srgb,var(--fg) 88%,var(--muted))}
+.ag .vote{font:800 18px var(--font-display);margin-top:6px}
+.ag .vote.BUY{color:var(--up)}.ag .vote.SELL{color:var(--down)}.ag .vote.HOLD{color:var(--muted)}
+.ag::after{content:"";position:absolute;left:50%;bottom:-26px;width:2px;height:26px;transform:translateX(-50%);
+  background:linear-gradient(var(--nc),var(--n-violet));box-shadow:0 0 10px var(--nc)}
+.ag:last-child::after{display:none}
+@media (min-width:1400px){.ag::after{left:auto;right:-22px;top:46px;bottom:auto;width:22px;height:2px;transform:none;background:linear-gradient(90deg,var(--nc),var(--n-violet))}}
+@media (min-width:1100px) and (max-width:1399px){.ag::after{display:none}}
+.ag.dec{--nc:var(--n-orange)}
+.ck{display:grid;gap:6px;margin-top:8px;font-size:12.5px}
+.ck div{display:flex;justify-content:space-between;gap:8px;border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.ck .ok{border-color:color-mix(in srgb,var(--up) 60%,transparent);background:color-mix(in srgb,var(--up) 12%,transparent)}
+.ck .no{border-color:color-mix(in srgb,var(--down) 60%,transparent);background:color-mix(in srgb,var(--down) 12%,transparent)}
+/* risc și portofoliu (stil „risk architect”) */
+.rk{display:grid;gap:10px;grid-template-columns:1fr}
+@media (min-width:900px){.rk{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:1300px){.rk{grid-template-columns:minmax(0,.9fr) minmax(0,1.3fr) minmax(0,1fr)}}
+.rk .panel{margin:0}
+.kv{display:grid;gap:0;margin-top:8px}.kv div{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+.kv b{font:600 13px var(--font-data)}
+.corr{display:grid;gap:3px;margin-top:10px;overflow-x:auto}
+.corr div{display:grid;gap:3px;grid-template-columns:62px repeat(var(--n),minmax(34px,1fr))}
+.corr span{font:600 10.5px var(--font-data);text-align:center;padding:7px 0;border-radius:5px;color:#fff;
+  background:color-mix(in srgb,var(--cc) calc(var(--p,0)*85%),#18203a)}
+.corr b{font:700 10px var(--font-body);color:var(--muted);align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.corr .h span{background:none;color:var(--muted);padding:0;font:700 9.5px var(--font-body);overflow:hidden;text-overflow:ellipsis}
+.fbar{margin-top:10px}.fbar .top{display:flex;justify-content:space-between;font-size:12.5px}
+.fbar .tr{display:flex;height:9px;border-radius:5px;overflow:hidden;background:var(--line);margin-top:5px}
+.fbar .tr span{display:block;height:100%}
+.strat{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:10px}
+.strat div{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--surface);border-top:2px solid var(--sc,var(--accent))}
+.strat b{display:block;font:600 15px var(--font-data);margin-top:4px}
+.strat small{color:var(--muted);font:500 11px var(--font-data)}
+.lvl{display:grid;gap:8px;margin-top:10px}
+.lvl div{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.lvl .tr{height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}.lvl .tr span{display:block;height:100%}
 </style>
 <div class="aurora" aria-hidden="true"></div>
 <main>
@@ -427,8 +541,11 @@ const I = {
   unic:'<path d="M3 17l5-5 4 4 8-9"/><path d="M15 7h5v5"/>',
   consiliu:'<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M16 14.2c2.8.1 5 2.4 5 5.8"/>',
   top50:'<path d="M5 20V10M12 20V4M19 20v-7"/>',
+  grafice:'<path d="M6 4v16M6 8h-2v6h2M12 6v12M12 9h-2v5h2M18 3v15M18 6h-2v8h2"/>',
+  harta:'<rect x="3" y="3" width="10" height="11" rx="1"/><rect x="15" y="3" width="6" height="7" rx="1"/><rect x="15" y="12" width="6" height="9" rx="1"/><rect x="3" y="16" width="10" height="5" rx="1"/>',
+  risc:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.01"/>',
   arhiva:'<rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10h14V9M10 13h4"/>'};
-const TABS = [["rezumat","Rezumat"],["unic","Cont"],["consiliu","Consiliul"],["top50","Top 50"],["arhiva","Arhivă"]];
+const TABS = [["rezumat","Rezumat"],["grafice","Grafice"],["harta","Hartă"],["consiliu","Consiliul"],["risc","Risc"],["unic","Cont"],["top50","Top 50"],["arhiva","Arhivă"]];
 tabs.innerHTML = TABS.map(([id,t], n) => `<button role="tab" data-id="${id}" id="tab-${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[id]}</svg>${t}<kbd>${n + 1}</kbd></button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; window.scrollTo({top:0}); } });
 
@@ -582,7 +699,7 @@ function openMarket(sym) {
     : `<p class="sub" style="margin-top:14px">Nicio poziție sau comandă în conturile active.</p>`;
   const cry = t ? `<h2>Top 50 cripto</h2><div class="pillrow"><span class="tag mono">$ ${t.price >= 1 ? money2(t.price) : t.price.toPrecision(3)}</span>${[["24h", t.d1], ["7z", t.d7], ["30z", t.d30]].map(([k, v]) => `<span class="tag ${v == null ? "" : v >= 0 ? "gain" : "loss"}">${k} ${v == null ? "–" : pct1(v)}</span>`).join("")}</div>` : "";
   openSheet(`<div class="label">${g ? esc(g.label) : "Piață"}</div><div class="hero-value" id="sheet-title" style="font-size:30px">${esc(label(sym))}</div>
-    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button></div>${council}${marketHistory(sym)}${own}${cry}<h2>Notița ta</h2><textarea class="note" data-note="${esc(sym)}" placeholder="Scrie ce vrei să-ți amintești despre această piață (rămâne doar în acest browser)" aria-label="Notița ta">${esc(store("bnd-nota-" + sym) || "")}</textarea>`);
+    <div class="actions"><button class="btn ${isFav(sym) ? "primary" : ""}" type="button" data-fav="${esc(sym)}">${isFav(sym) ? "★ În favorite" : "☆ Adaugă la favorite"}</button>${(DATA.charts || {})[sym] ? `<button class="btn" type="button" data-chart-open="${esc(sym)}">Deschide graficul</button>` : ""}${councilMarket(sym) ? `<button class="btn" type="button" data-xray="${esc(sym)}">X-Ray</button>` : ""}</div>${council}${marketHistory(sym)}${own}${cry}<h2>Notița ta</h2><textarea class="note" data-note="${esc(sym)}" placeholder="Scrie ce vrei să-ți amintești despre această piață (rămâne doar în acest browser)" aria-label="Notița ta">${esc(store("bnd-nota-" + sym) || "")}</textarea>`);
 }
 function openPalette() {
   openSheet(`<div class="label">Căutare rapidă</div><input class="pal" id="pal" type="search" placeholder="Piață, monedă sau acțiune (tema, accent, glosar…)" aria-label="Caută o piață" autocomplete="off"><div id="pal-res"></div>`);
@@ -797,7 +914,7 @@ function briefing() {
 
 // --- Interfața 3.0: accent, ceas, reflector, punte de comandă, hărți ---
 const ACCENTS = [["cyan", 215, "Gheață"], ["violet", 290, "Violet"], ["emerald", 160, "Smarald"], ["amber", 75, "Chihlimbar"], ["rose", 8, "Trandafir"]];
-let ACC = ACCENTS.some(x => x[0] === store("bnd-accent")) ? store("bnd-accent") : "cyan";
+let ACC = ACCENTS.some(x => x[0] === store("bnd-accent")) ? store("bnd-accent") : "violet";
 function applyAccent() { document.documentElement.style.setProperty("--ah", String(ACCENTS.find(x => x[0] === ACC)[1])); }
 function cycleAccent() { ACC = ACCENTS[(ACCENTS.findIndex(x => x[0] === ACC) + 1) % ACCENTS.length][0]; store("bnd-accent", ACC); applyAccent(); toast("Accent: " + ACCENTS.find(x => x[0] === ACC)[2]); }
 $("accent").addEventListener("click", cycleAccent);
@@ -1130,7 +1247,7 @@ function council(c) {
     <div class="hero-value">${FILTER ? c.markets.filter(m => m.group === FILTER).length + " din " + c.markets.length : c.markets.length}<small>piețe</small></div>
     <div class="sub">${c.decisions} decizii în registru, ${c.settled} încheiate (se închid după 5 zile). „Vinde" înseamnă poziție short în conturile AI: câștigi dacă prețul scade.</div></div>
     ${c.costs ? `<div class="panel"><div class="label">Costuri</div><div class="stats" style="margin-bottom:0"><div><span class="label">Cheltuit (registru)</span><b>${money2(c.costs.spent)} $</b></div><div><span class="label">Rămas din cheie</span><b>${money2(c.costs.remaining)} $</b><span class="sub">${c.costs.source === "openrouter" ? "OpenRouter, " + when(c.costs.balance_time) : "estimare"}</span></div></div></div>` : ""}</div>
-    ${pulsePanel(c)}<h2>Harta categoriilor</h2><div class="panel">${treemap(sentimentRows())}<p class="sub">Suprafața = câte piețe are categoria; culoarea = cât de optimist (verde) sau prudent (roșu) e consiliul. Atinge o categorie ca să filtrezi.</p></div><h2>Piețele</h2>${vseg}${seg}${body}${convictionPanel(c.markets)}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
+    ${xray(c)}${pulsePanel(c)}<h2>Harta categoriilor</h2><div class="panel">${treemap(sentimentRows())}<p class="sub">Suprafața = câte piețe are categoria; culoarea = cât de optimist (verde) sau prudent (roșu) e consiliul. Atinge o categorie ca să filtrezi.</p></div><h2>Piețele</h2>${vseg}${seg}${body}${convictionPanel(c.markets)}${agreement(c.markets)}${agentsPanel(c)}${comparison(c)}`;
 }
 
 function signalsBar() {
@@ -1182,6 +1299,310 @@ function archive() {
   return `<div class="panel hot"><div class="label">Arhivă · conturi oprite la 1 noiembrie</div><div class="sub" style="margin-top:6px">Starea lor finală e păstrată. Nu mai rulează zilnic.</div></div>${rows}`;
 }
 
+// ===== Terminal: grafice, hartă de piață, X-Ray al consiliului, risc și portofoliu =====
+// Doar date reale din DATA (lumânări zilnice arhivate, voturi, ponderi planificate). Nicio recomandare inventată.
+const CH = DATA.charts || {}, SER = {};
+const UNIC = () => DATA.accounts.find(a => a.key === "unic");
+function series(sym) {
+  if (SER[sym]) return SER[sym];
+  const r = CH[sym]; if (!r) return null;
+  const t0 = Date.parse(r.s + "T00:00:00Z");
+  return (SER[sym] = r.c.map((c, i) => ({t: t0 + r.d[i] * 864e5, o: r.o[i], h: r.h[i], l: r.l[i], c, v: r.v[i]})));
+}
+function weekly(rows) {
+  const out = [];
+  for (const r of rows) {
+    const wk = Math.floor((r.t / 864e5 + 3) / 7), last = out[out.length - 1];
+    if (last && last.wk === wk) { last.h = Math.max(last.h, r.h); last.l = Math.min(last.l, r.l); last.c = r.c; last.v += r.v; }
+    else out.push({wk, t: r.t, o: r.o, h: r.h, l: r.l, c: r.c, v: r.v});
+  }
+  return out;
+}
+const smaA = (v, n) => v.map((_, i) => i + 1 < n ? null : v.slice(i + 1 - n, i + 1).reduce((a, b) => a + b, 0) / n);
+const emaA = (v, n) => { const k = 2 / (n + 1); let e = null; return v.map((x, i) => i + 1 < n ? null : (e = e == null ? v.slice(0, n).reduce((a, b) => a + b, 0) / n : x * k + e * (1 - k))); };
+function bbA(v, n = 20, k = 2) {
+  const m = smaA(v, n);
+  return m.map((mid, i) => { if (mid == null) return null; const w = v.slice(i + 1 - n, i + 1), sd = Math.sqrt(w.reduce((a, x) => a + (x - mid) ** 2, 0) / n); return [mid + k * sd, mid - k * sd]; });
+}
+function rsiA(v, n = 14) {
+  const out = v.map(() => null); let g = 0, l = 0;
+  for (let i = 1; i < v.length; i++) {
+    const d = v[i] - v[i - 1], up = Math.max(d, 0), dn = Math.max(-d, 0);
+    if (i <= n) { g += up / n; l += dn / n; if (i === n) out[i] = l ? 100 - 100 / (1 + g / l) : 100; }
+    else { g = (g * (n - 1) + up) / n; l = (l * (n - 1) + dn) / n; out[i] = l ? 100 - 100 / (1 + g / l) : 100; }
+  }
+  return out;
+}
+const fp = p => p == null ? "–" : Math.abs(p) >= 100 ? nf(2, 2).format(p) : Math.abs(p) >= 1 ? nf(2, 4).format(p) : Math.abs(p) < 1e-12 ? "0" : nf(0, 3 - Math.floor(Math.log10(Math.abs(p)))).format(p);
+function chgDays(rows, days) {
+  if (!rows || rows.length < 2) return null;
+  const last = rows[rows.length - 1], target = last.t - days * 864e5;
+  let j = -1; for (let i = rows.length - 1; i >= 0; i--) if (rows[i].t <= target) { j = i; break; }
+  return j < 0 ? null : 100 * (last.c / rows[j].c - 1);
+}
+function groupOf(sym) {
+  const known = (DATA.group_of || {})[sym]; if (known && known !== "alte") return known;
+  const m = councilMarket(sym); if (m && m.group) return m.group;
+  const t = top50Row(sym); return t ? (t.meme ? "memecoin" : "crypto") : "alte";
+}
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const dm = t => new Date(t).toISOString().slice(8, 10) + "." + new Date(t).toISOString().slice(5, 7);
+function techScore(rows) {
+  const c = rows.map(r => r.c), n = c.length - 1; if (n < 50) return null;
+  const s20 = smaA(c, 20)[n], s50 = smaA(c, 50)[n], e20 = emaA(c, 20)[n], rsi = rsiA(c)[n], ch20 = c[n] / c[n - 20] - 1;
+  const parts = [c[n] > s20 ? 1 : -1, c[n] > s50 ? 1 : -1, e20 > s50 ? 1 : -1, rsi > 60 ? 1 : rsi < 40 ? -1 : 0, ch20 > 0.02 ? 1 : ch20 < -0.02 ? -1 : 0];
+  return {score: parts.reduce((a, b) => a + b, 0) / parts.length, rsi, s20, s50};
+}
+
+// --- modulul 1: grafice (stil TradingView) ---
+const TV = {layout: [1, 2, 4].includes(+store("bnd-grila")) ? +store("bnd-grila") : 1, cells: String(store("bnd-celule") || "SP500,BITCOIN,GOLD,EURUSD").split(","),
+  active: 0, tf: "Z", range: 90, ind: new Set(String(store("bnd-ind") || "ema,vol,ai,poz").split(",").filter(Boolean)), hover: {}};
+const IND = [["ema", "EMA 20"], ["sma", "SMA 50"], ["bb", "Bollinger"], ["vol", "Volum"], ["rsi", "RSI 14"], ["ai", "Voturi AI"], ["poz", "Poziții"]];
+function tvFix() {
+  const syms = Object.keys(CH);
+  TV.cells = [0, 1, 2, 3].map(i => CH[TV.cells[i]] ? TV.cells[i] : syms[i % syms.length]);
+  if (TV.active >= TV.layout) TV.active = 0;
+}
+function tvView() {
+  if (!Object.keys(CH).length) return `<p class="empty">Graficele apar după ce aplicația primește arhiva de prețuri zilnice.</p>`;
+  tvFix();
+  const n = innerWidth < 760 ? 1 : TV.layout, sym = TV.cells[TV.active];
+  const seg = (attr, list, cur) => `<div class="seg" role="group">${list.map(([k, t]) => `<button type="button" ${attr}="${k}" aria-pressed="${String(k) === String(cur)}">${t}</button>`).join("")}</div>`;
+  const bar = `<div class="tvbar"><span class="tvsym">${esc(label(sym))}</span>${seg("data-tf", [["Z", "1Z"], ["S", "1S"]], TV.tf)}<span class="sep"></span>
+    ${seg("data-rng", [[22, "1L"], [66, "3L"], [120, "Tot"]], TV.range)}<span class="sep"></span>
+    <div class="seg" role="group" aria-label="Indicatori">${IND.map(([k, t]) => `<button type="button" data-ind="${k}" aria-pressed="${TV.ind.has(k)}">${t}</button>`).join("")}</div>
+    <span class="only-wide" style="gap:6px;align-items:center"><span class="sep"></span>${seg("data-grid", [[1, "▢"], [2, "◫"], [4, "⊞"]], TV.layout)}</span>
+    <span class="term-note">lumânări zilnice · închideri UTC</span></div>`;
+  const cells = TV.cells.slice(0, n).map((s, i) => `<div class="tvcell${i === TV.active && n > 1 ? " on" : ""}" data-cell="${i}"><div class="tvhead"><b>${esc(label(s))}</b><span class="mono" id="ro-${i}"></span></div>
+    <canvas class="tvc" data-cell="${i}" role="img" aria-label="Grafic cu lumânări pentru ${esc(label(s))}"></canvas></div>`).join("");
+  return `${bar}<div class="tvwrap"><div class="tvgrid n${n}">${cells}</div><aside class="tvside">${watchlist(sym)}${tvDetail(sym)}</aside></div>
+    <p class="sub">Grafic zilnic din arhiva aplicației (ultimele ~4 luni). ▲/▼ = consiliul AI cu cel puțin 2 voturi nete în acea zi; liniile întrerupte = intrarea și stopul pozițiilor din contul unic. Atinge o piață din listă ca s-o pui în graficul activ.</p>`;
+}
+function watchlist(sym) {
+  const q = QUERY.trim().toLowerCase();
+  const syms = Object.keys(CH).filter(s => (!FILTER || groupOf(s) === FILTER) && (!q || s.toLowerCase().includes(q) || label(s).toLowerCase().includes(q)));
+  const rows = s => { const r = series(s), last = r[r.length - 1], prev = r[r.length - 2], d = last.c - prev.c, p = 100 * (last.c / prev.c - 1), cls = d >= 0 ? "gain" : "loss";
+    return `<button class="wl${s === sym ? " on" : ""}" type="button" data-wl="${esc(s)}"><b>${isFav(s) ? "★ " : ""}${esc(label(s))}</b><span>${fp(last.c)}</span><span class="${cls}">${d >= 0 ? "+" : ""}${fp(Math.abs(d) < 1e-9 ? 0 : d)}</span><span class="${cls}">${pct(p)}</span></button>`; };
+  const body = GROUPS.map(g => ({g, items: syms.filter(s => groupOf(s) === g.key)})).filter(x => x.items.length)
+    .map(x => `<div class="wlg">${esc(x.g.label)}</div>` + x.items.map(rows).join("")).join("");
+  return `<div class="panel"><div class="label">Watchlist · ${syms.length} piețe</div><div class="wlh" style="margin-top:8px"><span>Simbol</span><span>Ultim</span><span>Var</span><span>Var%</span></div>
+    <div class="wlist">${body || `<p class="empty">Nicio piață nu se potrivește.</p>`}</div></div>`;
+}
+function gauge(score) {
+  const a = Math.PI * (1 - (score + 1) / 2), x = 60 + 44 * Math.cos(a), y = 62 - 44 * Math.sin(a);
+  const word = score > .5 ? "Cumpărare puternică" : score > .15 ? "Cumpărare" : score < -.5 ? "Vânzare puternică" : score < -.15 ? "Vânzare" : "Neutru";
+  return `<svg class="gauge2" viewBox="0 0 120 80" width="100%" style="max-width:240px;display:block;margin:6px auto 0" role="img" aria-label="Indicatori tehnici: ${word}">
+    <defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="var(--down)"/><stop offset=".5" stop-color="var(--muted)"/><stop offset="1" stop-color="var(--up)"/></linearGradient></defs>
+    <path d="M14 62 A46 46 0 0 1 106 62" fill="none" stroke="url(#gg)" stroke-width="6" stroke-linecap="round"/>
+    <line x1="60" y1="62" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="var(--fg)" stroke-width="2.4" stroke-linecap="round"/><circle cx="60" cy="62" r="3.5" fill="var(--fg)"/>
+    <text x="8" y="76">Vânzare</text><text x="112" y="76" text-anchor="end">Cumpărare</text><text class="v" x="60" y="76" text-anchor="middle">${word}</text></svg>`;
+}
+function tvDetail(sym) {
+  const r = series(sym); if (!r) return "";
+  const last = r[r.length - 1], prev = r[r.length - 2], ch = 100 * (last.c / prev.c - 1);
+  const tile = (d, t) => { const v = d === "max" ? 100 * (last.c / r[0].c - 1) : chgDays(r, d); return `<div class="${v == null ? "" : v >= 0 ? "up" : "dn"}">${v == null ? "–" : pct1(v)}<small>${t}</small></div>`; };
+  const lo = Math.min(...r.map(x => x.l)), hi = Math.max(...r.map(x => x.h));
+  const range = (a, b, v, t) => `<div class="rng"><div class="top"><span>${fp(a)}</span><span>${t}</span><span>${fp(b)}</span></div><div class="tr"><span style="width:${(100 * (v - a) / ((b - a) || 1)).toFixed(1)}%"></span><i style="left:${(100 * (v - a) / ((b - a) || 1)).toFixed(1)}%"></i></div></div>`;
+  const ts = techScore(r), m = councilMarket(sym), a = UNIC();
+  const pos = a && a.exists ? a.positions.filter(p => p.symbol === sym) : [];
+  const w = a && a.plan && a.plan.weights ? a.plan.weights[sym] : null;
+  const votes = m ? `<div class="votes">${Object.entries(m.votes).map(([g, v]) => `<span class="v ${esc(v)}">${esc(g)} ${esc(v)}</span>`).join("")}</div>
+    <button class="btn" type="button" data-xray="${esc(sym)}" style="margin-top:10px">X-Ray: de ce au votat așa →</button>` : `<div class="sub">Consiliul nu votează pe această piață.</div>`;
+  return `<div class="panel neon"><div class="label">${esc(GROUPS.find(g => g.key === groupOf(sym)) ? GROUPS.find(g => g.key === groupOf(sym)).label : "Piață")}</div>
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:6px"><span class="mono" style="font:600 26px var(--font-data)">${fp(last.c)}</span><span class="mono ${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</span></div>
+    <div class="sub">${esc(label(sym))} · închidere ${dm(last.t)}</div>
+    <div class="perf">${tile(7, "1S")}${tile(30, "1L")}${tile(90, "3L")}${tile("max", "4L")}</div>
+    ${range(last.l, last.h, last.c, "intervalul zilei")}${range(lo, hi, last.c, "interval ~4 luni")}
+    <h2 style="margin-top:18px">Indicatori tehnici</h2>${ts ? gauge(ts.score) + `<div class="sub" style="text-align:center">RSI ${nf(0, 0).format(ts.rsi)} · SMA20 ${fp(ts.s20)} · SMA50 ${fp(ts.s50)}. Doar un rezumat al indicatorilor, nu o recomandare.</div>` : `<div class="sub">Prea puține zile pentru indicatori.</div>`}
+    <h2 style="margin-top:18px">Consiliul AI</h2>${votes}
+    ${pos.length || w ? `<h2 style="margin-top:18px">Contul unic</h2><div class="kv">${pos.map(p => `<div><span>${p.quantity < 0 ? "Short" : "Long"} ${fp(Math.abs(p.quantity))} @ ${fp(p.avg)}</span><b class="${p.pnl >= 0 ? "gain" : "loss"}">${money2(p.pnl)}</b></div>`).join("")}${w ? `<div><span>Pondere planificată</span><b>${pct1(100 * w)}</b></div>` : ""}</div>` : ""}</div>`;
+}
+function drawChart(cv) {
+  const i = +cv.dataset.cell, sym = TV.cells[i], base = series(sym); if (!base) return;
+  const all = TV.tf === "S" ? weekly(base) : base, cl = all.map(r => r.c);
+  const ema = emaA(cl, 20), sma = smaA(cl, 50), bb = bbA(cl), rsi = rsiA(cl);
+  const cnt = Math.min(all.length, TV.tf === "S" ? Math.ceil(TV.range / 5) + 1 : TV.range), s0 = all.length - cnt, rows = all.slice(s0);
+  const box = cv.getBoundingClientRect(), W = box.width, H = box.height, dpr = window.devicePixelRatio || 1;
+  if (!W || !H) return;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  const C = {up: cssv("--up"), dn: cssv("--down"), mu: cssv("--muted"), ln: cssv("--line"), fg: cssv("--fg"), ac: cssv("--accent"), y: cssv("--n-yellow"), v: cssv("--n-violet"), bg: cssv("--surface")};
+  const AX = W < 420 ? 52 : 64, BT = 18, RS = TV.ind.has("rsi") ? Math.round(H * .2) : 0, PH = H - BT - RS - 8, PW = W - AX;
+  const a = UNIC(), pos = TV.ind.has("poz") && a && a.exists ? a.positions.filter(p => p.symbol === sym) : [];
+  let lo = Math.min(...rows.map(r => r.l)), hi = Math.max(...rows.map(r => r.h));
+  if (TV.ind.has("bb")) bb.slice(s0).forEach(b => { if (b) { lo = Math.min(lo, b[1]); hi = Math.max(hi, b[0]); } });
+  pos.forEach(p => [p.avg, p.stop].forEach(v => { if (v && v > lo * .8 && v < hi * 1.2) { lo = Math.min(lo, v); hi = Math.max(hi, v); } }));
+  const pad = (hi - lo) * .06 || hi * .01; lo -= pad; hi += pad;
+  const cw = PW / rows.length, X = k => k * cw + cw / 2, Y = v => 6 + (hi - v) / (hi - lo) * (PH - 6);
+  g.font = "10px " + cssv("--font-data"); g.lineWidth = 1;
+  for (let k = 0; k <= 5; k++) { const v = lo + (hi - lo) * k / 5, y = Y(v); g.strokeStyle = C.ln; g.beginPath(); g.moveTo(0, y); g.lineTo(PW, y); g.stroke(); g.fillStyle = C.mu; g.fillText(fp(v), PW + 6, y + 3); }
+  const step = Math.max(1, Math.round(rows.length / (W < 420 ? 4 : 7)));
+  g.fillStyle = C.mu; rows.forEach((r, k) => { if (k % step === 0) { g.fillText(dm(r.t), X(k) - 12, H - RS - 4); g.strokeStyle = C.ln; g.beginPath(); g.moveTo(X(k), 0); g.lineTo(X(k), PH); g.stroke(); } });
+  if (TV.ind.has("vol")) { const vm = Math.max(...rows.map(r => r.v)) || 1; rows.forEach((r, k) => { const h = r.v / vm * PH * .18; g.fillStyle = (r.c >= r.o ? C.up : C.dn) + "55"; g.fillRect(X(k) - cw * .35, PH - h, Math.max(1, cw * .7), h); }); }
+  if (TV.ind.has("bb")) { g.fillStyle = C.ac + "14"; g.beginPath(); let st = false;
+    bb.slice(s0).forEach((b, k) => { if (b) { st ? g.lineTo(X(k), Y(b[0])) : g.moveTo(X(k), Y(b[0])); st = true; } });
+    for (let k = rows.length - 1; k >= 0; k--) { const b = bb[s0 + k]; if (b) g.lineTo(X(k), Y(b[1])); } g.closePath(); g.fill(); }
+  const line = (arr, col, w) => { g.strokeStyle = col; g.lineWidth = w; g.beginPath(); let st = false; arr.slice(s0).forEach((v, k) => { if (v != null) { st ? g.lineTo(X(k), Y(v)) : g.moveTo(X(k), Y(v)); st = true; } }); g.stroke(); g.lineWidth = 1; };
+  if (TV.ind.has("bb")) { line(bb.map(b => b && b[0]), C.ac + "aa", 1); line(bb.map(b => b && b[1]), C.ac + "aa", 1); }
+  rows.forEach((r, k) => { const col = r.c >= r.o ? C.up : C.dn, x = X(k); g.strokeStyle = col; g.fillStyle = col; g.beginPath(); g.moveTo(x, Y(r.h)); g.lineTo(x, Y(r.l)); g.stroke();
+    const top = Y(Math.max(r.o, r.c)), bh = Math.max(1, Math.abs(Y(r.o) - Y(r.c))); g.fillRect(x - Math.max(.5, cw * .34), top, Math.max(1, cw * .68), bh); });
+  if (TV.ind.has("ema")) line(ema, C.y, 1.6);
+  if (TV.ind.has("sma")) line(sma, C.v, 1.6);
+  pos.forEach(p => [[p.avg, C.ac, "Intrare"], [p.stop, C.dn, "SL"]].forEach(([v, col, t]) => { if (!v || v < lo || v > hi) return; const y = Y(v); g.setLineDash([5, 4]); g.strokeStyle = col; g.beginPath(); g.moveTo(0, y); g.lineTo(PW, y); g.stroke(); g.setLineDash([]); g.fillStyle = col; g.fillText(t + (p.quantity < 0 ? " · short" : ""), 6, y - 4); }));
+  if (TV.ind.has("ai") && DATA.council && DATA.council.history) {
+    const h = DATA.council.history, sr = (h.series || {})[sym] || [], days = h.series_days || [];
+    sr.forEach((net, k) => { if (Math.abs(net) < 2 || !days[k]) return; const t = Date.parse(days[k] + "T00:00:00Z"); let j = -1; rows.forEach((r, q) => { if (r.t <= t) j = q; }); if (j < 0) return;
+      const r = rows[j], x = X(j), up = net > 0, y = up ? Y(r.l) + 12 : Y(r.h) - 12; g.fillStyle = up ? C.up : C.dn; g.beginPath();
+      if (up) { g.moveTo(x, y - 6); g.lineTo(x - 6, y + 4); g.lineTo(x + 6, y + 4); } else { g.moveTo(x, y + 6); g.lineTo(x - 6, y - 4); g.lineTo(x + 6, y - 4); }
+      g.fill(); g.fillText("AI " + (up ? "+" : "") + net, x - 12, up ? y + 16 : y - 8); });
+  }
+  const lastR = rows[rows.length - 1], ly = Y(lastR.c), lc = lastR.c >= lastR.o ? C.up : C.dn;
+  g.setLineDash([2, 3]); g.strokeStyle = lc; g.beginPath(); g.moveTo(0, ly); g.lineTo(PW, ly); g.stroke(); g.setLineDash([]);
+  g.fillStyle = lc; g.fillRect(PW + 1, ly - 8, AX - 2, 16); g.fillStyle = "#fff"; g.fillText(fp(lastR.c), PW + 5, ly + 3.5);
+  if (RS) { const top = H - RS, Yr = v => top + 4 + (100 - v) / 100 * (RS - 8);
+    g.strokeStyle = C.ln; g.beginPath(); g.moveTo(0, top); g.lineTo(W, top); g.stroke();
+    [70, 30].forEach(v => { g.setLineDash([3, 3]); g.strokeStyle = C.mu; g.beginPath(); g.moveTo(0, Yr(v)); g.lineTo(PW, Yr(v)); g.stroke(); g.setLineDash([]); g.fillStyle = C.mu; g.fillText(String(v), PW + 6, Yr(v) + 3); });
+    g.strokeStyle = C.v; g.lineWidth = 1.4; g.beginPath(); let st = false; rsi.slice(s0).forEach((v, k) => { if (v != null) { st ? g.lineTo(X(k), Yr(v)) : g.moveTo(X(k), Yr(v)); st = true; } }); g.stroke(); g.lineWidth = 1;
+    g.fillStyle = C.mu; g.fillText("RSI 14", 6, top + 12); }
+  const hv = TV.hover[i], k = hv ? Math.min(rows.length - 1, Math.max(0, Math.floor(hv.x / cw))) : rows.length - 1, r = rows[k];
+  if (hv) { g.strokeStyle = C.mu; g.setLineDash([4, 4]); g.beginPath(); g.moveTo(X(k), 0); g.lineTo(X(k), H - BT); g.moveTo(0, hv.y); g.lineTo(PW, hv.y); g.stroke(); g.setLineDash([]);
+    if (hv.y < PH) { const v = hi - (hv.y - 6) / (PH - 6) * (hi - lo); g.fillStyle = C.fg; g.fillRect(PW + 1, hv.y - 8, AX - 2, 16); g.fillStyle = C.bg; g.fillText(fp(v), PW + 5, hv.y + 3.5); } }
+  const prev = k > 0 ? rows[k - 1].c : r.o, ro = $("ro-" + i);
+  if (ro) ro.textContent = `${dm(r.t)}  D ${fp(r.o)}  Max ${fp(r.h)}  Min ${fp(r.l)}  Î ${fp(r.c)}  ${pct(100 * (r.c / prev - 1))}`;
+}
+function drawAll() { view.querySelectorAll("canvas.tvc").forEach(drawChart); }
+view.addEventListener("pointermove", e => { const cv = e.target.closest("canvas.tvc"); if (!cv) return; const b = cv.getBoundingClientRect(); TV.hover[cv.dataset.cell] = {x: e.clientX - b.left, y: e.clientY - b.top}; drawChart(cv); });
+view.addEventListener("pointerleave", e => { const cv = e.target.closest && e.target.closest("canvas.tvc"); if (cv) { delete TV.hover[cv.dataset.cell]; drawChart(cv); } }, true);
+let RZ = null; addEventListener("resize", () => { clearTimeout(RZ); RZ = setTimeout(() => { if (currentKey() === "grafice") render(); }, 150); });
+
+// --- modulul 2: hartă de piață ---
+const HM = {size: store("bnd-hm-marime") || "egal", color: store("bnd-hm-culoare") || "1", side: ""};
+function squarify(items, x, y, w, h) {
+  const total = items.reduce((s, it) => s + it.v, 0), out = []; if (!total || w <= 0 || h <= 0) return out;
+  const nodes = items.map(it => ({it, a: it.v * w * h / total}));
+  let row = [], rx = x, ry = y, rw = w, rh = h;
+  const worst = (r, side) => { const s = r.reduce((p, n) => p + n.a, 0), mx = Math.max(...r.map(n => n.a)), mn = Math.min(...r.map(n => n.a)); return Math.max(side * side * mx / (s * s), s * s / (side * side * mn)); };
+  const lay = r => { const s = r.reduce((p, n) => p + n.a, 0);
+    if (rw >= rh) { const cw = s / rh; let cy = ry; r.forEach(n => { const ch = n.a / cw; out.push({...n.it, x: rx, y: cy, w: cw, h: ch}); cy += ch; }); rx += cw; rw -= cw; }
+    else { const chh = s / rw; let cx = rx; r.forEach(n => { const cww = n.a / chh; out.push({...n.it, x: cx, y: ry, w: cww, h: chh}); cx += cww; }); ry += chh; rh -= chh; } };
+  for (const n of nodes) { const side = Math.min(rw, rh); if (!row.length || worst(row.concat(n), side) <= worst(row, side)) row.push(n); else { lay(row); row = [n]; } }
+  if (row.length) lay(row);
+  return out;
+}
+function hmValue(sym) {
+  if (HM.color === "ai") { const m = councilMarket(sym); return m ? 100 * m.net / 5 : null; }
+  const r = series(sym); if (!r || r.length < 2) return null;
+  const back = +HM.color; return r.length > back ? 100 * (r[r.length - 1].c / r[r.length - 1 - back].c - 1) : null;
+}
+function hmView() {
+  const a = UNIC(), wts = (a && a.plan && a.plan.weights) || {}, q = QUERY.trim().toLowerCase();
+  const syms = [...new Set([...Object.keys(CH), ...councilMarkets().map(m => m.symbol)])]
+    .filter(s => (!FILTER || groupOf(s) === FILTER) && (!q || s.toLowerCase().includes(q) || label(s).toLowerCase().includes(q)))
+    .filter(s => !HM.side || (HM.side === "long" ? (wts[s] || 0) > 0 : (wts[s] || 0) < 0));
+  const noPrice = HM.color === "ai" ? 0 : syms.filter(s => !CH[s]).length;
+  const size = s => HM.size === "exp" ? Math.abs(wts[s] || 0) : HM.size === "ai" ? Math.abs((councilMarket(s) || {}).net || 0) + .5 : 1;
+  const items = syms.filter(s => HM.color === "ai" ? councilMarket(s) : CH[s]).map(s => ({s, v: size(s), c: hmValue(s)})).filter(it => it.v > 0);
+  const cap = HM.color === "ai" ? 60 : HM.color === "1" ? 3 : HM.color === "5" ? 7 : 15;
+  const wide = innerWidth >= 760, WW = wide ? 1600 : 900, HH = wide ? 900 : 1200;
+  const groups = GROUPS.map(g => ({key: g.key, label: g.label, items: items.filter(it => groupOf(it.s) === g.key).sort((p, r) => r.v - p.v)}))
+    .map(g => ({...g, v: g.items.reduce((s, it) => s + it.v, 0)})).filter(g => g.v > 0).sort((p, r) => r.v - p.v);
+  let html = "";
+  squarify(groups, 0, 0, WW, HH).forEach(G => {
+    html += `<div class="gl" style="left:${(100 * G.x / WW).toFixed(3)}%;top:${(100 * G.y / HH).toFixed(3)}%;width:${(100 * G.w / WW).toFixed(3)}%;height:${(100 * G.h / HH).toFixed(3)}%"><em>${esc(G.label)}</em></div>`;
+    squarify(G.items, G.x, G.y + 14, G.w, Math.max(1, G.h - 14)).forEach(T => {
+      const t = T.c == null ? 0 : Math.min(1, Math.abs(T.c) / cap), small = T.w < WW * .045 || T.h < HH * .05;
+      html += `<button type="button" data-m="${esc(T.s)}" class="${small ? "xs" : ""}" title="${esc(label(T.s))}: ${T.c == null ? "fără date" : esc(pct(T.c))}"
+        style="left:${(100 * T.x / WW).toFixed(3)}%;top:${(100 * T.y / HH).toFixed(3)}%;width:${(100 * T.w / WW).toFixed(3)}%;height:${(100 * T.h / HH).toFixed(3)}%;--t:${t.toFixed(3)};--hc:${T.c == null ? "var(--muted)" : T.c >= 0 ? "var(--up)" : "var(--down)"}">
+        <b>${esc(label(T.s))}</b><span>${T.c == null ? "–" : HM.color === "ai" ? (T.c > 0 ? "+" : "") + Math.round(T.c / 20) + " net" : pct(T.c)}</span></button>`;
+    });
+  });
+  const vals = items.filter(it => it.c != null), ups = vals.filter(it => it.c > 0).length, sorted = vals.slice().sort((p, r) => r.c - p.c);
+  const mv = it => `<button class="mover" type="button" data-m="${esc(it.s)}"><b>${esc(label(it.s))}</b><span class="mono ${it.c >= 0 ? "gain" : "loss"}">${HM.color === "ai" ? Math.round(it.c / 20) + " net" : pct(it.c)}</span></button>`;
+  const seg = (attr, list, cur) => `<div class="seg" role="group">${list.map(([k, t]) => `<button type="button" ${attr}="${k}" aria-pressed="${k === cur}">${t}</button>`).join("")}</div>`;
+  return `<div class="tvbar"><span class="label">Culoare</span>${seg("data-hmc", [["1", "1 zi"], ["5", "5 zile"], ["20", "20 zile"], ["ai", "Vot AI"]], HM.color)}<span class="sep"></span>
+    <span class="label">Mărime</span>${seg("data-hms", [["egal", "Egal"], ["exp", "Expunere"], ["ai", "Convingere AI"]], HM.size)}<span class="sep"></span>
+    ${seg("data-hmd", [["", "Toate"], ["long", "Long"], ["short", "Short"]], HM.side)}</div>
+    <div class="panel neon" style="padding:10px"><div class="hm" role="group" aria-label="Harta pieței">${html || `<p class="empty" style="padding:20px">Nicio piață pentru această selecție.</p>`}</div>
+    <div class="scale"><span>−${cap}${HM.color === "ai" ? "" : "%"}</span><i></i><span>+${cap}${HM.color === "ai" ? "" : "%"}</span></div>
+    <p class="sub">${HM.size === "exp" ? "Mărimea = ponderea planificată în contul unic. " : HM.size === "ai" ? "Mărimea = cât de mult au fost de acord agenții. " : "Toate piețele au aceeași mărime. "}Culoarea = ${HM.color === "ai" ? "votul net al consiliului" : "variația pe " + esc(HM.color) + (HM.color === "1" ? " zi" : " zile") + " (ultima închidere)"}. Atinge o piață pentru detalii.${noPrice ? ` ${noPrice} piețe (acțiuni, apărare, unele ETF-uri) nu au încă istoric de preț în aplicație: apar doar la „Vot AI”.` : ""}</p></div>
+    <div class="grid"><div class="panel"><div class="label">Lățimea pieței</div><div class="hero-value">${ups}<small>pe plus din ${vals.length}</small></div><div class="split"><span class="l" style="width:${vals.length ? 100 * ups / vals.length : 0}%"></span><span class="s" style="flex:1"></span></div></div>
+    <div class="panel"><div class="label">Cele mai mari creșteri</div>${sorted.slice(0, 5).map(mv).join("")}</div><div class="panel"><div class="label">Cele mai mari scăderi</div>${sorted.slice(-5).reverse().map(mv).join("")}</div></div>`;
+}
+
+// --- modulul 3: X-Ray al deciziei consiliului ---
+const AG_COL = {gpt: "--n-green", claude: "--n-orange", gemini: "--n-blue", grok: "--n-yellow", deepseek: "--n-violet"};
+let XR = "";
+function xray(c) {
+  const ms = councilMarkets(); if (!ms.length) return "";
+  if (!ms.some(m => m.symbol === XR)) { const split = ms.find(m => Object.values(m.votes).includes("BUY") && Object.values(m.votes).includes("SELL")); XR = (split || ms.slice().sort((p, r) => Math.abs(r.net) - Math.abs(p.net))[0]).symbol; }
+  const m = councilMarket(XR), why = (c.reasons || {})[XR] || {}, a = UNIC(), w = a && a.plan && a.plan.weights ? a.plan.weights[XR] : null;
+  const idx = ms.findIndex(x => x.symbol === XR);
+  const card = ([g, v]) => { const conf = (m.conf || {})[g], mod = (c.models || {})[g];
+    return `<div class="ag" style="--nc:var(${AG_COL[g] || "--accent"})"><h4><i>${esc(g.slice(0, 1).toUpperCase())}</i>${esc(g)}</h4>
+      <div class="st">${mod ? esc(String(mod.model || "").split("/").pop()) : "agent"}</div>
+      <div class="bx"><div class="label"><span>Încredere</span><span>${conf == null ? "–" : nf(0, 0).format(100 * conf) + "%"}</span></div><div class="pb"><span style="width:${conf == null ? 0 : (100 * conf).toFixed(0)}%"></span></div></div>
+      <div class="vote ${esc(v)}">${v === "BUY" ? "▲ Cumpără" : v === "SELL" ? "▼ Vinde" : "■ Așteaptă"}</div>
+      <p>${why[g] ? esc(why[g]) : "Motivul nu e în raportul de azi (piața a fost votată într-o rulare anterioară)."}</p></div>`; };
+  const cs = combo(m), plan = w == null ? "nicio poziție planificată" : (w > 0 ? "long " : "short ") + pct1(100 * Math.abs(w)) + " din cont";
+  const dec = `<div class="ag dec"><h4><i>Σ</i>Decizie</h4><div class="st">${m.decision === "HOLD" ? "nu tranzacționa" : m.decision === "BUY" ? "cumpără" : "vinde"}</div>
+    <div class="ck"><div class="${m.net > 0 ? "ok" : m.net < 0 ? "no" : ""}"><span>Vot net</span><b class="mono">${m.net > 0 ? "+" : ""}${m.net} / 5</b></div>
+    <div class="${m.bot > 0 ? "ok" : m.bot < 0 ? "no" : ""}"><span>Regula botului (SMA 20/50)</span><b class="mono">${m.bot > 0 ? "cumpără" : m.bot < 0 ? "vinde" : "nimic"}</b></div>
+    <div class="${cs > 0 ? "ok" : cs < 0 ? "no" : ""}"><span>Semnal combinat (50/50)</span><b class="mono">${cs > 0 ? "+" : ""}${nf(2, 2).format(cs)}</b></div>
+    <div><span>Contul unic</span><b class="mono">${esc(plan)}</b></div></div></div>`;
+  return `<h2>Decision X-Ray</h2><div class="panel neon"><div class="xr-top"><button class="btn" type="button" data-xstep="-1" aria-label="Piața anterioară">‹</button>
+    <select data-xr aria-label="Alege piața">${ms.map(x => `<option value="${esc(x.symbol)}"${x.symbol === XR ? " selected" : ""}>${esc(label(x.symbol))} · ${x.net > 0 ? "+" : ""}${x.net}</option>`).join("")}</select>
+    <button class="btn" type="button" data-xstep="1" aria-label="Piața următoare">›</button><span class="sub">${idx + 1} din ${ms.length} · preț ${fp(m.price)}</span>
+    <button class="btn" type="button" data-xjson style="margin-left:auto">Copiază (JSON)</button></div>
+    <div class="pipe">${Object.entries(m.votes).map(card).join("")}${dec}</div>
+    <p class="sub" style="margin-top:14px">Fiecare agent votează independent, doar pe prețuri (fără știri). Decizia e majoritatea; contul unic folosește 50% regulile + 50% consiliul.</p></div>`;
+}
+
+// --- modulul 4: risc și portofoliu ---
+function corrOf(p, q) {
+  const n = Math.min(p.length, q.length); if (n < 10) return null;
+  const a = p.slice(-n), b = q.slice(-n), ma = a.reduce((s, x) => s + x, 0) / n, mb = b.reduce((s, x) => s + x, 0) / n;
+  let sab = 0, sa = 0, sb = 0; for (let i = 0; i < n; i++) { sab += (a[i] - ma) * (b[i] - mb); sa += (a[i] - ma) ** 2; sb += (b[i] - mb) ** 2; }
+  return sa && sb ? sab / Math.sqrt(sa * sb) : null;
+}
+function riskView() {
+  const a = UNIC(); if (!a || !a.exists) return `<p class="empty">Contul unic nu are încă date.</p>`;
+  const v = eq(a), W = (a.plan && a.plan.weights) || {}, x = a.exposure && a.exposure.planned, gross = Object.values(W).reduce((s, w) => s + Math.abs(w), 0);
+  const net = Object.values(W).reduce((s, w) => s + w, 0), vol = x ? x.portfolio_vol_daily_pct : null;
+  const kv = (k, val, cls) => `<div><span>${k}</span><b class="${cls || ""}">${val}</b></div>`;
+  const summary = `<div class="panel neon"><div class="label">Sumar portofoliu · contul unic</div><div class="bigval" style="font-size:clamp(28px,4vw,40px)">${hero(v, a)}</div>
+    <div class="kv">${kv("Expunere brută (planificată)", fm(gross * v, a) + " · " + nf(2, 2).format(gross) + "x")}${kv("Expunere netă", fm(net * v, a), net >= 0 ? "gain" : "loss")}
+    ${kv("Volatilitate zilnică estimată", vol == null ? "–" : nf(2, 2).format(vol) + "%")}${kv("VaR 95% · 1 zi", vol == null ? "–" : fm(1.645 * vol / 100 * v, a), "loss")}
+    ${kv("Pierdere medie în cele mai rele 5% zile (ES)", vol == null ? "–" : fm(2.063 * vol / 100 * v, a), "loss")}${kv("Scădere față de vârf", a.drawdown_pct > 0 ? pct(-a.drawdown_pct) : "0,00%", a.drawdown_pct > 0 ? "loss" : "")}
+    ${kv("Diversificare efectivă", x && x.diversification ? nf(1, 1).format(x.diversification) + " piețe independente" : "–")}</div>
+    <p class="sub">VaR și ES sunt estimări din volatilitatea pe 60 de zile a pozițiilor planificate, nu garanții.</p></div>`;
+  const byG = {}; Object.entries(W).forEach(([s, w]) => { const k = groupOf(s); byG[k] = byG[k] || {l: 0, s: 0, n: 0}; byG[k][w > 0 ? "l" : "s"] += Math.abs(w); byG[k].n += 1; });
+  const gl = Object.entries(byG).map(([k, o]) => ({k, label: (GROUPS.find(g => g.key === k) || {label: k}).label, g: o.l + o.s, ...o})).sort((p, q) => q.g - p.g);
+  const cols = ["--c1", "--c2", "--c3", "--c4", "--c5", "--c6", "--c7", "--c8", "--n-orange"];
+  const don = gl.length ? `<div class="ringbox" style="margin-top:8px">${donut(gl.map((o, i) => ({v: o.g, c: `var(${cols[i % cols.length]})`})), gross)}<div class="legend" style="flex-direction:column">${gl.map((o, i) => `<span><i style="background:var(${cols[i % cols.length]})"></i>${esc(o.label)} <b class="mono">${nf(1, 1).format(100 * o.g / gross)}%</b></span>`).join("")}</div></div>` : `<p class="empty">Nicio pondere planificată.</p>`;
+  const top = Object.entries(W).filter(([s]) => series(s)).sort((p, q) => Math.abs(q[1]) - Math.abs(p[1])).slice(0, innerWidth < 760 ? 6 : 8).map(([s]) => s);
+  const ret = s => { const r = series(s).slice(-61); return r.slice(1).map((y, i) => Math.log(y.c / r[i].c)); };
+  const R = Object.fromEntries(top.map(s => [s, ret(s)]));
+  const corr = top.length > 1 ? `<div class="corr" style="--n:${top.length}"><div class="h"><b></b>${top.map(s => `<span>${esc(label(s))}</span>`).join("")}</div>${top.map(s => `<div><b>${esc(label(s))}</b>${top.map(t => { const c = s === t ? 1 : corrOf(R[s], R[t]); return `<span style="--p:${c == null ? 0 : Math.abs(c).toFixed(2)};--cc:${c != null && c < 0 ? "var(--n-blue)" : "var(--down)"}">${c == null ? "–" : nf(2, 2).format(c)}</span>`; }).join("")}</div>`).join("")}</div>
+    <div class="scale"><span>−1</span><i style="background:linear-gradient(90deg,var(--n-blue),#18203a,var(--down))"></i><span>+1</span></div><p class="sub">Corelația randamentelor zilnice pe ~60 de zile, pentru cele mai mari poziții planificate cu istoric în aplicație.</p>` : `<p class="empty">Prea puține poziții cu istoric pentru corelații.</p>`;
+  const hhi = gross ? Object.values(W).reduce((s, w) => s + (w / gross) ** 2, 0) : 0, effN = hhi ? 1 / hhi : 0;
+  const top3 = gross ? Object.values(W).map(Math.abs).sort((p, q) => q - p).slice(0, 3).reduce((s, w) => s + w, 0) / gross : 0;
+  const conc = `<div class="panel"><div class="label">Concentrarea riscului</div><div class="safety" style="margin-top:8px">${ring(hhi, nf(2, 2).format(hhi), "HHI", "Indice de concentrare")}
+    <div class="kv" style="flex:1">${kv("Poziții echivalente", nf(1, 1).format(effN))}${kv("Primele 3 poziții", nf(1, 1).format(100 * top3) + "% din expunere")}${kv("Poziții planificate", String(Object.keys(W).length))}</div></div></div>`;
+  const factors = `<div class="panel"><div class="label">Expunere pe factori (long / short, % din cont)</div>${gl.map(o => `<div class="fbar"><div class="top"><span>${esc(o.label)} <small class="sub">· ${o.n} piețe</small></span><span class="mono"><span class="gain">${nf(1, 1).format(100 * o.l)}%</span> / <span class="loss">${nf(1, 1).format(100 * o.s)}%</span></span></div>
+    <div class="tr"><span style="width:${(50 * o.l / Math.max(...gl.map(z => z.g))).toFixed(1)}%;background:var(--up)"></span><span style="width:${(50 * o.s / Math.max(...gl.map(z => z.g))).toFixed(1)}%;background:var(--down)"></span></div></div>`).join("")}</div>`;
+  const strat = `<div class="strat">${gl.map((o, i) => `<div style="--sc:var(${cols[i % cols.length]})"><span class="label">${esc(o.label)}</span><b class="${o.l - o.s >= 0 ? "gain" : "loss"}">${fm((o.l - o.s) * v, a)}</b><small>net · ${nf(1, 1).format(100 * o.g / (gross || 1))}% din brut</small></div>`).join("")}</div>`;
+  const L = a.limits || {}, dd = a.drawdown_pct || 0, day = a.history && a.history.length > 1 ? 100 * (1 - a.history[a.history.length - 1].equity / a.history[a.history.length - 2].equity) : 0;
+  const lvl = (t, cur, lim) => { const f = lim ? Math.min(1, Math.max(0, cur) / lim) : 0; return `<div><div class="meter top" style="display:flex;justify-content:space-between;font-size:13px"><span>${t}</span><span class="mono">${nf(2, 2).format(Math.max(0, cur))}% din ${lim == null ? "–" : nf(0, 0).format(lim)}%</span></div><div class="tr"><span style="width:${(100 * f).toFixed(1)}%;background:var(${f > .66 ? "--loss" : f > .33 ? "--warn" : "--gain"})"></span></div></div>`; };
+  const protocol = `<div class="panel"><div class="label">Pragurile de oprire</div><div class="lvl">${lvl("Pierdere azi față de pragul zilnic", day, L.max_daily_loss_pct)}${lvl("Scădere față de vârf (oprire de urgență)", dd, L.max_drawdown_pct)}</div>
+    <div class="sub" style="margin-top:10px">Oprirea de urgență: <b class="${a.kill_switch ? "loss" : "gain"}">${a.kill_switch ? "ACTIVĂ" : "inactivă"}</b>. Când un prag e atins, contul nu mai deschide poziții noi.</div>
+    ${x && x.warnings && x.warnings.length ? `<div class="notice" style="margin-bottom:0">${x.warnings.map(esc).join("<br>")}</div>` : ""}</div>`;
+  return `<div class="rk">${summary}<div class="panel"><div class="label">Curba capitalului</div>${spark(a.history || [], a.initial, "rk", true)}</div>
+    <div class="panel"><div class="label">Repartiția expunerii</div>${don}</div></div>
+    <h2>Expunere pe categorii</h2>${strat}
+    <div class="rk" style="margin-top:12px"><div class="panel"><div class="label">Matricea de corelație</div>${corr}</div>${factors}<div style="display:grid;gap:10px;align-content:start">${conc}${protocol}</div></div>
+    ${riskPanel(a)}${stressPanel(a)}`;
+}
+
 function currentKey() {
   const id = (location.hash || "#rezumat").slice(1);
   return TABS.some(t => t[0] === id) ? id : "rezumat";
@@ -1200,7 +1621,9 @@ function render() {
   const key = currentKey();
   signalsBar();
   view.innerHTML = key === "rezumat" ? summary() : key === "arhiva" ? archive() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
+    : key === "grafice" ? tvView() : key === "harta" ? hmView() : key === "risc" ? riskView()
     : account(DATA.accounts.find(a => a.key === names[key]));
+  if (key === "grafice") requestAnimationFrame(drawAll);
 }
 function show() {
   CHARTS = {};
@@ -1228,17 +1651,31 @@ document.addEventListener("click", e => {
   const go = t.closest("[data-go]"); if (go) { location.hash = go.dataset.go; window.scrollTo({top:0}); return; }
   const cons = t.closest("[data-cons]"); if (cons) { CONS = cons.dataset.cons; render(); return; }
   const cv = t.closest("[data-cview]"); if (cv) { CVIEW = cv.dataset.cview; store("bnd-vedere", CVIEW); render(); return; }
+  const tf = t.closest("[data-tf]"); if (tf) { TV.tf = tf.dataset.tf; render(); return; }
+  const rg = t.closest("[data-rng]"); if (rg) { TV.range = +rg.dataset.rng; render(); return; }
+  const ind = t.closest("[data-ind]"); if (ind) { const k = ind.dataset.ind; TV.ind.has(k) ? TV.ind.delete(k) : TV.ind.add(k); store("bnd-ind", [...TV.ind].join(",")); render(); return; }
+  const gr = t.closest("[data-grid]"); if (gr) { TV.layout = +gr.dataset.grid; store("bnd-grila", String(TV.layout)); render(); return; }
+  const wl = t.closest("[data-wl]"); if (wl) { TV.cells[TV.active] = wl.dataset.wl; store("bnd-celule", TV.cells.join(",")); render(); return; }
+  const cell = t.closest(".tvcell[data-cell]"); if (cell && +cell.dataset.cell !== TV.active) { TV.active = +cell.dataset.cell; render(); return; }
+  const xo = t.closest("[data-chart-open]"); if (xo) { closeSheet(); TV.cells[TV.active] = xo.dataset.chartOpen; store("bnd-celule", TV.cells.join(",")); location.hash = "grafice"; window.scrollTo({top:0}); return; }
+  const xy = t.closest("[data-xray]"); if (xy) { closeSheet(); XR = xy.dataset.xray; if (currentKey() === "consiliu") render(); else location.hash = "consiliu"; window.scrollTo({top:0}); return; }
+  const xs = t.closest("[data-xstep]"); if (xs) { const ms = councilMarkets(), i = ms.findIndex(m => m.symbol === XR); XR = ms[(i + +xs.dataset.xstep + ms.length) % ms.length].symbol; render(); return; }
+  if (t.closest("[data-xjson]")) { const m = councilMarket(XR); copyText(JSON.stringify({...m, motive: (DATA.council.reasons || {})[XR] || {}}, null, 2)); return; }
+  const hc = t.closest("[data-hmc]"); if (hc) { HM.color = hc.dataset.hmc; store("bnd-hm-culoare", HM.color); render(); return; }
+  const hs = t.closest("[data-hms]"); if (hs) { HM.size = hs.dataset.hms; store("bnd-hm-marime", HM.size); render(); return; }
+  const hd = t.closest("[data-hmd]"); if (hd) { HM.side = hd.dataset.hmd; render(); return; }
   const srt = t.closest("[data-sort]");
   if (srt) { T50 = T50.key === srt.dataset.sort ? {key: T50.key, dir: -T50.dir} : {key: srt.dataset.sort, dir: -1}; render(); }
 });
 $("pal-btn").addEventListener("click", openPalette);
+document.addEventListener("change", e => { if (e.target.matches("[data-xr]")) { XR = e.target.value; render(); } });
 document.addEventListener("keydown", e => {
   const typing = /^(INPUT|SELECT|TEXTAREA)$/.test((document.activeElement || {}).tagName || "");
   if (e.key === "Escape") { if (!sheet.hidden) closeSheet(); else if (typing) document.activeElement.blur(); return; }
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); return; }
   if (typing || e.ctrlKey || e.metaKey || e.altKey || !sheet.hidden) return;
   if (e.key === "/") { e.preventDefault(); if (!$("search").hidden) qBox.focus(); }
-  else if (/^[1-5]$/.test(e.key)) { location.hash = TABS[+e.key - 1][0]; window.scrollTo({top:0}); }
+  else if (/^[1-8]$/.test(e.key)) { location.hash = TABS[+e.key - 1][0]; window.scrollTo({top:0}); }
   else if (e.key.toLowerCase() === "t") cycleTheme();
 });
 addEventListener("hashchange", show); show();

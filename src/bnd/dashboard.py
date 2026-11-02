@@ -17,7 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
-from . import council_analytics, crypto50, market_groups, model_registry
+from . import chart_data, council_analytics, crypto50, market_groups, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
@@ -104,7 +104,8 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                           "max_leverage": settings.get("max_leverage"),
                           "target_vol": settings.get("portfolio_vol"),
                           "financing": settings.get("financing")},
-                "plan": {"long": longs, "short": shorts, "gross": longs + shorts, "net": longs - shorts},
+                "plan": {"long": longs, "short": shorts, "gross": longs + shorts, "net": longs - shorts,
+                         "weights": {k: round(v, 5) for k, v in weights.items() if abs(v) > 1e-6}},
                 "limits": {"max_drawdown_pct": engine.limits().max_drawdown_pct,
                            "max_daily_loss_pct": engine.limits().max_daily_loss_pct,
                            "max_leverage": settings.get("max_leverage"),
@@ -302,7 +303,8 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
-            balance: dict | None = None, rls=None, unic=None, exposure: dict | None = None) -> dict:
+            balance: dict | None = None, rls=None, unic=None, exposure: dict | None = None,
+            charts=None, reasons=None) -> dict:
     now = now or datetime.now(timezone.utc)
     folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic}
     prices = (quotes or {}).get("quotes", {})
@@ -311,6 +313,8 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
         if account["key"] == "unic" and account.get("exists") and exposure and "error" not in exposure:
             account["exposure"] = exposure
     council = read_council(council, balance, now)
+    if council.get("exists"):
+        council["reasons"] = chart_data.council_reasons(reasons, council.get("day"))
     alerts = alerts_from(accounts, runs, now)
     quotes_time = (quotes or {}).get("time")
     if quotes_time and now - datetime.fromisoformat(quotes_time) > timedelta(hours=6):
@@ -328,11 +332,16 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
         fx["eurron"] = float(eurron[0])
         fx["usdron"] = fx["eurron"] / fx["eurusd"]
     events = events_from(accounts, council if council.get("exists") else None, now)
+    chart_series = chart_data.candles(charts)
+    symbols = set(chart_series) | {m["symbol"] for m in council.get("markets", [])} if council.get("exists") else set(chart_series)
+    for a in accounts:
+        symbols |= set((a.get("plan") or {}).get("weights", {})) | {p["symbol"] for p in a.get("positions", [])}
     return {"generated": now.isoformat(timespec="minutes"), "events": events, "fx": fx, "groups": market_groups.labels(),
             "top50": crypto50.summary(top50) if top50 and Path(top50).exists() else [],
             "quotes_time": quotes_time, "system": system_status(runs),
             "schedule": SCHEDULE, "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
-            "accounts": accounts, "council": council, "alerts": alerts}
+            "accounts": accounts, "council": council, "alerts": alerts,
+            "charts": chart_series, "group_of": {s: market_groups.group_of(s) for s in sorted(symbols)}}
 
 
 # Orele rulărilor zilnice (UTC), aceleași ca în cron-urile workflow-urilor; aplicația numără timpul până la următoarea.
@@ -418,6 +427,8 @@ def main(argv=None) -> int:
     parser.add_argument("--balance", help="JSON de la openrouter_balance (soldul real al cheii)")
     parser.add_argument("--exposure", help="JSON de la exposure (expuneri corelate, contul unic)")
     parser.add_argument("--top50", help="folderul cu CSV-urile top 50 cripto (arhiva)")
+    parser.add_argument("--charts", nargs="*", default=[], help="foldere cu CSV-uri zilnice pentru grafice (zilnic/, crypto50/)")
+    parser.add_argument("--reasons", help="folderul consiliu/ cu raportul zilei (motivele agenților)")
     parser.add_argument("--template", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--status-json", help="scrie și un JSON mic pentru senzori (Home Assistant)")
@@ -428,7 +439,8 @@ def main(argv=None) -> int:
         balance = json.loads(Path(args.balance).read_text()) if args.balance and Path(args.balance).exists() else None
         exposure = json.loads(Path(args.exposure).read_text()) if args.exposure and Path(args.exposure).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
-                       top50=args.top50, balance=balance, rls=args.rls, unic=args.unic, exposure=exposure)
+                       top50=args.top50, balance=balance, rls=args.rls, unic=args.unic, exposure=exposure,
+                       charts=args.charts, reasons=args.reasons)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)
