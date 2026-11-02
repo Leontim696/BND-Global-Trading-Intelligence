@@ -1543,6 +1543,8 @@ function xray(c) {
       <div class="bx"><div class="label"><span>Încredere</span><span>${conf == null ? "–" : nf(0, 0).format(100 * conf) + "%"}</span></div><div class="pb"><span style="width:${conf == null ? 0 : (100 * conf).toFixed(0)}%"></span></div></div>
       <div class="vote ${esc(v)}">${v === "BUY" ? "▲ Cumpără" : v === "SELL" ? "▼ Vinde" : "■ Așteaptă"}</div>
       <p>${why[g] ? esc(why[g]) : "Motivul nu e în raportul de azi (piața a fost votată într-o rulare anterioară)."}</p></div>`; };
+  const opts = ms.map(x => { const sel = x.symbol === XR ? " selected" : "", sym = x.symbol, sign = x.net > 0 ? "+" : "";
+    return `<option value="${esc(sym)}"${sel}>${esc(label(sym))} · ${sign}${x.net}</option>`; }).join("");
   const cs = combo(m), plan = w == null ? "nicio poziție planificată" : (w > 0 ? "long " : "short ") + pct1(100 * Math.abs(w)) + " din cont";
   const dec = `<div class="ag dec"><h4><i>Σ</i>Decizie</h4><div class="st">${m.decision === "HOLD" ? "nu tranzacționa" : m.decision === "BUY" ? "cumpără" : "vinde"}</div>
     <div class="ck"><div class="${m.net > 0 ? "ok" : m.net < 0 ? "no" : ""}"><span>Vot net</span><b class="mono">${m.net > 0 ? "+" : ""}${m.net} / 5</b></div>
@@ -1550,7 +1552,7 @@ function xray(c) {
     <div class="${cs > 0 ? "ok" : cs < 0 ? "no" : ""}"><span>Semnal combinat (50/50)</span><b class="mono">${cs > 0 ? "+" : ""}${nf(2, 2).format(cs)}</b></div>
     <div><span>Contul unic</span><b class="mono">${esc(plan)}</b></div></div></div>`;
   return `<h2>Decision X-Ray</h2><div class="panel neon"><div class="xr-top"><button class="btn" type="button" data-xstep="-1" aria-label="Piața anterioară">‹</button>
-    <select data-xr aria-label="Alege piața">${ms.map(x => `<option value="${esc(x.symbol)}"${x.symbol === XR ? " selected" : ""}>${esc(label(x.symbol))} · ${x.net > 0 ? "+" : ""}${x.net}</option>`).join("")}</select>
+    <select data-xr aria-label="Alege piața">${opts}</select>
     <button class="btn" type="button" data-xstep="1" aria-label="Piața următoare">›</button><span class="sub">${idx + 1} din ${ms.length} · preț ${fp(m.price)}</span>
     <button class="btn" type="button" data-xjson style="margin-left:auto">Copiază (JSON)</button></div>
     <div class="pipe">${Object.entries(m.votes).map(card).join("")}${dec}</div>
