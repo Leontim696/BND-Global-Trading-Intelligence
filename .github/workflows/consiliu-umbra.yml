@@ -58,10 +58,10 @@ jobs:
           mkdir -p state data
           run=true; live=false
           if [ "$EVENT" = schedule ]; then
-            # The 16-day test ends on 2026-11-16: a forgotten switch must not keep spending.
-            if [ "$(date -u +%Y-%m-%d)" \> "2026-11-16" ]; then
+            # The test was extended to 30 days (owner, 2.11): it ends on 2026-11-30; a forgotten switch must not keep spending.
+            if [ "$(date -u +%Y-%m-%d)" \> "2026-11-30" ]; then
               run=false
-              echo "Testul de 16 zile s-a încheiat (16.11.2026): nu mai rulează nimic zilnic." >> "$GITHUB_STEP_SUMMARY"
+              echo "Testul de 30 de zile s-a încheiat (30.11.2026): nu mai rulează nimic zilnic." >> "$GITHUB_STEP_SUMMARY"
             elif [ "$DAILY_SWITCH" = on ]; then live=true; else run=false; fi
           elif [ "$MODE_INPUT" = live ]; then
             GITHUB_OUTPUT=gate.txt python scripts/confirm_paid_test.py > /dev/null
@@ -141,7 +141,7 @@ jobs:
         run: |
           python -m src.bnd.council_daily --mode live --data-dir data --markets "$MARKETS" \
             --registry state/registry.sqlite --costs state/costs.sqlite \
-            --round-budget 0.60 --daily-budget "${DAILY_CAP:-3.00}" --monthly-budget "${MONTHLY_CAP:-38}" \
+            --round-budget 0.60 --daily-budget "${DAILY_CAP:-3.00}" --monthly-budget "${MONTHLY_CAP:-75}" \
             --audit-log state/audit.jsonl --report state/raport.md --report-short state/raport-scurt.md \
             --json state/raport.json > /dev/null
           cat state/raport.md >> "$GITHUB_STEP_SUMMARY"

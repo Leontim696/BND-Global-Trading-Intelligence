@@ -77,3 +77,14 @@ def test_main_writes_markdown_and_escaped_html(tmp_path):
     assert "<script" not in page and "&amp;" in page              # „S&P 500” scăpat corect
     assert fr.main(["--unic", str(tmp_path / "nu-exista.sqlite"), "--registry", str(registry),
                     "--out", str(tmp_path / "x")]) == 1
+
+
+def test_preliminary_report_uses_the_first_16_days_and_says_the_test_continues(tmp_path):
+    unic = make_account(tmp_path, [10_100])
+    registry = make_registry(tmp_path, [("SP500", {"gpt": ("BUY", .8)}, "BUY", 0.01, 1)])
+
+    assert fr.main(["--unic", str(unic), "--registry", str(registry), "--out", str(tmp_path / "p"), "--preliminar"]) == 0
+
+    md = (tmp_path / "p.md").read_text(encoding="utf-8")
+    assert md.startswith("# Raport preliminar") and "31.10–16.11.2026" in md and "continuă până pe 30.11.2026" in md
+    assert fr.TEST_END.isoformat() == "2026-11-30" and fr.PRELIMINARY_END.isoformat() == "2026-11-16"

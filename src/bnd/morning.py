@@ -30,8 +30,9 @@ SCHEDULE_UTC = [("21:40", "consiliul AI votează pe 13 piețe (plătit, ~0,35 $)
 MILESTONES = {
     "2026-11-05": "se închid primele decizii ale consiliului (la 5 zile)",
     "2026-11-06": "primești comparația consiliului cu botul pe reguli (dimineață)",
-    "2026-11-16": "ultima zi a testului de 16 zile",
-    "2026-11-17": "raportul final al testului",
+    "2026-11-17": "raportul preliminar al testului (primele 16 zile)",
+    "2026-11-30": "ultima zi a testului de 30 de zile",
+    "2026-12-01": "raportul final al testului",
 }
 
 

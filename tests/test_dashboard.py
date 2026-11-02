@@ -242,8 +242,8 @@ def test_data_has_the_test_window_and_the_latest_scheduled_runs():
     assert status == [{"name": "contul unic", "conclusion": "success", "time": "2026-11-01T22:25:00Z"}]
     data = dashboard.collect(None, None, None, None, NOW, runs=runs)
     assert data["system"] == status
-    assert {k: data["test"][k] for k in ("start", "end", "report")} == {"start": "2026-10-31", "end": "2026-11-16", "report": "2026-11-17"}
-    assert [m["date"] for m in data["test"]["milestones"]] == ["2026-11-06", "2026-11-16", "2026-11-17"]
+    assert {k: data["test"][k] for k in ("start", "end", "report")} == {"start": "2026-10-31", "end": "2026-11-30", "report": "2026-12-01"}
+    assert [m["date"] for m in data["test"]["milestones"]] == ["2026-11-06", "2026-11-17", "2026-11-30", "2026-12-01"]
     assert dashboard.system_status(None) == []
 
 
