@@ -39,7 +39,8 @@ ANCHOR_REMAINING_USD = Decimal("37.97")
 ANCHOR_LEDGER_USD = Decimal("0.36590888092")
 WATCHED = {"Consiliul AI în umbră": "consiliul AI", "Cont unic (virtual)": "contul unic",
            "Arhivă date de piață": "arhivei de date", "Date macro și context (arhivă)": "colectării de date macro",
-           "Smart-Money (colector walleturi)": "colectorului smart-money"}
+           "Smart-Money (colector walleturi)": "colectorului smart-money",
+           "Smart-Money descoperire de walleturi": "descoperirii smart-money"}
 DRAWDOWN_ALERT_PCT = 5.0           # scădere față de vârful contului, de la care se trimite o alertă
 
 

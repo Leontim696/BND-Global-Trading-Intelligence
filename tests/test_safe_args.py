@@ -89,8 +89,6 @@ def test_paid_review_needs_the_typed_confirmation_and_the_key_only_on_its_step()
 
 def test_budget_defaults_match_everywhere():
     assert "2,50" not in (ROOT / ".github" / "workflows" / "consiliu-umbra.yml").read_text()
-    from src.bnd import council_daily
-    import argparse
     text = (ROOT / "src" / "bnd" / "council_daily.py").read_text()
     assert '"--daily-budget", default="3.00"' in text and '"--monthly-budget", default="38"' in text
 

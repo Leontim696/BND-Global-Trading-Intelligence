@@ -1,7 +1,7 @@
 """Ce merită o notificare pe telefon (ntfy) și cum se evită spamul."""
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from src.bnd import alerting, dashboard, smart_alerts
 

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from src.bnd.market_data import Candle
-from src.bnd.paper_engine import EngineLimits, Instrument, OrderRequest, PaperEngine
+from src.bnd.paper_engine import EngineLimits, Instrument, OrderRequest, PaperEngine, PaperEngineError
 from src.bnd.reconcile import reconcile
 
 T0 = datetime(2026, 1, 5, tzinfo=timezone.utc)
@@ -135,13 +135,13 @@ def test_relabelling_the_currency_is_audited_refused_with_positions_and_keeps_re
     assert engine.account()["currency"] == "USD" and engine.account()["initial_capital"] == 10_000.0
     assert reconcile(engine)["ok"]
     assert engine.journal("currency_relabel")[0]["payload"]["from"] == "EUR"
-    with pytest.raises(Exception):
+    with pytest.raises(PaperEngineError, match="deja această monedă"):
         module.relabel(engine, "USD", "din nou", T0)             # fără schimbare
-    with pytest.raises(Exception):
+    with pytest.raises(PaperEngineError, match="3 litere mari"):
         module.relabel(engine, "usd", "cod greșit", T0)
 
     engine.on_bar("AAA", bar(0, 100))
     engine.submit_order(OrderRequest("buy", "AAA", "BUY", 10, stop_loss=99), T0 + DAY / 2)
     engine.on_bar("AAA", bar(1, 100, c=100))
-    with pytest.raises(Exception):
+    with pytest.raises(PaperEngineError, match="poziții deschise"):
         module.relabel(engine, "EUR", "cu poziție", T0)           # poziție deschisă

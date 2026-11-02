@@ -1,6 +1,6 @@
 import pytest
 
-from src.bnd.ai_gateway import MockAIProvider
+from src.bnd.ai_gateway import MockAIProvider, ProviderUnavailable
 from src.bnd.council_round import run_round
 from src.bnd.fusion_council import AGENTS, Vote
 
@@ -38,5 +38,5 @@ def test_empty_context_rejected():
 def test_provider_identity_mismatch_rejected():
     providers = {agent: MockAIProvider(agent) for agent in AGENTS}
     providers["gpt"] = MockAIProvider("claude")
-    with pytest.raises(Exception):
+    with pytest.raises(ProviderUnavailable, match="does not match"):
         run_round("CRYPTO", "BTC/USD", "Test", providers)

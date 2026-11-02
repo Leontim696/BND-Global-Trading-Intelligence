@@ -26,7 +26,7 @@ def make_account(folder: Path, capital=10000.0):
 def run_day(folder: Path, equity=10100.0, *, audit=True, last=True):
     """Simulează pasul zilnic: jurnal nou în SQLite, rând nou în audit, last_run.json."""
     engine = PaperEngine.open(folder / "paper.sqlite")
-    engine._log("nota", {"x": 1}, NOW)
+    engine._log("nota", {"x": 1}, NOW.isoformat())
     engine.close()
     if audit:
         audit_log.append(folder / "audit.jsonl", "daily_run",

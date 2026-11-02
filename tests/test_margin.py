@@ -116,7 +116,6 @@ def test_no_interest_without_leverage_or_without_a_rate(tmp_path):
 
 
 def test_runner_stores_the_financing_rate_in_a_new_account(tmp_path, monkeypatch, capsys):
-    import json
 
     from src.bnd import paper_runner
     from tests.test_paper_runner import MARKETS, make_data, write_data

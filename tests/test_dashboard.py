@@ -312,3 +312,19 @@ def test_pulse_blocks_are_in_the_template():
     html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
     for needle in ("pulsePanel(c)", "marketHistory(sym)", "moodWord(", "Pulsul consiliului", "Ultimele zile"):
         assert needle in html, needle
+
+
+def test_every_watched_workflow_exists_with_that_exact_name_and_manual_means_manual():
+    """Un nume greșit în WATCHED nu dă eroare: alertele pur și simplu nu pornesc niciodată. Păzim potrivirea."""
+    import re
+    root = __import__("pathlib").Path(dashboard.__file__).resolve().parents[2] / ".github" / "workflows"
+    names = {}
+    for path in root.glob("*.yml"):
+        body = path.read_text(encoding="utf-8")
+        name = re.search(r"^name:\s*(.+)$", body, re.M).group(1).strip().strip("'\"")
+        names[name] = body
+        if "manual" in name.lower():
+            assert "schedule:" not in body, f"{path.name}: numele spune „manual”, dar rulează programat"
+    for watched in dashboard.WATCHED:
+        assert watched in names, f"WATCHED cere un workflow care nu există: {watched}"
+        assert "schedule:" in names[watched], f"{watched} e urmărit, dar nu rulează programat"

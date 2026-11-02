@@ -18,7 +18,7 @@ from src.bnd import council_daily as cd
 from src.bnd import crypto_signals, dashboard, paper_runner
 from src.bnd.decision_registry import DecisionRegistry
 from src.bnd.market_data import Candle, MarketDataError, load_csv, save_csv, validate_series
-from src.bnd.paper_engine import PaperEngine
+from src.bnd.paper_engine import PaperEngine, PaperEngineError
 from src.bnd.reconcile import reconcile
 from src.bnd.universe import AI_MARKETS
 from tests.test_multi_market_cli import START
@@ -142,7 +142,7 @@ def test_invalid_series_are_rejected_not_traded(tmp_path):
 
 
 def test_timestamps_without_a_timezone_are_refused_by_the_engine(tmp_path):
-    with pytest.raises(Exception):
+    with pytest.raises(PaperEngineError, match="Timezone-aware"):
         PaperEngine.create(tmp_path / "x.sqlite", 1000.0, now=datetime(2026, 1, 1))
 
 

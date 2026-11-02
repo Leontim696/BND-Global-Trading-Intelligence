@@ -1,6 +1,5 @@
 """Decontare cu intrare la prima închidere de după decizie și alpha față de benchmark."""
 
-import json
 import sqlite3
 from datetime import datetime, timedelta, timezone
 

@@ -1,6 +1,4 @@
 """Audit 01.11, P2 #5: idempotență, date lipsă, ordine parțiale, inversări long/short, opriri de siguranță, restart."""
-from dataclasses import replace
-from datetime import timedelta
 
 import pytest
 
@@ -9,7 +7,7 @@ from src.bnd.market_data import Candle
 from src.bnd.paper_engine import EngineLimits, OrderStatus, PaperEngine
 from src.bnd.paper_runner import run_daily
 from tests.test_paper_runner import (
-    DAY, MARKETS, START, config, engine_at, factory, make_data, now_after,
+    DAY, MARKETS, config, engine_at, factory, make_data, now_after,
 )
 
 
@@ -186,7 +184,6 @@ def test_drawdown_trips_the_kill_switch_and_blocks_new_orders(tmp_path):
 
 
 def test_risk_limits_hold_every_day_over_a_long_run(tmp_path):
-    from math import sin
     limits = EngineLimits()
     engine = engine_at(tmp_path)
     data = make_data(70)
