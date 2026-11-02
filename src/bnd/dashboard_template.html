@@ -431,6 +431,7 @@ main{max-width:1640px}
 .kv b{font:600 13px var(--font-data)}
 .corr{display:grid;gap:3px;margin-top:10px;overflow-x:auto}
 .corr div{display:grid;gap:3px;grid-template-columns:62px repeat(var(--n),minmax(34px,1fr))}
+.rk-corr .corr div{grid-template-columns:52px repeat(var(--n),minmax(0,1fr));gap:2px}.rk-corr .corr span{font-size:9.5px;padding:6px 0}
 .corr span{font:600 10.5px var(--font-data);text-align:center;padding:7px 0;border-radius:5px;color:#fff;
   background:color-mix(in srgb,var(--cc) calc(var(--p,0)*85%),#18203a)}
 .corr b{font:700 10px var(--font-body);color:var(--muted);align-self:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -445,6 +446,40 @@ main{max-width:1640px}
 .lvl{display:grid;gap:8px;margin-top:10px}
 .lvl div{border:1px solid var(--line);border-radius:10px;padding:8px 10px}
 .lvl .tr{height:6px;border-radius:3px;background:var(--line);margin-top:6px;overflow:hidden}.lvl .tr span{display:block;height:100%}
+/* ===== Risc: aranjament „Risk Architect” ===== */
+.rkhead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-top:8px}
+.rkhead .mark{display:block!important;letter-spacing:.06em}
+.rkst{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.rkgrid{display:grid;gap:10px;margin-top:12px;grid-template-columns:1fr;grid-template-areas:"sum" "exp" "heat" "corr" "strat" "rec" "fac" "conc"}
+.rkgrid>.panel{margin:0;padding:14px;min-width:0}
+.rk-sum{grid-area:sum}.rk-heat{grid-area:heat}.rk-corr{grid-area:corr}.rk-exp{grid-area:exp}.rk-strat{grid-area:strat}.rk-rec{grid-area:rec}.rk-fac{grid-area:fac}.rk-conc{grid-area:conc}
+@media (min-width:900px){.rkgrid{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-areas:"sum exp" "heat heat" "corr rec" "strat strat" "fac conc"}}
+@media (min-width:1400px){.rkgrid{grid-template-columns:minmax(0,.95fr) minmax(0,1.35fr) minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"sum heat corr exp" "strat strat strat rec" "fac fac conc rec"}}
+.rkgrid .kv div{padding:6px 0;font-size:12.5px}.rkgrid .kv b{font-size:12.5px}
+.h3d{display:block;margin-top:6px}.h3d .ax{fill:var(--muted);font:600 9px var(--font-body);text-transform:uppercase;letter-spacing:.04em}
+.h3d g:hover polygon{filter:brightness(1.3)}
+.lg3{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 12px;margin-top:4px;font:600 10px var(--font-body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.lg3 i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.rkbar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}.rkbar .seg{margin:0}
+.dc{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}
+.dc b{display:block;font:600 16px var(--font-data)}.dc small{color:var(--muted);font:600 7.5px var(--font-body);text-transform:uppercase;letter-spacing:.04em}
+.rk-exp table td,.rk-exp table th{padding:5px 3px;font-size:11.5px}
+.scards{display:grid;gap:8px;margin-top:10px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.sc{border:1px solid var(--line);border-radius:12px;padding:10px;background:linear-gradient(170deg,color-mix(in srgb,var(--sc) 10%,transparent),transparent 45%),var(--surface);border-top:2px solid var(--sc);min-width:0}
+.sch{display:flex;gap:8px;align-items:center}.sch span{flex:0 0 auto;width:20px;height:20px;border-radius:5px;display:grid;place-items:center;background:var(--sc);color:#071022;font:800 11px var(--font-body)}
+.sch b{font:800 11.5px var(--font-body);text-transform:uppercase;letter-spacing:.05em;color:var(--sc);line-height:1.15}
+.sc .mono{font-size:14px}.sc small{color:var(--muted);font-size:11px}
+.kv.sm div{padding:4px 0;font-size:11px}.kv.sm b{font-size:11px}
+.trig{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;border:1px solid color-mix(in srgb,var(--gain) 50%,transparent);border-radius:12px;padding:12px;background:color-mix(in srgb,var(--gain) 10%,transparent)}
+.trig.warn{border-color:var(--warn);background:color-mix(in srgb,var(--warn) 12%,transparent)}.trig.bad{border-color:var(--loss);background:color-mix(in srgb,var(--loss) 14%,transparent)}
+.tl2{font:700 18px var(--font-display);margin-top:4px}.tri{font-size:28px;color:var(--gain)}.trig.warn .tri{color:var(--warn)}.trig.bad .tri{color:var(--loss)}
+.steps{display:grid;gap:6px;margin-top:12px}
+.steps div{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:12.5px;background:var(--surface)}
+.steps .n{width:20px;height:20px;border-radius:5px;display:grid;place-items:center;background:var(--raise);font:700 11px var(--font-data)}
+.steps b{font:700 10.5px var(--font-body);letter-spacing:.06em}
+.facs{display:grid;gap:12px;margin-top:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.facs b{display:block;font-size:15px;margin-top:2px}.facs small{color:var(--muted);font-size:11px}
+.ftr{height:12px;border-radius:3px;background:var(--line);margin:8px 0 4px;overflow:hidden}.ftr span{display:block;height:100%;border-radius:3px}
 </style>
 <div class="aurora" aria-hidden="true"></div>
 <main>
@@ -740,6 +775,8 @@ const sgn = x => x > 0 ? 1 : x < 0 ? -1 : 0;
 const cSig = m => sgn(m.net) * Math.min(1, Math.abs(m.net) / 2);       // semnalul consiliului, ca în cont
 const combo = m => 0.5 * (m.bot || 0) + 0.5 * cSig(m);                // amestec 50% reguli + 50% consiliu (estimare)
 const TERMS = {
+  risc3d:["Harta riscului","Fiecare bară e o poziție planificată. Înălțimea arată riscul ei zilnic (ponderea × volatilitatea pe 60 de zile), randamentul ponderat sau partea ei din riscul total; culoarea merge de la albastru (mic) la roșu (foarte mare). Nu ține cont de corelații."],
+  simulare:["Simulare pe ponderile de azi","Pentru fiecare categorie se aplică ponderile planificate azi pe prețurile din ultimele ~60 de zile. Arată cum s-ar fi mișcat categoria, nu ce a câștigat contul."],
   leverage:["Leverage","Cât din valoarea contului e pusă în poziții. 1x = exact valoarea contului; 2x = de două ori. Cu cât e mai mare, cu atât mișcările prețurilor mută mai tare contul, în ambele sensuri."],
   drawdown:["Drawdown","Cât a scăzut contul față de cel mai mare nivel atins. La 25% scădere, oprirea de siguranță blochează orice ordin nou."],
   short:["Short (vânzare în lipsă)","Poziție care câștigă când prețul scade și pierde când urcă. În aplicație e doar virtual."],
@@ -1559,50 +1596,129 @@ function xray(c) {
     <p class="sub" style="margin-top:14px">Fiecare agent votează independent, doar pe prețuri (fără știri). Decizia e majoritatea; contul unic folosește 50% regulile + 50% consiliul.</p></div>`;
 }
 
-// --- modulul 4: risc și portofoliu ---
+// --- modulul 4: risc și portofoliu (aranjament „Risk Architect”) ---
 function corrOf(p, q) {
   const n = Math.min(p.length, q.length); if (n < 10) return null;
   const a = p.slice(-n), b = q.slice(-n), ma = a.reduce((s, x) => s + x, 0) / n, mb = b.reduce((s, x) => s + x, 0) / n;
   let sab = 0, sa = 0, sb = 0; for (let i = 0; i < n; i++) { sab += (a[i] - ma) * (b[i] - mb); sa += (a[i] - ma) ** 2; sb += (b[i] - mb) ** 2; }
   return sa && sb ? sab / Math.sqrt(sa * sb) : null;
 }
+const sdev = v => { const n = v.length; if (n < 2) return 0; const m = v.reduce((s, x) => s + x, 0) / n; return Math.sqrt(v.reduce((s, x) => s + (x - m) ** 2, 0) / (n - 1)); };
+const RK = {view: "risc", tf: 1};
+const RCOL = ["--n-blue", "--n-green", "--n-yellow", "--n-orange", "--down", "--n-violet", "--c1", "--c6", "--c8"];
+function retMap(sym, days) {
+  const r = series(sym); if (!r) return null;
+  const out = {}; r.slice(-(days + 1)).forEach((x, i, a) => { if (i) out[Math.round(x.t / 864e5)] = x.c / a[i - 1].c - 1; });
+  return out;
+}
+function riskModel(a) {
+  const W = (a.plan && a.plan.weights) || {}, syms = Object.keys(W);
+  const vols = {}; syms.forEach(s => { const m = retMap(s, 60); if (m && Object.keys(m).length > 20) vols[s] = sdev(Object.values(m)); });
+  const byGroup = {}; syms.forEach(s => { const g = groupOf(s); (byGroup[g] = byGroup[g] || []).push(s); });
+  const known = Object.values(vols).sort((p, q) => p - q), median = known.length ? known[Math.floor(known.length / 2)] : .015;
+  const gmed = {}; Object.entries(byGroup).forEach(([g, list]) => { const v = list.map(s => vols[s]).filter(x => x != null).sort((p, q) => p - q); gmed[g] = v.length ? v[Math.floor(v.length / 2)] : median; });
+  const vol = s => vols[s] != null ? vols[s] : gmed[groupOf(s)];
+  const risk = Object.fromEntries(syms.map(s => [s, Math.abs(W[s]) * vol(s)])), total = Object.values(risk).reduce((s, x) => s + x, 0) || 1;
+  const days = [...new Set(syms.flatMap(s => Object.keys(retMap(s, 60) || {})))].map(Number).sort((p, q) => p - q);
+  const pnl = list => { const maps = list.map(s => [W[s], retMap(s, 60)]).filter(([, m]) => m); return maps.length ? days.map(d => maps.reduce((t, [w, m]) => t + w * (m[d] || 0), 0)) : null; };
+  return {W, syms, vols, vol, risk, total, byGroup, pnl, estimated: syms.filter(s => vols[s] == null).length};
+}
+function sparkMini(vals, col) {
+  if (!vals || vals.length < 2) return `<div class="sub" style="height:44px;display:grid;place-items:center">fără istoric de preț</div>`;
+  let c = 0; const cum = vals.map(v => (c += v)), lo = Math.min(0, ...cum), hi = Math.max(0, ...cum), sp = hi - lo || 1;
+  const pts = cum.map((v, i) => `${(i * 160 / (cum.length - 1)).toFixed(1)},${(42 - (v - lo) / sp * 38).toFixed(1)}`).join(" ");
+  return `<svg viewBox="0 0 160 44" width="100%" height="44" preserveAspectRatio="none" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="var(${col})" stroke-width="1.6" style="filter:drop-shadow(0 0 3px var(${col}))"/></svg>`;
+}
+function heat3d(M, groups) {
+  const ny = 6, s = 26, c30 = .866, nx = groups.length; if (!nx) return `<p class="empty">Nicio pondere planificată.</p>`;
+  const val = sym => RK.view === "risc" ? M.risk[sym] : RK.view === "contrib" ? M.risk[sym] / M.total
+    : (() => { const r = series(sym); return r && r.length > RK.tf ? Math.abs(M.W[sym] * (r[r.length - 1].c / r[r.length - 1 - RK.tf].c - 1)) : 0; })();
+  const cells = []; groups.forEach((g, i) => g.items.slice(0, ny).forEach((sym, j) => cells.push({i, j, sym, v: val(sym) || 0})));
+  const mx = Math.max(...cells.map(c => c.v)) || 1, W0 = (nx + ny) * s * c30, X0 = ny * s * c30 + 78, Y0 = 92, HZ = 92, WV = W0 + 96, HV = Y0 + (nx + ny) * s * .5 + 46;
+  const P = (x, y, z) => `${(X0 + (x - y) * s * c30).toFixed(1)},${(Y0 + (x + y) * s * .5 - z).toFixed(1)}`;
+  const lvl = f => f > .8 ? "--down" : f > .6 ? "--n-orange" : f > .4 ? "--n-yellow" : f > .2 ? "--n-green" : "--n-blue";
+  let svg = "";
+  for (let i = 0; i < nx; i++) for (let j = 0; j < ny; j++) svg += `<polygon points="${P(i, j, 0)} ${P(i + 1, j, 0)} ${P(i + 1, j + 1, 0)} ${P(i, j + 1, 0)}" fill="color-mix(in srgb,var(--n-blue) 10%,transparent)" stroke="var(--line-2)" stroke-width=".5"/>`;
+  cells.sort((p, q) => (p.i + p.j) - (q.i + q.j)).forEach(c => {
+    const f = c.v / mx, z = Math.max(2, f * HZ), x0 = c.i + .12, x1 = c.i + .88, y0 = c.j + .12, y1 = c.j + .88, col = `var(${lvl(f)})`;
+    const t = `${esc(label(c.sym))}: ${RK.view === "contrib" ? nf(1, 1).format(100 * c.v) + "% din risc" : RK.view === "risc" ? nf(2, 2).format(100 * c.v) + "% risc zilnic" : nf(2, 2).format(100 * c.v) + "% randament ponderat"}`;
+    svg += `<g data-m="${esc(c.sym)}" style="cursor:pointer"><title>${t}</title>
+      <polygon points="${P(x0, y1, 0)} ${P(x1, y1, 0)} ${P(x1, y1, z)} ${P(x0, y1, z)}" fill="color-mix(in srgb,${col} 62%,#000)"/>
+      <polygon points="${P(x1, y0, 0)} ${P(x1, y1, 0)} ${P(x1, y1, z)} ${P(x1, y0, z)}" fill="color-mix(in srgb,${col} 45%,#000)"/>
+      <polygon points="${P(x0, y0, z)} ${P(x1, y0, z)} ${P(x1, y1, z)} ${P(x0, y1, z)}" fill="${col}" style="filter:drop-shadow(0 0 3px ${col})"/></g>`;
+  });
+  groups.forEach((g, i) => { const [x, y] = P(i + .5, ny + .35, 0).split(","); svg += `<text class="ax" x="${x}" y="${(+y + 10).toFixed(1)}" text-anchor="end">${esc(g.label.split(" ")[0])}</text>`; });
+  const leg = [["--down", "Foarte mare"], ["--n-orange", "Mare"], ["--n-yellow", "Medie"], ["--n-green", "Mică"], ["--n-blue", "Foarte mică"]];
+  const seg = (attr, list, cur) => `<div class="seg" role="group">${list.map(([k, t]) => `<button type="button" ${attr}="${k}" aria-pressed="${String(k) === String(cur)}">${t}</button>`).join("")}</div>`;
+  return `<div class="lg3">${leg.map(([c, t]) => `<span><i style="background:var(${c})"></i>${t}</span>`).join("")}</div><div><svg class="h3d" viewBox="0 0 ${WV.toFixed(0)} ${HV.toFixed(0)}" width="100%" role="img" aria-label="Harta 3D a riscului pe categorii">${svg}</svg></div>
+    <div class="rkbar"><span class="label">Vedere</span>${seg("data-rkv", [["risc", "Risc"], ["randament", "Randament"], ["contrib", "Contribuție"]], RK.view)}
+    ${RK.view === "randament" ? `<span class="label" style="margin-left:auto">Interval</span>${seg("data-rkt", [[1, "1Z"], [5, "1S"], [21, "1L"]], RK.tf)}` : ""}</div>`;
+}
 function riskView() {
   const a = UNIC(); if (!a || !a.exists) return `<p class="empty">Contul unic nu are încă date.</p>`;
-  const v = eq(a), W = (a.plan && a.plan.weights) || {}, x = a.exposure && a.exposure.planned, gross = Object.values(W).reduce((s, w) => s + Math.abs(w), 0);
-  const net = Object.values(W).reduce((s, w) => s + w, 0), vol = x ? x.portfolio_vol_daily_pct : null;
+  const M = riskModel(a), v = eq(a), x = a.exposure && a.exposure.planned, W = M.W;
+  const gross = Object.values(W).reduce((s, w) => s + Math.abs(w), 0), net = Object.values(W).reduce((s, w) => s + w, 0), vol = x ? x.portfolio_vol_daily_pct : null;
   const kv = (k, val, cls) => `<div><span>${k}</span><b class="${cls || ""}">${val}</b></div>`;
-  const summary = `<div class="panel neon"><div class="label">Sumar portofoliu · contul unic</div><div class="bigval" style="font-size:clamp(28px,4vw,40px)">${hero(v, a)}</div>
-    <div class="kv">${kv("Expunere brută (planificată)", fm(gross * v, a) + " · " + nf(2, 2).format(gross) + "x")}${kv("Expunere netă", fm(net * v, a), net >= 0 ? "gain" : "loss")}
-    ${kv("Volatilitate zilnică estimată", vol == null ? "–" : nf(2, 2).format(vol) + "%")}${kv("VaR 95% · 1 zi", vol == null ? "–" : fm(1.645 * vol / 100 * v, a), "loss")}
-    ${kv("Pierdere medie în cele mai rele 5% zile (ES)", vol == null ? "–" : fm(2.063 * vol / 100 * v, a), "loss")}${kv("Scădere față de vârf", a.drawdown_pct > 0 ? pct(-a.drawdown_pct) : "0,00%", a.drawdown_pct > 0 ? "loss" : "")}
-    ${kv("Diversificare efectivă", x && x.diversification ? nf(1, 1).format(x.diversification) + " piețe independente" : "–")}</div>
-    <p class="sub">VaR și ES sunt estimări din volatilitatea pe 60 de zile a pozițiilor planificate, nu garanții.</p></div>`;
-  const byG = {}; Object.entries(W).forEach(([s, w]) => { const k = groupOf(s); byG[k] = byG[k] || {l: 0, s: 0, n: 0}; byG[k][w > 0 ? "l" : "s"] += Math.abs(w); byG[k].n += 1; });
-  const gl = Object.entries(byG).map(([k, o]) => ({k, label: (GROUPS.find(g => g.key === k) || {label: k}).label, g: o.l + o.s, ...o})).sort((p, q) => q.g - p.g);
-  const cols = ["--c1", "--c2", "--c3", "--c4", "--c5", "--c6", "--c7", "--c8", "--n-orange"];
-  const don = gl.length ? `<div class="ringbox" style="margin-top:8px">${donut(gl.map((o, i) => ({v: o.g, c: `var(${cols[i % cols.length]})`})), gross)}<div class="legend" style="flex-direction:column">${gl.map((o, i) => `<span><i style="background:var(${cols[i % cols.length]})"></i>${esc(o.label)} <b class="mono">${nf(1, 1).format(100 * o.g / gross)}%</b></span>`).join("")}</div></div>` : `<p class="empty">Nicio pondere planificată.</p>`;
-  const top = Object.entries(W).filter(([s]) => series(s)).sort((p, q) => Math.abs(q[1]) - Math.abs(p[1])).slice(0, innerWidth < 760 ? 6 : 8).map(([s]) => s);
-  const ret = s => { const r = series(s).slice(-61); return r.slice(1).map((y, i) => Math.log(y.c / r[i].c)); };
-  const R = Object.fromEntries(top.map(s => [s, ret(s)]));
-  const corr = top.length > 1 ? `<div class="corr" style="--n:${top.length}"><div class="h"><b></b>${top.map(s => `<span>${esc(label(s))}</span>`).join("")}</div>${top.map(s => `<div><b>${esc(label(s))}</b>${top.map(t => { const c = s === t ? 1 : corrOf(R[s], R[t]); return `<span style="--p:${c == null ? 0 : Math.abs(c).toFixed(2)};--cc:${c != null && c < 0 ? "var(--n-blue)" : "var(--down)"}">${c == null ? "–" : nf(2, 2).format(c)}</span>`; }).join("")}</div>`).join("")}</div>
-    <div class="scale"><span>−1</span><i style="background:linear-gradient(90deg,var(--n-blue),#18203a,var(--down))"></i><span>+1</span></div><p class="sub">Corelația randamentelor zilnice pe ~60 de zile, pentru cele mai mari poziții planificate cu istoric în aplicație.</p>` : `<p class="empty">Prea puține poziții cu istoric pentru corelații.</p>`;
-  const hhi = gross ? Object.values(W).reduce((s, w) => s + (w / gross) ** 2, 0) : 0, effN = hhi ? 1 / hhi : 0;
-  const top3 = gross ? Object.values(W).map(Math.abs).sort((p, q) => q - p).slice(0, 3).reduce((s, w) => s + w, 0) / gross : 0;
-  const conc = `<div class="panel"><div class="label">Concentrarea riscului</div><div class="safety" style="margin-top:8px">${ring(hhi, nf(2, 2).format(hhi), "HHI", "Indice de concentrare")}
-    <div class="kv" style="flex:1">${kv("Poziții echivalente", nf(1, 1).format(effN))}${kv("Primele 3 poziții", nf(1, 1).format(100 * top3) + "% din expunere")}${kv("Poziții planificate", String(Object.keys(W).length))}</div></div></div>`;
-  const factors = `<div class="panel"><div class="label">Expunere pe factori (long / short, % din cont)</div>${gl.map(o => `<div class="fbar"><div class="top"><span>${esc(o.label)} <small class="sub">· ${o.n} piețe</small></span><span class="mono"><span class="gain">${nf(1, 1).format(100 * o.l)}%</span> / <span class="loss">${nf(1, 1).format(100 * o.s)}%</span></span></div>
-    <div class="tr"><span style="width:${(50 * o.l / Math.max(...gl.map(z => z.g))).toFixed(1)}%;background:var(--up)"></span><span style="width:${(50 * o.s / Math.max(...gl.map(z => z.g))).toFixed(1)}%;background:var(--down)"></span></div></div>`).join("")}</div>`;
-  const strat = `<div class="strat">${gl.map((o, i) => `<div style="--sc:var(${cols[i % cols.length]})"><span class="label">${esc(o.label)}</span><b class="${o.l - o.s >= 0 ? "gain" : "loss"}">${fm((o.l - o.s) * v, a)}</b><small>net · ${nf(1, 1).format(100 * o.g / (gross || 1))}% din brut</small></div>`).join("")}</div>`;
-  const L = a.limits || {}, dd = a.drawdown_pct || 0, day = a.history && a.history.length > 1 ? 100 * (1 - a.history[a.history.length - 1].equity / a.history[a.history.length - 2].equity) : 0;
-  const lvl = (t, cur, lim) => { const f = lim ? Math.min(1, Math.max(0, cur) / lim) : 0; return `<div><div class="meter top" style="display:flex;justify-content:space-between;font-size:13px"><span>${t}</span><span class="mono">${nf(2, 2).format(Math.max(0, cur))}% din ${lim == null ? "–" : nf(0, 0).format(lim)}%</span></div><div class="tr"><span style="width:${(100 * f).toFixed(1)}%;background:var(${f > .66 ? "--loss" : f > .33 ? "--warn" : "--gain"})"></span></div></div>`; };
-  const protocol = `<div class="panel"><div class="label">Pragurile de oprire</div><div class="lvl">${lvl("Pierdere azi față de pragul zilnic", day, L.max_daily_loss_pct)}${lvl("Scădere față de vârf (oprire de urgență)", dd, L.max_drawdown_pct)}</div>
-    <div class="sub" style="margin-top:10px">Oprirea de urgență: <b class="${a.kill_switch ? "loss" : "gain"}">${a.kill_switch ? "ACTIVĂ" : "inactivă"}</b>. Când un prag e atins, contul nu mai deschide poziții noi.</div>
+  const hist = [a.initial, ...(a.history || []).map(h => h.equity)]; let pk = hist[0], mdd = 0; hist.forEach(e => { pk = Math.max(pk, e); mdd = Math.max(mdd, 1 - e / pk); });
+  const dr = hist.slice(1).map((e, i) => e / hist[i] - 1), enough = dr.length >= 20, sd = sdev(dr), mean = dr.reduce((s, r) => s + r, 0) / (dr.length || 1);
+  const down = sdev(dr.map(r => Math.min(0, r)));
+  const groups = Object.entries(M.byGroup).map(([k, list]) => ({k, label: (GROUPS.find(g => g.key === k) || {label: k}).label, items: list.sort((p, q) => M.risk[q] - M.risk[p]),
+    net: list.reduce((s, sym) => s + W[sym], 0), gross: list.reduce((s, sym) => s + Math.abs(W[sym]), 0), risk: list.reduce((s, sym) => s + M.risk[sym], 0)})).sort((p, q) => q.gross - p.gross);
+  const now = new Intl.DateTimeFormat("ro-RO", {timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit"}).format(new Date(DATA.generated));
+  const sys = (DATA.system || []).every(s => s.conclusion === "success");
+  const head = `<div class="rkhead"><div><div class="mark" style="font-size:20px">PORTOFOLIU · PRIVIRE DE ANSAMBLU</div><div class="sub">${groups.length} categorii · contul unic · ${Object.keys(W).length} poziții planificate</div></div>
+    <div class="rkst"><span class="chip"><i style="background:var(${sys ? "--gain" : "--loss"})"></i>${sys ? "Operațional" : "Verifică rulările"}</span><span class="clock">date la <b>${esc(now)}</b> (ora Germaniei)</span></div></div>`;
+  const summary = `<div class="panel rk-sum"><div class="label">Sumar portofoliu</div><div class="sub" style="margin-top:6px">Valoare totală</div>
+    <div class="bigval" style="font-size:clamp(30px,3.2vw,42px);margin-top:2px">${hero(v, a)}</div>
+    <div class="kv">${kv("Expunere brută", fm(gross * v, a))}${kv("Expunere netă", fm(net * v, a), net >= 0 ? "gain" : "loss")}${kv("Levier", nf(2, 2).format(gross) + "x")}
+    ${kv("VaR (95%) · 1 zi", vol == null ? "–" : fm(1.645 * vol / 100 * v, a))}${kv("Expected shortfall", vol == null ? "–" : fm(2.063 * vol / 100 * v, a))}
+    ${kv("Scădere maximă", mdd > 0 ? pct(-100 * mdd) : "0,00%", mdd > 0 ? "loss" : "")}${kv("Sharpe", enough && sd ? nf(2, 2).format(mean / sd * Math.sqrt(252)) : "după 20 de zile")}
+    ${kv("Sortino", enough && down ? nf(2, 2).format(mean / down * Math.sqrt(252)) : "după 20 de zile")}</div>
+    <div class="label" style="margin-top:14px">Curba capitalului</div>${spark(a.history || [], a.initial, "rk", true)}</div>`;
+  const heat = `<div class="panel rk-heat"><div class="label">Harta riscului (3D) ${help("risc3d")}</div>${heat3d(M, groups)}
+    <p class="sub">Fiecare bară = o poziție planificată (cele mai mari 6 pe categorie). ${M.estimated ? `${M.estimated} piețe fără istoric de preț primesc volatilitatea medie a categoriei lor.` : ""}</p></div>`;
+  const top = Object.keys(W).filter(s => series(s)).sort((p, q) => M.risk[q] - M.risk[p]).slice(0, innerWidth < 760 ? 6 : 7);
+  const R = Object.fromEntries(top.map(s => [s, Object.values(retMap(s, 60))]));
+  const corr = `<div class="panel rk-corr"><div class="label">Matricea de corelație</div>${top.length > 1 ? `<div class="corr" style="--n:${top.length}"><div class="h"><b></b>${top.map(s => `<span>${esc(label(s))}</span>`).join("")}</div>${top.map(s => `<div><b>${esc(label(s))}</b>${top.map(t => { const c = s === t ? 1 : corrOf(R[s], R[t]); return `<span style="--p:${c == null ? 0 : Math.abs(c).toFixed(2)};--cc:${c != null && c < 0 ? "var(--n-blue)" : "var(--down)"}">${c == null ? "–" : nf(2, 2).format(c)}</span>`; }).join("")}</div>`).join("")}</div>
+    <div class="label" style="margin-top:16px">Scala corelației</div><div class="scale"><span>−1</span><i style="background:linear-gradient(90deg,var(--n-blue),var(--n-green),var(--n-yellow),var(--down))"></i><span>+1</span></div>
+    <p class="sub">Randamente zilnice pe ~60 de zile, pozițiile cu cel mai mare risc care au istoric în aplicație.</p>` : `<p class="empty">Prea puține poziții cu istoric pentru corelații.</p>`}</div>`;
+  const cols = g => `var(${RCOL[groups.indexOf(g) % RCOL.length]})`;
+  const exp = `<div class="panel rk-exp"><div class="label">Repartiția expunerii · pe categorii</div><div class="ringbox" style="margin-top:10px;justify-content:center;position:relative">${donut(groups.map(g => ({v: g.gross, c: cols(g)})), gross || 1)}
+    <div class="dc"><b>${nf(2, 2).format(gross)}x</b><small>brut</small></div></div>
+    <div class="legend" style="flex-direction:column;gap:4px">${groups.map(g => `<span style="display:flex;justify-content:space-between"><span><i style="background:${cols(g)}"></i>${esc(g.label)}</span><b class="mono">${nf(1, 1).format(100 * g.gross / (gross || 1))}%</b></span>`).join("")}</div>
+    <div class="label" style="margin-top:16px">Expunere netă pe categorii</div><table style="margin-top:6px"><tr><th>Categorie</th><th>Netă</th><th>% total</th></tr>
+    ${groups.map(g => `<tr><td>${esc(g.label)}</td><td class="${g.net >= 0 ? "gain" : "loss"}">${fm(g.net * v, a)}</td><td>${nf(1, 1).format(100 * g.gross / (gross || 1))}%</td></tr>`).join("")}
+    <tr><td>Total</td><td class="${net >= 0 ? "gain" : "loss"}">${fm(net * v, a)}</td><td>100%</td></tr></table></div>`;
+  const strat = `<div class="panel rk-strat"><div class="label">Categoriile portofoliului ${help("simulare")}</div><div class="scards">${groups.map((g, i) => {
+    const p = M.pnl(g.items), s = p ? sdev(p) : null, m = p ? p.reduce((t, r) => t + r, 0) / p.length : null, col = RCOL[i % RCOL.length];
+    return `<div class="sc" style="--sc:var(${col})"><div class="sch"><span>${i + 1}</span><b>${esc(g.label)}</b></div><div class="label" style="margin-top:8px">Expunere netă</div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><b class="mono ${g.net >= 0 ? "gain" : "loss"}">${fm(g.net * v, a)}</b><small class="mono">${nf(1, 1).format(100 * g.gross / (gross || 1))}%</small></div>
+      ${sparkMini(p, col)}<div class="kv sm">${kv("VaR (95%)", s ? fm(1.645 * s * v, a) : "–")}${kv("Contribuție la risc", nf(1, 1).format(100 * g.risk / M.total) + "%")}${kv("Sharpe (60z)", s ? nf(2, 2).format(m / s * Math.sqrt(252)) : "–")}</div></div>`; }).join("")}</div>
+    <p class="sub">Curbele, VaR și Sharpe pe categorie arată cum s-ar fi mișcat <b>ponderile de azi</b> în ultimele ~60 de zile (simulare, nu rezultate reale).</p></div>`;
+  const L = a.limits || {}, dd = a.drawdown_pct || 0, day = a.history && a.history.length > 1 ? Math.max(0, 100 * (1 - a.history[a.history.length - 1].equity / a.history[a.history.length - 2].equity)) : 0;
+  const ratio = Math.max(L.max_daily_loss_pct ? day / L.max_daily_loss_pct : 0, L.max_drawdown_pct ? dd / L.max_drawdown_pct : 0);
+  const level = a.kill_switch ? 3 : ratio >= .66 ? 2 : ratio >= .33 ? 1 : 0;
+  const stopText = a.kill_switch ? (a.kill_reason || "oprire activă") : "Nicio limită atinsă";
+  const lvTxt = ["Nivel 0 · normal", "Nivel 1 · atenție", "Nivel 2 · aproape de prag", "Nivel 3 · oprire activă"][level];
+  const steps = [["Stop-loss pe fiecare poziție (3 × ATR)", (a.positions || []).every(p => p.stop) ? "ACTIV" : "LIPSĂ", (a.positions || []).every(p => p.stop)],
+    ["Închidere dacă marja scade sub 50% din necesar", "PREGĂTIT", true],
+    [`Lichidare totală la −${nf(0, 0).format(L.max_daily_loss_pct || 5)}% într-o zi (azi ${nf(2, 2).format(day)}%)`, a.kill_switch ? "DECLANȘAT" : "PREGĂTIT", !a.kill_switch],
+    [`Lichidare totală la −${nf(0, 0).format(L.max_drawdown_pct || 25)}% de la vârf (acum ${nf(2, 2).format(dd)}%)`, a.kill_switch ? "DECLANȘAT" : "PREGĂTIT", !a.kill_switch]];
+  const rec = `<div class="panel rk-rec"><div class="label">Protocoale de protecție</div>
+    <div class="trig ${level >= 2 ? "bad" : level === 1 ? "warn" : ""}"><div><div class="label">Starea contului</div><div class="tl2">${lvTxt}</div><div class="sub">${esc(stopText)}</div></div><span class="tri">${level ? "⚠" : "✓"}</span></div>
+    <div class="label" style="margin-top:14px">Utilizarea pragurilor</div><div class="lvl"><div><div style="display:flex;justify-content:space-between;font-size:13px"><span>Cel mai apropiat prag</span><span class="mono">${nf(0, 0).format(100 * ratio)}%</span></div><div class="tr"><span style="width:${(100 * Math.min(1, ratio)).toFixed(1)}%;background:var(${ratio > .66 ? "--loss" : ratio > .33 ? "--warn" : "--gain"})"></span></div></div></div>
+    <div class="steps">${steps.map(([t, st, ok], i) => `<div><span class="n">${i + 1}</span><span>${t}</span><b class="${ok ? "gain" : "loss"}">${st}</b></div>`).join("")}</div>
+    <p class="sub">Acestea sunt regulile reale ale motorului: rulează singure, nu se apasă manual.</p>
     ${x && x.warnings && x.warnings.length ? `<div class="notice" style="margin-bottom:0">${x.warnings.map(esc).join("<br>")}</div>` : ""}</div>`;
-  return `<div class="rk">${summary}<div class="panel"><div class="label">Curba capitalului</div>${spark(a.history || [], a.initial, "rk", true)}</div>
-    <div class="panel"><div class="label">Repartiția expunerii</div>${don}</div></div>
-    <h2>Expunere pe categorii</h2>${strat}
-    <div class="rk" style="margin-top:12px"><div class="panel"><div class="label">Matricea de corelație</div>${corr}</div>${factors}<div style="display:grid;gap:10px;align-content:start">${conc}${protocol}</div></div>
-    ${riskPanel(a)}${stressPanel(a)}`;
+  const F = [["Piața de acțiuni", ["indici", "actiuni", "aparare"], "--n-blue"], ["Dobânzi", ["obligatiuni"], "--n-green"], ["Valute", ["forex"], "--c1"], ["Mărfuri", ["marfuri"], "--n-yellow"], ["Cripto", ["crypto", "memecoin"], "--n-violet"]];
+  const fx = F.map(([t, keys, col]) => { const gs = groups.filter(g => keys.includes(g.k)); return {t, col, g: gs.reduce((s, g) => s + g.gross, 0), n: gs.reduce((s, g) => s + g.net, 0)}; });
+  const fmax = Math.max(...fx.map(f => f.g)) || 1;
+  const factors = `<div class="panel rk-fac"><div class="label">Expunere pe factori de risc</div><div class="facs">${fx.map(f => `<div><div class="sub">${f.t}</div><b class="mono">${fm(f.g * v, a)}</b>
+    <div class="ftr"><span style="width:${(100 * f.g / fmax).toFixed(1)}%;background:linear-gradient(90deg,color-mix(in srgb,var(${f.col}) 55%,transparent),var(${f.col}))"></span></div><small class="mono">${nf(1, 1).format(100 * f.g / (gross || 1))}% · net <span class="${f.n >= 0 ? "gain" : "loss"}">${pct1(100 * f.n)}</span></small></div>`).join("")}</div></div>`;
+  const hhi = gross ? Object.values(W).reduce((s, w) => s + (w / gross) ** 2, 0) : 0, top3 = gross ? Object.values(W).map(Math.abs).sort((p, q) => q - p).slice(0, 3).reduce((s, w) => s + w, 0) / gross : 0;
+  const conc = `<div class="panel rk-conc"><div class="label">Concentrarea riscului</div><div class="safety" style="margin-top:8px">${ring(Math.min(1, hhi * 5), nf(2, 2).format(hhi), "HHI", "Indice de concentrare")}
+    <div class="kv" style="flex:1">${kv("Poziții echivalente (N efectiv)", nf(1, 1).format(hhi ? 1 / hhi : 0))}${kv("Primele 3 poziții", nf(1, 1).format(100 * top3) + "%")}${kv("Diversificare (corelații)", x && x.diversification ? nf(1, 1).format(x.diversification) : "–")}</div></div></div>`;
+  return `${head}<div class="rkgrid">${summary}${heat}${corr}${exp}${strat}${rec}${factors}${conc}</div><h2>Limite și scenarii de stres</h2>${riskPanel(a)}${stressPanel(a)}`;
 }
 
 function currentKey() {
@@ -1665,6 +1781,8 @@ document.addEventListener("click", e => {
   if (t.closest("[data-xjson]")) { const m = councilMarket(XR); copyText(JSON.stringify({...m, motive: (DATA.council.reasons || {})[XR] || {}}, null, 2)); return; }
   const hc = t.closest("[data-hmc]"); if (hc) { HM.color = hc.dataset.hmc; store("bnd-hm-culoare", HM.color); render(); return; }
   const hs = t.closest("[data-hms]"); if (hs) { HM.size = hs.dataset.hms; store("bnd-hm-marime", HM.size); render(); return; }
+  const rv = t.closest("[data-rkv]"); if (rv) { RK.view = rv.dataset.rkv; render(); return; }
+  const rt = t.closest("[data-rkt]"); if (rt) { RK.tf = +rt.dataset.rkt; render(); return; }
   const hd = t.closest("[data-hmd]"); if (hd) { HM.side = hd.dataset.hmd; render(); return; }
   const srt = t.closest("[data-sort]");
   if (srt) { T50 = T50.key === srt.dataset.sort ? {key: T50.key, dir: -T50.dir} : {key: srt.dataset.sort, dir: -1}; render(); }
