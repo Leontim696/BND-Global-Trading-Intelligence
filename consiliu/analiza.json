@@ -1,5 +1,6 @@
 {
   "incomplete_excluded": 0,
+  "stale_excluded": 1,
   "settled": 0,
   "enough_data": false,
   "note": "Doar 0 decizii încheiate (sub 20): rezultatele sunt orientative, nu concluzii.",
