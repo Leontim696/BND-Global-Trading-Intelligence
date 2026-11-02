@@ -6,7 +6,7 @@ voteze HOLD când datele nu ajung. Include și semnalul regulii simple a botului
 (SMA 20/50), doar ca informație; consiliul nu e obligat să-l urmeze.
 """
 
-from math import log, sqrt
+from math import floor, log, log10, sqrt
 from statistics import stdev
 from typing import Sequence
 
@@ -74,6 +74,13 @@ def bot_signal(candles: Sequence[Candle]) -> int:
     return sma_crossover(20, 50)(candles)
 
 
+def price_text(price: float) -> str:
+    """Prețul cu 4 zecimale; sub 1 cu 4 cifre semnificative, ca 0.000005 să nu devină „0.0000” (memecoin-uri)."""
+    if not 0 < price < 1:
+        return f"{price:.4f}"
+    return f"{price:.{min(12, 3 - floor(log10(price)))}f}"
+
+
 def _fmt(value, suffix="", digits=1) -> str:
     return "n/a" if value is None else f"{value:+.{digits}f}{suffix}"
 
@@ -93,7 +100,7 @@ def build_context(name: str, candles: Sequence[Candle], others: dict | None = No
     signal = bot_signal(candles)
     lines = [
         f"Piața: {label(name)} ({name}). Ultima închidere: "
-        f"{last.open_time.date().isoformat()}, preț {last.close:.4f}.",
+        f"{last.open_time.date().isoformat()}, preț {price_text(last.close)}.",
         "Modificare pe 1/5/20/60/120 de zile: " + ", ".join(
             _fmt(_change(candles, d), "%") for d in (1, 5, 20, 60, 120)),
         f"Față de maximul și minimul ultimului an: {100 * (last.close / high - 1):+.1f}% "

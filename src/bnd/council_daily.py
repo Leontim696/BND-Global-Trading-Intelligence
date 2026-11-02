@@ -31,7 +31,7 @@ from .ai_gateway import (
     GatewayMode,
     LiveAuthorization,
 )
-from .council_context import HORIZON_DAYS, bot_signal, build_context
+from .council_context import HORIZON_DAYS, bot_signal, build_context, price_text
 from .council_runner import CouncilRunner
 from .cost_tracker import BudgetLimits, ModelPricing
 from .decision_registry import DecisionRegistry
@@ -235,7 +235,7 @@ def render(report: dict) -> str:
         note = "" if m["status"] == "ok" else " (rundă incompletă: cineva nu a răspuns)"
         tilt = {1: "înclină spre cumpărare", -1: "înclină spre vânzare", 0: "fără înclinație"}[m["lean"]]
         lines += ["", f"## {m['market']}: **{verdict}** ({tilt})" + note,
-                  f"Preț {m['price']:.4f} (închidere {m['last_candle']}); regula simplă a botului: "
+                  f"Preț {price_text(m['price'])} (închidere {m['last_candle']}); regula simplă a botului: "
                   + {1: "cumpără", -1: "vinde", 0: "nimic"}[m["bot_signal"]]
                   + f"; cost {Decimal(m['cost_usd']):.3f} $.", "",
                   "| Agent | Vot | Încredere | Motiv |", "|---|---|---:|---|"]
