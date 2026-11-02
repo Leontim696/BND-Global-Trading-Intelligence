@@ -149,6 +149,11 @@ def _regime_now(candles):
         return None
 
 
+# Peste atâtea zile fără lumânare nouă piața se sare (TON a fost votată pe prețuri din iunie).
+# 5 acoperă weekendul și sărbătorile bursiere.
+MAX_DATA_AGE_DAYS = 5
+
+
 def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegistry,
                 now: datetime, round_budget: Decimal, horizon_days: int = HORIZON_DAYS,
                 sleep=None, peers=None) -> dict:
@@ -163,6 +168,11 @@ def run_markets(data: dict, markets, gateway: AIGateway, registry: DecisionRegis
         decision_id = f"{now.date().isoformat()}:{market}"
         if registry.has(decision_id):
             results.append({"market": market, "status": "deja_facut"})
+            continue
+        age = (now.date() - candles[-1].open_time.date()).days
+        if age > MAX_DATA_AGE_DAYS:             # piață delistată sau feed oprit: nu votăm pe prețuri vechi
+            results.append({"market": market, "status": "date_insuficiente",
+                            "error": f"ultima lumânare e din {candles[-1].open_time.date()} ({age} zile)"})
             continue
         others = data if peers is None else {k: v for k, v in data.items() if k in peers}
         try:

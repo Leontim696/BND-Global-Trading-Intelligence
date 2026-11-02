@@ -45,10 +45,27 @@ def _incomplete_ids(db) -> set:
     return ids
 
 
+STALE_DAYS = 5          # aceeași limită ca în council_daily: peste ea, decizia s-a luat pe prețuri vechi
+
+
+def _stale_ids(db) -> set:
+    """Deciziile luate pe date vechi (feed oprit, de ex. TON pe prețuri din iunie): rezultatul lor e mereu 0%,
+    așa că un HOLD ar ieși mereu „corect” și un BUY/SELL mereu greșit. Nu intră în statistici."""
+    ids = set()
+    for decision_id, meta in db.execute("SELECT id, meta FROM decisions"):
+        try:
+            through = (json.loads(meta or "{}").get("trace") or {}).get("data_through")
+            if through and (date.fromisoformat(decision_id[:10]) - date.fromisoformat(through[:10])).days > STALE_DAYS:
+                ids.add(decision_id)
+        except (ValueError, TypeError):
+            continue
+    return ids
+
+
 def _rows(path, include_incomplete: bool = False):
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     try:
-        skip = set() if include_incomplete else _incomplete_ids(db)
+        skip = _stale_ids(db) | (set() if include_incomplete else _incomplete_ids(db))
         decisions = {r[0]: {"symbol": r[1], "vote": r[2], "uncertain": bool(r[3]),
                             "outcome": r[4], "meta": json.loads(r[5] or "{}"), "votes": {},
                             "day": r[0][:10], "horizon": r[6]}
@@ -399,9 +416,10 @@ def analyse(path, cost_per_agent: dict | None = None) -> dict:
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     try:
         excluded = len(_incomplete_ids(db))
+        stale = len(_stale_ids(db))
     finally:
         db.close()          # `with sqlite3.connect()` doar încheie tranzacția, NU închide conexiunea
-    return {"incomplete_excluded": excluded, "settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
+    return {"incomplete_excluded": excluded, "stale_excluded": stale, "settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
             "note": None if len(decisions) >= MIN_SAMPLE else
             f"Doar {len(decisions)} decizii încheiate (sub {MIN_SAMPLE}): rezultatele sunt orientative, nu concluzii.",
             "agents": agent_scoreboard(decisions), "disagreement": disagreement(decisions),

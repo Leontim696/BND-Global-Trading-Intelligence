@@ -271,3 +271,18 @@ def test_a_market_with_too_little_history_is_skipped_not_fatal(tmp_path, series)
 
     assert [m["status"] for m in report["markets"]] == ["ok", "date_insuficiente", "ok"]
     assert "date insuficiente" in cd.render(report) and not registry.has(f"{now.date()}:NOU")
+
+
+def test_a_market_whose_data_stopped_is_skipped_instead_of_voted_on_old_prices(tmp_path, series):
+    """Regresie: TON a fost votată pe 1.11 cu ultima lumânare din 30.06."""
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    data = upto(series, 700)
+    data["VECHE"] = data["GOLD"][:600]                      # se oprește cu 100 de zile înainte
+    data["WEEKEND"] = data["GOLD"][:697]                    # 3 zile fără lumânare: e normal (weekend)
+    now = data["SP500"][-1].open_time + timedelta(days=1)
+
+    report = cd.run_markets(data, ("SP500", "VECHE", "WEEKEND"), cd.simulated_gateway(), registry, now,
+                            Decimal("0.6"))
+
+    assert [m["status"] for m in report["markets"]] == ["ok", "date_insuficiente", "ok"]
+    assert "zile" in report["markets"][1]["error"] and not registry.has(f"{now.date()}:VECHE")

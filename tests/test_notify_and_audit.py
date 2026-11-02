@@ -97,6 +97,7 @@ def test_runs_append_to_the_audit_log(tmp_path, monkeypatch, capsys):
     from tests.test_paper_runner import MARKETS, make_data, write_data
 
     write_markets(tmp_path, list(council_daily.DEFAULT_MARKETS), days=300)
+    monkeypatch.setattr(council_daily, "MAX_DATA_AGE_DAYS", 10 ** 6)   # date sintetice din 2020, ceas real
     audit = tmp_path / "audit.jsonl"
     assert council_daily.main(["--data-dir", str(tmp_path), "--registry", str(tmp_path / "r.sqlite"),
                                "--audit-log", str(audit)]) == 0
