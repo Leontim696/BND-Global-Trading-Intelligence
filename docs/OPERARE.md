@@ -35,7 +35,7 @@ Limitele din cod (plafon pe rundă, zilnic, lunar, buget pe scop) și limita che
 1. Backup zilnic: `deploy/backup.sh` (copie consistentă SQLite + jurnalul de audit, 30 de copii).
 2. Verificarea unei copii: `python -m src.bnd.restore_check --backup-dir /var/backups/bnd` (integritate SQLite, reconciliere, lanț de audit); cod 0 = restaurabil. De rulat săptămânal.
 3. Restaurare: copiezi `paper_<marcaj>.sqlite` ca `paper.sqlite` în folderul de stare, apoi `python -m src.bnd.reconcile --state paper.sqlite`. Zilele ratate se recuperează automat la următoarea rulare (runnerul procesează lumânările lipsă, în ordine).
-4. Pe GitHub, starea fiecărui cont e și istoric de commit-uri pe ramura lui (`paper-trading`, `crypto-trading`, `ai-unificat`): se poate reveni la orice stare anterioară.
+4. Pe GitHub, starea fiecărui cont e și istoric de commit-uri pe ramura lui (`cont-unic` pentru contul activ; `paper-trading`, `crypto-trading`, `ai-unificat`, `reguli-ls` pentru arhivă): se poate reveni la orice stare anterioară. Dacă o rulare a contului unic eșuează înainte de punctul de control, nu se publică nimic și ramura păstrează ultima stare validă; relansarea fără capital (workflow_dispatch, doar în aceeași zi UTC) repetă pasul zilnic, care e idempotent.
 5. Configurația: setările contului sunt înghețate în jurnalul lui (`runner_settings`), iar workflow-urile și codul sunt versionate în git. Detalii pentru Proxmox în `docs/PROXMOX.md`.
 
 ## Rezumat de dimineață

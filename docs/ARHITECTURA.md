@@ -23,9 +23,13 @@ Yahoo (zilnic, public)  ──►  CSV de lumânări (cache în Actions)
 ## Conturi (un singur cont activ din 1.11.2026: `cont-unic`; cele patru vechi sunt arhivă, vezi `docs/CONTURI.md`)
 | Cont | Ramură | Decide | Workflow | Ora (UTC) |
 |---|---|---|---|---|
-| Reguli | `paper-trading` | strategia `regime_switch` | `paper-trading.yml` | 22:23 |
-| Cripto AI | `crypto-trading` | voturile consiliului, 5 monede | `cripto-ai.yml` | 22:10 |
-| AI unificat | `ai-unificat` | voturile consiliului, 13 piețe | `bot-ai-unificat.yml` | 22:15 |
+| **Cont unic** (activ) | `cont-unic` | jumătate `regime_switch`, jumătate voturile consiliului (hibrid), long și short | `cont-unic.yml` | 22:25 |
+| Reguli (arhivă, oprit) | `paper-trading` | strategia `regime_switch` | `paper-trading.yml` | – |
+| Cripto AI (arhivă, oprit) | `crypto-trading` | voturile consiliului, 5 monede | `cripto-ai.yml` | – |
+| AI unificat (arhivă, oprit) | `ai-unificat` | voturile consiliului, 13 piețe | `bot-ai-unificat.yml` | – |
+| Reguli long/short (arhivă, oprit) | `reguli-ls` | reguli cu short și leverage | `reguli-ls.yml` | – |
+
+Publicarea contului unic trece de un punct de control (`state_check.py`): SQLite valid, lanț de audit continuat, istoric care nu se micșorează, capital neschimbat; `VALID.json` cu hash-uri se verifică în jobul de publicare (fără cod de proiect). Ultima stare validă rămâne în istoricul ramurii.
 Consiliul: `consiliu-umbra.yml`, 21:40 UTC (plătit, plafoane implicite în workflow: 0,60 $ pe rundă, 3,00 $ pe zi, 38 $ pe lună, ajustabile din variabilele `BND_COUNCIL_DAILY_CAP` / `BND_COUNCIL_MONTHLY_CAP`; soldul real al cheii se citește de la OpenRouter).
 
 ## Straturi și reguli de siguranță
