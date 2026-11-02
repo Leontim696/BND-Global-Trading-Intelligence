@@ -1,23 +1,46 @@
-# Raport bot virtual, 2026-11-02 22:27 UTC
+# Raport bot virtual, 2026-11-02 23:26 UTC
 
 **Ziua 2 din 16** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 188.76 USD** (+0,05% față de start, 11 183.00 USD)
-- La ultima închidere: 11 183.27 USD; bani liberi: 11 705.83 USD
-- Poziții deschise: 3; ordine pregătite pentru mâine: 67
+- Valoarea contului acum: **11 182.51 USD** (-0,00% față de start, 11 183.00 USD)
+- La ultima închidere: 11 176.15 USD; bani liberi: 12 901.00 USD
+- Poziții deschise: 26; ordine pregătite pentru mâine: 56
 - Piețe deschise acum: forex, crypto
 - Oprirea de siguranță: oprită (totul în regulă)
-- Ultima rulare a botului: 2026-11-01 23:01 UTC
-- Levier folosit: 0.05×
+- Ultima rulare a botului: 2026-11-02 23:00 UTC
+- Levier folosit: 0.26×
 
 ## Pozițiile
 
 | Piață | Valoare | Câștig/pierdere | Azi | Stop |
 |---|---:|---:|---:|---:|
-| scurt XRP | -227.51 USD | 1.18 USD | -0,23% | 1.42 |
-| scurt ETHEREUM | -168.76 USD | -0.77 USD | -0,11% | 2506.20 |
-| scurt SOLANA | -120.79 USD | 5.88 USD | -3,82% | 108.83 |
+| scurt SHIB | -227.53 USD | -1.79 USD | +0,00% | 0.00 |
+| scurt XRP | -227.35 USD | 1.35 USD | -0,28% | 1.42 |
+| scurt DOGE | -210.57 USD | -0.04 USD | +0,00% | 0.09 |
+| scurt ETC | -205.85 USD | -1.54 USD | +0,00% | 8.27 |
+| scurt XLM | -192.67 USD | 1.28 USD | +0,00% | 0.20 |
+| scurt ETHEREUM | -168.47 USD | -0.48 USD | -1,18% | 2506.20 |
+| scurt VET | -157.06 USD | 2.12 USD | +0,00% | 0.01 |
+| scurt PENGU | -154.34 USD | -0.23 USD | +0,00% | 0.01 |
+| scurt WIF | -140.86 USD | -1.08 USD | +0,00% | 0.22 |
+| scurt HBAR | -138.44 USD | 0.12 USD | +0,00% | 0.09 |
+| scurt SOLANA | -120.69 USD | 5.98 USD | -2,99% | 108.83 |
+| STX | 102.23 USD | 1.38 USD | +0,00% | 0.22 |
+| scurt ADA | -92.95 USD | -0.14 USD | +0,00% | 0.23 |
+| scurt FLOKI | -88.26 USD | -0.40 USD | +0,00% | 0.00 |
+| LINK | 88.15 USD | -2.19 USD | +0,00% | 9.50 |
+| scurt ICP | -79.44 USD | -0.57 USD | +0,00% | 3.09 |
+| BCH | 72.51 USD | -0.24 USD | +0,00% | 233.41 |
+| NEAR | 70.23 USD | -2.43 USD | +0,00% | 3.01 |
+| scurt OP | -53.54 USD | 0.02 USD | +0,00% | 0.15 |
+| TIA | 51.13 USD | 0.07 USD | +0,00% | 0.29 |
+| POL | 48.64 USD | -0.44 USD | +0,00% | 0.07 |
+| AVAX | 38.65 USD | 0.51 USD | +0,00% | 6.93 |
+| SEI | 36.09 USD | 0.47 USD | +0,00% | 0.03 |
+| DOT | 35.93 USD | 0.21 USD | +0,00% | 0.71 |
+| scurt PEPE | -33.88 USD | 0.78 USD | +0,00% | 0.00 |
+| INJ | 29.83 USD | -0.19 USD | +0,00% | 5.12 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
 
@@ -39,29 +62,6 @@
 - buy USDCAD, 1066.26 bucăți
 - buy USDCHF, 1810.71 bucăți
 - sell USDJPY, 3.87 bucăți
-- sell ADA, 481.34 bucăți
-- buy AVAX, 4.44 bucăți
-- buy BCH, 0.25 bucăți
-- sell DOGE, 2788.23 bucăți
-- buy DOT, 37.70 bucăți
-- sell ETC, 28.79 bucăți
-- sell FLOKI, 3788071.62 bucăți
-- sell HBAR, 1929.51 bucăți
-- sell ICP, 31.35 bucăți
-- buy INJ, 4.15 bucăți
-- buy LINK, 7.74 bucăți
-- buy NEAR, 16.37 bucăți
-- sell OP, 473.80 bucăți
-- sell PENGU, 21205.77 bucăți
-- sell PEPE, 6941716.60 bucăți
-- buy POL, 532.39 bucăți
-- buy SEI, 746.49 bucăți
-- sell SHIB, 48306970.74 bucăți
-- buy STX, 310.17 bucăți
-- buy TIA, 107.72 bucăți
-- sell VET, 27153.44 bucăți
-- sell WIF, 794.47 bucăți
-- sell XLM, 1144.80 bucăți
 - buy AMZN, 1.00 bucăți
 - sell BAE, 0.18 bucăți
 - sell CAT, 0.10 bucăți
@@ -88,9 +88,21 @@
 - sell UNH, 0.24 bucăți
 - buy WMT, 0.63 bucăți
 - buy XOM, 1.00 bucăți
+- buy ALGO, 299.32 bucăți
+- sell BCH, 0.25 bucăți
+- buy CRV, 95.22 bucăți
+- sell DOT, 37.70 bucăți
+- buy FET, 128.70 bucăți
+- buy ICP, 31.35 bucăți
+- sell LINK, 7.74 bucăți
+- sell POL, 1610.15 bucăți
+- sell SEI, 2722.18 bucăți
+- buy SUI, 26.91 bucăți
+- buy TRUMP, 16.88 bucăți
+- buy UNI, 5.64 bucăți
 
 ## Riscul
 
-Cel mai rău scenariu testat (Sharp dollar rally): +0,47% din cont; nu ar declanșa oprirea de siguranță.
+Cel mai rău scenariu testat (Sharp dollar rally): +1,54% din cont; nu ar declanșa oprirea de siguranță.
 
 _Bani virtuali, în USD (prețurile piețelor sunt în dolari). Un rezultat bun într-un test nu garantează profit în viitor._
