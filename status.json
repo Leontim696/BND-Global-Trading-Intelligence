@@ -1,12 +1,12 @@
 {
-  "generated": "2026-11-01T23:08+00:00",
+  "generated": "2026-11-02T00:04+00:00",
   "ok": false,
   "alerts": [
     "Ultima rulare programată a contul unic a eșuat (failure)"
   ],
   "events": [
     "Cont unic: s-au executat primele ordine (3 poziții deschise)",
-    "Consiliul AI 2026-11-01: 88 piețe votate, cost azi 2.40 $, rămas 35.57 $"
+    "Consiliul AI 2026-11-01: 88 piețe votate, cost azi 0.00 $, rămas 35.57 $"
   ],
   "accounts": {
     "paper": {
@@ -50,9 +50,9 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 11187.46,
+      "equity": 11184.4,
       "currency": "USD",
-      "return_pct": 0.04,
+      "return_pct": 0.012,
       "drawdown_pct": 0.0,
       "positions": 3,
       "orders": 67,
@@ -61,5 +61,5 @@
     }
   },
   "ai_balance_usd": 35.5717,
-  "ai_spent_today_usd": 2.4009194051165
+  "ai_spent_today_usd": 0.0
 }
