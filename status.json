@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-02T01:43+00:00",
+  "generated": "2026-11-02T03:24+00:00",
   "ok": false,
   "alerts": [
     "Ultima rulare programată a contul unic a eșuat (failure)"
@@ -50,10 +50,10 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 11184.53,
+      "equity": 11180.75,
       "currency": "USD",
-      "return_pct": 0.014,
-      "drawdown_pct": 0.0,
+      "return_pct": -0.02,
+      "drawdown_pct": 0.023,
       "positions": 3,
       "orders": 67,
       "kill_switch": false,
