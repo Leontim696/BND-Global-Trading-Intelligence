@@ -330,7 +330,7 @@ def test_every_watched_workflow_exists_with_that_exact_name_and_manual_means_man
         assert "schedule:" in names[watched], f"{watched} e urmărit, dar nu rulează programat"
 
 def test_top50_marks_coins_whose_data_stopped_updating(tmp_path):
-    """Regresie: TON nu a mai primit lumânări din 30.06, dar apărea în Top 50 ca și cum prețul ar fi actual."""
+    """Regresie: O monedă nu a primit lumânări din 30.06, dar apărea în Top 50 ca și cum prețul ar fi actual."""
     from datetime import datetime, timedelta, timezone
 
     from src.bnd import crypto50
@@ -340,9 +340,9 @@ def test_top50_marks_coins_whose_data_stopped_updating(tmp_path):
     def candles(days):
         return [Candle(start + timedelta(days=i), 10 + i * .01, 50, 5, 10 + i * .01, 1) for i in range(days)]
     save_csv(candles(200), tmp_path / "BTC.csv")
-    save_csv(candles(100), tmp_path / "TON.csv")                  # se oprește cu 100 de zile mai devreme
+    save_csv(candles(100), tmp_path / "ETH.csv")                  # se oprește cu 100 de zile mai devreme
     rows = {r["name"]: r for r in crypto50.summary(tmp_path)}
-    assert rows["BTC"]["stale_days"] == 0 and rows["TON"]["stale_days"] == 100
+    assert rows["BTC"]["stale_days"] == 0 and rows["ETH"]["stale_days"] == 100
     html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
     assert "r.stale_days > 3" in html
 
