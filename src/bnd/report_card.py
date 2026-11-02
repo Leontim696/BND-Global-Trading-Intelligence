@@ -24,7 +24,7 @@ from .calendars import open_sessions
 from .scenarios import run_scenarios
 from .universe import select as select_markets
 
-PERIOD_DAYS = 16
+PERIOD_DAYS = 30                  # testul a fost prelungit de la 16 la 30 de zile (2.11)
 
 
 def fetch_quote(symbol: str, timeout: float = 20.0):

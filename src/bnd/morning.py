@@ -21,7 +21,7 @@ from .paper_engine import PaperEngine, PaperEngineError
 
 BERLIN = ZoneInfo("Europe/Berlin")
 TEST_START = datetime(2026, 10, 31, tzinfo=timezone.utc).date()
-TEST_DAYS = 16
+TEST_DAYS = 30                    # testul a fost prelungit de la 16 la 30 de zile (2.11)
 OVERNIGHT = timedelta(hours=14)
 SCHEDULE_UTC = [("21:40", "consiliul AI votează pe 13 piețe (plătit, ~0,35 $)"),
                 ("22:10", "contul Cripto AI citește voturile"),

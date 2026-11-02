@@ -36,7 +36,7 @@ def test_summary_has_overnight_events_alerts_and_the_plans_in_german_time(tmp_pa
     result = morning.build(None, None, None, tmp_path, NOW, unic=tmp_path)
 
     text = result["message"]
-    assert result["title"] == "BND: dimineața, ziua 7/16"
+    assert result["title"] == "BND: dimineața, ziua 7/30"
     assert "executat: cumpărat AAA" in text
     assert "BITCOIN vinde (2 net)" in text and "Agenți cu eșecuri: grok" in text
     assert "Planuri azi" in text and "22:40: consiliul AI votează" in text      # 21:40 UTC = 22:40 Berlin
