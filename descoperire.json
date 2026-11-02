@@ -1,9 +1,12 @@
 {
-  "tokens_checked": 99,
-  "wallets_with_hits": 20,
-  "candidates": 20,
-  "errors": [
-    "first-buyers: HTTP 500"
-  ],
-  "added": 20
+  "outcome": "ok",
+  "tokens_checked": 100,
+  "wallets_with_hits": 65,
+  "candidates": 65,
+  "validated": 0,
+  "insufficient": 1,
+  "rate_limited": 0,
+  "aborted": false,
+  "errors": [],
+  "added": 30
 }
