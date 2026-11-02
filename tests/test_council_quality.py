@@ -248,3 +248,24 @@ def test_analyse_closes_every_database_connection_it_opens(tmp_path, monkeypatch
     monkeypatch.setattr(ca.sqlite3, "connect", lambda *a, **k: Tracked(real(*a, **k)))
     ca.analyse(tmp_path / "r.sqlite")
     assert opened and set(map(id, opened)) == set(map(id, closed))
+
+
+def test_decisions_taken_on_stale_prices_are_left_out_of_the_statistics(tmp_path):
+    """Regresie: TON votată pe prețuri din iunie: HOLD ieșea mereu „corect” (mișcare 0%)."""
+    import json
+    import sqlite3
+    path = make_registry(tmp_path, [
+        ("SP500", {"gpt": ("BUY", .8), "claude": ("BUY", .8), "gemini": ("BUY", .8)}, "BUY", 0.02, 1),
+        ("TON", {"gpt": ("HOLD", .8), "claude": ("HOLD", .8), "gemini": ("HOLD", .8)}, "HOLD", 0.0, -1),
+    ])
+    db = sqlite3.connect(path)
+    for decision_id, through in (("2026-11-01:SP500", "2026-10-31"), ("2026-11-02:TON", "2026-06-30")):
+        meta = json.loads(db.execute("SELECT meta FROM decisions WHERE id = ?", (decision_id,)).fetchone()[0])
+        meta["trace"] = {"data_through": through + "T00:00:00+00:00"}
+        db.execute("UPDATE decisions SET meta = ? WHERE id = ?", (json.dumps(meta), decision_id))
+    db.commit(); db.close()
+
+    report = ca.analyse(path)
+
+    assert report["stale_excluded"] == 1 and report["settled"] == 1
+    assert report["agents"]["gpt"]["holds"] == 0                    # HOLD-ul pe TON nu mai contează
