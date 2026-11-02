@@ -1,5 +1,5 @@
 {
-  "time": "2026-11-01T16:47+00:00",
+  "time": "2026-11-02T08:09+00:00",
   "leaderboard": {
     "ok": true,
     "wallets": 25,
@@ -43,6 +43,7 @@
       "summary.winPercentage"
     ]
   },
+  "outcome": "partial",
   "written": 29,
   "passing": 1,
   "insider_pattern": 0
