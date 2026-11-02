@@ -345,3 +345,11 @@ def test_top50_marks_coins_whose_data_stopped_updating(tmp_path):
     assert rows["BTC"]["stale_days"] == 0 and rows["TON"]["stale_days"] == 100
     html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
     assert "r.stale_days > 3" in html
+
+
+def test_interface_3_has_command_deck_maps_and_safe_accent_handling():
+    html = (__import__("pathlib").Path(dashboard.__file__).parent / "dashboard_template.html").read_text()
+    for needle in ("bridge()", "polar(", "treemap(", "orbit(m)", "radar(rows)", "countUp(", "cycleAccent()", "const ACTIONS",
+                   'class="aurora"', "data-gfilter", "bnd-accent", "@supports (color: oklch(0 0 0))"):
+        assert needle in html, needle
+    assert "eval(" not in html and "innerHTML +=" not in html.replace("box.innerHTML += actHtml", "")   # singura adăugare permisă: paleta de comenzi
