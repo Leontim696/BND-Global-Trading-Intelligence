@@ -1,9 +1,9 @@
-# Raport bot virtual, 2026-11-02 21:30 UTC
+# Raport bot virtual, 2026-11-02 22:27 UTC
 
 **Ziua 2 din 16** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 189.08 USD** (+0,05% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 188.76 USD** (+0,05% față de start, 11 183.00 USD)
 - La ultima închidere: 11 183.27 USD; bani liberi: 11 705.83 USD
 - Poziții deschise: 3; ordine pregătite pentru mâine: 67
 - Piețe deschise acum: forex, crypto
@@ -15,9 +15,9 @@
 
 | Piață | Valoare | Câștig/pierdere | Azi | Stop |
 |---|---:|---:|---:|---:|
-| scurt XRP | -227.49 USD | 1.20 USD | -0,23% | 1.42 |
-| scurt ETHEREUM | -168.69 USD | -0.70 USD | -0,16% | 2506.20 |
-| scurt SOLANA | -120.57 USD | 6.10 USD | -3,99% | 108.83 |
+| scurt XRP | -227.51 USD | 1.18 USD | -0,23% | 1.42 |
+| scurt ETHEREUM | -168.76 USD | -0.77 USD | -0,11% | 2506.20 |
+| scurt SOLANA | -120.79 USD | 5.88 USD | -3,82% | 108.83 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
 
