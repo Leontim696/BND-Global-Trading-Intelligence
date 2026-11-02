@@ -221,3 +221,9 @@ __marimo__/
 data/
 backtest-reports/
 experimente/*.lock
+
+# Pachete/binare accidentale
+/*.whl
+/*.zip
+/*.sqlite
+/*.db
