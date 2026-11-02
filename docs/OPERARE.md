@@ -65,3 +65,5 @@ Actualizare 1.11.2026 (seara): consiliul votează și pe cele 16 acțiuni americ
 Aplicația grupează piețele pe categorii (Indici, Acțiuni americane, Apărare și armament, Mărfuri și metale, Forex, Obligațiuni, Crypto, Memecoin-uri) în banda de semnale, în fila Consiliul, în poziții, în comenzi și într-un tabel „Semnale pe categorii” în Rezumat.
 
 Filtru pe categorii în aplicație: sub file e o bară de filtre (Toate, Indici, Acțiuni americane, Apărare, Mărfuri, Forex, Obligațiuni, Crypto, Memecoin-uri). Atingi o categorie și rămâne doar ea în banda de semnale, în fila Consiliul, în poziții și comenzi și în Top 50; atingi din nou (sau „Toate") ca să le vezi pe toate. Alegerea se ține minte pe telefon.
+
+Raportul final (17.11.2026): `final_report.py` generează raportul cu structura și criteriile fixate dinainte în `docs/RAPORT_FINAL.md`. Doar citire.
