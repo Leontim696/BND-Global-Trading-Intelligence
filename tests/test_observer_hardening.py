@@ -309,6 +309,20 @@ def run_sync(tmp_path, remote_url, **extra):
     return proc.returncode, out
 
 
+def wait_lock_free(data, seconds=10):
+    """Lacătul .sync.lock se eliberează asincron, când moare și ultimul proces din grup (de exemplu `sleep`)."""
+    import fcntl
+    deadline = time.time() + seconds
+    while time.time() < deadline:
+        with open(data / ".sync.lock", "a+") as handle:
+            try:
+                fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+                return
+            except OSError:
+                pass
+        time.sleep(0.05)
+
+
 def kill_at(tmp_path, remote_url, stage, sig=signal.SIGKILL):
     proc = start_sync(tmp_path, remote_url, pause_at=stage)
     reached = tmp_path / "data" / f".reached.{stage}"
@@ -318,6 +332,7 @@ def kill_at(tmp_path, remote_url, stage, sig=signal.SIGKILL):
     assert reached.exists(), f"etapa {stage} nu a fost atinsă"
     os.killpg(proc.pid, sig)
     proc.wait(timeout=20)
+    wait_lock_free(tmp_path / "data")
 
 
 def read_status(tmp_path, remote_url="x"):
@@ -389,6 +404,7 @@ def test_a_running_sync_is_not_reported_as_interrupted(tmp_path, remote):
     finally:
         os.killpg(proc.pid, signal.SIGKILL)
         proc.wait(timeout=20)
+    wait_lock_free(tmp_path / "data")
     assert observer.attempt_interrupted(tmp_path / "data") is True                # proces mort = întrerupt
 
 
