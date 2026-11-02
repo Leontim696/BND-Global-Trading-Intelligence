@@ -1,7 +1,7 @@
 """Raportul în română despre contul virtual."""
 
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import timedelta
 
 from src.bnd import report_card
 from src.bnd.paper_engine import PaperEngine

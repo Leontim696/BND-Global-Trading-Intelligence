@@ -396,8 +396,11 @@ def out_of_sample_weighting(decisions: dict, train_share: float = 0.6, min_days:
 
 def analyse(path, cost_per_agent: dict | None = None) -> dict:
     decisions = _rows(path)
-    with sqlite3.connect(f"file:{path}?mode=ro", uri=True) as db:
+    db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
         excluded = len(_incomplete_ids(db))
+    finally:
+        db.close()          # `with sqlite3.connect()` doar încheie tranzacția, NU închide conexiunea
     return {"incomplete_excluded": excluded, "settled": len(decisions), "enough_data": len(decisions) >= MIN_SAMPLE,
             "note": None if len(decisions) >= MIN_SAMPLE else
             f"Doar {len(decisions)} decizii încheiate (sub {MIN_SAMPLE}): rezultatele sunt orientative, nu concluzii.",

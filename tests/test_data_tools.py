@@ -1,6 +1,5 @@
 """Intraday, calendarul burselor, funding și rolări."""
 
-import json
 from datetime import date, datetime, timedelta, timezone
 
 import pytest

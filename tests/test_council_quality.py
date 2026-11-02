@@ -1,7 +1,5 @@
 """Calitatea consiliului AI: trasabilitate, erori de agent, contract de răspuns, analiză."""
 
-import hashlib
-import json
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
 
@@ -215,3 +213,38 @@ def test_cost_to_value_compares_the_whole_council_with_smaller_groups(tmp_path):
     assert value["toți"]["calls"] == 2 and value["toți"]["hit_rate"] == 1.0
     assert value["doar gemini"]["calls"] == 2 and value["doar gemini"]["hit_rate"] == 0.5
     assert len(value["primii 3"]["agents"]) == 3
+
+
+def test_analyse_closes_every_database_connection_it_opens(tmp_path, monkeypatch):
+    """Regresie: `with sqlite3.connect()` doar încheie tranzacția; conexiunea rămânea deschisă la fiecare reîmprospătare."""
+    registry = DecisionRegistry(tmp_path / "r.sqlite")
+    council = FusionCouncil()
+    for agent in AGENTS:
+        council.submit(Opinion(agent, Vote.HOLD, "x", 0.6))
+    registry.record("2026-11-01:X", datetime(2026, 11, 1, tzinfo=timezone.utc), "X", 10.0, council,
+                    CouncilDecision(Vote.HOLD, DecisionRule.MAJORITY, {}, (), (), False, ()), meta={})
+    opened, closed = [], []
+    real = ca.sqlite3.connect
+
+    class Tracked:
+        def __init__(self, inner):
+            self.inner = inner
+            opened.append(self)
+
+        def close(self):
+            closed.append(self)
+            return self.inner.close()
+
+        def __getattr__(self, name):
+            return getattr(self.inner, name)
+
+        def __enter__(self):
+            self.inner.__enter__()
+            return self
+
+        def __exit__(self, *exc):
+            return self.inner.__exit__(*exc)
+
+    monkeypatch.setattr(ca.sqlite3, "connect", lambda *a, **k: Tracked(real(*a, **k)))
+    ca.analyse(tmp_path / "r.sqlite")
+    assert opened and set(map(id, opened)) == set(map(id, closed))

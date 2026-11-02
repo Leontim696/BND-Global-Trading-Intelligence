@@ -1,4 +1,4 @@
-name: Smart-Money descoperire de walleturi (manual)
+name: Smart-Money descoperire de walleturi
 
 # Caută walleturi care au câștigat mult cu sume mici: monede în trend -> primii cumpărători -> câștigători repetați,
 # apoi le verifică cu filtrele. Salvează descoperite.csv și descoperire.json pe ramura smart-money. Zilnic (istoricul se adună și arată

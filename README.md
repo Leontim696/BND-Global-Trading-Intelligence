@@ -3,6 +3,24 @@
 Multi-agent AI research and paper-trading infrastructure. No live orders
 are ever placed.
 
+## Starea actuală (noiembrie 2026)
+
+Doar bani virtuali: `safety.py` refuză orice mod în afară de MOCK/PAPER. Testul în timp real rulează între 31.10 și 16.11.2026 (raportul final pe 17.11); regulile și limitele de risc nu se schimbă pe durata lui. Rezultatele nu dovedesc un avantaj.
+
+| Ce | Unde |
+| --- | --- |
+| **Contul unic „hibrid”** (50% reguli, 50% consiliu AI; long și short; leverage maxim 2x), creat la 1.11.2026 | `cont-unic.yml`, ramura `cont-unic`; publicarea trece de un punct de control (`state_check.py`) |
+| **Consiliul AI** (5 agenți, 88 de piețe, ~2,4 $/zi, plafon 3 $) | `consiliu-umbra.yml`, registru pe ramura `consiliu-umbra`; analize în `council_analytics.py` |
+| Conturile vechi (reguli, cripto, AI unificat, long/short) | oprite din 1.11.2026, păstrate în arhivă |
+| **Aplicația de pe telefon** | `dashboard.py` + `dashboard_template.html`, publicată de rutina orară (reîmprospătare doar la schimbări: `app_fingerprint.py`) |
+| **Registrul de experimente** (rezultate înregistrate înainte de rulare, corecție pentru teste multiple) | `experiments.py`, `research_lab.py`, `docs/EXPERIMENTE.md` |
+| **Smart-Money** (colector și descoperire de walleturi, doar citire) | `smart_money*.py`, `docs/SMART_MONEY.md` |
+| **Date**: arhivă piețe, 12 ani, macro | ramurile `date-piete`, `date-12-ani`, `date-macro`; `docs/DATE_MACRO.md` |
+| **Observer Proxmox** (doar citire, fără runner) | `observer.py`, `deploy/observer/`, `docs/PROXMOX.md` |
+| Notificări ntfy, pachet zilnic în Drive, raport de dimineață | `notify.py`, `notifica.yml`, `drive_pack.py`, `dimineata.yml` |
+
+Ramurile `cont-unic`, `consiliu-umbra`, `status`, `paper-trading`, `crypto-trading`, `ai-unificat`, `reguli-ls`, `date-*`, `smart-money` și `backtest-results` sunt DATE, nu cod: nu se integrează în `main`. Operare și recuperare: `docs/OPERARE.md`; arhitectură: `docs/ARHITECTURA.md`.
+
 ## What exists today
 
 | Module | Purpose |
