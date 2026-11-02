@@ -147,3 +147,11 @@ def test_hybrid_account_end_to_end_with_shorts_and_sector_for_memecoins(tmp_path
         assert gross <= 2.0 + 1e-9
     finally:
         engine.close()
+
+
+def test_missing_council_votes_are_loudly_visible_in_the_log(tmp_path, capsys):
+    """Regresie: dacă rularea contului pică după miezul nopții UTC, ziua nouă nu are voturi și contul ar decide doar pe reguli, pe tăcute."""
+    out = tmp_path / "o.json"
+    crypto_signals.main(["--registry", str(tmp_path / "lipsa.sqlite"), "--out", str(out), "--day", "2026-11-02",
+                         "--coins", "BITCOIN,ETHEREUM,SOLANA"])
+    assert "::warning::" in capsys.readouterr().out

@@ -13,7 +13,7 @@ import argparse
 import json
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 from .council_context import bot_signal
@@ -95,6 +95,9 @@ def summary(folder) -> list:
                      "date": candles[-1].open_time.date().isoformat(),
                      "d1": _change(candles, 1), "d7": _change(candles, 7), "d30": _change(candles, 30),
                      "signal": bot_signal(candles) if len(candles) >= 60 else 0})
+    newest = max((r["date"] for r in rows), default=None)
+    for r in rows:     # monedă fără lumânări noi (de exemplu o pereche scoasă de la bursă): se vede în aplicație
+        r["stale_days"] = (date.fromisoformat(newest) - date.fromisoformat(r["date"])).days if newest else 0
     return rows
 
 

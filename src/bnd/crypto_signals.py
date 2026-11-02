@@ -21,6 +21,7 @@ from pathlib import Path
 from .decision_registry import DecisionRegistry
 
 DEFAULT_COINS = ("BITCOIN", "ETHEREUM", "SOLANA", "BNB", "XRP")
+MISSING_WARN_SHARE = 0.2      # peste atât din piețe fără decizie azi => avertisment în jurnal
 
 
 def signal_from_meta(meta: dict) -> float:
@@ -61,6 +62,11 @@ def main(argv=None) -> int:
         result = build_signals(DecisionRegistry(args.registry), coins, day)
     Path(args.out).write_text(json.dumps(result, indent=2), encoding="utf-8")
     print(json.dumps(result))
+    wanted = len(result["signals"]) + len(result["missing"])
+    if wanted and len(result["missing"]) / wanted > MISSING_WARN_SHARE:
+        # Fără votul consiliului de azi, contul hibrid ar decide pe tăcute doar pe reguli: măcar să se vadă în jurnal.
+        print(f"::warning::Consiliul nu are decizii pentru {len(result['missing'])} din {wanted} piețe în ziua {day} "
+              "(rulare întârziată peste miezul nopții UTC sau consiliul nu a publicat încă?)")
     return 0
 
 
