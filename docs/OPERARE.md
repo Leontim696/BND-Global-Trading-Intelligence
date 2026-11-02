@@ -58,12 +58,14 @@ Consiliul votează acum pe cele 13 piețe de bază și pe încă 45 de monede di
 
 Plafoanele de cost ale consiliului sunt un control separat: implicit 0,60 $ pe piață, 3,00 $ pe zi și 38 $ pe lună (valorile din `consiliu-umbra.yml`). Se ridică fără cod din variabilele de depozit `BND_COUNCIL_DAILY_CAP` și `BND_COUNCIL_MONTHLY_CAP` (Settings → Secrets and variables → Actions → Variables).
 
-Actualizare 1.11.2026: consiliul votează acum pe 72 de piețe (cele 13 de bază, 45 de monede și 14 titluri de apărare). Cost estimat ~2,0 $/zi la acel moment (acum 88 de piețe, ~2,4 $/zi); plafoanele implicite sunt cele din workflow (3,00 $/zi, 38 $/lună).
+Actualizare 1.11.2026: consiliul votează acum pe 72 de piețe (cele 13 de bază, 44 de monede și 14 titluri de apărare). Cost estimat ~2,0 $/zi la acel moment (acum 88 de piețe, ~2,4 $/zi); plafoanele implicite sunt cele din workflow (3,00 $/zi, 38 $/lună).
 
-Actualizare 1.11.2026 (seara): consiliul votează și pe cele 16 acțiuni americane mari: **88 de piețe** (13 de bază, 45 de monede, 14 titluri de apărare, 16 acțiuni americane), cost estimat ~2,4 $/zi. Plafonul zilnic implicit a urcat la 3,00 $ (variabila `BND_COUNCIL_DAILY_CAP` îl poate schimba). Cu soldul de ~36 $ și 15 zile de rulat, creditul ajunge exact până la sfârșitul testului: dacă soldul scade sub 5 $, aplicația alertează și se reîncarcă sau se reduce lista.
+Actualizare 1.11.2026 (seara): consiliul votează și pe cele 16 acțiuni americane mari: **88 de piețe** (13 de bază, 44 de monede, 14 titluri de apărare, 16 acțiuni americane), cost estimat ~2,4 $/zi. Plafonul zilnic implicit a urcat la 3,00 $ (variabila `BND_COUNCIL_DAILY_CAP` îl poate schimba). Cu soldul de ~36 $ și 15 zile de rulat, creditul ajunge exact până la sfârșitul testului: dacă soldul scade sub 5 $, aplicația alertează și se reîncarcă sau se reduce lista.
 
 Aplicația grupează piețele pe categorii (Indici, Acțiuni americane, Apărare și armament, Mărfuri și metale, Forex, Obligațiuni, Crypto, Memecoin-uri) în banda de semnale, în fila Consiliul, în poziții, în comenzi și într-un tabel „Semnale pe categorii” în Rezumat.
 
 Filtru pe categorii în aplicație: sub file e o bară de filtre (Toate, Indici, Acțiuni americane, Apărare, Mărfuri, Forex, Obligațiuni, Crypto, Memecoin-uri). Atingi o categorie și rămâne doar ea în banda de semnale, în fila Consiliul, în poziții și comenzi și în Top 50; atingi din nou (sau „Toate") ca să le vezi pe toate. Alegerea se ține minte pe telefon.
 
 Raportul final (17.11.2026): `final_report.py` generează raportul cu structura și criteriile fixate dinainte în `docs/RAPORT_FINAL.md`. Doar citire.
+
+Actualizare 2.11.2026: TON a fost scoasă din listă în timpul testului, cu acordul proprietarului. Binance nu mai returnează lumânări pentru `TONUSDT` după 30.06.2026 (eroare „No candles”), deci consiliul vota pe prețul înghețat de 1,60 $ și pe indicatori din iunie, iar contul unic nu o folosea (pondere 0, date prea vechi). Lista are 49 de monede (44 în consiliu), consiliul 87 de piețe, contul unic 100. Un înlocuitor se alege după 30.11.

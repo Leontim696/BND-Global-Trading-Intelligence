@@ -1,4 +1,4 @@
-"""Lista statică a celor 50 de criptomonede (nume, pereche Binance, memecoin?). Fără importuri."""
+"""Lista statică a celor 49 de criptomonede (TON scoasă: Binance nu mai oferă date TONUSDT după 30.06.2026) (nume, pereche Binance, memecoin?). Fără importuri."""
 
 # (nume, pereche Binance, memecoin?)
 COINS = (
@@ -6,7 +6,7 @@ COINS = (
     ("BNB", "BNBUSDT", False), ("SOL", "SOLUSDT", False), ("TRX", "TRXUSDT", False),
     ("DOGE", "DOGEUSDT", True), ("ADA", "ADAUSDT", False), ("LINK", "LINKUSDT", False),
     ("AVAX", "AVAXUSDT", False), ("XLM", "XLMUSDT", False), ("SUI", "SUIUSDT", False),
-    ("TON", "TONUSDT", False), ("SHIB", "SHIBUSDT", True), ("BCH", "BCHUSDT", False),
+    ("SHIB", "SHIBUSDT", True), ("BCH", "BCHUSDT", False),
     ("LTC", "LTCUSDT", False), ("DOT", "DOTUSDT", False), ("HBAR", "HBARUSDT", False),
     ("UNI", "UNIUSDT", False), ("PEPE", "PEPEUSDT", True), ("AAVE", "AAVEUSDT", False),
     ("NEAR", "NEARUSDT", False), ("ICP", "ICPUSDT", False), ("ETC", "ETCUSDT", False),

@@ -73,7 +73,6 @@ Generat cu `python -m src.bnd.instruments`. Nu e o recomandare de produs sau bro
 | AVAX | crypto | AVAX spot | – | AVAXUSD | 50.00% | 0.150% |
 | XLM | crypto | XLM spot | – | XLMUSD | 50.00% | 0.150% |
 | SUI | crypto | SUI spot | – | SUIUSD | 50.00% | 0.150% |
-| TON | crypto | TON spot | – | TONUSD | 50.00% | 0.150% |
 | SHIB | crypto | SHIB spot | – | SHIBUSD | 50.00% | 0.250% |
 | BCH | crypto | BCH spot | – | BCHUSD | 50.00% | 0.150% |
 | LTC | crypto | LTC spot | – | LTCUSD | 50.00% | 0.150% |
