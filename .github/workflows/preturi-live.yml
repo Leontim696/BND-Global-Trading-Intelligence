@@ -1,0 +1,123 @@
+name: Prețuri live la 10 minute (buclă)
+
+# Cerut de proprietar pe 3.11.2026 (repo public: minute nelimitate).
+# O buclă de ~5 h 50 min care, la fiecare 10 minute, citește prețurile de acum pentru toate
+# piețele contului unic, actualizează rapoarte/LATEST.md și rapoarte/quotes.json pe ramura
+# paper-trading și publică aplicația (index.html) pe ramura gh-pages (GitHub Pages).
+# La final se repornește singură; programul la 6 ore e doar plasă de siguranță, pentru că
+# GitHub întârzie uneori rulările programate cu până la o oră.
+# Doar citire de prețuri publice: nu tranzacționează, nu cheamă AI plătit, nu atinge contul.
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '7 */6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-preturi-live
+  cancel-in-progress: false
+
+jobs:
+  loop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    permissions:
+      contents: write   # doar pentru push pe paper-trading (rapoarte/) și gh-pages
+      actions: write    # doar pentru repornirea buclei la final
+    env:
+      BND_ALLOW_LIVE_AI: "false"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Prices every 10 minutes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$b64"
+          gitr() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $b64" "$@"; }
+          # Codul proiectului rulează FĂRĂ token în mediu.
+          py() { env -u GH_TOKEN -u b64 python "$@"; }
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          grab() { # ramură fișier destinație
+            if gitr fetch -q --depth=1 origin "$1" 2>/dev/null && git cat-file -e "FETCH_HEAD:$2" 2>/dev/null; then
+              git show "FETCH_HEAD:$2" > "$3"
+            fi
+          }
+          publish() { # ramură  director-sursă  mesaj  [orphan]
+            local dir; dir=$(mktemp -d)
+            for attempt in 1 2 3; do
+              rm -rf "$dir"; mkdir -p "$dir"
+              ( cd "$dir" && git init -q && git remote add origin "https://github.com/$REPO.git" ) || return 1
+              if [ "${4:-}" != "orphan" ] && gitr -C "$dir" fetch -q --depth=1 origin "$1" 2>/dev/null; then
+                git -C "$dir" checkout -q -B "$1" FETCH_HEAD
+              else
+                git -C "$dir" checkout -q --orphan "$1"
+              fi
+              cp -r "$2"/. "$dir"/
+              git -C "$dir" add -A
+              git -C "$dir" diff --cached --quiet && return 0
+              git -C "$dir" commit -q -m "$3"
+              if [ "${4:-}" = "orphan" ]; then  # gh-pages: un singur commit, fără istoric care să crească
+                gitr -C "$dir" push -q --force origin "HEAD:refs/heads/$1" && return 0
+              else
+                gitr -C "$dir" push -q origin "HEAD:refs/heads/$1" && return 0
+              fi
+              sleep $((attempt * 5))
+            done
+            echo "::warning::push pe $1 nereușit"; return 1
+          }
+          deadline=$(( $(date +%s) + 340*60 ))
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            start=$(date +%s); stamp=$(date -u +%H:%M)
+            rm -rf out; mkdir -p out/p out/c out/a out/k out/r out/u out/ch out/cr site/rapoarte page
+            grab cont-unic paper.sqlite out/u/paper.sqlite
+            grab cont-unic expuneri.json out/expuneri.json
+            grab paper-trading paper.sqlite out/p/paper.sqlite
+            grab crypto-trading paper.sqlite out/c/paper.sqlite
+            grab ai-unificat paper.sqlite out/a/paper.sqlite
+            grab reguli-ls paper.sqlite out/r/paper.sqlite
+            grab consiliu-umbra registry.sqlite out/k/registry.sqlite
+            grab consiliu-umbra costs.sqlite out/k/costs.sqlite
+            grab status balance.json out/balance.json
+            grab status alerts.json out/alerts.json
+            if gitr fetch -q --depth=1 origin date-piete 2>/dev/null; then git archive FETCH_HEAD zilnic crypto50 | tar -x -C out/ch; fi
+            if gitr fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then git archive FETCH_HEAD consiliu | tar -x -C out/cr; fi
+            gh run list -R "$REPO" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json 2>/dev/null || echo '[]' > out/runs.json
+
+            if py -m src.bnd.quotes_snapshot --out out/quotes.json; then
+              cp out/quotes.json site/rapoarte/quotes.json
+              if [ -f out/u/paper.sqlite ] && py -m src.bnd.report_card --state out/u/paper.sqlite --quotes out/quotes.json \
+                   --out site/rapoarte/LATEST.md > /dev/null; then :; fi
+              publish paper-trading site "Prețuri live $stamp UTC" || echo "::warning::prețurile de la $stamp nu s-au salvat"
+              args=(--paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --council out/k
+                    --quotes out/quotes.json --runs out/runs.json --template src/bnd/dashboard_template.html --out page/index.html)
+              [ -f out/balance.json ] && args+=(--balance out/balance.json)
+              [ -f out/expuneri.json ] && args+=(--exposure out/expuneri.json)
+              [ -d out/ch/zilnic ] && args+=(--charts out/ch/zilnic out/ch/crypto50)
+              [ -d out/cr/consiliu ] && args+=(--reasons out/cr/consiliu)
+              if py -m src.bnd.dashboard "${args[@]}"; then
+                touch page/.nojekyll
+                publish gh-pages page "Aplicația $stamp UTC" orphan || echo "::warning::aplicația de la $stamp nu s-a publicat"
+              else
+                echo "::warning::aplicația nu s-a putut construi la $stamp"
+              fi
+            else
+              echo "::warning::prețurile nu s-au putut citi la $stamp"
+            fi
+            left=$(( 600 - ($(date +%s) - start) ))
+            [ "$left" -gt 0 ] && sleep "$left"
+          done
+          # Repornire: bucla următoare preia imediat (workflow_dispatch cu tokenul rulării e permis).
+          gh api -X POST "repos/$REPO/actions/workflows/preturi-live.yml/dispatches" -f ref=main \
+            || echo "::warning::repornirea nu a mers; o preia programul la 6 ore"

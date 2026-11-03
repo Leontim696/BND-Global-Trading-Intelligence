@@ -120,3 +120,13 @@ def test_positions_without_a_live_price_say_so_instead_of_zero_percent(tmp_path)
     text = report_card.render(report_card.build(path, now, {first: (held[first] * 1.1, now)}))
     rows = [line for line in text.splitlines() if line.startswith("|") and "fără preț live" in line]
     assert len(rows) == len(held) - 1 and "+10,00%" in text
+
+
+def test_report_can_reuse_an_existing_quotes_file_instead_of_asking_again(tmp_path, monkeypatch):
+    path, now, held = account_with_positions(tmp_path)
+    monkeypatch.setattr(report_card, "quotes_for", lambda *a, **k: (_ for _ in ()).throw(AssertionError("fără cereri noi")))
+    quotes = {"time": now.isoformat(), "quotes": {n: [p * 1.1, now.isoformat()] for n, p in held.items()}}
+    (tmp_path / "q.json").write_text(json.dumps(quotes), encoding="utf-8")
+    assert report_card.main(["--state", str(path), "--out", str(tmp_path / "r.md"), "--quotes", str(tmp_path / "q.json")]) == 0
+    assert "+10,00%" in (tmp_path / "r.md").read_text(encoding="utf-8")
+    assert report_card.load_quotes(tmp_path / "lipsa.json") == {}

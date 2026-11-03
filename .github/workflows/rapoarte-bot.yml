@@ -10,8 +10,7 @@ on:
   schedule:
     # Every hour, on the hour: full report (saved + posted). GitHub may delay a run by a few minutes.
     - cron: '0 * * * *'
-    # Every half hour: only current prices + LATEST.md (no new report file, no issue comment).
-    - cron: '30 * * * *'
+    # Prețurile la 10 minute vin din preturi-live.yml (buclă); aici rămâne raportul complet orar.
   workflow_dispatch:
 
 permissions:
