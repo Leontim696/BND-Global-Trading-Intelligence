@@ -1,12 +1,12 @@
-# Raport bot virtual, 2026-11-02 23:26 UTC
+# Raport bot virtual, 2026-11-03 00:30 UTC
 
-**Ziua 2 din 16** de test în timp real, cu bani virtuali.
+**Ziua 2 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 182.51 USD** (-0,00% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 180.01 USD** (-0,03% față de start, 11 183.00 USD)
 - La ultima închidere: 11 176.15 USD; bani liberi: 12 901.00 USD
 - Poziții deschise: 26; ordine pregătite pentru mâine: 56
-- Piețe deschise acum: forex, crypto
+- Piețe deschise acum: bursa din Tokyo, forex, crypto
 - Oprirea de siguranță: oprită (totul în regulă)
 - Ultima rulare a botului: 2026-11-02 23:00 UTC
 - Levier folosit: 0.26×
@@ -15,17 +15,17 @@
 
 | Piață | Valoare | Câștig/pierdere | Azi | Stop |
 |---|---:|---:|---:|---:|
+| scurt XRP | -228.24 USD | 0.45 USD | +0,11% | 1.42 |
 | scurt SHIB | -227.53 USD | -1.79 USD | +0,00% | 0.00 |
-| scurt XRP | -227.35 USD | 1.35 USD | -0,28% | 1.42 |
 | scurt DOGE | -210.57 USD | -0.04 USD | +0,00% | 0.09 |
 | scurt ETC | -205.85 USD | -1.54 USD | +0,00% | 8.27 |
 | scurt XLM | -192.67 USD | 1.28 USD | +0,00% | 0.20 |
-| scurt ETHEREUM | -168.47 USD | -0.48 USD | -1,18% | 2506.20 |
+| scurt ETHEREUM | -169.14 USD | -1.14 USD | -0,79% | 2506.20 |
 | scurt VET | -157.06 USD | 2.12 USD | +0,00% | 0.01 |
 | scurt PENGU | -154.34 USD | -0.23 USD | +0,00% | 0.01 |
 | scurt WIF | -140.86 USD | -1.08 USD | +0,00% | 0.22 |
 | scurt HBAR | -138.44 USD | 0.12 USD | +0,00% | 0.09 |
-| scurt SOLANA | -120.69 USD | 5.98 USD | -2,99% | 108.83 |
+| scurt SOLANA | -121.62 USD | 5.05 USD | -2,24% | 108.83 |
 | STX | 102.23 USD | 1.38 USD | +0,00% | 0.22 |
 | scurt ADA | -92.95 USD | -0.14 USD | +0,00% | 0.23 |
 | scurt FLOKI | -88.26 USD | -0.40 USD | +0,00% | 0.00 |
