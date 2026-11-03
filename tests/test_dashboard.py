@@ -363,3 +363,12 @@ def test_account_chart_ends_with_the_value_at_current_prices():
     assert "function spark(history, initial, key, big, live)" in t
     assert t.count("a.live ? {v: a.live_equity, t: DATA.quotes_time || DATA.generated} : null") == 3
     assert '"acum"' in t and 'p.now ? " · acum"' in t
+
+
+def test_rules_versus_ai_tab_compares_the_two_accounts():
+    from pathlib import Path
+    t = Path("src/bnd/dashboard_template.html").read_text(encoding="utf-8")
+    assert '["comparatie","Reguli vs AI"]' in t and 'key === "comparatie" ? compareView()' in t
+    assert 'portfolioPanel("control", "Pozițiile deschise · Reguli matematice")' in t
+    titles = {k: title for k, title, _ in dashboard.ACCOUNTS}
+    assert titles["control"] == "Reguli matematice" and "arhivat" in titles["paper"]
