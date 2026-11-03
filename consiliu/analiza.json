@@ -44,6 +44,23 @@
       "mean_return_pct": null
     }
   },
+  "vs_rule": {
+    "comparable": 0,
+    "same": 0,
+    "opposite": 0,
+    "abstain": 0,
+    "agreement_rate": null,
+    "opposite_council_wins": 0,
+    "opposite_rule_wins": 0,
+    "opposite_council_mean_pct": null,
+    "opposite_sign_test_p": null,
+    "abstain_rule_mean_pct": null,
+    "differ_mean_pct": null,
+    "differ_calls": 0,
+    "council_only_calls": 0,
+    "council_only_mean_pct": null,
+    "verdict": "Doar 0 decizii comparabile (sub 20): fără concluzie."
+  },
   "cost_to_value": {
     "toți": {
       "agents": [],
