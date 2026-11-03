@@ -1,12 +1,19 @@
-"""Raportul orar: o dată pe oră (minute GitHub limitate) și postare pe toată durata testului prelungit."""
+"""Rulările programate: puține pe zi (planul GitHub gratuit are 2.000 de minute pe lună)."""
 from pathlib import Path
 
-TEXT = Path(".github/workflows/rapoarte-bot.yml").read_text(encoding="utf-8")
+W = Path(".github/workflows")
+REPORT = (W / "rapoarte-bot.yml").read_text(encoding="utf-8")
+STATUS = (W / "status.yml").read_text(encoding="utf-8")
 
 
-def test_runs_hourly_only_to_save_github_minutes():
-    assert "- cron: '0 * * * *'" in TEXT and "- cron: '30 * * * *'" not in TEXT
+def test_price_report_runs_once_a_day():
+    assert REPORT.count("- cron:") == 1 and "- cron: '0 5 * * *'" in REPORT
+
+
+def test_status_twice_a_day_and_phone_alerts_once():
+    assert STATUS.count("- cron:") == 2
+    assert "if: github.event.schedule != '35 17 * * *'" in STATUS
 
 
 def test_reports_keep_being_saved_until_the_end_of_the_30_day_test():
-    assert '-le 31 ]' in TEXT and '-le 17 ]' not in TEXT
+    assert '-le 31 ]' in REPORT and '-le 17 ]' not in REPORT

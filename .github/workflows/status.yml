@@ -9,7 +9,9 @@ name: Stare sistem (JSON și alerte)
 
 on:
   schedule:
-    - cron: '35 */2 * * *' # la 2 ore (planul GitHub gratuit: 2.000 de minute/lună)
+    # De 2 ori pe zi (planul GitHub gratuit: 2.000 de minute/lună); alertele pe telefon doar dimineața.
+    - cron: '35 5 * * *'
+    - cron: '35 17 * * *'
   workflow_dispatch:
 
 permissions:
@@ -72,6 +74,8 @@ jobs:
             --template src/bnd/dashboard_template.html --out out/app.html --status-json out/status.json
           cat out/status.json >> "$GITHUB_STEP_SUMMARY"
       - name: New alerts to the phone (no repeats)
+        # O dată pe zi (dimineața); rularea de seară actualizează doar starea.
+        if: github.event.schedule != '35 17 * * *'
         env:
           NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}      # doar aici; pasul de construire a stării nu îl vede
         run: |
