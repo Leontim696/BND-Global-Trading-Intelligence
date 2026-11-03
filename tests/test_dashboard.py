@@ -355,3 +355,11 @@ def test_interface_3_has_command_deck_maps_and_safe_accent_handling():
                    'class="aurora"', "data-gfilter", "bnd-accent", "@supports (color: oklch(0 0 0))"):
         assert needle in html, needle
     assert "eval(" not in html and "innerHTML +=" not in html.replace("box.innerHTML += actHtml", "")   # singura adăugare permisă: paleta de comenzi
+
+
+def test_account_chart_ends_with_the_value_at_current_prices():
+    from pathlib import Path
+    t = Path("src/bnd/dashboard_template.html").read_text(encoding="utf-8")
+    assert "function spark(history, initial, key, big, live)" in t
+    assert t.count("a.live ? {v: a.live_equity, t: DATA.quotes_time || DATA.generated} : null") == 3
+    assert '"acum"' in t and 'p.now ? " · acum"' in t
