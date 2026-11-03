@@ -26,3 +26,8 @@ def test_reports_keep_being_saved_until_the_end_of_the_30_day_test():
 def test_ci_audits_dependencies_for_known_vulnerabilities():
     ci = Path(".github/workflows/python-tests.yml").read_text(encoding="utf-8")
     assert "pip-audit==" in ci and "pip-audit -r requirements.txt" in ci
+
+
+def test_hourly_report_is_saved_but_not_posted_to_the_phone():
+    assert "repos/$REPO/issues" not in TEXT and "issues: write" not in TEXT
+    assert 'cp ../raport/raport.md rapoarte/LATEST.md' in TEXT          # salvarea rămâne

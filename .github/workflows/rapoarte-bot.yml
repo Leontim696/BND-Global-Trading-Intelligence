@@ -74,7 +74,6 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
-      issues: write
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
@@ -107,21 +106,5 @@ jobs:
             sleep $((attempt * 5))
           done
           [ "$pushed" = 1 ] || { echo "::error::Nu am putut salva pe ramură după 3 încercări."; exit 1; }
-      - name: Post the report on today's reports issue
-        if: needs.report.outputs.light != 'true'
-        run: |
-          set -euo pipefail
-          title="Rapoarte bot virtual $(date -u +%Y-%m-%d)"
-          number=$(gh api "repos/$REPO/issues?state=open&per_page=100" \
-            -q "[.[] | select(.title == \"$title\") | .number][0] // empty")
-          if [ -z "$number" ]; then
-            number=$(gh api -X POST "repos/$REPO/issues" -f title="$title" \
-              -f body="Rapoartele orare ale botului virtual pentru ziua de azi (ora UTC). Ultimul raport este și în rapoarte/LATEST.md de pe ramura paper-trading." \
-              -q .number)
-          fi
-          gh api -X POST "repos/$REPO/issues/$number/comments" -F body=@raport/raport.md > /dev/null
-          # Close the earlier days' report issues, so only today's stays open.
-          for old in $(gh api "repos/$REPO/issues?state=open&per_page=100" \
-              -q ".[] | select((.title | startswith(\"Rapoarte bot virtual \")) and .title != \"$title\") | .number"); do
-            gh api -X PATCH "repos/$REPO/issues/$old" -f state=closed > /dev/null
-          done
+      # Postarea orară pe issue (mesaj pe telefon) a fost oprită pe 3.11.2026 la cererea proprietarului;
+      # raportul se salvează în continuare pe ramura paper-trading și apare în aplicație.
