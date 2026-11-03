@@ -1,4 +1,4 @@
-name: Raport bot virtual (orar)
+name: Raport bot virtual (prețuri la 30 de minute)
 
 # An hourly report for the 16-day forward test: account value now (live
 # prices for open positions), positions, orders, risk. Saved on the
@@ -10,7 +10,8 @@ on:
   schedule:
     # Every hour, on the hour: full report (saved + posted). GitHub may delay a run by a few minutes.
     - cron: '0 * * * *'
-    # (Varianta la 30 de minute a fost oprită pe 3.11: planul GitHub gratuit are 2.000 de minute/lună.)
+    # Every half hour: only current prices + LATEST.md (no new report file, no issue comment).
+    - cron: '30 * * * *'
   workflow_dispatch:
 
 permissions:
