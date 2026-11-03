@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .report_card import fetch_quote, quotes_for
-from .universe import CRYPTO_UNIVERSE, ETF_UNIVERSE
+from .universe import CRYPTO_UNIVERSE, ETF_UNIVERSE, select
 
 
 # Cursuri doar de afișat (euro și lei în aplicație și în rezumat); nu fac parte din niciun cont.
@@ -30,6 +30,9 @@ def snapshot(fetch=None) -> dict:
             found[name] = quote
     for universe, markets in (("etf", ETF_UNIVERSE), ("crypto", CRYPTO_UNIVERSE)):
         found.update(quotes_for([m.name for m in markets], universe=universe, **extra))
+    # Contul unic are 100 de piețe (49 de monede ca perechi Binance, acțiuni, apărare): toate primesc preț de acum.
+    rest = [m.name for m in select(universe="unic") if m.name not in found]
+    found.update(quotes_for(rest, universe="unic", **extra))
     return {"time": datetime.now(timezone.utc).isoformat(timespec="minutes"),
             "quotes": {name: [price, when.isoformat()] for name, (price, when) in found.items()}}
 

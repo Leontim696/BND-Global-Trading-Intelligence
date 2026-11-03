@@ -80,6 +80,8 @@ def test_quotes_snapshot_collects_names_and_times():
 
     assert result["quotes"]["BITCOIN"] == [12.5, NOW.isoformat()]
     assert "SPY" in seen and "SOL-USD" in seen
+    assert "LINKUSDT" in seen and "SHIBUSDT" in seen and "AMZN" in seen     # toate piețele contului unic
+    assert result["quotes"]["LINK"][0] == 12.5 and seen.count("SPY") == 1
 
 
 def test_remaining_budget_starts_at_the_owners_confirmed_figure(tmp_path):
