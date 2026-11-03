@@ -291,7 +291,7 @@ has re-adjusted its history) and keeps the account and its status page
 (`README.md`) on the `paper-trading` branch. Until a manual run creates
 the account with a virtual capital, scheduled runs do nothing.
 
-`rapoarte-bot.yml` writes a report in Romanian every hour for the 30-day
+`rapoarte-bot.yml` writes a report in Romanian once a day (05:00 UTC) for the 30-day
 forward test (31.10–30.11.2026): account value now (live Yahoo/Binance prices for open positions),
 positions, pending orders, fills, risk. Each report is saved on the
 `paper-trading` branch (`rapoarte/`, `rapoarte/LATEST.md`) and posted as a
