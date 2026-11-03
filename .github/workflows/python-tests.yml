@@ -46,6 +46,12 @@ jobs:
           python -m pip install --disable-pip-version-check bandit==1.8.6
           bandit -q -r src scripts -ll
 
+      - name: Dependency audit (pip-audit, known vulnerabilities)
+        # Fails the run if a pinned dependency has a published vulnerability (PyPI/OSV advisories).
+        run: |
+          python -m pip install --disable-pip-version-check pip-audit==2.9.0
+          pip-audit -r requirements.txt --progress-spinner off
+
       - name: Check Python syntax
         run: |
           python - <<'PY'
