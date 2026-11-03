@@ -1,4 +1,4 @@
-name: Raport bot virtual (zilnic)
+name: Raport bot virtual (orar)
 
 # An hourly report for the 16-day forward test: account value now (live
 # prices for open positions), positions, orders, risk. Saved on the
@@ -8,9 +8,9 @@ name: Raport bot virtual (zilnic)
 
 on:
   schedule:
-    # O dată pe zi, la 05:00 UTC (06:00 ora Germaniei), după rularea de noapte a contului:
-    # planul GitHub gratuit are 2.000 de minute/lună (cerut de proprietar pe 3.11).
-    - cron: '0 5 * * *'
+    # Every hour, on the hour: full report (saved + posted). GitHub may delay a run by a few minutes.
+    - cron: '0 * * * *'
+    # (Varianta la 30 de minute a fost oprită pe 3.11: planul GitHub gratuit are 2.000 de minute/lună.)
   workflow_dispatch:
 
 permissions:
