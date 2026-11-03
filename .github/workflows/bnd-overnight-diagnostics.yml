@@ -2,7 +2,7 @@ name: Diagnostic nocturn (gratis)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "20 2 * * *" # o dată pe noapte (era de 8 ori; minute GitHub economisite)
+    - cron: "20 20-23,0-3 * * *"
 permissions:
   contents: read
 jobs:
