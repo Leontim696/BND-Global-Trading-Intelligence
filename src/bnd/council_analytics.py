@@ -188,6 +188,60 @@ def strategy_comparison(decisions: dict) -> dict:
     return result
 
 
+def council_vs_rule(decisions: dict) -> dict:
+    """Cât de des votul final al consiliului e identic cu regula simplă a botului și dacă diferențele aduc bani.
+
+    Pe deciziile în care regula are semnal: același sens, sens opus, sau consiliul se abține (HOLD).
+    La sens opus contează cine a avut dreptate; la abținere, ce ar fi adus regula (negativ = pierdere evitată).
+    Separat: deciziile în care consiliul a votat, dar regula nu avea semnal.
+    """
+    same = opposite = abstain = 0
+    duel, abstained, alone = [], [], []
+    for d in decisions.values():
+        out = d["outcome"]
+        if out == 0:
+            continue
+        bot = d["meta"].get("bot_signal") or 0
+        bot = (bot > 0) - (bot < 0)
+        council = 0 if d["uncertain"] else SIDE.get(d["vote"], 0)
+        if not bot:
+            if council:
+                alone.append(council * out)
+            continue
+        if council == bot:
+            same += 1
+        elif council == -bot:
+            opposite += 1
+            duel.append((council * out, bot * out))
+        else:
+            abstain += 1
+            abstained.append(bot * out)
+    total = same + opposite + abstain
+    council_wins = sum(c > 0 for c, _ in duel)
+    rule_wins = sum(b > 0 for _, b in duel)
+    mean = lambda xs: 100 * sum(xs) / len(xs) if xs else None
+    differ_value = [c for c, _ in duel] + [-b for b in abstained]   # ce a adus faptul că s-a abătut de la regulă
+    agreement = same / total if total else None
+    if total < MIN_SAMPLE:
+        verdict = f"Doar {total} decizii comparabile (sub {MIN_SAMPLE}): fără concluzie."
+    elif agreement >= 0.9 and not (differ_value and sum(differ_value) > 0):
+        verdict = ("Consiliul repetă în mare regula simplă, iar abaterile lui nu au adus bani: "
+                   "costul AI nu aduce informație nouă în forma actuală.")
+    elif differ_value and sum(differ_value) > 0:
+        verdict = "Abaterile consiliului de la regulă au adus bani în această perioadă (nu e încă dovadă statistică)."
+    else:
+        verdict = "Abaterile consiliului de la regulă nu au adus bani în această perioadă."
+    return {"comparable": total, "same": same, "opposite": opposite, "abstain": abstain,
+            "agreement_rate": agreement,
+            "opposite_council_wins": council_wins, "opposite_rule_wins": rule_wins,
+            "opposite_council_mean_pct": mean([c for c, _ in duel]),
+            "opposite_sign_test_p": _sign_test_p(council_wins, rule_wins),
+            "abstain_rule_mean_pct": mean(abstained),
+            "differ_mean_pct": mean(differ_value), "differ_calls": len(differ_value),
+            "council_only_calls": len(alone), "council_only_mean_pct": mean(alone),
+            "verdict": verdict}
+
+
 def cost_to_value(decisions: dict, cost_per_agent: dict | None = None) -> dict:
     """Ce aduc 5, 3 sau 1 agenți, din aceleași voturi salvate (fără apeluri noi).
 
@@ -423,7 +477,7 @@ def analyse(path, cost_per_agent: dict | None = None) -> dict:
             "note": None if len(decisions) >= MIN_SAMPLE else
             f"Doar {len(decisions)} decizii încheiate (sub {MIN_SAMPLE}): rezultatele sunt orientative, nu concluzii.",
             "agents": agent_scoreboard(decisions), "disagreement": disagreement(decisions),
-            "strategies": strategy_comparison(decisions),
+            "strategies": strategy_comparison(decisions), "vs_rule": council_vs_rule(decisions),
             "cost_to_value": cost_to_value(decisions, cost_per_agent),
             "by_regime": by_regime(decisions), "by_horizon": by_horizon(decisions),
             "alpha": alpha_report(decisions),

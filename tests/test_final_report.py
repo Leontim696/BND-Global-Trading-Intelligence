@@ -88,3 +88,32 @@ def test_preliminary_report_uses_the_first_16_days_and_says_the_test_continues(t
     md = (tmp_path / "p.md").read_text(encoding="utf-8")
     assert md.startswith("# Raport preliminar") and "31.10–16.11.2026" in md and "continuă până pe 30.11.2026" in md
     assert fr.TEST_END.isoformat() == "2026-11-30" and fr.PRELIMINARY_END.isoformat() == "2026-11-16"
+
+
+def test_council_versus_rule_counts_agreement_and_what_the_differences_earned(tmp_path):
+    same = ("SP500", {"gpt": ("BUY", .8)}, "BUY", 0.02, 1)
+    opposite_right = ("GOLD", {"gpt": ("SELL", .8)}, "SELL", -0.03, 1)      # regula: cumpără; consiliul: vinde, corect
+    abstain_saved = ("XRP", {"gpt": ("HOLD", .5)}, "HOLD", -0.04, 1)        # consiliul s-a abținut, regula ar fi pierdut
+    alone = ("ETH", {"gpt": ("BUY", .8)}, "BUY", 0.01, 0)
+    reg = make_registry(tmp_path, [same] * 18 + [opposite_right, abstain_saved, alone])
+    v = fr.council_analytics.analyse(reg)["vs_rule"]
+
+    assert (v["comparable"], v["same"], v["opposite"], v["abstain"]) == (20, 18, 1, 1)
+    assert v["agreement_rate"] == 0.9 and v["opposite_council_wins"] == 1 and v["opposite_rule_wins"] == 0
+    assert round(v["abstain_rule_mean_pct"], 6) == -4.0 and v["council_only_calls"] == 1
+    assert round(v["differ_mean_pct"], 6) == 3.5 and "au adus bani" in v["verdict"]
+
+
+def test_council_that_only_repeats_the_rule_is_called_out(tmp_path):
+    reg = make_registry(tmp_path, [("SP500", {"gpt": ("BUY", .8)}, "BUY", 0.02, 1)] * 20 +
+                        [("GOLD", {"gpt": ("SELL", .8)}, "SELL", 0.03, 1)])
+    v = fr.council_analytics.analyse(reg)["vs_rule"]
+    assert v["agreement_rate"] > 0.9 and "repetă în mare regula" in v["verdict"]
+
+
+def test_report_has_the_council_versus_rule_section(tmp_path):
+    unic = make_account(tmp_path, [10_100])
+    registry = make_registry(tmp_path, [("SP500", {"gpt": ("BUY", .8)}, "BUY", 0.01, 1)])
+    assert fr.main(["--unic", str(unic), "--registry", str(registry), "--out", str(tmp_path / "r")]) == 0
+    md = (tmp_path / "r.md").read_text(encoding="utf-8")
+    assert "Consiliul față de regula simplă" in md and "La fel ca regula" in md and "fără concluzie" in md
