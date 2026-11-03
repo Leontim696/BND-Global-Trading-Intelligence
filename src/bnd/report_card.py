@@ -212,12 +212,22 @@ def render(report: dict) -> str:
     return "\n".join(lines)
 
 
+def load_quotes(path) -> dict:
+    """Prețurile din quotes.json (quotes_snapshot): nume -> (preț, ora); {} dacă fișierul lipsește sau e stricat."""
+    try:
+        raw = json.loads(Path(path).read_text(encoding="utf-8"))["quotes"]
+        return {name: (float(price), datetime.fromisoformat(when)) for name, (price, when) in raw.items() if float(price) > 0}
+    except (OSError, ValueError, KeyError, TypeError):
+        return {}
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="report_card")
     parser.add_argument("--state", required=True)
     parser.add_argument("--out", required=True)
     parser.add_argument("--json")
     parser.add_argument("--no-live", action="store_true", help="nu cere prețuri noi")
+    parser.add_argument("--quotes", help="prețuri deja citite (JSON de la quotes_snapshot); nu se mai cer din nou")
     args = parser.parse_args(argv)
     now = datetime.now(timezone.utc)
     names = []
@@ -228,7 +238,12 @@ def main(argv=None) -> int:
             engine.close()
         except PaperEngineError:
             names = []
-    report = build(args.state, now, quotes_for(names, universe="unic") if names else {})
+    if args.quotes and names:
+        live = load_quotes(args.quotes)
+        quotes = {n: live[n] for n in names if n in live}
+    else:
+        quotes = quotes_for(names, universe="unic") if names else {}
+    report = build(args.state, now, quotes)
     Path(args.out).write_text(render(report), encoding="utf-8")
     if args.json:
         Path(args.json).write_text(json.dumps(report, indent=2, default=str, ensure_ascii=False))

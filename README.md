@@ -291,6 +291,9 @@ has re-adjusted its history) and keeps the account and its status page
 (`README.md`) on the `paper-trading` branch. Until a manual run creates
 the account with a virtual capital, scheduled runs do nothing.
 
+`preturi-live.yml` refreshes current prices, `rapoarte/LATEST.md` and the app on GitHub Pages
+(`gh-pages` branch) every 10 minutes, in a self-restarting ~6 h loop.
+
 `rapoarte-bot.yml` writes a report in Romanian every hour for the 30-day
 forward test (31.10–30.11.2026; at :30 it refreshes only the current prices
 and `LATEST.md`): account value now (live Yahoo/Binance prices for open positions),
