@@ -1,9 +1,9 @@
-# Raport bot virtual, 2026-11-03 10:47 UTC
+# Raport bot virtual, 2026-11-03 10:57 UTC
 
 **Ziua 3 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 213.46 USD** (+0,27% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 212.02 USD** (+0,26% față de start, 11 183.00 USD)
 - La ultima închidere: 11 176.15 USD; bani liberi: 12 901.00 USD
 - Poziții deschise: 26; ordine pregătite pentru mâine: 56
 - Piețe deschise acum: bursa din Frankfurt, bursa din Londra, forex, crypto
@@ -15,31 +15,31 @@
 
 | Piață | Valoare | Câștig/pierdere | Azi | Stop |
 |---|---:|---:|---:|---:|
-| scurt XRP | -228.77 USD | -0.08 USD | +0,35% | 1.42 |
+| scurt XRP | -228.74 USD | -0.04 USD | +0,33% | 1.42 |
 | scurt SHIB | -221.25 USD | 4.49 USD | -2,76% | 0.00 |
-| scurt DOGE | -207.44 USD | 3.09 USD | -1,48% | 0.09 |
-| scurt ETC | -200.96 USD | 3.35 USD | -2,38% | 8.27 |
-| scurt XLM | -185.46 USD | 8.49 USD | -3,74% | 0.20 |
-| scurt ETHEREUM | -170.01 USD | -2.02 USD | -0,27% | 2506.20 |
-| scurt VET | -152.79 USD | 6.38 USD | -2,71% | 0.01 |
-| scurt PENGU | -146.38 USD | 7.72 USD | -5,15% | 0.01 |
-| scurt HBAR | -134.76 USD | 3.81 USD | -2,66% | 0.09 |
-| scurt WIF | -134.66 USD | 5.11 USD | -4,40% | 0.22 |
-| scurt SOLANA | -121.56 USD | 5.11 USD | -2,29% | 108.83 |
-| STX | 102.57 USD | 1.72 USD | +0,33% | 0.22 |
-| scurt ADA | -91.02 USD | 1.78 USD | -2,07% | 0.23 |
-| LINK | 86.03 USD | -4.32 USD | -2,41% | 9.50 |
-| scurt FLOKI | -84.74 USD | 3.13 USD | -3,99% | 0.00 |
-| scurt ICP | -77.43 USD | 1.43 USD | -2,53% | 3.09 |
-| BCH | 70.65 USD | -2.10 USD | -2,57% | 233.41 |
-| NEAR | 62.74 USD | -9.91 USD | -10,66% | 3.01 |
-| scurt OP | -51.88 USD | 1.68 USD | -3,10% | 0.15 |
-| TIA | 47.35 USD | -3.71 USD | -7,39% | 0.29 |
-| POL | 46.80 USD | -2.28 USD | -3,79% | 0.07 |
-| AVAX | 37.73 USD | -0.41 USD | -2,37% | 6.93 |
-| SEI | 35.38 USD | -0.24 USD | -1,97% | 0.03 |
-| DOT | 35.32 USD | -0.39 USD | -1,68% | 0.71 |
-| scurt PEPE | -32.63 USD | 2.03 USD | -3,69% | 0.00 |
+| scurt DOGE | -207.42 USD | 3.11 USD | -1,50% | 0.09 |
+| scurt ETC | -201.25 USD | 3.06 USD | -2,24% | 8.27 |
+| scurt XLM | -185.57 USD | 8.37 USD | -3,68% | 0.20 |
+| scurt ETHEREUM | -170.01 USD | -2.01 USD | -0,28% | 2506.20 |
+| scurt VET | -152.82 USD | 6.36 USD | -2,70% | 0.01 |
+| scurt PENGU | -146.43 USD | 7.68 USD | -5,13% | 0.01 |
+| scurt WIF | -134.90 USD | 4.87 USD | -4,23% | 0.22 |
+| scurt HBAR | -134.58 USD | 3.98 USD | -2,79% | 0.09 |
+| scurt SOLANA | -121.59 USD | 5.07 USD | -2,26% | 108.83 |
+| STX | 102.14 USD | 1.28 USD | -0,09% | 0.22 |
+| scurt ADA | -90.97 USD | 1.83 USD | -2,12% | 0.23 |
+| LINK | 85.95 USD | -4.39 USD | -2,50% | 9.50 |
+| scurt FLOKI | -84.70 USD | 3.16 USD | -4,03% | 0.00 |
+| scurt ICP | -77.56 USD | 1.31 USD | -2,37% | 3.09 |
+| BCH | 70.60 USD | -2.15 USD | -2,64% | 233.41 |
+| NEAR | 62.66 USD | -9.99 USD | -10,77% | 3.01 |
+| scurt OP | -51.83 USD | 1.73 USD | -3,19% | 0.15 |
+| TIA | 47.22 USD | -3.84 USD | -7,65% | 0.29 |
+| POL | 46.83 USD | -2.25 USD | -3,72% | 0.07 |
+| AVAX | 37.77 USD | -0.37 USD | -2,28% | 6.93 |
+| DOT | 35.28 USD | -0.43 USD | -1,78% | 0.71 |
+| SEI | 35.26 USD | -0.36 USD | -2,30% | 0.03 |
+| scurt PEPE | -32.70 USD | 1.96 USD | -3,48% | 0.00 |
 | INJ | 29.62 USD | -0.40 USD | -0,70% | 5.12 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
