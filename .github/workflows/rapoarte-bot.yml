@@ -1,4 +1,4 @@
-name: Raport bot virtual (de 5 ori pe zi)
+name: Raport bot virtual (prețuri la 30 de minute)
 
 # An hourly report for the 16-day forward test: account value now (live
 # prices for open positions), positions, orders, risk. Saved on the
@@ -8,8 +8,10 @@ name: Raport bot virtual (de 5 ori pe zi)
 
 on:
   schedule:
-    # Every hour, on the hour (GitHub may delay a run by a few minutes).
+    # Every hour, on the hour: full report (saved + posted). GitHub may delay a run by a few minutes.
     - cron: '0 * * * *'
+    # Every half hour: only current prices + LATEST.md (no new report file, no issue comment).
+    - cron: '30 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -26,6 +28,7 @@ jobs:
     timeout-minutes: 10
     outputs:
       post: ${{ steps.build.outputs.post }}
+      light: ${{ github.event.schedule == '30 * * * *' }}
     env:
       BND_ALLOW_LIVE_AI: "false"
       GH_TOKEN: ${{ github.token }}
@@ -46,9 +49,9 @@ jobs:
           python -m src.bnd.report_card --state raport/paper.sqlite \
             --out raport/raport.md --json raport/raport.json > /dev/null
           cat raport/raport.md >> "$GITHUB_STEP_SUMMARY"
-          # Post only while the account exists and the 16-day test is running.
+          # Post only while the account exists and the test is running (31.10–30.11.2026 = zilele 1–31).
           day=$(jq -r 'if .has_account then .day else 0 end' raport/raport.json)
-          if [ "$day" -ge 1 ] && [ "$day" -le 17 ]; then
+          if [ "$day" -ge 1 ] && [ "$day" -le 31 ]; then
             echo "post=true" >> "$GITHUB_OUTPUT"
           else
             echo "post=false" >> "$GITHUB_OUTPUT"
@@ -76,6 +79,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       REPO: ${{ github.repository }}
+      LIGHT: ${{ needs.report.outputs.light }}
     steps:
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
@@ -95,7 +99,7 @@ jobs:
             git fetch -q --depth=1 origin paper-trading
             git checkout -q -f -B paper-trading FETCH_HEAD
             mkdir -p rapoarte
-            cp ../raport/raport.md "rapoarte/${stamp}.md"
+            if [ "$LIGHT" != "true" ]; then cp ../raport/raport.md "rapoarte/${stamp}.md"; fi
             cp ../raport/raport.md rapoarte/LATEST.md
             if [ -f ../raport/quotes.json ]; then cp ../raport/quotes.json rapoarte/quotes.json; fi
             git add -A
@@ -105,6 +109,7 @@ jobs:
           done
           [ "$pushed" = 1 ] || { echo "::error::Nu am putut salva pe ramură după 3 încercări."; exit 1; }
       - name: Post the report on today's reports issue
+        if: needs.report.outputs.light != 'true'
         run: |
           set -euo pipefail
           title="Rapoarte bot virtual $(date -u +%Y-%m-%d)"
