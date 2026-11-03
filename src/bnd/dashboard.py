@@ -77,7 +77,7 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                 live_used += 1
             positions.append({"symbol": p["symbol"], "group": market_groups.group_of(p["symbol"]),
                               "quantity": p["quantity"],
-                              "avg": p["avg_price"], "last": last,
+                              "avg": p["avg_price"], "last": last, "close": close,
                               "value": p["quantity"] * last,
                               "pnl": (last - p["avg_price"]) * p["quantity"],
                               "stop": p["stop_loss"]})
