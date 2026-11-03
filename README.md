@@ -292,8 +292,7 @@ has re-adjusted its history) and keeps the account and its status page
 the account with a virtual capital, scheduled runs do nothing.
 
 `rapoarte-bot.yml` writes a report in Romanian every hour for the 30-day
-forward test (31.10–30.11.2026; at :30 it refreshes only the current prices
-and `LATEST.md`): account value now (live Yahoo/Binance prices for open positions),
+forward test (31.10–30.11.2026): account value now (live Yahoo/Binance prices for open positions),
 positions, pending orders, fills, risk. Each report is saved on the
 `paper-trading` branch (`rapoarte/`, `rapoarte/LATEST.md`) and posted as a
 comment on that day's issue "Rapoarte bot virtual AAAA-LL-ZZ" (earlier days'

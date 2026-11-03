@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "20 20 * * *" # 21:20 CET / 22:20 CEST (UTC); adjust for DST
-  pull_request:
-    branches: [main]
+  # Fără pull_request: PR-urile sunt deja verificate de „Teste automate” (minute GitHub economisite).
 
 permissions:
   contents: read
