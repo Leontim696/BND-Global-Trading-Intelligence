@@ -27,8 +27,34 @@ from .universe import select as select_markets
 PERIOD_DAYS = 30                  # testul a fost prelungit de la 16 la 30 de zile (2.11)
 
 
+BINANCE_TICKER_URL = "https://data-api.binance.vision/api/v3/ticker/24hr?symbol="
+
+
+def is_binance_pair(symbol: str) -> bool:
+    """Perechile Binance (de ex. LINKUSDT) nu există pe Yahoo: prețul lor vine de la Binance."""
+    return symbol.endswith("USDT") and symbol.isalnum() and symbol.isupper()
+
+
+def fetch_binance_quote(symbol: str, timeout: float = 20.0):
+    """(preț, ora) de acum pentru o pereche Binance, din datele publice; None dacă nu se poate."""
+    request = Request(BINANCE_TICKER_URL + url_quote(symbol, safe=""),
+                      headers={"User-Agent": "Mozilla/5.0 (BND research report)"}, method="GET")
+    try:
+        # Reviewed: fixed https URL constant, simbol validat (litere mari și cifre).
+        with urlopen(request, timeout=timeout) as response:  # nosec B310
+            data = json.loads(response.read(200_000))
+        price, stamp = float(data["lastPrice"]), int(data["closeTime"]) / 1000
+    except (URLError, TimeoutError, OSError, ValueError, KeyError, TypeError):
+        return None
+    if price <= 0:
+        return None
+    return price, datetime.fromtimestamp(stamp, timezone.utc)
+
+
 def fetch_quote(symbol: str, timeout: float = 20.0):
-    """(preț, ora) cel mai recent de la Yahoo, sau None dacă nu se poate."""
+    """(preț, ora) cel mai recent: Binance pentru perechile USDT, Yahoo pentru rest; None dacă nu se poate."""
+    if is_binance_pair(symbol):
+        return fetch_binance_quote(symbol, timeout)
     request = Request(YAHOO_CHART_URL + url_quote(symbol, safe="") + "?range=1d&interval=1d",
                       headers={"User-Agent": "Mozilla/5.0 (BND research report)"}, method="GET")
     try:
@@ -157,7 +183,7 @@ def render(report: dict) -> str:
             side = "scurt " if p["quantity"] < 0 else ""
             stop = f"{p['stop_loss']:.2f}" if p["stop_loss"] else "–"
             lines.append(f"| {side}{p['market']} | {_money(p['value_now'], c)} | "
-                         f"{_money(p['pnl_now'], c)} | {_pct(p['change_today_pct'])} | {stop} |")
+                         f"{_money(p['pnl_now'], c)} | {_pct(p['change_today_pct']) if p['is_live'] else 'fără preț live'} | {stop} |")
     else:
         lines += ["", "Nicio poziție deschisă: banii stau în numerar."]
     if report["pending_orders"]:
