@@ -99,3 +99,24 @@ def test_cli_writes_markdown_and_json(tmp_path, capsys):
     assert "# Raport bot virtual" in out.read_text(encoding="utf-8")
     assert json.loads(as_json.read_text())["has_account"] is True
     capsys.readouterr()
+
+
+def test_binance_pairs_get_their_price_from_binance_not_yahoo(monkeypatch):
+    calls = []
+    monkeypatch.setattr(report_card, "fetch_binance_quote", lambda s, timeout=20.0: calls.append(("binance", s)) or (1.5, START))
+    monkeypatch.setattr(report_card, "urlopen", lambda *a, **k: calls.append(("yahoo",)) or (_ for _ in ()).throw(OSError()))
+    assert report_card.fetch_quote("LINKUSDT") == (1.5, START)
+    assert report_card.fetch_quote("XRP-USD") is None
+    assert calls == [("binance", "LINKUSDT"), ("yahoo",)]
+    assert report_card.is_binance_pair("SHIBUSDT") and not report_card.is_binance_pair("BAD/USDT")
+    assert not report_card.is_binance_pair("GLD")
+
+
+def test_positions_without_a_live_price_say_so_instead_of_zero_percent(tmp_path):
+    from src.bnd.universe import select
+    assert {m.name: m.symbol for m in select(universe="unic")}["LINK"] == "LINKUSDT"   # nu există pe Yahoo
+    path, now, held = account_with_positions(tmp_path)
+    first = sorted(held)[0]
+    text = report_card.render(report_card.build(path, now, {first: (held[first] * 1.1, now)}))
+    rows = [line for line in text.splitlines() if line.startswith("|") and "fără preț live" in line]
+    assert len(rows) == len(held) - 1 and "+10,00%" in text
