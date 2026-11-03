@@ -586,22 +586,28 @@ tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (
 
 // --- grafice: linie interactivă, inel, donut ---
 let CHARTS = {};
-function spark(history, initial, key, big) {
+// live: {v, t} = valoarea cu prețurile de acum; se desenează punctat după ultima închidere, marcat „acum”.
+function spark(history, initial, key, big, live) {
   const pts = history.map(h => ({v:h.equity, t:h.t})); if (initial != null) pts.unshift({v:initial, t:null});
+  const closes = pts.length; if (live && isFinite(live.v) && pts.length) pts.push({v:live.v, t:live.t, now:true});
   if (pts.length < 2 || Math.max(...pts.map(p => p.v)) === Math.min(...pts.map(p => p.v)))
     return `<p class="sub" style="margin-block:14px">Graficul apare când valoarea contului începe să se miște.</p>`;
   const W = big ? 640 : 320, H = big ? 190 : 100, P = big ? 10 : 6, vals = pts.map(p => p.v), lo = Math.min(...vals), hi = Math.max(...vals), span = (hi - lo) || 1;
   const x = i => P + i * (W - 2*P) / (pts.length - 1), y = v => H - P - (v - lo) / span * (H - 2*P);
-  const line = vals.map((v,i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+  const line = vals.slice(0, closes).map((v,i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(v).toFixed(1)).join(" ");
+  const hasNow = pts.length > closes, last = pts.length - 1;
+  const nowSeg = hasNow ? `M${x(closes - 1).toFixed(1)} ${y(vals[closes - 1]).toFixed(1)} L${x(last).toFixed(1)} ${y(vals[last]).toFixed(1)}` : "";
   const col = vals[vals.length-1] >= vals[0] ? "var(--gain)" : "var(--loss)", gid = "g" + key;
   CHARTS[key] = {pts, W, x, y};
-  const axis = big ? `<text class="axis" x="${W-P}" y="${P+6}" text-anchor="end">${esc(money(hi, ""))}</text><text class="axis" x="${W-P}" y="${H-P-3}" text-anchor="end">${esc(money(lo, ""))}</text>
-    <text class="axis" x="${P}" y="${H-1}">${esc(pts[0].t ? dayOnly(pts[0].t) : "start")}</text><text class="axis" x="${W-P}" y="${H-1}" text-anchor="end">${esc(dayOnly(pts[pts.length-1].t || DATA.generated))}</text>` : "";
+  const ax = hasNow ? W - P - 14 : W - P;   // eticheta nu stă sub punctul „acum”
+  const axis = big ? `<text class="axis" x="${ax}" y="${P+6}" text-anchor="end">${esc(money(hi, ""))}</text><text class="axis" x="${ax}" y="${H-P-3}" text-anchor="end">${esc(money(lo, ""))}</text>
+    <text class="axis" x="${P}" y="${H-1}">${esc(pts[0].t ? dayOnly(pts[0].t) : "start")}</text><text class="axis" x="${W-P}" y="${H-1}" text-anchor="end">${esc(hasNow ? "acum" : dayOnly(pts[pts.length-1].t || DATA.generated))}</text>` : "";
   return `<div class="chart${big ? " big" : ""}" data-chart="${key}"><div class="tip"></div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Valoarea contului în timp">
     <defs><linearGradient id="${gid}" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity=".35"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
     <line x1="${P}" x2="${W-P}" y1="${y(vals[0])}" y2="${y(vals[0])}" stroke="var(--line-2)" stroke-dasharray="3 4"/>
-    <path d="${line} L${x(pts.length-1)} ${H-P} L${x(0)} ${H-P} Z" fill="url(#${gid})"/>
+    <path d="${line} L${x(closes-1)} ${H-P} L${x(0)} ${H-P} Z" fill="url(#${gid})"/>
     <path d="${line}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" style="filter:drop-shadow(0 0 4px ${col})"/>
+    ${hasNow ? `<path d="${nowSeg}" fill="none" stroke="${col}" stroke-width="2" stroke-dasharray="4 4"/><circle cx="${x(last).toFixed(1)}" cy="${y(vals[last]).toFixed(1)}" r="5.5" fill="var(--bg, #fff)" stroke="${col}" stroke-width="2"><title>Valoarea cu prețurile de acum</title></circle>` : ""}
     <line class="cur" x1="0" x2="0" y1="${P}" y2="${H-P}" stroke="var(--muted)" stroke-width="1" opacity="0"/>
     <circle class="dot" cx="${x(pts.length-1)}" cy="${y(vals[vals.length-1])}" r="3.8" fill="${col}"/>${axis}</svg></div>`;
 }
@@ -611,7 +617,7 @@ view.addEventListener("pointermove", e => {
   const r = box.getBoundingClientRect(), frac = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
   const i = Math.round(frac * (c.pts.length - 1)), p = c.pts[i];
   const tip = box.querySelector(".tip"), cur = box.querySelector(".cur"), dot = box.querySelector(".dot");
-  tip.textContent = money(p.v, "") + (p.t ? " · " + dayOnly(p.t) : " · start");
+  tip.textContent = money(p.v, "") + (p.now ? " · acum" : p.t ? " · " + dayOnly(p.t) : " · start");
   tip.style.left = Math.min(r.width - 50, Math.max(50, (c.x(i) / c.W) * r.width)) + "px"; tip.style.opacity = 1;
   cur.setAttribute("x1", c.x(i)); cur.setAttribute("x2", c.x(i)); cur.setAttribute("opacity", .6);
   dot.setAttribute("cx", c.x(i)); dot.setAttribute("cy", c.y(p.v));
@@ -1070,7 +1076,7 @@ function bridge() {
   return `<div class="bridge"><div class="panel deck"><div class="label">${esc(a.title)} · ${esc(CUR || a.currency)}${a.live ? " · preț de acum" : " · ultima închidere"}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
     <div class="bigval" data-cu>${hero(v, a)}</div>${euro(v, a)}
     <div class="pillrow"><span class="tag ${cls}">${pct(ch)}</span><span class="tag">start ${fm(a.initial, a)}</span><span class="tag ${dd ? "loss" : ""}">drawdown ${dd ? "−" + money2(dd) : "0,00"}%</span></div>
-    ${spark(a.history, a.initial, "b" + a.key, true)}${dailyBars(a.history)}
+    ${spark(a.history, a.initial, "b" + a.key, true, a.live ? {v: a.live_equity, t: DATA.quotes_time || DATA.generated} : null)}${dailyBars(a.history)}
     <div class="kpis">${kpi("Numerar", fm(a.cash, a))}${kpi("Poziții", a.positions.length)}${kpi("Comenzi mâine", a.orders.length)}${kpi("Tranzacții", a.fills)}${kpi("Costuri", money2(a.costs_total))}</div>
     <div class="actions"><button class="btn primary" type="button" data-go="unic">Deschide contul</button><button class="btn" type="button" data-pal>Caută o piață</button></div></div>
     <div class="grid" style="grid-template-columns:1fr">${safetyRing(a)}${rows.length ? `<div class="panel"><div class="label">Roata de sentiment · pe categorii</div>${polar(rows)}<p class="sub" style="text-align:center">Atinge o pană ca să filtrezi consiliul.</p></div>` : ""}</div></div>`;
@@ -1128,7 +1134,7 @@ function account(a) {
   return `${notice}<div class="grid"><div class="panel hot"><div class="label">${esc(a.title)} · ${esc(CUR || a.currency)}${a.live ? '<span class="tag" style="margin-left:8px;padding:1px 8px">preț de acum</span>' : '<span class="tag" style="margin-left:8px;padding:1px 8px;color:var(--muted)">ultima închidere</span>'}</div>
     <div class="hero-value" data-cu>${hero(value, a)}</div>${euro(value, a)}
     <div class="pillrow"><span class="tag ${cls}">${pct(ch)}</span><span class="tag">start ${fm(a.initial, a)}</span></div>
-    <div class="sub" style="margin-top:12px">${esc(a.subtitle)}</div>${rulesLine(a)}${spark(a.history, a.initial, a.key)}</div>
+    <div class="sub" style="margin-top:12px">${esc(a.subtitle)}</div>${rulesLine(a)}${spark(a.history, a.initial, a.key, false, a.live ? {v: a.live_equity, t: DATA.quotes_time || DATA.generated} : null)}</div>
     <div class="panel">${levRing}<div class="stats" style="margin-bottom:0"><div><span class="label">Numerar</span><b>${fm(a.cash, a)}</b></div>
     <div><span class="label">Poziții</span><b>${a.positions.length}</b></div><div><span class="label">Tranzacții</span><b>${a.fills}</b></div>
     <div><span class="label">Drawdown${help("drawdown")}</span><b class="${dd ? "loss" : ""}">${dd ? "−" + money2(dd) + "%" : "0,00%"}</b></div>
@@ -1207,7 +1213,7 @@ function summary() {
     const v = eq(a), ch = 100 * (v / a.initial - 1);
     return `<button class="panel hot" type="button" data-go="unic" style="width:100%;text-align:left;display:block"><div class="label">${esc(a.title)}${a.kill_switch ? ' · <span class="loss">oprit</span>' : ""}</div>
       <div class="hero-value" data-cu>${hero(v, a)}</div>${euro(v, a)}
-      <div class="pillrow"><span class="tag ${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</span><span class="tag">${a.positions.length} poziții</span><span class="tag">${a.orders.length} comenzi</span></div>${spark(a.history, a.initial, "s" + a.key)}</button>`;
+      <div class="pillrow"><span class="tag ${ch >= 0 ? "gain" : "loss"}">${pct(ch)}</span><span class="tag">${a.positions.length} poziții</span><span class="tag">${a.orders.length} comenzi</span></div>${spark(a.history, a.initial, "s" + a.key, false, a.live ? {v: a.live_equity, t: DATA.quotes_time || DATA.generated} : null)}</button>`;
   }).join("");
   const rate = DATA.fx ? `<p class="sub">Curs EUR/USD: <b>${DATA.fx.eurusd.toFixed(4)}</b> (1 € = ${DATA.fx.eurusd.toFixed(2)} $)${DATA.fx.eurron ? " · EUR/RON: <b>" + DATA.fx.eurron.toFixed(4) + "</b>" : ""}, la ${when(DATA.fx.time)}.</p>` : "";
   const cm = DATA.council && DATA.council.exists ? DATA.council.markets || [] : [];
