@@ -97,3 +97,27 @@ def test_cli_state_file_roundtrip(tmp_path):
     assert json.loads(state.read_text())["2026-11-01"]["markets"] == ["BITCOIN", "SP500"]
     again = ["--day", "2026-11-01", "--council", str(council), "--out", str(tmp_path / "o2"), "--state", str(state)]
     assert dp.main(again) == 0 and list((tmp_path / "o2").glob("*.html")) == []          # nimic nou de urcat
+
+
+def test_investments_count_open_positions_from_the_account_and_never_claim_zero_when_unknown(tmp_path):
+    from datetime import datetime, timezone
+    from src.bnd.paper_engine import PaperEngine
+    run = {"equity": 1.0, "orders": [], "settings": {}}
+    assert "Poziții deschise: necunoscut" in dp.investments_html("2026-11-02", run, {})
+
+    path = tmp_path / "unic.sqlite"
+    PaperEngine.create(path, 10_000.0, currency="USD", now=datetime(2026, 10, 31, tzinfo=timezone.utc)).close()
+    import sqlite3
+    with sqlite3.connect(path) as db:
+        db.executemany("INSERT INTO positions (symbol, quantity, avg_price, opened_at) VALUES (?, ?, 1, 'x')",
+                       [("BITCOIN", 0.1), ("XRP", -50.0)])
+    before = path.read_bytes()
+    assert dp.account_positions(path) == [{"symbol": "BITCOIN", "quantity": 0.1}, {"symbol": "XRP", "quantity": -50.0}]
+    assert path.read_bytes() == before and dp.account_positions(tmp_path / "lipsa.sqlite") is None
+
+    (tmp_path / "run.json").write_text('{"equity": 1.0, "orders": [], "settings": {}}', encoding="utf-8")
+    (tmp_path / "c.md").write_text(REPORT, encoding="utf-8")
+    assert dp.main(["--day", "2026-11-02", "--council", str(tmp_path / "c.md"), "--run", str(tmp_path / "run.json"),
+                    "--unic", str(path), "--out", str(tmp_path / "o")]) == 0
+    page = (tmp_path / "o" / "01 Investiții 2026-11-02.html").read_text(encoding="utf-8")
+    assert "Poziții deschise: 2 (BITCOIN long, XRP short)." in page

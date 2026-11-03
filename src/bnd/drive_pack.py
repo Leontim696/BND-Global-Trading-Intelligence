@@ -128,14 +128,19 @@ def investments_html(day: str, run: dict, council_signals: dict, council_votes: 
         if o.get("risk_capped"):
             parts.append("limitată de plafonul de risc")
         explanations.append(f"<p><b>{esc(market)}</b>, {side}: " + "; ".join(parts) + ".</p>")
-    held = [f"{esc(p['symbol'])}" for p in run.get("positions", [])] if "positions" in run else []
+    held = run.get("positions")
+    if held is None:
+        held_line = "Poziții deschise: necunoscut (lipsește contul virtual la generare)."
+    else:
+        listed = ", ".join(f"{esc(str(p['symbol']))} {'long' if p['quantity'] > 0 else 'short'}" for p in held)
+        held_line = f"Poziții deschise: {len(held)}" + (f" ({listed})." if listed else ".")
     return (f"<html><body><h1>01 Investiții {esc(day)} (contul unic, bani virtuali)</h1>"
             f"<p>Valoare cont: <b>{run.get('equity', 0):,.2f} {esc(str(run.get('currency', '')))}</b>; bani liberi {run.get('cash', 0):,.2f}; "
             f"expunere brută {run.get('gross_leverage', 0):.2f}x; oprire de siguranță: {'ACTIVĂ' if run.get('kill_switch') else 'oprită (în regulă)'}.</p>"
             f"<p>Strategia „{esc(str(run.get('strategy', '')))}”: jumătate reguli (regime_switch, long și short), jumătate vot al consiliului AI. "
             f"Limite: leverage maxim {run.get('settings', {}).get('max_leverage')}x, maxim {100 * (run.get('settings', {}).get('max_weight') or 0):.0f}% pe piață, "
             f"{run.get('settings', {}).get('max_sector')}% pe clasă, volatilitate-țintă {run.get('settings', {}).get('portfolio_vol')}%.</p>"
-            f"<p>Poziții deschise: {len(held) if held else 0}. Ordine pregătite (se execută la deschiderea următoare): {len(orders)}.</p>"
+            f"<p>{held_line} Ordine pregătite (se execută la deschiderea următoare): {len(orders)}.</p>"
             "<table border='1' cellpadding='4'><tr><th>Piață</th><th>Direcție</th><th>Cantitate</th><th>Preț</th><th>Pondere</th><th>Stop</th><th>Stare</th></tr>"
             + "".join(rows) + "</table><h2>De ce fiecare ordin</h2>" + "".join(explanations) + "</body></html>")
 
@@ -204,12 +209,29 @@ def build_day(day: str, council_text: str, run: dict | None, council_signals: di
     return names, new_state
 
 
+def account_positions(path) -> list[dict] | None:
+    """Pozițiile din contul virtual (SQLite), citit DOAR în citire; None dacă fișierul lipsește sau nu e cont."""
+    import sqlite3
+    if not path or not Path(path).exists():
+        return None
+    try:
+        db = sqlite3.connect(f"file:{Path(path).resolve()}?mode=ro", uri=True)
+        try:
+            rows = db.execute("SELECT symbol, quantity FROM positions WHERE quantity != 0 ORDER BY symbol").fetchall()
+        finally:
+            db.close()
+    except sqlite3.Error:
+        return None
+    return [{"symbol": s, "quantity": q} for s, q in rows]
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="drive_pack")
     parser.add_argument("--day", required=True)
     parser.add_argument("--council", required=True)
     parser.add_argument("--run")
     parser.add_argument("--signals")
+    parser.add_argument("--unic", help="contul virtual unic (SQLite), citit doar pentru pozițiile deschise")
     parser.add_argument("--out", required=True)
     parser.add_argument("--cost-line", default="")
     parser.add_argument("--state", help="JSON cu ce s-a urcat deja ({ziua: {markets, investitii}}); se citește, nu se scrie")
@@ -217,6 +239,10 @@ def main(argv=None) -> int:
     parser.add_argument("--mark-uploaded", action="store_true", help="scrie în --state ce tocmai s-a generat (după urcare reușită)")
     args = parser.parse_args(argv)
     run = json.loads(Path(args.run).read_text(encoding="utf-8")) if args.run and Path(args.run).exists() else None
+    if run is not None and "positions" not in run:
+        positions = account_positions(args.unic)
+        if positions is not None:
+            run["positions"] = positions
     signals = json.loads(Path(args.signals).read_text(encoding="utf-8")).get("signals", {}) if args.signals and Path(args.signals).exists() else {}
     state_path = Path(args.state) if args.state else None
     all_state = json.loads(state_path.read_text(encoding="utf-8")) if state_path and state_path.exists() else {}
