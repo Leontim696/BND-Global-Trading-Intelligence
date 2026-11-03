@@ -1,10 +1,10 @@
 {
-  "time": "2026-11-02T00:15+00:00",
+  "time": "2026-11-03T00:17+00:00",
   "sources": {
     "ff_calendar_thisweek": {
       "ok": true,
-      "events": 116,
-      "added": 0,
+      "events": 115,
+      "added": 2,
       "last": "2026-11-06T21:45+00:00"
     },
     "ff_calendar_nextweek": {
