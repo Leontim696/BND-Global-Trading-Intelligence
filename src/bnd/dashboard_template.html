@@ -141,6 +141,19 @@ h2::before{content:"";display:inline-block;width:18px;height:2px;background:var(
 .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
 .split{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--line);margin-top:8px}
 .split .l{background:var(--gain)}.split .s{background:var(--loss)}
+.chip.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.pf-head{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:10px 0 14px}
+.pf-head div{background:var(--raise);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.pf-head b{display:block;font:600 18px var(--font-data);font-variant-numeric:tabular-nums;margin-top:2px}
+.pf-tools{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.pf-row,.pf-cols{display:grid;grid-template-columns:minmax(120px,1.4fr) 1fr 1.3fr 1fr .8fr;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line);width:100%;text-align:left;background:none;border-inline:0;border-top:0;color:inherit;font:inherit}
+.pf-cols{color:var(--muted);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding-top:2px}
+.pf-row .n{font:500 14px var(--font-data);font-variant-numeric:tabular-nums;text-align:right}
+.pf-row .px{color:var(--muted);font-size:12.5px;text-align:right}
+.pf-cols span:not(:first-child){text-align:right}
+.pf-bar{grid-column:1/-1;height:3px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:-4px}
+.pf-bar span{display:block;height:100%}
+@media (max-width:759px){.pf-head{grid-template-columns:repeat(2,minmax(0,1fr))}.pf-row,.pf-cols{grid-template-columns:minmax(100px,1.3fr) 1fr 1fr .8fr}.pf-row .px,.pf-cols .px{display:none}}
 .row{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:12px 0;border-bottom:1px solid var(--line);width:100%;text-align:left;background:none;border-inline:0;border-top:0}
 .row .name{font-weight:700}.row .num{font:500 14px var(--font-data);font-variant-numeric:tabular-nums;text-align:right}
 .row .meta{color:var(--muted);font-size:12.5px}
@@ -1069,6 +1082,47 @@ function safetyRing(a) {
   return `<div class="panel"><div class="label">Marja de siguranță</div><div class="safety">${ring(free, Math.round(100 * free) + "%", "LIBER", "Marja de siguranță", 112)}
     <div style="flex:1;min-width:150px"><div class="sub" style="margin:0">Cel mai aproape de limită: <b>${esc(worst.name.toLowerCase())}</b>, la ${Math.round(100 * worst.ratio)}% din plafon.</div></div></div></div>`;
 }
+// Fereastra „Pozițiile deschise”: în ce e investit, suma investită și câștigul/pierderea fiecărei poziții.
+// prețuri mici (memecoin-uri) cu destule zecimale: 0,00001234, nu 0,00
+const pxf = v => { const x = Math.abs(v || 0); if (!x) return "0"; if (x >= 100) return money2(v);
+  const d = Math.min(10, Math.max(2, 3 - Math.floor(Math.log10(x)))); return new Intl.NumberFormat("ro-RO", {minimumFractionDigits: d, maximumFractionDigits: d}).format(v); };
+let POSF = store("bnd-pf-filtru") || "toate", POSS = store("bnd-pf-sort") || "investit";
+function portfolioPanel() {
+  const a = DATA.accounts.find(x => x.key === "unic"); if (!a || !a.exists) return "";
+  if (!a.positions.length) return `<div class="panel"><div class="label">Pozițiile deschise</div><p class="sub">Nicio poziție deschisă: banii stau în numerar.</p></div>`;
+  const rows = a.positions.map(p => { const inv = Math.abs(p.quantity * p.avg), today = p.close ? p.quantity * (p.last - p.close) : 0;
+    return {p, inv, pnl: p.pnl || 0, pct: inv ? 100 * (p.pnl || 0) / inv : 0, today, side: p.quantity < 0 ? "short" : "long"}; });
+  const sum = f => rows.reduce((s, r) => s + f(r), 0);
+  const inv = sum(r => r.inv), pnl = sum(r => r.pnl), today = sum(r => r.today), nl = rows.filter(r => r.side === "long").length;
+  const shown = rows.filter(r => POSF === "toate" || r.side === POSF)
+    .sort(POSS === "castig" ? (x, y) => y.pnl - x.pnl : POSS === "pierdere" ? (x, y) => x.pnl - y.pnl : (x, y) => y.inv - x.inv);
+  const mx = Math.max(1, ...rows.map(r => Math.abs(r.pnl)));
+  const cls = v => v >= 0 ? "gain" : "loss", sg = v => (v >= 0 ? "+" : "−");
+  const chip = (attr, v, txt, cur) => `<button class="chip${cur === v ? " on" : ""}" type="button" ${attr}="${v}" aria-pressed="${cur === v}">${txt}</button>`;
+  const row = r => `<button class="pf-row" type="button" data-m="${esc(r.p.symbol)}">
+      <span><b>${esc(label(r.p.symbol))}</b><span class="pill ${r.side}">${r.side}</span><div class="meta" style="color:var(--muted);font-size:12px">${esc((GROUPS.find(g => g.key === r.p.group) || {}).label || "")}</div></span>
+      <span class="n">${fm(r.inv, a)}</span>
+      <span class="px">${pxf(r.p.avg)} → ${pxf(r.p.last)}</span>
+      <span class="n ${cls(r.pnl)}">${sg(r.pnl)}${money2(Math.abs(r.pnl))}</span>
+      <span class="n ${cls(r.pnl)}">${pct1(r.pct)}</span>
+      <span class="pf-bar"><span style="width:${(100 * Math.abs(r.pnl) / mx).toFixed(1)}%;background:${r.pnl >= 0 ? "var(--gain)" : "var(--loss)"}"></span></span></button>`;
+  return `<div class="panel" id="pozitii"><div class="label">Pozițiile deschise · ${rows.length} (${nl} long, ${rows.length - nl} short)${a.live ? " · prețuri de acum" : " · ultima închidere"}</div>
+    <div class="pf-head"><div><span class="label">Investit</span><b>${fm(inv, a)}</b></div>
+      <div><span class="label">Câștig / pierdere</span><b class="${cls(pnl)}">${sg(pnl)}${money2(Math.abs(pnl))}</b><span class="sub ${cls(pnl)}">${pct(inv ? 100 * pnl / inv : 0)} din investit</span></div>
+      <div><span class="label">Azi (față de ultima închidere)</span><b class="${cls(today)}">${sg(today)}${money2(Math.abs(today))}</b></div>
+      <div><span class="label">În plus / în minus</span><b><span class="gain">${rows.filter(r => r.pnl > 0).length}</span> / <span class="loss">${rows.filter(r => r.pnl < 0).length}</span></b></div></div>
+    <div class="pf-tools">${chip("data-posf", "toate", "Toate", POSF)}${chip("data-posf", "long", "Long", POSF)}${chip("data-posf", "short", "Short", POSF)}
+      <span style="flex:1"></span>${chip("data-poss", "investit", "După sumă", POSS)}${chip("data-poss", "castig", "Cele mai bune", POSS)}${chip("data-poss", "pierdere", "Cele mai slabe", POSS)}</div>
+    <div class="pf-cols"><span>Piață</span><span>Investit</span><span class="px">Intrare → acum</span><span>Câștig / pierdere</span><span>%</span></div>
+    ${shown.map(row).join("")}
+    <p class="sub" style="margin-top:8px">Investit = suma pusă în poziție la intrare. La short, câștigi când prețul scade. Atinge o poziție ca să vezi graficul ei.</p></div>`;
+}
+view.addEventListener("click", e => {
+  const f = e.target.closest("[data-posf]"), o = e.target.closest("[data-poss]");
+  if (f) { POSF = f.dataset.posf; store("bnd-pf-filtru", POSF); render(); }
+  else if (o) { POSS = o.dataset.poss; store("bnd-pf-sort", POSS); render(); }
+});
+
 function bridge() {
   const a = DATA.accounts.find(x => x.key === "unic"); if (!a || !a.exists) return "";
   const v = eq(a), ch = 100 * (v / a.initial - 1), cls = ch >= 0 ? "gain" : "loss", dd = a.drawdown_pct || 0, rows = sentimentRows();
@@ -1222,7 +1276,7 @@ function summary() {
     return `<tr><td>${esc(g.label)}</td><td>${g.items.length}</td><td class="gain">${up}</td><td class="loss">${down}</td><td>${g.items.length - up - down}</td></tr>`;
   }).join("")}</table></div></div>` : "";
   const old = DATA.accounts.filter(a => a.archived && a.exists).length;
-  return `${bridge()}${briefing()}<div class="grid">${cards}${testCard()}</div><div class="actions"><button class="btn" type="button" data-copy>Copiază rezumatul</button><button class="btn" type="button" data-pal>Caută o piață</button><button class="btn" type="button" data-gloss>Glosar</button></div>
+  return `${bridge()}${portfolioPanel()}${briefing()}<div class="grid">${cards}${testCard()}</div><div class="actions"><button class="btn" type="button" data-copy>Copiază rezumatul</button><button class="btn" type="button" data-pal>Caută o piață</button><button class="btn" type="button" data-gloss>Glosar</button></div>
     <div class="grid" style="margin-top:12px">${councilSnapshot()}${favoritesPanel()}${feedPanel()}${systemPanel()}</div>${cats}${rate}
     <p class="sub">Din 1 noiembrie există un singur cont activ; cele ${old} conturi vechi sunt oprite și păstrate în fila Arhivă.</p>`;
 }
