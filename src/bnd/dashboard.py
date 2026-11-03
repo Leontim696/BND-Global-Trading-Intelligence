@@ -21,12 +21,12 @@ from . import chart_data, council_analytics, crypto50, market_groups, model_regi
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
-ACCOUNTS = (("paper", "Reguli matematice", "Reguli simple, piețe ETF/forex/crypto"),
+ACCOUNTS = (("paper", "Reguli matematice (vechi, arhivat)", "Contul vechi pe reguli, oprit pe 1.11 fără tranzacții"),
             ("crypto", "Cripto (AI)", "Consiliul AI pe 5 monede"),
             ("ai", "AI unificat", "Consiliul AI pe 13 piețe"),
             ("rls", "Reguli long/short", "Reguli cu short și leverage"),
             ("unic", "Cont unic", "Regulile și consiliul AI amestecate, long și short"),
-            ("control", "Doar reguli (control)", "Identic cu contul unic, dar fără consiliul AI (din 4.11.2026)"))
+            ("control", "Reguli matematice", "Identic cu contul unic, dar doar regulile, fără consiliul AI (din 3.11.2026)"))
 
 
 STALE_AFTER = timedelta(hours=36)

@@ -592,8 +592,9 @@ const I = {
   grafice:'<path d="M6 4v16M6 8h-2v6h2M12 6v12M12 9h-2v5h2M18 3v15M18 6h-2v8h2"/>',
   harta:'<rect x="3" y="3" width="10" height="11" rx="1"/><rect x="15" y="3" width="6" height="7" rx="1"/><rect x="15" y="12" width="6" height="9" rx="1"/><rect x="3" y="16" width="10" height="5" rx="1"/>',
   risc:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.01"/>',
+  comparatie:'<path d="M4 18l5-6 4 3 7-9"/><path d="M4 12l5 2 4-5 7 3" stroke-dasharray="2 2"/>',
   arhiva:'<rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10h14V9M10 13h4"/>'};
-const TABS = [["rezumat","Rezumat"],["grafice","Grafice"],["harta","Hartă"],["consiliu","Consiliul"],["risc","Risc"],["unic","Cont"],["top50","Top 50"],["arhiva","Arhivă"]];
+const TABS = [["rezumat","Rezumat"],["comparatie","Reguli vs AI"],["grafice","Grafice"],["harta","Hartă"],["consiliu","Consiliul"],["risc","Risc"],["unic","Cont"],["top50","Top 50"],["arhiva","Arhivă"]];
 tabs.innerHTML = TABS.map(([id,t], n) => `<button role="tab" data-id="${id}" id="tab-${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[id]}</svg>${t}<kbd>${n + 1}</kbd></button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; window.scrollTo({top:0}); } });
 
@@ -1087,9 +1088,9 @@ function safetyRing(a) {
 const pxf = v => { const x = Math.abs(v || 0); if (!x) return "0"; if (x >= 100) return money2(v);
   const d = Math.min(10, Math.max(2, 3 - Math.floor(Math.log10(x)))); return new Intl.NumberFormat("ro-RO", {minimumFractionDigits: d, maximumFractionDigits: d}).format(v); };
 let POSF = store("bnd-pf-filtru") || "toate", POSS = store("bnd-pf-sort") || "investit";
-function portfolioPanel() {
-  const a = DATA.accounts.find(x => x.key === "unic"); if (!a || !a.exists) return "";
-  if (!a.positions.length) return `<div class="panel"><div class="label">Pozițiile deschise</div><p class="sub">Nicio poziție deschisă: banii stau în numerar.</p></div>`;
+function portfolioPanel(key, heading) {
+  const a = DATA.accounts.find(x => x.key === (key || "unic")); if (!a || !a.exists) return "";
+  if (!a.positions.length) return `<div class="panel"><div class="label">${esc(heading || "Pozițiile deschise")}</div><p class="sub">Nicio poziție deschisă: banii stau în numerar.</p></div>`;
   const rows = a.positions.map(p => { const inv = Math.abs(p.quantity * p.avg), today = p.close ? p.quantity * (p.last - p.close) : 0;
     return {p, inv, pnl: p.pnl || 0, pct: inv ? 100 * (p.pnl || 0) / inv : 0, today, side: p.quantity < 0 ? "short" : "long"}; });
   const sum = f => rows.reduce((s, r) => s + f(r), 0);
@@ -1106,7 +1107,7 @@ function portfolioPanel() {
       <span class="n ${cls(r.pnl)}">${sg(r.pnl)}${money2(Math.abs(r.pnl))}</span>
       <span class="n ${cls(r.pnl)}">${pct1(r.pct)}</span>
       <span class="pf-bar"><span style="width:${(100 * Math.abs(r.pnl) / mx).toFixed(1)}%;background:${r.pnl >= 0 ? "var(--gain)" : "var(--loss)"}"></span></span></button>`;
-  return `<div class="panel" id="pozitii"><div class="label">Pozițiile deschise · ${rows.length} (${nl} long, ${rows.length - nl} short)${a.live ? " · prețuri de acum" : " · ultima închidere"}</div>
+  return `<div class="panel" id="pozitii${key && key !== "unic" ? "-" + key : ""}"><div class="label">${esc(heading || "Pozițiile deschise")} · ${rows.length} (${nl} long, ${rows.length - nl} short)${a.live ? " · prețuri de acum" : " · ultima închidere"}</div>
     <div class="pf-head"><div><span class="label">Investit</span><b>${fm(inv, a)}</b></div>
       <div><span class="label">Câștig / pierdere</span><b class="${cls(pnl)}">${sg(pnl)}${money2(Math.abs(pnl))}</b><span class="sub ${cls(pnl)}">${pct(inv ? 100 * pnl / inv : 0)} din investit</span></div>
       <div><span class="label">Azi (față de ultima închidere)</span><b class="${cls(today)}">${sg(today)}${money2(Math.abs(today))}</b></div>
@@ -1122,6 +1123,50 @@ view.addEventListener("click", e => {
   if (f) { POSF = f.dataset.posf; store("bnd-pf-filtru", POSF); render(); }
   else if (o) { POSS = o.dataset.poss; store("bnd-pf-sort", POSS); render(); }
 });
+
+// Fila „Reguli vs AI”: contul condus de consiliu (unic) față de contul doar pe reguli (control), pe aceeași fereastră.
+const TEST_LAST = "2026-11-30";
+function compareView() {
+  const ai = DATA.accounts.find(x => x.key === "unic"), ru = DATA.accounts.find(x => x.key === "control");
+  if (!ai || !ai.exists) return `<p class="empty">Contul unic nu există încă.</p>`;
+  if (!ru || !ru.exists) return `<div class="panel hot"><div class="label">Reguli vs AI</div><p class="sub">Contul „Reguli matematice” (doar reguli) nu are încă date. Apare după prima rulare.</p></div>`;
+  const start = ru.history.length ? ru.history[0].t.slice(0, 10) : (DATA.generated || "").slice(0, 10);
+  const before = ai.history.filter(h => h.t.slice(0, 10) < start), aiBase = before.length ? before[before.length - 1].equity : ai.initial;
+  const nowAi = eq(ai), nowRu = eq(ru), rAi = 100 * (nowAi / aiBase - 1), rRu = 100 * (nowRu / ru.initial - 1), diff = rAi - rRu;
+  const day = Math.max(1, Math.floor((Date.parse(DATA.generated) - Date.parse(start + "T00:00:00Z")) / 864e5) + 1);
+  const total = Math.round((Date.parse(TEST_LAST + "T00:00:00Z") - Date.parse(start + "T00:00:00Z")) / 864e5) + 1;
+  const cost = ((DATA.council || {}).costs || {}).spent;
+  const dd = h => { let pk = -Infinity, m = 0; h.forEach(v => { pk = Math.max(pk, v); m = Math.max(m, 1 - v / pk); }); return 100 * m; };
+  const t0 = Date.parse(start + "T00:00:00Z"), tNow = Date.parse(DATA.quotes_time || DATA.generated);
+  const aiPts = [{t: t0, v: aiBase}, ...ai.history.filter(h => h.t.slice(0, 10) >= start).map(h => ({t: Date.parse(h.t), v: h.equity})), {t: tNow, v: nowAi}];
+  const ruPts = [{t: t0, v: ru.initial}, ...ru.history.map(h => ({t: Date.parse(h.t), v: h.equity})), {t: tNow, v: nowRu}];
+  const aiSeries = aiPts.map(p => p.v), ruSeries = ruPts.map(p => p.v);
+  const pnl = a => a.positions.reduce((s, p) => s + (p.pnl || 0), 0), inv = a => a.positions.reduce((s, p) => s + Math.abs(p.quantity * p.avg), 0);
+  const card = (a, title, sub, r, series, accent) => `<div class="panel${accent ? " hot" : ""}"><div class="label">${esc(title)}</div><div class="sub">${esc(sub)}</div>
+      <div class="bigval" style="font-size:40px;margin-top:6px">${fm(eq(a), a)}</div>
+      <div class="pillrow"><span class="tag ${r >= 0 ? "gain" : "loss"}">${pct(r)} din ${esc(start.slice(8, 10) + "." + start.slice(5, 7))}</span><span class="tag">drawdown ${money2(dd(series))}%</span></div>
+      <div class="kpis"><div><span class="label">Poziții</span><b>${a.positions.length}</b></div><div><span class="label">Investit</span><b>${fm(inv(a), a)}</b></div>
+      <div><span class="label">Câștig pe poziții</span><b class="${pnl(a) >= 0 ? "gain" : "loss"}">${pnl(a) >= 0 ? "+" : "−"}${money2(Math.abs(pnl(a)))}</b></div><div><span class="label">Comenzi mâine</span><b>${a.orders.length}</b></div></div></div>`;
+  // grafic: ambele conturi în % față de ziua de start a comparației
+  const W = 640, H = 200, P = 12, toPct = (pts, b) => pts.map(p => ({t: p.t, v: 100 * (p.v / b - 1)}));
+  const A = toPct(aiPts, aiBase), B = toPct(ruPts, ru.initial), all = A.concat(B).map(p => p.v).concat([0]);
+  const lo = Math.min(...all), hi = Math.max(...all), span = (hi - lo) || 1, tEnd = Math.max(tNow, t0 + 864e5);
+  const x = t => P + (t - t0) / (tEnd - t0) * (W - 2 * P), y = v => H - P - (v - lo) / span * (H - 2 * P);
+  const path = s => s.map((p, i) => (i ? "L" : "M") + x(p.t).toFixed(1) + " " + y(p.v).toFixed(1)).join(" ");
+  const chart = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:220px;display:block" role="img" aria-label="Randamentul celor două conturi de la ${esc(start)}">
+      <line x1="${P}" x2="${W - P}" y1="${y(0).toFixed(1)}" y2="${y(0).toFixed(1)}" stroke="var(--line-2)" stroke-dasharray="3 4"/>
+      <path d="${path(A)}" fill="none" stroke="var(--accent)" stroke-width="2.4"/><path d="${path(B)}" fill="none" stroke="var(--gain)" stroke-width="2.4" stroke-dasharray="6 4"/>
+      </svg><div class="sub" style="display:flex;justify-content:space-between;font-family:var(--font-data);font-size:11.5px"><span>${esc(start)}</span><span>min ${esc(pct1(lo))} · max ${esc(pct1(hi))}</span><span>acum</span></div>`;
+  const lead = Math.abs(diff) < 0.005 ? "Deocamdată egalitate." : diff > 0
+    ? `<b>Consiliul AI conduce</b> cu ${money2(diff)} puncte procentuale.` : `<b>Regulile matematice conduc</b> cu ${money2(-diff)} puncte procentuale.`;
+  return `<div class="panel hot"><div class="label">Reguli matematice față de consiliul AI · ziua ${Math.min(day, total)} din ${total}</div>
+      <p style="margin:8px 0 4px;font-size:17px">${lead}</p>
+      <p class="sub">Cele două conturi sunt identice (aceleași piețe, limite și capital); singura diferență e consiliul AI. Comparația pornește de la ${esc(start)}, ziua în care a pornit contul doar pe reguli (contul unic avea deja poziții de pe 1.11, iar cel pe reguli pornește de la zero, deci primele zile pot diferi și din acest motiv). Cost AI total până acum: ${cost == null ? "fără date" : money2(cost) + " $"}. Decizia se ia după ${esc(TEST_LAST)}, pe randamentul fiecărui cont.</p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:6px" class="sub"><span><span style="display:inline-block;width:18px;height:3px;background:var(--accent);vertical-align:middle"></span> Consiliul AI (contul unic)</span><span><span style="display:inline-block;width:18px;height:0;border-top:3px dashed var(--gain);vertical-align:middle"></span> Reguli matematice</span></div>
+      <div style="margin-top:10px">${chart}</div></div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">${card(ai, "Consiliul AI (contul unic)", "50% reguli + 50% consiliu AI", rAi, aiSeries, false)}${card(ru, "Reguli matematice", "doar regulile, fără AI", rRu, ruSeries, false)}</div>
+    ${portfolioPanel("control", "Pozițiile deschise · Reguli matematice")}`;
+}
 
 function bridge() {
   const a = DATA.accounts.find(x => x.key === "unic"); if (!a || !a.exists) return "";
@@ -1798,7 +1843,7 @@ function controls(key) {
 function render() {
   const key = currentKey();
   signalsBar();
-  view.innerHTML = key === "rezumat" ? summary() : key === "arhiva" ? archive() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
+  view.innerHTML = key === "rezumat" ? summary() : key === "comparatie" ? compareView() : key === "arhiva" ? archive() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
     : key === "grafice" ? tvView() : key === "harta" ? hmView() : key === "risc" ? riskView()
     : account(DATA.accounts.find(a => a.key === names[key]));
   if (key === "grafice") requestAnimationFrame(drawAll);

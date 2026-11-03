@@ -137,4 +137,4 @@ def test_unified_account_is_compared_with_the_rules_only_control_on_the_same_win
     registry = make_registry(tmp_path, [("SP500", {"gpt": ("BUY", .8)}, "BUY", 0.01, 1)])
     assert fr.main(["--unic", str(unic), "--registry", str(registry), "--control", str(ctrl_path), "--out", str(tmp_path / "r")]) == 0
     md = (tmp_path / "r.md").read_text(encoding="utf-8")
-    assert "Doar reguli (control)" in md and "a adus un plus" in md
+    assert "Reguli matematice (doar reguli, control)" in md and "a adus un plus" in md

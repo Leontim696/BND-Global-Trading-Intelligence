@@ -147,7 +147,7 @@ def _control_blocks(c: dict | None, cost: float | None) -> list:
     return [verdict,
             (["Cont", f"Randament de la {c['from']}", "Scădere maximă"], [
                 ["Contul unic (reguli + consiliu)", _fmt(c["unic_pct"], 2, "%"), _fmt(c["unic_dd"], 2, "%")],
-                ["Doar reguli (control)", _fmt(c["control_pct"], 2, "%"), _fmt(c["control_dd"], 2, "%")],
+                ["Reguli matematice (doar reguli, control)", _fmt(c["control_pct"], 2, "%"), _fmt(c["control_dd"], 2, "%")],
                 ["Diferența (ce a adus consiliul)", _fmt(c["diff_pct"], 2, " puncte procentuale"), "—"],
             ]),
             f"{c['days']} zile comparate. Cost AI în aceeași perioadă: " + ("fără date" if cost is None else f"{cost:.2f} $ (total test)") +
@@ -224,7 +224,7 @@ def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now:
                 for a, v in sorted(council["agents"].items())]) if council["agents"] else "Încă niciun agent cu decizii încheiate.",
         ]),
         ("Consiliul față de regula simplă (merită costul AI?)", _vs_rule_blocks(council.get("vs_rule"))),
-        ("Contul unic față de contul de control (doar reguli)", _control_blocks(control, cost)),
+        ("Consiliul AI (contul unic) față de Reguli matematice (contul de control)", _control_blocks(control, cost)),
         ("Poziții deschise la final", [
             (["Piață", "Cantitate", "Preț mediu"], [[p["symbol"], _fmt(p["quantity"], 4), _fmt(p["avg_price"], 4)]
                                                   for p in acc["positions"]]) if acc["positions"] else "Nicio poziție deschisă.",
