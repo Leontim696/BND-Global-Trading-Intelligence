@@ -13,3 +13,8 @@ def test_runs_every_half_hour_with_a_light_run_at_half_past():
 
 def test_reports_keep_being_saved_until_the_end_of_the_30_day_test():
     assert '-le 31 ]' in TEXT and '-le 17 ]' not in TEXT
+
+
+def test_ci_audits_dependencies_for_known_vulnerabilities():
+    ci = Path(".github/workflows/python-tests.yml").read_text(encoding="utf-8")
+    assert "pip-audit==" in ci and "pip-audit -r requirements.txt" in ci
