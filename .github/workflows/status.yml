@@ -9,7 +9,7 @@ name: Stare sistem (JSON și alerte)
 
 on:
   schedule:
-    - cron: '35 * * * *'
+    - cron: '35 */2 * * *' # la 2 ore (planul GitHub gratuit: 2.000 de minute/lună)
   workflow_dispatch:
 
 permissions:
