@@ -50,7 +50,7 @@ def test_rendered_report_is_plain_romanian_with_the_key_numbers(tmp_path):
 
     text = report_card.render(report)
 
-    for part in ("# Raport bot virtual", "Ziua 3 din 16", "Valoarea contului acum",
+    for part in ("# Raport bot virtual", "Ziua 3 din 30", "Valoarea contului acum",
                  "Oprirea de siguranță", "## Pozițiile", "Bani virtuali"):
         assert part in text
     assert "ACTIVĂ" not in text
@@ -59,9 +59,9 @@ def test_rendered_report_is_plain_romanian_with_the_key_numbers(tmp_path):
 def test_after_sixteen_days_the_report_says_the_test_is_over(tmp_path):
     path, now, _ = account_with_positions(tmp_path)
 
-    text = report_card.render(report_card.build(path, START + timedelta(days=20)))
+    text = report_card.render(report_card.build(path, START + timedelta(days=34)))
 
-    assert "s-a încheiat" in text and "Ziua 21 din 16" not in text
+    assert "s-a încheiat" in text and "Ziua 35 din 30" not in text
 
 
 def test_kill_switch_and_problems_are_shown(tmp_path):
