@@ -2,7 +2,9 @@
 name: Teste automate
 
 on:
+  # Pe ramurile de lucru testele rulează o singură dată, prin PR (nu și la push): minute GitHub economisite.
   push:
+    branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
