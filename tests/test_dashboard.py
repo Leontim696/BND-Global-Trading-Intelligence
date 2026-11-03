@@ -14,7 +14,7 @@ NOW = datetime(2026, 10, 31, 12, 0, tzinfo=timezone.utc)
 def test_missing_accounts_are_reported_not_fatal(tmp_path):
     data = dashboard.collect(tmp_path, None, None, tmp_path, NOW)
 
-    assert [a["exists"] for a in data["accounts"]] == [False] * 5
+    assert [a["exists"] for a in data["accounts"]] == [False] * 6
     assert data["council"] == {"exists": False}
 
 
@@ -62,7 +62,7 @@ def test_live_prices_change_the_valuation_and_alerts_are_listed(tmp_path):
                              runs=[{"workflowName": "Cont unic (virtual)", "event": "schedule",
                                     "conclusion": "failure", "createdAt": "2026-10-31T05:00:00Z"}])
 
-    account = data["accounts"][-1]
+    account = next(a for a in data["accounts"] if a["key"] == "unic")
     assert account["live"] and account["live_equity"] > account["equity"]
     assert any("mai veche" in a for a in data["alerts"])
     assert any("a eșuat" in a for a in data["alerts"])

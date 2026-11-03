@@ -25,7 +25,8 @@ ACCOUNTS = (("paper", "Reguli matematice", "Reguli simple, piețe ETF/forex/cryp
             ("crypto", "Cripto (AI)", "Consiliul AI pe 5 monede"),
             ("ai", "AI unificat", "Consiliul AI pe 13 piețe"),
             ("rls", "Reguli long/short", "Reguli cu short și leverage"),
-            ("unic", "Cont unic", "Regulile și consiliul AI amestecate, long și short"))
+            ("unic", "Cont unic", "Regulile și consiliul AI amestecate, long și short"),
+            ("control", "Doar reguli (control)", "Identic cu contul unic, dar fără consiliul AI (din 4.11.2026)"))
 
 
 STALE_AFTER = timedelta(hours=36)
@@ -304,9 +305,9 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
             balance: dict | None = None, rls=None, unic=None, exposure: dict | None = None,
-            charts=None, reasons=None) -> dict:
+            charts=None, reasons=None, control=None) -> dict:
     now = now or datetime.now(timezone.utc)
-    folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic}
+    folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic, "control": control}
     prices = (quotes or {}).get("quotes", {})
     accounts = [read_account(folders[k], k, t, s, prices) for k, t, s in ACCOUNTS]
     for account in accounts:
@@ -421,7 +422,7 @@ def render(data: dict, template: str) -> str:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="dashboard")
-    for name in ("paper", "crypto", "ai", "council", "rls", "unic"):
+    for name in ("paper", "crypto", "ai", "council", "rls", "unic", "control"):
         parser.add_argument(f"--{name}")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
@@ -441,7 +442,7 @@ def main(argv=None) -> int:
         exposure = json.loads(Path(args.exposure).read_text()) if args.exposure and Path(args.exposure).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
                        top50=args.top50, balance=balance, rls=args.rls, unic=args.unic, exposure=exposure,
-                       charts=args.charts, reasons=args.reasons)
+                       charts=args.charts, reasons=args.reasons, control=args.control)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

@@ -117,3 +117,24 @@ def test_report_has_the_council_versus_rule_section(tmp_path):
     assert fr.main(["--unic", str(unic), "--registry", str(registry), "--out", str(tmp_path / "r")]) == 0
     md = (tmp_path / "r.md").read_text(encoding="utf-8")
     assert "Consiliul față de regula simplă" in md and "La fel ca regula" in md and "fără concluzie" in md
+
+
+def test_unified_account_is_compared_with_the_rules_only_control_on_the_same_window(tmp_path):
+    unic = make_account(tmp_path, [10_100, 10_200, 10_403])          # 1.11, 2.11, 3.11
+    (tmp_path / "c").mkdir()
+    ctrl_path = tmp_path / "c" / "paper.sqlite"
+    engine = PaperEngine.create(ctrl_path, 10_000.0, currency="USD", now=datetime(2026, 11, 2, tzinfo=timezone.utc))
+    for i, eq in enumerate([10_000, 10_100]):                       # 2.11, 3.11
+        when = datetime(2026, 11, 2, 23, tzinfo=timezone.utc) + timedelta(days=i)
+        engine.record("daily_run", {"time": when.isoformat(), "equity": eq}, when)
+    engine.close()
+
+    c = fr.control_comparison(fr.account(unic), fr.account(ctrl_path))
+    assert c["from"] == "2026-11-02" and round(c["unic_pct"], 6) == 3.0      # de la 10 100 (1.11) la 10 403
+    assert round(c["control_pct"], 6) == 1.0 and round(c["diff_pct"], 6) == 2.0
+    assert fr.control_comparison(fr.account(unic), None) is None
+
+    registry = make_registry(tmp_path, [("SP500", {"gpt": ("BUY", .8)}, "BUY", 0.01, 1)])
+    assert fr.main(["--unic", str(unic), "--registry", str(registry), "--control", str(ctrl_path), "--out", str(tmp_path / "r")]) == 0
+    md = (tmp_path / "r.md").read_text(encoding="utf-8")
+    assert "Doar reguli (control)" in md and "a adus un plus" in md
