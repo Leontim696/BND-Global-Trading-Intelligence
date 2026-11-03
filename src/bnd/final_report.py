@@ -124,6 +124,29 @@ def _mark(ok):
     return "da" if ok is True else "nu" if ok is False else "fără date"
 
 
+def _vs_rule_blocks(v: dict | None) -> list:
+    """Cât de des consiliul votează la fel ca regula simplă și ce au adus abaterile lui."""
+    if not v or not v["comparable"]:
+        return ["Încă nicio decizie încheiată în care regula simplă să fi avut semnal."]
+    pct = lambda x: _fmt(None if x is None else 100 * x, 1, "%")
+    return [
+        v["verdict"],
+        (["Situație", "Decizii", "Ce a adus"], [
+            ["La fel ca regula", str(v["same"]), "—"],
+            ["Sens opus regulii", str(v["opposite"]),
+             f"consiliul a avut dreptate de {v['opposite_council_wins']} ori, regula de {v['opposite_rule_wins']} ori; "
+             f"consiliul în medie {_fmt(v['opposite_council_mean_pct'], 2, '%')} / decizie"],
+            ["Consiliul s-a abținut (regula avea semnal)", str(v["abstain"]),
+             f"regula ar fi adus în medie {_fmt(v['abstain_rule_mean_pct'], 2, '%')} / decizie (negativ = pierdere evitată)"],
+            ["Consiliul a votat, regula fără semnal", str(v["council_only_calls"]),
+             f"în medie {_fmt(v['council_only_mean_pct'], 2, '%')} / decizie"],
+        ]),
+        f"Acord cu regula: {pct(v['agreement_rate'])} din {v['comparable']} decizii comparabile. "
+        f"Valoarea abaterilor: {_fmt(v['differ_mean_pct'], 2, '%')} / decizie pe {v['differ_calls']} abateri "
+        f"(p, testul semnului la sens opus: {_fmt(v['opposite_sign_test_p'], 3)}).",
+    ]
+
+
 def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now: datetime,
           end: date = TEST_END, preliminary: bool = False) -> list:
     """Secțiunile raportului ca (titlu, blocuri); un bloc e text sau tabel (antet, rânduri)."""
@@ -170,6 +193,7 @@ def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now:
                  _fmt(v["overconfidence"], 2), _fmt(None if v["hold_correct_rate"] is None else 100 * v["hold_correct_rate"], 1, "%")]
                 for a, v in sorted(council["agents"].items())]) if council["agents"] else "Încă niciun agent cu decizii încheiate.",
         ]),
+        ("Consiliul față de regula simplă (merită costul AI?)", _vs_rule_blocks(council.get("vs_rule"))),
         ("Poziții deschise la final", [
             (["Piață", "Cantitate", "Preț mediu"], [[p["symbol"], _fmt(p["quantity"], 4), _fmt(p["avg_price"], 4)]
                                                   for p in acc["positions"]]) if acc["positions"] else "Nicio poziție deschisă.",
