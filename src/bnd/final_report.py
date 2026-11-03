@@ -124,6 +124,36 @@ def _mark(ok):
     return "da" if ok is True else "nu" if ok is False else "fără date"
 
 
+def control_comparison(acc: dict, ctrl: dict | None) -> dict | None:
+    """Contul unic față de contul de control (doar reguli), pe aceeași fereastră: de la pornirea controlului."""
+    if not ctrl or not ctrl["curve"]:
+        return None
+    first = ctrl["curve"][0][0]
+    before = [v for d, v in acc["curve"] if d < first]
+    base = before[-1] if before else acc["initial"]
+    unic_ret = 100 * (acc["final"] / base - 1) if base else None
+    ctrl_ret = ctrl["return_pct"]
+    diff = None if unic_ret is None or ctrl_ret is None else unic_ret - ctrl_ret
+    return {"from": first, "days": ctrl["days"], "unic_pct": unic_ret, "control_pct": ctrl_ret, "diff_pct": diff,
+            "unic_dd": acc["max_drawdown_pct"], "control_dd": ctrl["max_drawdown_pct"]}
+
+
+def _control_blocks(c: dict | None, cost: float | None) -> list:
+    if not c:
+        return ["Contul de control (doar reguli, pornit pe 4.11.2026) nu are încă rulări zilnice."]
+    verdict = ("fără date" if c["diff_pct"] is None else
+               "Consiliul a adus un plus față de reguli în această perioadă (nu e încă dovadă statistică)."
+               if c["diff_pct"] > 0 else "Consiliul NU a adus un plus față de regulile simple în această perioadă.")
+    return [verdict,
+            (["Cont", f"Randament de la {c['from']}", "Scădere maximă"], [
+                ["Contul unic (reguli + consiliu)", _fmt(c["unic_pct"], 2, "%"), _fmt(c["unic_dd"], 2, "%")],
+                ["Doar reguli (control)", _fmt(c["control_pct"], 2, "%"), _fmt(c["control_dd"], 2, "%")],
+                ["Diferența (ce a adus consiliul)", _fmt(c["diff_pct"], 2, " puncte procentuale"), "—"],
+            ]),
+            f"{c['days']} zile comparate. Cost AI în aceeași perioadă: " + ("fără date" if cost is None else f"{cost:.2f} $ (total test)") +
+            ". Contul de control a pornit după contul unic, deci comparația începe de la pornirea lui."]
+
+
 def _vs_rule_blocks(v: dict | None) -> list:
     """Cât de des consiliul votează la fel ca regula simplă și ce au adus abaterile lui."""
     if not v or not v["comparable"]:
@@ -148,7 +178,7 @@ def _vs_rule_blocks(v: dict | None) -> list:
 
 
 def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now: datetime,
-          end: date = TEST_END, preliminary: bool = False) -> list:
+          end: date = TEST_END, preliminary: bool = False, control: dict | None = None) -> list:
     """Secțiunile raportului ca (titlu, blocuri); un bloc e text sau tabel (antet, rânduri)."""
     ver = verdict(acc, bench, council)
     cur = acc["currency"]
@@ -194,6 +224,7 @@ def build(acc: dict, bench: dict | None, council: dict, cost: float | None, now:
                 for a, v in sorted(council["agents"].items())]) if council["agents"] else "Încă niciun agent cu decizii încheiate.",
         ]),
         ("Consiliul față de regula simplă (merită costul AI?)", _vs_rule_blocks(council.get("vs_rule"))),
+        ("Contul unic față de contul de control (doar reguli)", _control_blocks(control, cost)),
         ("Poziții deschise la final", [
             (["Piață", "Cantitate", "Preț mediu"], [[p["symbol"], _fmt(p["quantity"], 4), _fmt(p["avg_price"], 4)]
                                                   for p in acc["positions"]]) if acc["positions"] else "Nicio poziție deschisă.",
@@ -245,6 +276,7 @@ def main(argv=None) -> int:
     p.add_argument("--unic", required=True, help="paper.sqlite al contului unic")
     p.add_argument("--registry", required=True, help="registry.sqlite al consiliului")
     p.add_argument("--costs", help="costs.sqlite (opțional)")
+    p.add_argument("--control", help="paper.sqlite al contului de control, doar reguli (opțional)")
     p.add_argument("--benchmark", help="CSV zilnic S&P 500 (opțional)")
     p.add_argument("--preliminar", action="store_true", help="raportul intermediar din 17.11 (fereastra 31.10–16.11)")
     p.add_argument("--end", default=None, help="ultima zi a ferestrei (implicit 2026-11-30, sau 2026-11-16 cu --preliminar)")
@@ -253,12 +285,14 @@ def main(argv=None) -> int:
     try:
         acc = account(args.unic)
         council = council_analytics.analyse(args.registry)
+        ctrl = account(args.control) if args.control and Path(args.control).exists() else None
     except (sqlite3.Error, OSError, KeyError, ValueError) as exc:
         print(f"Raportul nu se poate genera: {exc}", file=sys.stderr)
         return 1
     end = date.fromisoformat(args.end) if args.end else (PRELIMINARY_END if args.preliminar else TEST_END)
     bench = benchmark(args.benchmark, TEST_START, end) if args.benchmark else None
-    sections = build(acc, bench, council, ai_cost(args.costs), datetime.now(timezone.utc), end, args.preliminar)
+    sections = build(acc, bench, council, ai_cost(args.costs), datetime.now(timezone.utc), end, args.preliminar,
+                     control_comparison(acc, ctrl))
     title = ("Raport preliminar" if args.preliminar else "Raport final") + ": testul oficial BND (paper trading)"
     Path(f"{args.out}.md").write_text(to_markdown(title, sections), encoding="utf-8")
     Path(f"{args.out}.html").write_text(to_html(title, sections), encoding="utf-8")
