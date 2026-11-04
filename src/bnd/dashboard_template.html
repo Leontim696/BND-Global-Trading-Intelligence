@@ -1169,31 +1169,43 @@ function compareView() {
     ${portfolioPanel("control", "Pozițiile deschise · Reguli matematice")}`;
 }
 
-// Fila „Formații AI”: 14 conturi-umbră din voturile deja date de consiliu (fără apeluri AI în plus), clasate după randament.
+// Fila „Formații AI”: conturi-umbră din voturile deja date de consiliu (fără apeluri AI în plus), clasate după randament,
+// plus scorul provizoriu din voturi (date reale de la 31.10, față de prețul de acum).
 function formationsView() {
-  const F = (DATA.formations || []).filter(f => f.exists);
-  if (!F.length) return `<div class="panel hot"><div class="label">Formații AI</div><p class="sub">Cele 14 conturi-umbră nu au încă date. Apar după prima rulare de seară (22:50 UTC).</p></div>`;
+  const all = DATA.formations || [];
+  if (!all.length) return `<div class="panel hot"><div class="label">Formații AI</div><p class="sub">Încă nu sunt date.</p></div>`;
+  const F = all.filter(f => f.exists);
+  // scorul nu ține cont de reguli, deci perechile „cu/fără reguli” sunt identice: un rând pe combinația de AI
+  const seen = new Set(), sc = all.filter(f => f.score && f.score.calls).map(f => ({title: f.title.replace(/, (cu|fără) reguli$/, ""), point: f.point, ...f.score}))
+    .filter(x => !seen.has(x.title) && seen.add(x.title)).sort((a, b) => b.mean_pct - a.mean_pct);
+  const smax = Math.max(...sc.map(x => Math.abs(x.mean_pct)), 0.01);
+  const bar = (v, m) => `<div style="height:4px;margin-top:3px;width:${(100 * Math.abs(v) / m).toFixed(0)}%;background:var(--${v >= 0 ? "gain" : "loss"})"></div>`;
+  const scoreRows = sc.map((x, i) => `<tr><td>${i + 1}</td><td style="min-width:160px">${esc(x.title)}<div class="sub">${x.point <= 6 ? "punctele " + (x.point % 2 ? x.point + " și " + (x.point + 1) : (x.point - 1) + " și " + x.point) : "punctul " + x.point}</div></td>
+      <td class="${x.mean_pct >= 0 ? "gain" : "loss"}" style="white-space:nowrap">${pct(x.mean_pct)}${bar(x.mean_pct, smax)}</td><td>${Math.round(100 * x.hit_rate)}%</td><td>${x.calls}</td></tr>`).join("");
+  const scorePanel = sc.length ? `<h2>Scor din voturi (date reale, provizoriu)</h2><div class="panel"><p class="sub">Fiecare semnal dat de formație din 31.10 încoace, comparat cu prețul de acum: câte un pariu virtual pe semnal, fără leverage și fără reguli (de aceea variantele cu și fără reguli au aici același rând). Arată cine a ghicit direcția până acum; nu e randamentul unui cont. Piața a scăzut în primele zile, deci cine a votat SELL pare bun: e un indiciu, nu o dovadă.</p>
+      <div class="scroll"><table><tr><th>Loc</th><th>Formație</th><th>Medie pe semnal</th><th>Corecte</th><th>Semnale</th></tr>${scoreRows}</table></div></div>` : "";
+  if (!F.length) return `<div class="panel hot"><div class="label">Formații AI · ${all.length} conturi-umbră</div><p class="sub">Conturile virtuale pornesc cu prima rulare; până atunci vezi mai jos scorul din voturile reale ale consiliului.</p></div>${scorePanel}`;
   const start = F.map(f => (f.start || DATA.generated).slice(0, 10)).sort()[0];
   const ret = f => 100 * ((f.live ? f.live_equity : f.equity) / f.initial - 1);
   const ref = (key, title) => { const a = DATA.accounts.find(x => x.key === key); if (!a || !a.exists) return null;
     const before = a.history.filter(h => h.t.slice(0, 10) < start), base = before.length ? before[before.length - 1].equity : a.initial;
     return {title, r: 100 * (eq(a) / base - 1), dd: a.drawdown_pct || 0, lev: a.leverage, pos: a.positions.length, ref: true}; };
-  const rows = F.map(f => ({title: f.title, point: f.point, rules: f.rules, r: ret(f), dd: f.drawdown_pct || 0, lev: f.leverage,
-    pos: f.positions, ls: `${f.longs}/${f.shorts}`, ks: f.kill_switch}));
+  const rows = F.map(f => ({title: f.title, point: f.point, r: ret(f), dd: f.drawdown_pct || 0, lev: f.leverage,
+    pos: f.positions, ls: `${f.longs}/${f.shorts}`, ord: f.orders || 0, ks: f.kill_switch}));
   [ref("unic", "Contul oficial (toți 5 AI, cu reguli)"), ref("control", "Reguli matematice (fără AI)")].forEach(x => x && rows.push(x));
   rows.sort((a, b) => b.r - a.r);
   const max = Math.max(...rows.map(x => Math.abs(x.r)), 0.01);
   const tr = rows.map((x, i) => `<tr${x.ref ? ' style="opacity:.75"' : ""}><td>${x.ref ? "–" : i + 1 - rows.slice(0, i).filter(y => y.ref).length}</td>
       <td style="min-width:160px">${esc(x.title)}${x.ks ? ' <span class="loss">oprit</span>' : ""}<div class="sub">${x.ref ? "reper" : "punctul " + x.point}</div></td>
-      <td class="${x.r >= 0 ? "gain" : "loss"}" style="white-space:nowrap">${pct(x.r)}<div style="height:4px;margin-top:3px;width:${(100 * Math.abs(x.r) / max).toFixed(0)}%;background:var(--${x.r >= 0 ? "gain" : "loss"})"></div></td>
-      <td>${money2(x.dd)}%</td><td>${x.lev == null ? "–" : money2(x.lev) + "x"}</td><td>${x.pos}${x.ls ? ` <span class="sub">(${x.ls})</span>` : ""}</td></tr>`).join("");
-  const best = rows.find(x => !x.ref);
-  const lead = rows.every(x => Math.abs(x.r - best.r) < 0.005) ? "Deocamdată toate formațiile sunt la egalitate (abia au pornit)."
+      <td class="${x.r >= 0 ? "gain" : "loss"}" style="white-space:nowrap">${pct(x.r)}${bar(x.r, max)}</td>
+      <td>${money2(x.dd)}%</td><td>${x.lev == null ? "–" : money2(x.lev) + "x"}</td><td>${x.pos}${x.ls ? ` <span class="sub">(${x.ls})</span>` : ""}${!x.ref && !x.pos && x.ord ? `<div class="sub">${x.ord} ordine pregătite</div>` : ""}</td></tr>`).join("");
+  const best = rows.find(x => !x.ref) || rows[0];
+  const lead = rows.every(x => Math.abs(x.r - best.r) < 0.005) ? "Deocamdată toate conturile sunt la egalitate (abia au pornit; ordinele se execută la următoarea deschidere)."
     : `Acum conduce <b>${esc(best.title)}</b> cu ${pct(best.r)}.`;
-  return `<div class="panel hot"><div class="label">Formații AI · de la ${esc(start)}</div>
+  return `<div class="panel hot"><div class="label">Formații AI · ${F.length} conturi · de la ${esc(start)}</div>
       <p style="margin:8px 0 4px;font-size:17px">${lead}</p>
-      <p class="sub">14 conturi virtuale cu aceleași piețe, limite și capital (11.183 USD) ca în contul oficial. Fiecare urmează votul altei formații de AI. „Cu reguli” = 50% regula matematică + 50% votul formației; „fără reguli” = doar votul formației. Nu costă nimic în plus: folosesc voturile pe care consiliul le dă oricum. Câștigătorul se alege după 30.11 doar dacă are și pierderea maximă (drawdown) cel mult cât contul oficial și a câștigat și în zilele de creștere, nu doar în cele de scădere; cu 16 conturi, unul iese primul și din noroc.</p></div>
-    <div class="panel"><div class="scroll"><table><tr><th>Loc</th><th>Formație</th><th>Randament</th><th>Drawdown</th><th>Expunere</th><th>Poziții (L/S)</th></tr>${tr}</table></div></div>`;
+      <p class="sub">Conturi virtuale cu aceleași piețe, limite și capital (11.183 USD) ca în contul oficial; fiecare urmează altă formație de AI. „Cu reguli” = 50% regula matematică + 50% votul formației; „fără reguli” = doar votul formației. Punctul 7 dă fiecărui AI o pondere după cât a ghicit (egale până are fiecare ≥20 decizii încheiate), punctul 8 folosește consiliul doar când ≥4 din 5 sunt de acord, punctul 9 doar la crypto și memecoin. Nu costă nimic în plus. Câștigătorul se alege după 30.11 doar dacă are și pierderea maximă cel mult cât contul oficial și a câștigat și în zilele de creștere; cu atâtea conturi, unul iese primul și din noroc.</p></div>
+    <div class="panel"><div class="scroll"><table><tr><th>Loc</th><th>Formație</th><th>Randament</th><th>Drawdown</th><th>Expunere</th><th>Poziții (L/S)</th></tr>${tr}</table></div></div>${scorePanel}`;
 }
 
 function bridge() {

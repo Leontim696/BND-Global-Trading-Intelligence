@@ -26,8 +26,8 @@ def _registry(path, votes):
 
 
 def test_14_formatii_cu_strategii_corecte():
-    assert len(fm.FORMATIONS) == 14
-    assert len({f["key"] for f in fm.FORMATIONS}) == 14
+    assert len(fm.FORMATIONS) == 17
+    assert len({f["key"] for f in fm.FORMATIONS}) == 17
     by = {f["key"]: f for f in fm.FORMATIONS}
     assert by["p1-gpt-grok"]["strategy"] == "hibrid" and by["p2-gpt-grok-liber"]["strategy"] == "ai_council"
     assert by["p5-gpt-claude-grok"]["members"] == ("gpt", "claude", "grok")
@@ -60,14 +60,14 @@ def test_cli_scrie_un_fisier_pe_formatie(tmp_path):
     _registry(reg, {"BITCOIN": {"grok": {"final": "BUY"}}})
     assert fm.main(["--registry", str(reg), "--coins", "BITCOIN", "--day", DAY, "--out-dir", str(tmp_path / "s")]) == 0
     files = sorted(p.name for p in (tmp_path / "s").iterdir())
-    assert len(files) == 14
+    assert len(files) == 17
     assert json.loads((tmp_path / "s" / "p4-grok-liber.json").read_text())["signals"] == {"BITCOIN": 1.0}
 
 
 def test_list_pentru_workflow(capsys):
     assert fm.main(["--list"]) == 0
     lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 14 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
+    assert len(lines) == 17 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
 
 
 def test_dashboard_citeste_formatiile(tmp_path):
@@ -75,7 +75,7 @@ def test_dashboard_citeste_formatiile(tmp_path):
     (tmp_path / "p3-gpt").mkdir()
     PaperEngine.create(tmp_path / "p3-gpt" / "paper.sqlite", 11_183.0, currency="USD", now=now).close()
     rows = dashboard.read_formations(tmp_path)
-    assert len(rows) == 14
+    assert len(rows) == 17
     gpt = next(r for r in rows if r["key"] == "p3-gpt")
     assert gpt["exists"] and gpt["equity"] == 11_183.0 and gpt["positions"] == 0
     assert sum(r["exists"] for r in rows) == 1
@@ -93,3 +93,47 @@ def test_workflow_fara_apeluri_ai_si_ramura_protejata():
 def test_sablonul_are_fila_formatii():
     t = Path("src/bnd/dashboard_template.html").read_text()
     assert '["formatii","Formații AI"]' in t and 'key === "formatii" ? formationsView()' in t
+
+
+def test_p7_ponderi_egale_dau_formula_contului_unic_si_ponderile_conteaza():
+    equal = dict.fromkeys(fm.AGENTS, 1.0)
+    for votes in ({"gpt": "BUY"}, {"gpt": "SELL", "grok": "SELL"}, {"gpt": "BUY", "claude": "SELL"}, {}):
+        assert fm.weighted_signal(votes, equal) == fm.formation_signal(votes, fm.AGENTS)
+    only_gpt = {**dict.fromkeys(fm.AGENTS, 0.0), "gpt": 1.0}
+    assert fm.weighted_signal({"gpt": "BUY", "grok": "SELL", "claude": "SELL"}, only_gpt) == 1.0
+
+
+def test_p7_ponderi_din_decizii_incheiate_doar_din_trecut(tmp_path):
+    reg = tmp_path / "registry.sqlite"
+    _registry(reg, {})
+    db = sqlite3.connect(reg)
+    for i in range(25):
+        did = f"2026-10-{1 + i % 28:02d}:M{i}"
+        db.execute("INSERT INTO decisions VALUES (?,?,?,?,?,?,?,?,?,?,?,'{}')",
+                   (did, "2026-10-01", f"M{i}", 1.0, 5, "HOLD", "r", 0, "2026-10-30T00:00:00", 1.1, 0.1))
+        for a in fm.AGENTS:   # gpt ghicește mereu, deepseek greșește mereu, ceilalți 60%
+            vote = {"gpt": "BUY", "deepseek": "SELL"}.get(a, "BUY" if i % 5 < 3 else "SELL")
+            db.execute("INSERT INTO votes VALUES (?,?,?,?,?)", (did, a, "final", vote, 0.6))
+    db.commit(); db.close()
+    w = fm.agent_weights(str(reg), "2026-11-04")
+    assert w["gpt"] == 0.5 and w["deepseek"] == 0.0 and abs(w["grok"] - 0.1) < 1e-9
+    assert fm.agent_weights(str(reg), "2026-10-29") == dict.fromkeys(fm.AGENTS, 1.0)   # încă neîncheiate atunci
+
+
+def test_p8_consens_si_p9_doar_crypto():
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    votes = {"BITCOIN": dict.fromkeys(("gpt", "grok", "claude", "gemini"), "SELL"),
+             "GOLD": {"gpt": "SELL", "grok": "SELL", "claude": "SELL"},
+             "DOGE": {"gpt": "BUY", "grok": "BUY"}}
+    equal = dict.fromkeys(fm.AGENTS, 1.0)
+    assert fm.signals_for(by["p8-consens"], votes, equal) == {"BITCOIN": -1.0}
+    assert fm.signals_for(by["p9-doar-crypto"], votes, equal) == {"BITCOIN": -1.0, "DOGE": 1.0}
+
+
+def test_scor_provizoriu_din_voturi(tmp_path):
+    reg = tmp_path / "registry.sqlite"
+    _registry(reg, {"BITCOIN": {"gpt": {"final": "SELL"}}, "GOLD": {"gpt": {"final": "BUY"}}})
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    s = fm.vote_score(str(reg), {"BITCOIN": [0.9, "t"], "GOLD": [0.95, "t"]}, by["p3-gpt"])
+    assert s["calls"] == 2 and s["hit_rate"] == 0.5 and abs(s["mean_pct"] - 2.5) < 1e-9
+    assert fm.vote_score(None, {}, by["p3-gpt"]) is None

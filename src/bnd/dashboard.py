@@ -122,15 +122,20 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
         engine.close()
 
 
-def read_formations(folder, quotes: dict | None = None) -> list:
-    """Cele 14 conturi-umbră „Formații AI” (ramura formatii-ai), pe scurt, pentru clasament."""
-    if not folder or not Path(folder).is_dir():
+def read_formations(folder, quotes: dict | None = None, registry=None) -> list:
+    """Conturile-umbră „Formații AI” (ramura formatii-ai), pe scurt, pentru clasament, plus scorul provizoriu
+    din voturile consiliului față de prețurile de acum (date reale din prima zi)."""
+    have_accounts = bool(folder) and Path(folder).is_dir()
+    have_registry = bool(registry) and Path(registry).exists()
+    if not have_accounts and not have_registry:
         return []
+    prices = {k: v for k, v in (quotes or {}).items()}
     out = []
     for f in formations.FORMATIONS:
-        a = read_account(Path(folder) / f["key"], f["key"], f["title"], "", quotes)
+        a = read_account(Path(folder) / f["key"], f["key"], f["title"], "", quotes) if have_accounts else {}
         row = {"key": f["key"], "point": f["point"], "title": f["title"], "rules": f["rules"],
-               "members": list(f["members"]), "exists": a.get("exists", False)}
+               "members": list(f["members"]), "exists": a.get("exists", False),
+               "score": formations.vote_score(str(registry), prices, f) if have_registry else None}
         if a.get("exists"):
             history = a["history"]
             row.update({"initial": a["initial"], "equity": a["equity"], "live_equity": a["live_equity"],
@@ -138,6 +143,7 @@ def read_formations(folder, quotes: dict | None = None) -> list:
                         "positions": len(a["positions"]), "longs": sum(p["quantity"] > 0 for p in a["positions"]),
                         "shorts": sum(p["quantity"] < 0 for p in a["positions"]), "fills": a["fills"],
                         "kill_switch": a["kill_switch"], "start": history[0]["t"] if history else None,
+                        "orders": len(a["orders"]),
                         "history": [{"t": h["t"], "equity": h["equity"]} for h in history]})
         out.append(row)
     return out
@@ -334,6 +340,7 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
     for account in accounts:
         if account["key"] == "unic" and account.get("exists") and exposure and "error" not in exposure:
             account["exposure"] = exposure
+    council_dir = council
     council = read_council(council, balance, now)
     if council.get("exists"):
         council["reasons"] = chart_data.council_reasons(reasons, council.get("day"))
@@ -363,7 +370,8 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
             "quotes_time": quotes_time, "system": system_status(runs),
             "schedule": SCHEDULE, "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
             "accounts": accounts, "council": council, "alerts": alerts,
-            "formations": read_formations(formations_dir, prices),
+            "formations": read_formations(formations_dir, prices,
+                                          Path(council_dir) / "registry.sqlite" if council_dir else None),
             "charts": chart_series, "group_of": {s: market_groups.group_of(s) for s in sorted(symbols)}}
 
 
