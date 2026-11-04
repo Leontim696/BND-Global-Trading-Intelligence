@@ -217,3 +217,16 @@ def test_p11_agresiv_se_poate_crea_si_respecta_plafonul(tmp_path, monkeypatch):
         assert engine.journal("runner_settings")[-1]["payload"]["max_leverage"] == 3.0
     finally:
         engine.close()
+
+
+def test_instantaneu_orar(tmp_path):
+    now = datetime(2026, 11, 4, 12, 0, tzinfo=timezone.utc)
+    (tmp_path / "f" / "p3-gpt").mkdir(parents=True)
+    PaperEngine.create(tmp_path / "f" / "p3-gpt" / "paper.sqlite", 11_183.0, currency="USD", now=now).close()
+    (tmp_path / "q.json").write_text(json.dumps({"time": "t", "quotes": {}}))
+    assert fm.main(["--snapshot", str(tmp_path / "f"), "--quotes", str(tmp_path / "q.json"),
+                    "--out", str(tmp_path / "s.json")]) == 0
+    rows = json.loads((tmp_path / "s.json").read_text())
+    assert len(rows) == 1 and rows[0]["key"] == "p3-gpt" and rows[0]["value"] == 11183.0 and rows[0]["pnl"] == 0.0
+    line = (tmp_path / "s.csv").read_text().strip().split(",")
+    assert line[1] == "p3-gpt" and len(line) == len(fm.CSV_COLUMNS)
