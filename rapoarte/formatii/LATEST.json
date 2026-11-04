@@ -1,6 +1,6 @@
 [
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p1-gpt-grok",
   "title": "GPT + Grok, cu reguli",
   "value": 11183.0,
@@ -14,7 +14,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p2-gpt-grok-liber",
   "title": "GPT + Grok, fără reguli",
   "value": 11183.0,
@@ -28,7 +28,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p3-gpt",
   "title": "GPT, cu reguli",
   "value": 11183.0,
@@ -42,7 +42,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p3-grok",
   "title": "Grok, cu reguli",
   "value": 11183.0,
@@ -56,7 +56,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p3-claude",
   "title": "Claude, cu reguli",
   "value": 11183.0,
@@ -70,7 +70,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p3-gemini",
   "title": "Gemini, cu reguli",
   "value": 11183.0,
@@ -84,7 +84,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p3-deepseek",
   "title": "DeepSeek, cu reguli",
   "value": 11183.0,
@@ -98,7 +98,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p4-gpt-liber",
   "title": "GPT, fără reguli",
   "value": 11183.0,
@@ -112,7 +112,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p4-grok-liber",
   "title": "Grok, fără reguli",
   "value": 11183.0,
@@ -126,7 +126,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p4-claude-liber",
   "title": "Claude, fără reguli",
   "value": 11183.0,
@@ -140,7 +140,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p4-gemini-liber",
   "title": "Gemini, fără reguli",
   "value": 11183.0,
@@ -154,7 +154,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p4-deepseek-liber",
   "title": "DeepSeek, fără reguli",
   "value": 11183.0,
@@ -168,7 +168,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p5-gpt-claude-grok",
   "title": "GPT + Claude + Grok, cu reguli",
   "value": 11183.0,
@@ -182,7 +182,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p6-gpt-claude-grok-liber",
   "title": "GPT + Claude + Grok, fără reguli",
   "value": 11183.0,
@@ -196,7 +196,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p7-ponderat",
   "title": "Toți 5, ponderați după rezultate, cu reguli",
   "value": 11183.0,
@@ -210,7 +210,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p8-consens",
   "title": "Toți 5, doar la consens 4/5, cu reguli",
   "value": 11183.0,
@@ -224,7 +224,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p9-doar-crypto",
   "title": "Toți 5 doar la crypto și memecoin, cu reguli",
   "value": 11183.0,
@@ -238,7 +238,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p10-convingere",
   "title": "Miză după convingere (toți 5 + regula)",
   "value": 11183.0,
@@ -252,7 +252,7 @@
   "kill_switch": false
  },
  {
-  "time": "2026-11-04T10:58+00:00",
+  "time": "2026-11-04T11:52+00:00",
   "key": "p11-convingere-agresiv",
   "title": "Miză după convingere, agresiv (până la 3x)",
   "value": 11183.0,
