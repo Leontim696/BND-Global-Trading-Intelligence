@@ -38,7 +38,7 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
 
-## Formații AI (19 conturi-umbră, din 4.11.2026)
+## Formații AI (21 de conturi-umbră, din 4.11.2026)
 
 Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
 (și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
@@ -58,6 +58,10 @@ le dă oricum, salvate pe fiecare agent în `registry.sqlite`.
 | 9 | toți 5, doar la crypto și memecoin; la restul piețelor doar regula | cu reguli | 1 |
 | 10 | „Miză după convingere”: puternic (≥4/5 AI și regula în aceeași direcție) = miză întreagă (până la 25%/piață), mediu (2–3 AI net cu regula, sau ≥4/5 cu regula neutră) = jumătate, slab sau contradictoriu = nimic; aceeași limită de 2x | cu reguli | 1 |
 | 11 | ca 10, dar AGRESIV: până la 3x (plafonul motorului), 50% pe piață, 100% pe clasă, volatilitate-țintă 30%; marjele ESMA (crypto 50%, acțiuni 20%) limitează oricum leverage-ul pe piață; opririle de siguranță (−5%/zi, −25% de la vârf) rămân | cu reguli | 1 |
+| 12 | ca contul oficial (toți 5 AI + regula), dar fiecare poziție nouă are take profit +5% și stop fix −1% (cerut pe 4.11, ideea proprietarului) | cu reguli | 1 |
+| 13 | ca contul oficial, cu take profit +5%, dar stopul normal (3×ATR) | cu reguli | 1 |
+
+La 12 și 13: după un take profit sau un stop, poziția se poate redeschide a doua zi dacă semnalul rămâne (tranzacție nouă, cu take profit și stop noi). Dacă în aceeași zi se ating și stopul și take profit-ul, motorul socotește stopul (prudent). Take profit-ul și stopul se calculează față de ultima închidere, iar ordinul se execută la deschiderea următoare.
 
 Punctele 7–9 au fost propuse de Claude și aprobate de proprietar pe 4.11. Pornite cu voturile din 3.11 (ziua
 de dinainte), apoi zilnic cu voturile zilei. În aplicație apare și un „scor din voturi” provizoriu, din date reale de

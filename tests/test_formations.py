@@ -26,8 +26,8 @@ def _registry(path, votes):
 
 
 def test_14_formatii_cu_strategii_corecte():
-    assert len(fm.FORMATIONS) == 19
-    assert len({f["key"] for f in fm.FORMATIONS}) == 19
+    assert len(fm.FORMATIONS) == 21
+    assert len({f["key"] for f in fm.FORMATIONS}) == 21
     by = {f["key"]: f for f in fm.FORMATIONS}
     assert by["p1-gpt-grok"]["strategy"] == "hibrid" and by["p2-gpt-grok-liber"]["strategy"] == "ai_council"
     assert by["p5-gpt-claude-grok"]["members"] == ("gpt", "claude", "grok")
@@ -60,14 +60,14 @@ def test_cli_scrie_un_fisier_pe_formatie(tmp_path):
     _registry(reg, {"BITCOIN": {"grok": {"final": "BUY"}}})
     assert fm.main(["--registry", str(reg), "--coins", "BITCOIN", "--day", DAY, "--out-dir", str(tmp_path / "s")]) == 0
     files = sorted(p.name for p in (tmp_path / "s").iterdir())
-    assert len(files) == 19
+    assert len(files) == 21
     assert json.loads((tmp_path / "s" / "p4-grok-liber.json").read_text())["signals"] == {"BITCOIN": 1.0}
 
 
 def test_list_pentru_workflow(capsys):
     assert fm.main(["--list"]) == 0
     lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 19 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
+    assert len(lines) == 21 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
 
 
 def test_dashboard_citeste_formatiile(tmp_path):
@@ -75,7 +75,7 @@ def test_dashboard_citeste_formatiile(tmp_path):
     (tmp_path / "p3-gpt").mkdir()
     PaperEngine.create(tmp_path / "p3-gpt" / "paper.sqlite", 11_183.0, currency="USD", now=now).close()
     rows = dashboard.read_formations(tmp_path)
-    assert len(rows) == 19
+    assert len(rows) == 21
     gpt = next(r for r in rows if r["key"] == "p3-gpt")
     assert gpt["exists"] and gpt["equity"] == 11_183.0 and gpt["positions"] == 0
     assert sum(r["exists"] for r in rows) == 1
@@ -230,3 +230,34 @@ def test_instantaneu_orar(tmp_path):
     assert len(rows) == 1 and rows[0]["key"] == "p3-gpt" and rows[0]["value"] == 11183.0 and rows[0]["pnl"] == 0.0
     line = (tmp_path / "s.csv").read_text().strip().split(",")
     assert line[1] == "p3-gpt" and len(line) == len(fm.CSV_COLUMNS)
+
+
+def test_p12_take_profit_si_stop_fix_pe_ordine(tmp_path, monkeypatch):
+    from datetime import timedelta
+    from src.bnd import paper_runner
+    monkeypatch.setenv("BND_TRADING_MODE", "PAPER")
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    start = today - timedelta(days=301)
+    rows, price = ["open_time,open,high,low,close,volume"], 100.0
+    for i in range(300):
+        price *= 1.012 if i % 2 else 0.995
+        rows.append(f"{(start + timedelta(days=i)).isoformat()},{price},{price * 1.01},{price * 0.99},{price},1000")
+    data = tmp_path / "data"; data.mkdir()
+    (data / "GOLD.csv").write_text("\n".join(rows) + "\n")
+    (tmp_path / "s.json").write_text(json.dumps({"signals": {"GOLD": 1.0}}))
+    out = tmp_path / "r.json"
+    assert paper_runner.main(["--state", str(tmp_path / "a" / "paper.sqlite"), "--data-dir", str(data),
+                              "--signals", str(tmp_path / "s.json"), "--capital", "11183", "--universe", "unic",
+                              "--strategy", "hibrid", "--json", str(out),
+                              *by["p12-tp5-sl1"]["settings"].split()]) == 0
+    order = json.loads(out.read_text())["orders"][0]
+    assert order["side"] == "BUY"
+    assert abs(order["take_profit"] / price - 1.05) < 1e-9 and abs(order["stop_loss"] / price - 0.99) < 1e-9
+
+
+def test_conturile_vechi_raman_cu_stop_atr():
+    from src.bnd.paper_runner import _config, DEFAULTS
+    old = {k: v for k, v in DEFAULTS.items() if k not in ("stop_pct", "take_profit_pct")}
+    cfg = _config(old)
+    assert cfg.stop_pct is None and cfg.take_profit_pct is None and cfg.stop_atr == 3.0

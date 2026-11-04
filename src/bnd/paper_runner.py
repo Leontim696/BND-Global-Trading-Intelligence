@@ -65,6 +65,9 @@ class RunnerConfig:
     portfolio: PortfolioConfig = field(default_factory=PortfolioConfig)
     stop_atr: float = 3.0
     atr_period: int = 14
+    # Opțional (cerut pe 4.11 pentru un cont-umbră): stop fix la x% de la preț în loc de x ATR, și take profit la y%.
+    stop_pct: float | None = None
+    take_profit_pct: float | None = None
     # Stay this fraction inside every engine limit, so rounding and
     # moving prices do not turn a planned order into a rejection.
     margin: float = 0.98
@@ -72,6 +75,10 @@ class RunnerConfig:
     def __post_init__(self):
         if not self.stop_atr > 0 or self.atr_period < 2 or not 0 < self.margin <= 1:
             raise ValueError("stop_atr > 0, atr_period >= 2 and margin in (0, 1] required")
+        if self.stop_pct is not None and not 0 < self.stop_pct < 100:
+            raise ValueError("stop_pct must be between 0 and 100")
+        if self.take_profit_pct is not None and not self.take_profit_pct > 0:
+            raise ValueError("take_profit_pct must be > 0")
 
 
 def instrument_for(market) -> Instrument:
@@ -235,7 +242,8 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
                 plan.update(status="SKIPPED", reason="Not enough candles for ATR")
                 plans.append(plan)
                 continue
-            distance = config.stop_atr * average_true_range(candles, config.atr_period)
+            distance = (config.stop_pct / 100 * price if config.stop_pct
+                        else config.stop_atr * average_true_range(candles, config.atr_period))
             if not distance > 0:
                 plan.update(status="SKIPPED", reason="ATR is zero: no stop distance")
                 plans.append(plan)
@@ -254,9 +262,13 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
                 added = most
                 target = (abs(current) + added if same_side else added) * (1 if delta > 0 else -1)
                 delta = target - current
+            take = None
+            if config.take_profit_pct:
+                take = price * (1 + config.take_profit_pct / 100) if delta > 0 \
+                    else price * (1 - config.take_profit_pct / 100)
             plan.update(quantity=abs(delta), stop_loss=stop,
-                        risk_capped=capped)
-            request = OrderRequest(order_id, name, side, abs(delta), stop_loss=stop,
+                        risk_capped=capped, **({"take_profit": take} if take else {}))
+            request = OrderRequest(order_id, name, side, abs(delta), stop_loss=stop, take_profit=take,
                                    source="paper_runner")
         order = _submit(engine, request, now)
         plan.update(client_order_id=order["client_order_id"], status=order["status"],
@@ -380,7 +392,7 @@ DEFAULTS = {
     "strategy": "regime_switch", "members": None, "param": [], "portfolio_vol": 15.0,
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
-    "max_sector": None,
+    "max_sector": None, "stop_pct": None, "take_profit_pct": None,
 }
 
 
@@ -415,6 +427,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--rebalance", type=float)
     parser.add_argument("--no-shorts", action="store_const", const=True)
     parser.add_argument("--stop-atr", type=float)
+    parser.add_argument("--stop-pct", type=float, help="stop fix la x%% de la preț (în loc de x ATR), la crearea contului")
+    parser.add_argument("--take-profit-pct", type=float, help="take profit la y%% de la preț, la crearea contului")
     parser.add_argument("--financing", type=float,
                         help="annual %% on exposure above equity (margin loan), default 5; "
                              "applies when the account is created")
@@ -495,7 +509,8 @@ def _config(settings) -> RunnerConfig:
             max_leverage=settings["max_leverage"], max_weight=settings["max_weight"],
             rebalance_threshold=settings["rebalance"] / 100,
             allow_short=not settings["no_shorts"]),
-        stop_atr=settings["stop_atr"])
+        stop_atr=settings["stop_atr"], stop_pct=settings.get("stop_pct"),
+        take_profit_pct=settings.get("take_profit_pct"))
 
 
 def _read_signals(path) -> dict:
