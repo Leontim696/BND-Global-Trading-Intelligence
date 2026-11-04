@@ -38,7 +38,7 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
 
-## Formații AI (28 de conturi-umbră, din 4.11.2026)
+## Formații AI (31 de conturi-umbră, din 4.11.2026)
 
 Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
 (și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
@@ -92,6 +92,18 @@ Toate pornesc de la semnalele contului oficial (toți 5 AI + regula) și adaugă
 | 20 | **Idee nebună** (cerută pe 4.11) | toate deodată: semnalele cu filtrul de funding (17) + frâna (16) + prudența la anunțuri (18) + take profit +5% cu stop normal (13) + reciclarea capitalului (15). Dacă iese bine, conturile separate arată ce ingredient a ajutat; din ele se construiește „Idee nebună v2” |
 
 Limite: funding există doar pentru 5 monede și ~1 lună de istoric; calendarul se descarcă pe săptămâna curentă (săptămâna următoare uneori lipsește), deci un anunț poate fi ratat; P19 are clasament abia după câteva rulări.
+
+### Din lista „BND 2.0” (GPT, 4.11): R02, R08, R09 — gratuite, implementate pe 4.11
+- **R02 — cât de independente sunt cele 5 AI** (`src/bnd/ortogonalitate.py`, rulat zilnic, în aplicație sub „Formații AI”):
+  acord și kappa pe perechi, corelația voturilor, „numărul efectiv de AI independente” (N²/(N + 2·Σρ)) și cât se schimbă
+  votul consiliului fără fiecare AI. Pe 4.11: 274 de decizii, ~2,1 AI independente efectiv; fără Claude direcția nu se
+  schimbă niciodată (95% HOLD), fără DeepSeek se schimbă în ~20% din cazuri.
+- **R09 — alfa negativ:** un AI e „candidat pentru inversare” doar dacă a greșit în medie în AMBELE jumătăți ale perioadei,
+  cu ≥ 30 de voturi pe jumătate și DOAR pe decizii încheiate la 5 zile (cu prețul de acum, o singură zi de revenire ar
+  face orice AI „greșit constant” — exact ce s-a văzut pe 4.11 seara). Doar candidat; inversarea se testează separat.
+- **R08 — gemenii oficialului** (aceleași semnale și limite, doar execuția e mai proastă): P21 comisioane și alunecare × 2,
+  P22 20% din ordinele de deschidere ratate (alegere deterministă), P23 voturile executate cu o zi întârziere.
+  Arată cât din profit ar rezista unei execuții reale.
 
 ### Leverage în simulări: fiecare formație „decide” singură (cerut pe 4.11.2026)
 

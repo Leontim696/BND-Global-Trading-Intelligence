@@ -75,6 +75,9 @@ class RunnerConfig:
     dd_brake_pct: float | None = None
     event_cut: float | None = None
     events: tuple = ()
+    # R08 (conturi „gemene”, 4.11): costuri de execuție înmulțite și o parte din ordinele de deschidere ratate.
+    cost_mult: float | None = None
+    skip_pct: float | None = None
     # Stay this fraction inside every engine limit, so rounding and
     # moving prices do not turn a planned order into a rejection.
     margin: float = 0.98
@@ -88,9 +91,10 @@ class RunnerConfig:
             raise ValueError("take_profit_pct must be > 0")
 
 
-def instrument_for(market) -> Instrument:
+def instrument_for(market, cost_mult: float | None = None) -> Instrument:
+    k = cost_mult or 1.0
     return Instrument(symbol=market.name, asset_class=market.asset_class,
-                      fee_pct=market.fee_pct, slippage_pct=market.slippage_pct,
+                      fee_pct=market.fee_pct * k, slippage_pct=market.slippage_pct * k,
                       carry_pct_annual=market.carry_pct_annual,
                       sector=market.sector,
                       currency_pair=market.name if _is_pair(market) else "",
@@ -244,6 +248,11 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
         if reduces:
             request = OrderRequest(order_id, name, side, abs(delta), reduce_only=True,
                                    source="paper_runner")
+        elif config.skip_pct and _skipped(name, now, config.skip_pct):
+            # R08: ordin de deschidere „ratat” (simulează o execuție care nu s-a făcut); alegere deterministă.
+            plan.update(status="SKIPPED", reason=f"geamăn: ordin ratat ({config.skip_pct:g}% din deschideri)")
+            plans.append(plan)
+            continue
         else:
             if len(candles) <= config.atr_period:
                 plan.update(status="SKIPPED", reason="Not enough candles for ATR")
@@ -290,7 +299,7 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
     """One daily step; the result is also written to the engine's journal."""
     now = now or datetime.now(timezone.utc)
     for market in markets:
-        engine.register_instrument(instrument_for(market))
+        engine.register_instrument(instrument_for(market, config.cost_mult))
     fed = feed_new_candles(engine, data)
     account = engine.account()
     report = {"time": now.isoformat(), "strategy": strategy, "candles_processed": fed,
@@ -427,7 +436,7 @@ DEFAULTS = {
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
     "max_sector": None, "stop_pct": None, "take_profit_pct": None, "recycle": None,
-    "dd_brake_pct": None, "event_cut": None,
+    "dd_brake_pct": None, "event_cut": None, "cost_mult": None, "skip_pct": None,
 }
 
 
@@ -466,6 +475,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--take-profit-pct", type=float, help="take profit la y%% de la preț, la crearea contului")
     parser.add_argument("--dd-brake-pct", type=float, help="frână: expunere ×0,5 sub vârf cu x%% (la crearea contului)")
     parser.add_argument("--event-cut", type=float, help="expunerea × acest factor în ziua dinaintea unui anunț mare (la creare)")
+    parser.add_argument("--cost-mult", type=float, help="geamăn R08: comisioane și alunecare × acest factor (la creare)")
+    parser.add_argument("--skip-pct", type=float, help="geamăn R08: %% din ordinele de deschidere ratate (la creare)")
     parser.add_argument("--events", help="calendar economic CSV (date-piete/calendar/economic.csv), pentru --event-cut")
     parser.add_argument("--recycle", choices=["obisnuit", "reciclare"],
                         help="capitalul eliberat de take profit/stop: rămâne lichid sau se reciclează (la crearea contului)")
@@ -551,7 +562,15 @@ def _config(settings) -> RunnerConfig:
             allow_short=not settings["no_shorts"]),
         stop_atr=settings["stop_atr"], stop_pct=settings.get("stop_pct"),
         take_profit_pct=settings.get("take_profit_pct"), recycle=settings.get("recycle"),
-        dd_brake_pct=settings.get("dd_brake_pct"), event_cut=settings.get("event_cut"))
+        dd_brake_pct=settings.get("dd_brake_pct"), event_cut=settings.get("event_cut"),
+        cost_mult=settings.get("cost_mult"), skip_pct=settings.get("skip_pct"))
+
+
+def _skipped(name: str, now: datetime, pct: float) -> bool:
+    """Alegere deterministă (aceeași piață și zi dau mereu același rezultat), fără aleatoriu nereproductibil."""
+    import hashlib
+    digest = hashlib.sha256(f"{name}|{now.date().isoformat()}".encode()).digest()
+    return int.from_bytes(digest[:4], "big") % 10000 < pct * 100
 
 
 def load_events(path) -> tuple:

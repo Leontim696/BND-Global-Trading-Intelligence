@@ -122,6 +122,13 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
         engine.close()
 
 
+def _read_json(path):
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
 def read_formations(folder, quotes: dict | None = None, registry=None) -> list:
     """Conturile-umbră „Formații AI” (ramura formatii-ai), pe scurt, pentru clasament, plus scorul provizoriu
     din voturile consiliului față de prețurile de acum (date reale din prima zi)."""
@@ -370,6 +377,7 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
             "quotes_time": quotes_time, "system": system_status(runs),
             "schedule": SCHEDULE, "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
             "accounts": accounts, "council": council, "alerts": alerts,
+            "independenta_ai": _read_json(Path(formations_dir) / "ortogonalitate.json") if formations_dir else None,
             "formations": read_formations(formations_dir, prices,
                                           Path(council_dir) / "registry.sqlite" if council_dir else None),
             "charts": chart_series, "group_of": {s: market_groups.group_of(s) for s in sorted(symbols)}}

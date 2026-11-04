@@ -12,6 +12,7 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
     P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
     P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
+    P21–P23 gemeni ai oficialului (R08): costuri ×2, 20% ordine ratate, voturi cu o zi întârziere
     P20 „Idee nebună”: P17 + P16 + P18 + take profit +5% + reciclare, toate deodată
     P16 frână la pierderi; P17 contra mulțimii pe crypto (funding); P18 prudență înaintea anunțurilor din SUA;
     P19 meta-formație (copiază cele mai bune 3 formații din ultimele 7 zile)
@@ -105,6 +106,16 @@ def _formations() -> list[dict]:
     out.append({"key": "p20-idee-nebuna", "point": 20, "members": AGENTS, "rules": True, "kind": "funding",
                 "strategy": "ai_council", "title": "Idee nebună (funding + frână + anunțuri + take profit + reciclare)",
                 "settings": STANDARD + " --take-profit-pct 5 --recycle reciclare --dd-brake-pct 3 --event-cut 0.5"})
+    # P21–P23 (R08 din lista BND 2.0, 4.11): „gemenii” contului oficial, cu execuție mai proastă. Arată cât din profit
+    # depinde de o execuție ideală. Aceleași semnale și limite; doar execuția e înrăutățită.
+    out.append({"key": "p21-geaman-costuri-x2", "point": 21, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Geamăn oficial: comisioane și alunecare de 2 ori mai mari",
+                "settings": STANDARD + " --cost-mult 2"})
+    out.append({"key": "p22-geaman-ordine-ratate", "point": 22, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Geamăn oficial: 20% din ordinele de deschidere nu se execută",
+                "settings": STANDARD + " --skip-pct 20"})
+    out.append({"key": "p23-geaman-intarziere", "point": 23, "members": AGENTS, "rules": True, "kind": "intarziere",
+                "strategy": "hibrid", "title": "Geamăn oficial: execută voturile cu o zi întârziere"})
     return out
 
 
@@ -326,8 +337,12 @@ def build_all(registry: str, coins, day: str, rules: dict | None = None, funding
               top: list | None = None) -> dict:
     votes, missing = day_votes(registry, coins, day)
     weights = agent_weights(registry, day)
+    # P23: aceleași voturi, dar cele de IERI (execuție întârziată cu o zi).
+    from datetime import date as _date, timedelta as _td
+    prev_votes, _ = day_votes(registry, coins, (_date.fromisoformat(day) - _td(days=1)).isoformat())
     return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]),
-                       "signals": signals_for(f, votes, weights, rules, funding, top), "missing": missing,
+                       "signals": signals_for(f, prev_votes if f["kind"] == "intarziere" else votes, weights,
+                                              rules, funding, top), "missing": missing,
                        **({"top": top} if f["kind"] == "meta" else {}),
                        **({"funding": funding} if f["kind"] == "funding" else {}),
                        **({"weights": weights} if f["kind"] == "ponderat" else {})}
