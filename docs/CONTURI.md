@@ -38,7 +38,7 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
 
-## Formații AI (27 de conturi-umbră, din 4.11.2026)
+## Formații AI (28 de conturi-umbră, din 4.11.2026)
 
 Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
 (și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
@@ -89,6 +89,7 @@ Toate pornesc de la semnalele contului oficial (toți 5 AI + regula) și adaugă
 | 17 | Contra mulțimii pe crypto | media ultimelor 3 rate de finanțare (date-piete/funding: BTC, ETH, SOL, BNB, XRP): ≥ 0,03%/8h = toată lumea pe long → niciun long nou; < 0 = toată lumea pe short → niciun short nou; restul piețelor ca oficial |
 | 18 | Prudență la anunțuri | în ziua dinaintea unui anunț „High” din SUA (calendarul de pe date-piete) expunerea × 0,5 (`--event-cut 0.5`) |
 | 19 | Meta-formație | în fiecare zi, media semnalelor AI ale celor mai bune 3 formații (din P1, P3, P5, P7–P9) după randamentul pe ultimele 7 zile; fără clasament încă = tot consiliul |
+| 20 | **Idee nebună** (cerută pe 4.11) | toate deodată: semnalele cu filtrul de funding (17) + frâna (16) + prudența la anunțuri (18) + take profit +5% cu stop normal (13) + reciclarea capitalului (15). Dacă iese bine, conturile separate arată ce ingredient a ajutat; din ele se construiește „Idee nebună v2” |
 
 Limite: funding există doar pentru 5 monede și ~1 lună de istoric; calendarul se descarcă pe săptămâna curentă (săptămâna următoare uneori lipsește), deci un anunț poate fi ratat; P19 are clasament abia după câteva rulări.
 
