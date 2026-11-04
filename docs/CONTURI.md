@@ -69,3 +69,18 @@ obligați s-o urmeze, deci „fără reguli” înseamnă că votul lor nu e ame
 Criteriu fixat dinainte (4.11): câștigă formația cu randamentul cel mai mare de la pornire până la 30.11, DOAR dacă
 drawdown-ul maxim e cel mult cât al contului oficial și a câștigat și în zilele de creștere ale pieței, nu doar în cele
 de scădere. Cu 16 conturi comparate, una iese prima și din noroc: rezultatul e un indiciu, nu o dovadă.
+
+### Leverage în simulări: fiecare formație „decide” singură (cerut pe 4.11.2026)
+
+Doar în SIMULĂRI (rapoartele din 17.11 și 1.12), nu în conturi. Pentru fiecare formație se simulează propriile semnale
+zilnice (de la 31.10, pe lumânările zilnice reale) la 2x, 5x și 10x, separat doar long, doar short și long+short, cu
+lichidare la ~−18% (5x) / ~−9% (10x) mișcare adversă și finanțare ~5%/an pe suma împrumutată.
+
+Decizia nu se cere AI-urilor (ar însemna apeluri plătite); o ia o regulă fixată de acum, din rezultatele formației.
+O formație „alege” leverage-ul L > 2 (pe long, pe short sau pe ambele) DOAR dacă îndeplinește toate:
+1. are ≥ 20 de decizii încheiate pe direcția respectivă, cu rata de reușită > 55% și test de semn p < 0,05;
+2. în simularea la L nu ar fi fost lichidată niciodată și pierderea maximă ar fi fost ≤ 25%;
+3. la L câștigă după costuri mai mult decât la 2x.
+Altfel rămâne la 2x. Dacă mai multe niveluri trec, se alege cel mai mic care trece (prudență). Rezultatul e o
+recomandare pentru proprietar, nu o schimbare automată: limitele conturilor (2x, plafon tehnic 3x) nu se ating
+fără decizia lui.
