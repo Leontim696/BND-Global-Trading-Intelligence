@@ -12,6 +12,8 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
     P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
     P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
+    P16 frână la pierderi; P17 contra mulțimii pe crypto (funding); P18 prudență înaintea anunțurilor din SUA;
+    P19 meta-formație (copiază cele mai bune 3 formații din ultimele 7 zile)
     P14/P15 pereche: take profit +5%, capitalul eliberat lăsat lichid (14) sau reciclat cu protecții (15)
     P12 ca oficial + take profit +5% și stop −1%; P13 ca oficial + take profit +5% cu stopul normal (3×ATR)
     P11 la fel ca P10, dar agresiv: până la 3x (plafonul motorului), 50% pe piață, volatilitate-țintă 30%
@@ -86,6 +88,17 @@ def _formations() -> list[dict]:
     out.append({"key": "p15-tp-reciclare", "point": 15, "members": AGENTS, "rules": True, "kind": "fix",
                 "strategy": "hibrid", "title": "Take profit +5%, capital eliberat reciclat (Adaptive Position Recycling)",
                 "settings": STANDARD + " --take-profit-pct 5 --recycle reciclare"})
+    # P16–P19 (propuse de Claude, aprobate pe 4.11): aceleași semnale de bază ca oficialul, câte o regulă în plus.
+    out.append({"key": "p16-frana-pierderi", "point": 16, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Ca oficial + frână: expunere pe jumătate sub −3% de la vârf",
+                "settings": STANDARD + " --dd-brake-pct 3"})
+    out.append({"key": "p17-contra-funding", "point": 17, "members": AGENTS, "rules": True, "kind": "funding",
+                "strategy": "ai_council", "title": "Ca oficial + contra mulțimii pe crypto (funding)"})
+    out.append({"key": "p18-prudenta-anunturi", "point": 18, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Ca oficial + expunere pe jumătate înaintea anunțurilor mari din SUA",
+                "settings": STANDARD + " --event-cut 0.5"})
+    out.append({"key": "p19-meta-top3", "point": 19, "members": AGENTS, "rules": True, "kind": "meta",
+                "strategy": "hibrid", "title": "Meta-formație: copiază cele mai bune 3 formații din ultimele 7 zile"})
     return out
 
 
@@ -188,8 +201,84 @@ def rule_signals(data_dir, coins) -> dict:
     return out
 
 
-def signals_for(f: dict, votes: dict, weights: dict, rules: dict | None = None) -> dict:
+# P17: rata de finanțare pe 8 ore (media ultimelor 3) peste care „toată lumea e pe long” (~0,03% ≈ 33%/an, de 3 ori
+# nivelul obișnuit de 0,01%); sub 0 = „toată lumea e pe short”.
+CROWDED_LONG = 0.0003
+CROWDED_SHORT = 0.0
+# P19: formațiile din care se alege (cele cu semnal AI propriu, cu reguli) și fereastra de clasament.
+META_POOL = ("p1-gpt-grok", "p3-gpt", "p3-grok", "p3-claude", "p3-gemini", "p3-deepseek", "p5-gpt-claude-grok",
+             "p7-ponderat", "p8-consens", "p9-doar-crypto")
+META_DAYS, META_TOP = 7, 3
+
+
+def load_funding(folder) -> dict:
+    """{piață: media ultimelor 3 rate de finanțare} din CSV-urile date-piete/funding/ (time,rate,source)."""
+    import csv
+    out = {}
+    if not folder or not Path(folder).is_dir():
+        return out
+    for path in sorted(Path(folder).glob("*.csv")):
+        with path.open(newline="", encoding="utf-8") as handle:
+            rates = [float(r["rate"]) for r in csv.DictReader(handle) if r.get("rate") not in (None, "")]
+        if len(rates) >= 3:
+            out[path.stem] = sum(rates[-3:]) / 3
+    return out
+
+
+def funding_clip(signal: float, rate: float | None) -> float:
+    if rate is None:
+        return signal
+    if rate >= CROWDED_LONG:
+        return min(signal, 0.0)            # mulțimea e pe long: niciun long nou
+    if rate < CROWDED_SHORT:
+        return max(signal, 0.0)            # mulțimea e pe short: niciun short nou
+    return signal
+
+
+def meta_top(state_dir, day: str, days: int = META_DAYS, n: int = META_TOP) -> list | None:
+    """Cele mai bune n formații din META_POOL după randamentul pe ultimele `days` zile (din jurnalul conturilor).
+    None dacă nu există încă un clasament (prea puține rulări sau toate egale)."""
+    from datetime import date, timedelta as _td
+    from .paper_engine import PaperEngine
+    if not state_dir:
+        return None
+    since = (date.fromisoformat(day) - _td(days=days)).isoformat()
+    scores = {}
+    for key in META_POOL:
+        path = Path(state_dir) / key / "paper.sqlite"
+        if not path.exists():
+            continue
+        engine = PaperEngine.open(path)
+        try:
+            runs = [(e["payload"]["time"][:10], e["payload"]["equity"]) for e in engine.journal("daily_run")]
+        finally:
+            engine.close()
+        window = [eq for d, eq in runs if d >= since] or [eq for _, eq in runs]
+        if len(window) >= 2 and window[0] > 0:
+            scores[key] = window[-1] / window[0] - 1
+    if len(scores) < n or len({round(v, 9) for v in scores.values()}) == 1:
+        return None
+    return sorted(scores, key=lambda k: (-scores[k], k))[:n]
+
+
+def signals_for(f: dict, votes: dict, weights: dict, rules: dict | None = None,
+                funding: dict | None = None, top: list | None = None) -> dict:
     """Semnalele unei formații; o piață care lipsește din rezultat = contul hibrid urmează doar regula acolo."""
+    if f["kind"] == "funding":
+        out = {}
+        for c, r in (rules or {}).items():
+            if r is None:
+                continue
+            s = 0.5 * r + 0.5 * formation_signal(votes[c], AGENTS) if c in votes else r
+            out[c] = max(-1.0, min(1.0, funding_clip(s, (funding or {}).get(c))))
+        return out
+    if f["kind"] == "meta":
+        if not top:
+            return {c: formation_signal(v, AGENTS) for c, v in votes.items()}
+        by = {x["key"]: x for x in FORMATIONS}
+        parts = [signals_for(by[k], votes, weights, rules) for k in top if k in by]
+        coins = set().union(*parts) if parts else set()
+        return {c: sum(p.get(c, 0.0) for p in parts) / len(parts) for c in coins}
     if f["kind"] == "convingere":
         return {c: conviction_signal(v, (rules or {}).get(c)) for c, v in votes.items() if (rules or {}).get(c) is not None}
     if f["kind"] == "ponderat":
@@ -227,11 +316,14 @@ def day_votes(registry: str, coins, day: str) -> tuple[dict, list]:
     return found, missing
 
 
-def build_all(registry: str, coins, day: str, rules: dict | None = None) -> dict:
+def build_all(registry: str, coins, day: str, rules: dict | None = None, funding: dict | None = None,
+              top: list | None = None) -> dict:
     votes, missing = day_votes(registry, coins, day)
     weights = agent_weights(registry, day)
     return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]),
-                       "signals": signals_for(f, votes, weights, rules), "missing": missing,
+                       "signals": signals_for(f, votes, weights, rules, funding, top), "missing": missing,
+                       **({"top": top} if f["kind"] == "meta" else {}),
+                       **({"funding": funding} if f["kind"] == "funding" else {}),
                        **({"weights": weights} if f["kind"] == "ponderat" else {})}
             for f in FORMATIONS}
 
@@ -315,6 +407,8 @@ def main(argv=None) -> int:
     parser.add_argument("--day", help="AAAA-LL-ZZ (UTC), implicit azi")
     parser.add_argument("--out-dir")
     parser.add_argument("--data-dir", help="lumânările zilnice (pentru semnalul regulii la P10)")
+    parser.add_argument("--funding-dir", help="date-piete/funding (P17)")
+    parser.add_argument("--state-dir", help="folderul cu conturile formațiilor (clasamentul pentru P19)")
     parser.add_argument("--snapshot", help="folderul ramurii formatii-ai: scrie instantaneul orar (JSON + rânduri CSV)")
     parser.add_argument("--quotes", help="quotes.json (prețurile de acum), pentru --snapshot")
     parser.add_argument("--out", help="fișierul JSON pentru --snapshot; rândurile CSV merg alături (.csv)")
@@ -346,7 +440,8 @@ def main(argv=None) -> int:
         return 2
     coins = [c.strip().upper() for c in args.coins.split(",") if c.strip()]
     rules = rule_signals(args.data_dir, coins) if args.data_dir else None
-    result = build_all(args.registry, coins, day, rules)
+    top = meta_top(args.state_dir, day)
+    result = build_all(args.registry, coins, day, rules, load_funding(args.funding_dir), top)
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     for key, payload in result.items():

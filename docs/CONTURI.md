@@ -38,7 +38,7 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
 
-## Formații AI (23 de conturi-umbră, din 4.11.2026)
+## Formații AI (27 de conturi-umbră, din 4.11.2026)
 
 Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
 (și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
@@ -79,6 +79,18 @@ obligați s-o urmeze, deci „fără reguli” înseamnă că votul lor nu e ame
 Criteriu fixat dinainte (4.11): câștigă formația cu randamentul cel mai mare de la pornire până la 30.11, DOAR dacă
 drawdown-ul maxim e cel mult cât al contului oficial și a câștigat și în zilele de creștere ale pieței, nu doar în cele
 de scădere. Cu 16 conturi comparate, una iese prima și din noroc: rezultatul e un indiciu, nu o dovadă.
+
+### Ideile din 4.11 (P16–P19), propuse de Claude și aprobate de proprietar
+Toate pornesc de la semnalele contului oficial (toți 5 AI + regula) și adaugă O singură regulă, ca să se vadă exact ce aduce:
+
+| # | Regula | Detalii |
+|---|---|---|
+| 16 | Frână la pierderi | când contul e cu ≥ 3% sub vârf, expunerea se înjumătățește; revine doar la un vârf nou (`--dd-brake-pct 3`) |
+| 17 | Contra mulțimii pe crypto | media ultimelor 3 rate de finanțare (date-piete/funding: BTC, ETH, SOL, BNB, XRP): ≥ 0,03%/8h = toată lumea pe long → niciun long nou; < 0 = toată lumea pe short → niciun short nou; restul piețelor ca oficial |
+| 18 | Prudență la anunțuri | în ziua dinaintea unui anunț „High” din SUA (calendarul de pe date-piete) expunerea × 0,5 (`--event-cut 0.5`) |
+| 19 | Meta-formație | în fiecare zi, media semnalelor AI ale celor mai bune 3 formații (din P1, P3, P5, P7–P9) după randamentul pe ultimele 7 zile; fără clasament încă = tot consiliul |
+
+Limite: funding există doar pentru 5 monede și ~1 lună de istoric; calendarul se descarcă pe săptămâna curentă (săptămâna următoare uneori lipsește), deci un anunț poate fi ratat; P19 are clasament abia după câteva rulări.
 
 ### Leverage în simulări: fiecare formație „decide” singură (cerut pe 4.11.2026)
 
