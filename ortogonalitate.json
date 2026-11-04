@@ -1,0 +1,167 @@
+{
+ "decizii": 274,
+ "incheiate": 0,
+ "hold_pct": {
+  "gpt": 62.4,
+  "grok": 66.8,
+  "claude": 95.3,
+  "gemini": 68.2,
+  "deepseek": 29.6
+ },
+ "perechi": {
+  "gpt-grok": {
+   "acord": 0.774,
+   "kappa": 0.508,
+   "corelatie": 0.515
+  },
+  "gpt-claude": {
+   "acord": 0.664,
+   "kappa": 0.137,
+   "corelatie": 0.277
+  },
+  "gpt-gemini": {
+   "acord": 0.613,
+   "kappa": 0.169,
+   "corelatie": 0.231
+  },
+  "gpt-deepseek": {
+   "acord": 0.566,
+   "kappa": 0.263,
+   "corelatie": 0.397
+  },
+  "grok-claude": {
+   "acord": 0.701,
+   "kappa": 0.143,
+   "corelatie": 0.266
+  },
+  "grok-gemini": {
+   "acord": 0.708,
+   "kappa": 0.35,
+   "corelatie": 0.397
+  },
+  "grok-deepseek": {
+   "acord": 0.566,
+   "kappa": 0.281,
+   "corelatie": 0.415
+  },
+  "claude-gemini": {
+   "acord": 0.723,
+   "kappa": 0.177,
+   "corelatie": 0.312
+  },
+  "claude-deepseek": {
+   "acord": 0.343,
+   "kappa": 0.05,
+   "corelatie": 0.19
+  },
+  "gemini-deepseek": {
+   "acord": 0.58,
+   "kappa": 0.325,
+   "corelatie": 0.492
+  }
+ },
+ "ai_independente_efectiv": 2.09,
+ "contributie": {
+  "toti_5": {
+   "semnale": 0,
+   "corecte_pct": null,
+   "medie_pct": null
+  },
+  "fara_gpt": {
+   "semnale": 0,
+   "corecte_pct": null,
+   "medie_pct": null,
+   "directie_schimbata_pct": 3.6
+  },
+  "fara_grok": {
+   "semnale": 0,
+   "corecte_pct": null,
+   "medie_pct": null,
+   "directie_schimbata_pct": 1.1
+  },
+  "fara_claude": {
+   "semnale": 0,
+   "corecte_pct": null,
+   "medie_pct": null,
+   "directie_schimbata_pct": 0.0
+  },
+  "fara_gemini": {
+   "semnale": 0,
+   "corecte_pct": null,
+   "medie_pct": null,
+   "directie_schimbata_pct": 1.5
+  },
+  "fara_deepseek": {
+   "semnale": 0,
+   "corecte_pct": null,
+   "medie_pct": null,
+   "directie_schimbata_pct": 19.7
+  }
+ },
+ "alfa_negativ": {
+  "taiere": "2026-11-02",
+  "agenti": {
+   "gpt": {
+    "prima": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "a_doua": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "candidat_inversare": false,
+    "motiv": "prea puține voturi"
+   },
+   "grok": {
+    "prima": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "a_doua": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "candidat_inversare": false,
+    "motiv": "prea puține voturi"
+   },
+   "claude": {
+    "prima": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "a_doua": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "candidat_inversare": false,
+    "motiv": "prea puține voturi"
+   },
+   "gemini": {
+    "prima": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "a_doua": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "candidat_inversare": false,
+    "motiv": "prea puține voturi"
+   },
+   "deepseek": {
+    "prima": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "a_doua": {
+     "voturi": 0,
+     "medie_pct": null
+    },
+    "candidat_inversare": false,
+    "motiv": "prea puține voturi"
+   }
+  }
+ },
+ "nota": "Scorul folosește deciziile încheiate (5 zile) unde există, altfel prețul de acum (provizoriu). Cu puține decizii încheiate, diferențele dintre variante sunt în mare zgomot."
+}
