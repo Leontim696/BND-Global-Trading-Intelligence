@@ -1,14 +1,12 @@
 {
-  "outcome": "partial",
-  "tokens_checked": 99,
-  "wallets_with_hits": 51,
-  "candidates": 51,
+  "outcome": "ok",
+  "tokens_checked": 100,
+  "wallets_with_hits": 53,
+  "candidates": 53,
   "validated": 0,
   "insufficient": 0,
   "rate_limited": 0,
   "aborted": false,
-  "errors": [
-    "first-buyers: HTTP 500"
-  ],
+  "errors": [],
   "added": 30
 }
