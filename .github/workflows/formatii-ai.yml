@@ -79,6 +79,10 @@ jobs:
           coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
           python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals --data-dir data \
             --funding-dir extra/funding --state-dir state ${DAY:+--day "$DAY"}
+      - name: AI independence and negative-alpha check (R02/R09, read-only, no AI calls)
+        run: |
+          python -m src.bnd.ortogonalitate --registry council/registry.sqlite --out state/ortogonalitate.json \
+            || echo "::warning::analiza R02/R09 nu s-a putut face"
       - name: Daily step for each formation (a failure in one does not stop the others)
         env:
           RUN_ID: ${{ github.run_id }}
@@ -165,6 +169,7 @@ jobs:
                 echo "::warning::$key nu are punct de control valid; nu se publică."
               fi
             done
+            if [ -f ../state/ortogonalitate.json ]; then cp ../state/ortogonalitate.json ortogonalitate.json; fi
             git add -A
             if ! git diff --cached --quiet; then
               git commit -q -m "Formații AI $day: $saved conturi, rularea $RUN_ID"
