@@ -74,3 +74,18 @@ Un experiment se poate repeta doar dacă sunt fixate: **codul**, **datele**, **c
 Raport: `python -m src.bnd.experiments reproducere` (cod de ieșire 1 dacă un experiment nu poate fi repetat complet).
 
 **Verdict onest pentru E-001..E-012 (făcute înainte de această schimbare):** NU sunt reproductibile complet. Codul de la propunere există (commit-uri valide), seed-urile sunt deterministe în cod, dar datele sunt doar etichetate (`date-piete/zilnic ...`, `date-12-ani ...`), fără hash, iar codul de la rezultat nu a fost salvat. O repetare cu datele de azi poate da alte numere dacă arhiva sau prețurile ajustate s-au schimbat. Registrul nu se rescrie; experimentele noi (E-013 și următoarele) pornesc cu aceste câmpuri.
+
+## Strategii noi, 4.11.2026 (E-013 … E-016)
+Cerute de proprietar („dezvoltă câteva strategii ce merită încercate”). Cod: `src/bnd/strategii_noi.py`. Parametri fixați din
+literatură, criteriu scris înainte (bate „cumperi tot în părți egale” adus la aceeași volatilitate, p < 0,0125 și Sharpe mai
+bun în ambele părți 60/40). Zero cost, fără AI. Doar long, fără leverage, costuri reale.
+
+| ID | Strategie | Verdict | Pe scurt |
+|---|---|---|---|
+| E-013 | Momentum crypto 14 zile + filtru Bitcoin > media 50 | respins | Sharpe 0,04 față de −0,27; mai bun în ambele părți, +11,9 puncte/an, dar p = 0,28. Ferește de prăbușirea altcoin-urilor (ținut 1x: −37,5%/an, −84% maxim), însă tot −5,7%/an. Doar 2,7 ani, 39 de monede (supraviețuitori). |
+| E-014 | Rotație săptămânală top 10 pe 28 de zile | respins | Sharpe −0,05, −18,6%/an, −66% maxim; p = 0,30. |
+| E-015 | Final de lună pe S&P 500 + Nasdaq 100 (2014–2026) | respins | Sharpe 0,32 față de 0,89; mai slab în ambele părți; p = 0,97. |
+| E-016 | RSI(2) revenire pe indici (2015–2026) | respins | Sharpe 0,77 față de 0,87; stă în piață 17% din timp, −17% maxim; mai bun doar în a doua parte; p = 0,64. |
+
+Concluzie: niciuna nu bate „cumperi și ții” la același risc, în mod dovedit. Singurul indiciu interesant e filtrul Bitcoin
+din E-013 (reduce mult pierderile pe altcoin-uri), dar pe prea puțini ani ca să conteze. Nimic nu se promovează în conturi.
