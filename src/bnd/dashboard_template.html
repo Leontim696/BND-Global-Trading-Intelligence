@@ -1188,8 +1188,10 @@ function formationsView() {
       <td class="${x.r >= 0 ? "gain" : "loss"}" style="white-space:nowrap">${pct(x.r)}<div style="height:4px;margin-top:3px;width:${(100 * Math.abs(x.r) / max).toFixed(0)}%;background:var(--${x.r >= 0 ? "gain" : "loss"})"></div></td>
       <td>${money2(x.dd)}%</td><td>${x.lev == null ? "–" : money2(x.lev) + "x"}</td><td>${x.pos}${x.ls ? ` <span class="sub">(${x.ls})</span>` : ""}</td></tr>`).join("");
   const best = rows.find(x => !x.ref);
+  const lead = rows.every(x => Math.abs(x.r - best.r) < 0.005) ? "Deocamdată toate formațiile sunt la egalitate (abia au pornit)."
+    : `Acum conduce <b>${esc(best.title)}</b> cu ${pct(best.r)}.`;
   return `<div class="panel hot"><div class="label">Formații AI · de la ${esc(start)}</div>
-      <p style="margin:8px 0 4px;font-size:17px">${rows.every(x => Math.abs(x.r - best.r) < 0.005) ? "Deocamdată toate formațiile sunt la egalitate (abia au pornit)." : `Acum conduce <b>${esc(best.title)}</b> cu ${pct(best.r)}.`}</p>
+      <p style="margin:8px 0 4px;font-size:17px">${lead}</p>
       <p class="sub">14 conturi virtuale cu aceleași piețe, limite și capital (11.183 USD) ca în contul oficial. Fiecare urmează votul altei formații de AI. „Cu reguli” = 50% regula matematică + 50% votul formației; „fără reguli” = doar votul formației. Nu costă nimic în plus: folosesc voturile pe care consiliul le dă oricum. Câștigătorul se alege după 30.11 doar dacă are și pierderea maximă (drawdown) cel mult cât contul oficial și a câștigat și în zilele de creștere, nu doar în cele de scădere; cu 16 conturi, unul iese primul și din noroc.</p></div>
     <div class="panel"><div class="scroll"><table><tr><th>Loc</th><th>Formație</th><th>Randament</th><th>Drawdown</th><th>Expunere</th><th>Poziții (L/S)</th></tr>${tr}</table></div></div>`;
 }
