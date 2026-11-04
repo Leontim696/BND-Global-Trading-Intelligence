@@ -38,7 +38,7 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
 
-## Formații AI (17 conturi-umbră, din 4.11.2026)
+## Formații AI (18 conturi-umbră, din 4.11.2026)
 
 Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
 (și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
@@ -56,6 +56,7 @@ le dă oricum, salvate pe fiecare agent în `registry.sqlite`.
 | 7 | toți 5, ponderați după rezultate (avantajul peste 50% pe deciziile încheiate; egale până la ≥20 decizii încheiate per AI) | cu reguli | 1 |
 | 8 | toți 5, dar consiliul contează doar la consens ≥4 din 5; altfel doar regula | cu reguli | 1 |
 | 9 | toți 5, doar la crypto și memecoin; la restul piețelor doar regula | cu reguli | 1 |
+| 10 | „Miză după convingere”: puternic (≥4/5 AI și regula în aceeași direcție) = miză întreagă (până la 25%/piață), mediu (2–3 AI net cu regula, sau ≥4/5 cu regula neutră) = jumătate, slab sau contradictoriu = nimic; aceeași limită de 2x | cu reguli | 1 |
 
 Punctele 7–9 au fost propuse de Claude și aprobate de proprietar pe 4.11. Pornite cu voturile din 3.11 (ziua
 de dinainte), apoi zilnic cu voturile zilei. În aplicație apare și un „scor din voturi” provizoriu, din date reale de
