@@ -26,8 +26,8 @@ def _registry(path, votes):
 
 
 def test_14_formatii_cu_strategii_corecte():
-    assert len(fm.FORMATIONS) == 17
-    assert len({f["key"] for f in fm.FORMATIONS}) == 17
+    assert len(fm.FORMATIONS) == 18
+    assert len({f["key"] for f in fm.FORMATIONS}) == 18
     by = {f["key"]: f for f in fm.FORMATIONS}
     assert by["p1-gpt-grok"]["strategy"] == "hibrid" and by["p2-gpt-grok-liber"]["strategy"] == "ai_council"
     assert by["p5-gpt-claude-grok"]["members"] == ("gpt", "claude", "grok")
@@ -60,14 +60,14 @@ def test_cli_scrie_un_fisier_pe_formatie(tmp_path):
     _registry(reg, {"BITCOIN": {"grok": {"final": "BUY"}}})
     assert fm.main(["--registry", str(reg), "--coins", "BITCOIN", "--day", DAY, "--out-dir", str(tmp_path / "s")]) == 0
     files = sorted(p.name for p in (tmp_path / "s").iterdir())
-    assert len(files) == 17
+    assert len(files) == 18
     assert json.loads((tmp_path / "s" / "p4-grok-liber.json").read_text())["signals"] == {"BITCOIN": 1.0}
 
 
 def test_list_pentru_workflow(capsys):
     assert fm.main(["--list"]) == 0
     lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 17 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
+    assert len(lines) == 18 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
 
 
 def test_dashboard_citeste_formatiile(tmp_path):
@@ -75,7 +75,7 @@ def test_dashboard_citeste_formatiile(tmp_path):
     (tmp_path / "p3-gpt").mkdir()
     PaperEngine.create(tmp_path / "p3-gpt" / "paper.sqlite", 11_183.0, currency="USD", now=now).close()
     rows = dashboard.read_formations(tmp_path)
-    assert len(rows) == 17
+    assert len(rows) == 18
     gpt = next(r for r in rows if r["key"] == "p3-gpt")
     assert gpt["exists"] and gpt["equity"] == 11_183.0 and gpt["positions"] == 0
     assert sum(r["exists"] for r in rows) == 1
@@ -153,3 +153,40 @@ def test_coloana_agresiv_leverage_si_lichidare(tmp_path):
     s = fm.vote_score(str(reg), {"BITCOIN": [0.9, "t"], "GOLD": [0.85, "t"]}, by["p3-gpt"])
     assert s["liquidated"]["10"] == 1 and s["pnl"]["10"] == 0.0     # +100 pe BTC, −100 (lichidat) pe GOLD
     assert s["liquidated"]["5"] == 0 and s["pnl"]["5"] == -25.0     # +50 − 75
+
+
+def test_p10_miza_dupa_convingere():
+    four_sell = dict.fromkeys(("gpt", "grok", "claude", "gemini"), "SELL")
+    assert fm.conviction_signal(four_sell, -1.0) == -1.0          # puternic: 4/5 + regula la fel
+    assert fm.conviction_signal(four_sell, 0.0) == -0.5           # regula neutră: mediu
+    assert fm.conviction_signal(four_sell, 1.0) == 0.0            # contradictoriu: nimic
+    assert fm.conviction_signal({"gpt": "BUY", "grok": "BUY"}, 0.6) == 0.5     # 2 net + regula la fel: mediu
+    assert fm.conviction_signal({"gpt": "BUY"}, 1.0) == 0.0       # slab: 1 vot net
+    assert fm.conviction_signal(four_sell, None) == 0.0           # fără regulă, fără poziție nouă
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    assert by["p10-convingere"]["strategy"] == "ai_council"
+    out = fm.signals_for(by["p10-convingere"], {"BITCOIN": four_sell, "GOLD": four_sell}, {}, {"BITCOIN": -1.0})
+    assert out == {"BITCOIN": -1.0}                               # GOLD fără semnalul regulii: poziția rămâne cum e
+
+
+def test_semnalul_regulii_din_lumanari_ca_in_contul_unic(tmp_path):
+    from datetime import timedelta
+    from src.bnd.paper_runner import latest_weights, _make_factory
+    from src.bnd.portfolio import PortfolioConfig
+    from src.bnd.market_data import load_csv
+    from src.bnd.universe import select
+    start = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    rows = ["open_time,open,high,low,close,volume"]
+    price = 100.0
+    for i in range(300):           # urcare constantă: regula trebuie să dea semnal pozitiv
+        price *= 1.004 if i % 7 else 0.99
+        t = (start + timedelta(days=i)).isoformat()
+        rows.append(f"{t},{price},{price * 1.01},{price * 0.99},{price},1000")
+    (tmp_path / "GOLD.csv").write_text("\n".join(rows) + "\n")
+    got = fm.rule_signals(tmp_path, ["GOLD", "SILVER"])
+    assert list(got) == ["GOLD"] and got["GOLD"] > 0
+    market = [m for m in select([], [], "unic") if m.name == "GOLD"]
+    data = {"GOLD": load_csv(tmp_path / "GOLD.csv")}
+    _, ref = latest_weights(data, market, _make_factory({"strategy": "hibrid", "param": [], "members": None}, data),
+                            PortfolioConfig())
+    assert got["GOLD"] == ref["GOLD"]

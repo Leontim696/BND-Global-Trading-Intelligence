@@ -12,6 +12,8 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
     P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
     P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
+    P10 miză după convingere: toți 5 + regula; semnal puternic (≥4/5 AI și regula în aceeași direcție) = miză
+        întreagă (până la 25% din cont pe piață), semnal mediu = jumătate, slab sau contradictoriu = nimic
 
 Semnalul unei formații cu n membri pe o piață:
     net = voturi BUY − voturi SELL ale membrilor (votul final; dacă lipsește, cel inițial; HOLD = 0)
@@ -55,6 +57,8 @@ def _formations() -> list[dict]:
     add(7, "p7-ponderat", AGENTS, True, "ponderat", "Toți 5, ponderați după rezultate, cu reguli")
     add(8, "p8-consens", AGENTS, True, "consens", "Toți 5, doar la consens 4/5, cu reguli")
     add(9, "p9-doar-crypto", AGENTS, True, "crypto", "Toți 5 doar la crypto și memecoin, cu reguli")
+    out.append({"key": "p10-convingere", "point": 10, "members": AGENTS, "rules": True, "kind": "convingere",
+                "strategy": "ai_council", "title": "Miză după convingere (toți 5 + regula)"})
     return out
 
 
@@ -119,8 +123,48 @@ def _asset_class(symbol: str) -> str:
     return ASSET_CLASS.get(symbol, "alta")
 
 
-def signals_for(f: dict, votes: dict, weights: dict) -> dict:
+def conviction_signal(votes: dict, rule: float | None) -> float:
+    """P10: puternic (≥4/5 AI și regula în aceeași direcție) = ±1; mediu (AI 2–3 net în direcția regulii, sau ≥4/5 cu
+    regula neutră) = ±0,5; slab sau contradictoriu = 0. Fără semnalul regulii nu se ia nicio poziție nouă."""
+    if rule is None:
+        return 0.0
+    net = sum(SIDE.get(votes.get(a, "HOLD"), 0) for a in AGENTS)
+    if abs(net) < 2:
+        return 0.0
+    side = 1.0 if net > 0 else -1.0
+    r = 0 if abs(rule) < 1e-9 else (1 if rule > 0 else -1)
+    if r == -side:
+        return 0.0                                   # AI și regula se contrazic
+    if abs(net) >= CONSENSUS and r == side:
+        return side
+    return 0.5 * side
+
+
+def rule_signals(data_dir, coins) -> dict:
+    """Semnalul regulii (regime_switch, la fel ca în contul unic) pe fiecare piață, din lumânările zilnice."""
+    from .backtest_cli import _factory
+    from .market_data import load_csv
+    from .portfolio import _History, strategy_for
+    from .universe import select as select_markets
+    factory = _factory("regime_switch", {})
+    wanted = set(coins)
+    out = {}
+    for market in select_markets([], [], "unic"):
+        path = Path(data_dir) / f"{market.name}.csv"
+        if market.name not in wanted or not path.exists():
+            continue
+        candles = load_csv(path)
+        strategy, signal = strategy_for(factory, market), 0.0
+        for end in range(1, len(candles) + 1):
+            signal = strategy(_History(candles, end))
+        out[market.name] = float(signal)
+    return out
+
+
+def signals_for(f: dict, votes: dict, weights: dict, rules: dict | None = None) -> dict:
     """Semnalele unei formații; o piață care lipsește din rezultat = contul hibrid urmează doar regula acolo."""
+    if f["kind"] == "convingere":
+        return {c: conviction_signal(v, (rules or {}).get(c)) for c, v in votes.items() if (rules or {}).get(c) is not None}
     if f["kind"] == "ponderat":
         return {c: weighted_signal(v, weights) for c, v in votes.items()}
     if f["kind"] == "consens":
@@ -156,11 +200,11 @@ def day_votes(registry: str, coins, day: str) -> tuple[dict, list]:
     return found, missing
 
 
-def build_all(registry: str, coins, day: str) -> dict:
+def build_all(registry: str, coins, day: str, rules: dict | None = None) -> dict:
     votes, missing = day_votes(registry, coins, day)
     weights = agent_weights(registry, day)
     return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]),
-                       "signals": signals_for(f, votes, weights), "missing": missing,
+                       "signals": signals_for(f, votes, weights, rules), "missing": missing,
                        **({"weights": weights} if f["kind"] == "ponderat" else {})}
             for f in FORMATIONS}
 
@@ -172,7 +216,13 @@ def vote_score(registry: str, quotes: dict, f: dict) -> dict | None:
         return None
     db = sqlite3.connect(f"file:{registry}?mode=ro", uri=True)
     try:
-        decisions = {i: (sym, price) for i, sym, price in db.execute("SELECT id, symbol, price FROM decisions")}
+        decisions, bots = {}, {}
+        for i, sym, price, meta in db.execute("SELECT id, symbol, price, meta FROM decisions"):
+            decisions[i] = (sym, price)
+            try:
+                bots[i] = json.loads(meta or "{}").get("bot_signal")
+            except ValueError:
+                bots[i] = None
         by = {}
         for did, agent, stage, vote in sorted(db.execute("SELECT decision_id, agent, stage, vote FROM votes").fetchall(),
                                               key=lambda r: r[2] != "initial"):
@@ -183,7 +233,9 @@ def vote_score(registry: str, quotes: dict, f: dict) -> dict | None:
     pnl, liquidated = dict.fromkeys(LEVERAGES, 0.0), dict.fromkeys(LEVERAGES, 0)
     for day in sorted({did[:10] for did in by}):
         todays = {decisions[d][0]: v for d, v in by.items() if d[:10] == day and d in decisions}
-        for coin, signal in signals_for(f, todays, agent_weights(registry, day)).items():
+        # P10: regula de atunci nu e salvată; se folosește semnalul simplu SMA 20/50 salvat la decizie (aproximare).
+        rules = {decisions[d][0]: bots.get(d) for d in by if d[:10] == day and d in decisions}
+        for coin, signal in signals_for(f, todays, agent_weights(registry, day), rules).items():
             price = decisions.get(f"{day}:{coin}", (None, 0))[1]
             now = (quotes.get(coin) or [0])[0]
             if not signal or not price or price <= 0 or not now:
@@ -215,6 +267,7 @@ def main(argv=None) -> int:
     parser.add_argument("--coins", default="")
     parser.add_argument("--day", help="AAAA-LL-ZZ (UTC), implicit azi")
     parser.add_argument("--out-dir")
+    parser.add_argument("--data-dir", help="lumânările zilnice (pentru semnalul regulii la P10)")
     args = parser.parse_args(argv)
     if args.list:
         for f in FORMATIONS:
@@ -232,7 +285,8 @@ def main(argv=None) -> int:
         print("Error: --day trebuie să fie AAAA-LL-ZZ", file=sys.stderr)
         return 2
     coins = [c.strip().upper() for c in args.coins.split(",") if c.strip()]
-    result = build_all(args.registry, coins, day)
+    rules = rule_signals(args.data_dir, coins) if args.data_dir else None
+    result = build_all(args.registry, coins, day, rules)
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     for key, payload in result.items():

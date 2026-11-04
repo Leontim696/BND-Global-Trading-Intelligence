@@ -1,6 +1,6 @@
-name: Formații AI (17 conturi-umbră, virtual)
+name: Formații AI (18 conturi-umbră, virtual)
 
-# Cerut de proprietar pe 4.11.2026. 17 conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto), fiecare cu altă formație de AI
+# Cerut de proprietar pe 4.11.2026. 18 conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto + miză după convingere), fiecare cu altă formație de AI
 # (GPT+Grok, fiecare AI singur, GPT+Claude+Grok; cu reguli și fără reguli), ca să vedem după 30.11 ce
 # AI sau ce grupă de AI ia cele mai bune decizii. NU face niciun apel AI: refolosește voturile pe care
 # consiliul zilnic le-a dat deja (registry.sqlite de pe consiliu-umbra), prin src/bnd/formations.py.
@@ -14,6 +14,10 @@ on:
     inputs:
       day:
         description: 'Ziua voturilor consiliului (AAAA-LL-ZZ, gol = azi). Doar pentru pornire, de ex. cu voturile de ieri.'
+        default: ''
+        type: string
+      only:
+        description: 'Doar această formație (ex. p10-convingere), ca să pornești un cont nou fără să le rulezi din nou pe celelalte'
         default: ''
         type: string
 
@@ -33,19 +37,16 @@ jobs:
       BND_TRADING_MODE: PAPER
       CAPITAL: "11183"
       DAY: ${{ inputs.day }}
+      ONLY: ${{ inputs.only }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
-      - name: Restore the 14 accounts and the council's votes
+      - name: Restore the accounts and the council's votes
         run: |
           bash scripts/restore_branch.sh formatii-ai state
           bash scripts/restore_branch.sh consiliu-umbra council "!registry.sqlite"
-      - name: Build the formation signals (no AI calls)
-        run: |
-          coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
-          python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals ${DAY:+--day "$DAY"}
       - name: Download the candles (ETF/forex and Yahoo crypto, then Binance coins)
         run: |
           names="$(python -c "from src.bnd.universe import UNIVERSES; print(','.join(m.name for m in UNIVERSES['unic']))")"
@@ -69,6 +70,10 @@ jobs:
           if [ -n "$stocks" ]; then
             python -m src.bnd.backtest_cli fetch-universe --universe stocks --markets "$stocks" --start "$start" --out-dir data
           fi
+      - name: Build the formation signals (no AI calls)
+        run: |
+          coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
+          python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals --data-dir data ${DAY:+--day "$DAY"}
       - name: Daily step for each formation (a failure in one does not stop the others)
         env:
           RUN_ID: ${{ github.run_id }}
@@ -76,6 +81,7 @@ jobs:
           set -uo pipefail
           failed=0
           while IFS=$'\t' read -r key strategy title; do
+            if [ -n "$ONLY" ] && [ "$key" != "$ONLY" ]; then continue; fi
             dir="state/$key"; mkdir -p "$dir" "prev/$key"
             args=(); flags=(--new)
             if [ -f "$dir/paper.sqlite" ]; then
