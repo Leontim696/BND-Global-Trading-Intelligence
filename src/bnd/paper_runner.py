@@ -26,7 +26,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass, field, replace
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from math import log
 from pathlib import Path
 
@@ -70,6 +70,11 @@ class RunnerConfig:
     take_profit_pct: float | None = None
     # Opțional: ce se face cu capitalul eliberat de take profit/stop ("obisnuit" sau "reciclare"), vezi recycling.py.
     recycle: str | None = None
+    # Opțional (cerute pe 4.11): frână la pierderi (expunere ×0,5 când contul e cu ≥ x% sub vârf, până la un vârf nou)
+    # și prudență înaintea anunțurilor mari din SUA (expunere × event_cut în ziua dinaintea unui eveniment „High”).
+    dd_brake_pct: float | None = None
+    event_cut: float | None = None
+    events: tuple = ()
     # Stay this fraction inside every engine limit, so rounding and
     # moving prices do not turn a planned order into a rejection.
     margin: float = 0.98
@@ -304,6 +309,25 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
                     mark = engine.mark(market.name)
                     weights[market.name] = (held.get(market.name, 0.0) * mark["price"] / equity
                                             if mark and equity > 0 else 0.0)
+        scale = 1.0
+        if config.dd_brake_pct:
+            equity_now, peak = engine.equity(), account["peak_equity"]
+            last = engine.journal("daily_run")
+            was = bool(last and last[-1]["payload"].get("brake"))
+            brake = peak > 0 and (equity_now <= peak * (1 - config.dd_brake_pct / 100)
+                                  or (was and equity_now < peak))
+            report["brake"] = bool(brake)
+            if brake:
+                scale *= 0.5
+        if config.event_cut is not None:
+            tomorrow = (now + timedelta(days=1)).date().isoformat()
+            ahead = sorted({title for day, title in config.events if day == tomorrow})
+            report["events_tomorrow"] = ahead
+            if ahead:
+                scale *= config.event_cut
+        if scale != 1.0:
+            weights = {k: v * scale for k, v in weights.items()}
+        report["exposure_scale"] = scale
         if config.recycle:
             rules = recycling.RecycleRules(mode=config.recycle)
             exits = recycling.recent_exits(engine.fills(), now, rules.cooldown_days)
@@ -403,6 +427,7 @@ DEFAULTS = {
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
     "max_sector": None, "stop_pct": None, "take_profit_pct": None, "recycle": None,
+    "dd_brake_pct": None, "event_cut": None,
 }
 
 
@@ -439,6 +464,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--stop-atr", type=float)
     parser.add_argument("--stop-pct", type=float, help="stop fix la x%% de la preț (în loc de x ATR), la crearea contului")
     parser.add_argument("--take-profit-pct", type=float, help="take profit la y%% de la preț, la crearea contului")
+    parser.add_argument("--dd-brake-pct", type=float, help="frână: expunere ×0,5 sub vârf cu x%% (la crearea contului)")
+    parser.add_argument("--event-cut", type=float, help="expunerea × acest factor în ziua dinaintea unui anunț mare (la creare)")
+    parser.add_argument("--events", help="calendar economic CSV (date-piete/calendar/economic.csv), pentru --event-cut")
     parser.add_argument("--recycle", choices=["obisnuit", "reciclare"],
                         help="capitalul eliberat de take profit/stop: rămâne lichid sau se reciclează (la crearea contului)")
     parser.add_argument("--financing", type=float,
@@ -522,7 +550,21 @@ def _config(settings) -> RunnerConfig:
             rebalance_threshold=settings["rebalance"] / 100,
             allow_short=not settings["no_shorts"]),
         stop_atr=settings["stop_atr"], stop_pct=settings.get("stop_pct"),
-        take_profit_pct=settings.get("take_profit_pct"), recycle=settings.get("recycle"))
+        take_profit_pct=settings.get("take_profit_pct"), recycle=settings.get("recycle"),
+        dd_brake_pct=settings.get("dd_brake_pct"), event_cut=settings.get("event_cut"))
+
+
+def load_events(path) -> tuple:
+    """(zi, titlu) pentru anunțurile din SUA cu impact „High” (fără sărbători); fișier lipsă = niciun eveniment."""
+    import csv
+    if not path or not Path(path).exists():
+        return ()
+    out = []
+    with open(path, newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            if row.get("country") == "USD" and row.get("impact") == "High" and row.get("time_utc"):
+                out.append((row["time_utc"][:10], row.get("title", "")))
+    return tuple(out)
 
 
 def _read_signals(path) -> dict:
@@ -548,6 +590,8 @@ def main(argv=None) -> int:
                     raise ValueError("Kill switch is not active; nothing to reset")
                 engine.reset_kill_switch(args.reset_kill_switch, datetime.now(timezone.utc))
             config = _config(settings)
+            if config.event_cut is not None:
+                config = replace(config, events=load_events(args.events))
             markets = select_markets(_split_list(settings["markets"]),
                                      _split_list(settings["classes"]), settings["universe"])
             folder = Path(args.data_dir)

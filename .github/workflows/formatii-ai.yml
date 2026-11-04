@@ -1,6 +1,6 @@
-name: Formații AI (19 conturi-umbră, virtual)
+name: Formații AI (27 de conturi-umbră, virtual)
 
-# Cerut de proprietar pe 4.11.2026. 19 conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto + miză după convingere), fiecare cu altă formație de AI
+# Cerut de proprietar pe 4.11.2026. 27 de conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto + miză după convingere), fiecare cu altă formație de AI
 # (GPT+Grok, fiecare AI singur, GPT+Claude+Grok; cu reguli și fără reguli), ca să vedem după 30.11 ce
 # AI sau ce grupă de AI ia cele mai bune decizii. NU face niciun apel AI: refolosește voturile pe care
 # consiliul zilnic le-a dat deja (registry.sqlite de pe consiliu-umbra), prin src/bnd/formations.py.
@@ -47,6 +47,10 @@ jobs:
         run: |
           bash scripts/restore_branch.sh formatii-ai state
           bash scripts/restore_branch.sh consiliu-umbra council "!registry.sqlite"
+          # P17 (funding) și P18 (calendarul anunțurilor): date colectate deja pe date-piete; lipsa lor nu oprește rularea.
+          bash scripts/restore_branch.sh date-piete extra calendar/economic.csv funding/BITCOIN.csv funding/ETHEREUM.csv \
+            funding/SOLANA.csv funding/BNB.csv funding/XRP.csv || echo "::warning::datele extra (funding/calendar) lipsesc"
+          mkdir -p extra/funding && mv extra/BITCOIN.csv extra/ETHEREUM.csv extra/SOLANA.csv extra/BNB.csv extra/XRP.csv extra/funding/ 2>/dev/null || true
       - name: Download the candles (ETF/forex and Yahoo crypto, then Binance coins)
         run: |
           names="$(python -c "from src.bnd.universe import UNIVERSES; print(','.join(m.name for m in UNIVERSES['unic']))")"
@@ -73,7 +77,8 @@ jobs:
       - name: Build the formation signals (no AI calls)
         run: |
           coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
-          python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals --data-dir data ${DAY:+--day "$DAY"}
+          python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals --data-dir data \
+            --funding-dir extra/funding --state-dir state ${DAY:+--day "$DAY"}
       - name: Daily step for each formation (a failure in one does not stop the others)
         env:
           RUN_ID: ${{ github.run_id }}
@@ -93,7 +98,7 @@ jobs:
               args+=(--capital "$CAPITAL" --universe unic --strategy "$strategy" "${extra[@]}")
             fi
             if python -m src.bnd.paper_runner --state "$dir/paper.sqlite" --data-dir data \
-                 --signals "signals/$key.json" --audit-log "$dir/audit.jsonl" \
+                 --signals "signals/$key.json" --events extra/economic.csv --audit-log "$dir/audit.jsonl" \
                  --report "$dir/REPORT.md" --json "$dir/last_run.json" "${args[@]}" > /dev/null \
                && python -m src.bnd.state_check --state "$dir" "${flags[@]}" --run-id "$RUN_ID"; then
               echo "- $title: OK" >> "$GITHUB_STEP_SUMMARY"
