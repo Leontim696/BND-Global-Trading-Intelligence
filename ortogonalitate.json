@@ -1,66 +1,66 @@
 {
- "decizii": 274,
+ "decizii": 361,
  "incheiate": 0,
  "hold_pct": {
-  "gpt": 62.4,
-  "grok": 66.8,
-  "claude": 95.3,
-  "gemini": 68.2,
-  "deepseek": 29.6
+  "gpt": 69.8,
+  "grok": 72.3,
+  "claude": 96.4,
+  "gemini": 68.1,
+  "deepseek": 31.0
  },
  "perechi": {
   "gpt-grok": {
-   "acord": 0.774,
-   "kappa": 0.508,
-   "corelatie": 0.515
+   "acord": 0.792,
+   "kappa": 0.496,
+   "corelatie": 0.501
   },
   "gpt-claude": {
-   "acord": 0.664,
-   "kappa": 0.137,
-   "corelatie": 0.277
+   "acord": 0.729,
+   "kappa": 0.144,
+   "corelatie": 0.28
   },
   "gpt-gemini": {
-   "acord": 0.613,
-   "kappa": 0.169,
-   "corelatie": 0.231
+   "acord": 0.618,
+   "kappa": 0.147,
+   "corelatie": 0.258
   },
   "gpt-deepseek": {
-   "acord": 0.566,
-   "kappa": 0.263,
-   "corelatie": 0.397
+   "acord": 0.524,
+   "kappa": 0.217,
+   "corelatie": 0.343
   },
   "grok-claude": {
-   "acord": 0.701,
-   "kappa": 0.143,
-   "corelatie": 0.266
+   "acord": 0.748,
+   "kappa": 0.142,
+   "corelatie": 0.263
   },
   "grok-gemini": {
-   "acord": 0.708,
-   "kappa": 0.35,
-   "corelatie": 0.397
+   "acord": 0.704,
+   "kappa": 0.323,
+   "corelatie": 0.413
   },
   "grok-deepseek": {
-   "acord": 0.566,
-   "kappa": 0.281,
-   "corelatie": 0.415
+   "acord": 0.529,
+   "kappa": 0.236,
+   "corelatie": 0.377
   },
   "claude-gemini": {
-   "acord": 0.723,
-   "kappa": 0.177,
-   "corelatie": 0.312
+   "acord": 0.712,
+   "kappa": 0.139,
+   "corelatie": 0.276
   },
   "claude-deepseek": {
-   "acord": 0.343,
-   "kappa": 0.05,
-   "corelatie": 0.19
+   "acord": 0.346,
+   "kappa": 0.041,
+   "corelatie": 0.169
   },
   "gemini-deepseek": {
-   "acord": 0.58,
-   "kappa": 0.325,
-   "corelatie": 0.492
+   "acord": 0.562,
+   "kappa": 0.311,
+   "corelatie": 0.475
   }
  },
- "ai_independente_efectiv": 2.09,
+ "ai_independente_efectiv": 2.13,
  "contributie": {
   "toti_5": {
    "semnale": 0,
@@ -71,7 +71,7 @@
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 3.6
+   "directie_schimbata_pct": 3.3
   },
   "fara_grok": {
    "semnale": 0,
@@ -89,13 +89,13 @@
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 1.5
+   "directie_schimbata_pct": 3.6
   },
   "fara_deepseek": {
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 19.7
+   "directie_schimbata_pct": 24.1
   }
  },
  "alfa_negativ": {
