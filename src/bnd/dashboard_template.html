@@ -593,8 +593,9 @@ const I = {
   harta:'<rect x="3" y="3" width="10" height="11" rx="1"/><rect x="15" y="3" width="6" height="7" rx="1"/><rect x="15" y="12" width="6" height="9" rx="1"/><rect x="3" y="16" width="10" height="5" rx="1"/>',
   risc:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M12 8v5M12 16v.01"/>',
   comparatie:'<path d="M4 18l5-6 4 3 7-9"/><path d="M4 12l5 2 4-5 7 3" stroke-dasharray="2 2"/>',
+  formatii:'<circle cx="7" cy="8" r="2.5"/><circle cx="17" cy="8" r="2.5"/><circle cx="12" cy="16" r="2.5"/><path d="M9 9.5l2 4.5M15 9.5l-2 4.5M9.5 8h5"/>',
   arhiva:'<rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v10h14V9M10 13h4"/>'};
-const TABS = [["rezumat","Rezumat"],["comparatie","Reguli vs AI"],["grafice","Grafice"],["harta","Hartă"],["consiliu","Consiliul"],["risc","Risc"],["unic","Cont"],["top50","Top 50"],["arhiva","Arhivă"]];
+const TABS = [["rezumat","Rezumat"],["comparatie","Reguli vs AI"],["formatii","Formații AI"],["grafice","Grafice"],["harta","Hartă"],["consiliu","Consiliul"],["risc","Risc"],["unic","Cont"],["top50","Top 50"],["arhiva","Arhivă"]];
 tabs.innerHTML = TABS.map(([id,t], n) => `<button role="tab" data-id="${id}" id="tab-${id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[id]}</svg>${t}<kbd>${n + 1}</kbd></button>`).join("");
 tabs.addEventListener("click", e => { const b = e.target.closest("button"); if (b) { location.hash = b.dataset.id; window.scrollTo({top:0}); } });
 
@@ -1166,6 +1167,33 @@ function compareView() {
       <div style="margin-top:10px">${chart}</div></div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(280px,1fr))">${card(ai, "Consiliul AI (contul unic)", "50% reguli + 50% consiliu AI", rAi, aiSeries, false)}${card(ru, "Reguli matematice", "doar regulile, fără AI", rRu, ruSeries, false)}</div>
     ${portfolioPanel("control", "Pozițiile deschise · Reguli matematice")}`;
+}
+
+// Fila „Formații AI”: 14 conturi-umbră din voturile deja date de consiliu (fără apeluri AI în plus), clasate după randament.
+function formationsView() {
+  const F = (DATA.formations || []).filter(f => f.exists);
+  if (!F.length) return `<div class="panel hot"><div class="label">Formații AI</div><p class="sub">Cele 14 conturi-umbră nu au încă date. Apar după prima rulare de seară (22:50 UTC).</p></div>`;
+  const start = F.map(f => (f.start || DATA.generated).slice(0, 10)).sort()[0];
+  const ret = f => 100 * ((f.live ? f.live_equity : f.equity) / f.initial - 1);
+  const ref = (key, title) => { const a = DATA.accounts.find(x => x.key === key); if (!a || !a.exists) return null;
+    const before = a.history.filter(h => h.t.slice(0, 10) < start), base = before.length ? before[before.length - 1].equity : a.initial;
+    return {title, r: 100 * (eq(a) / base - 1), dd: a.drawdown_pct || 0, lev: a.leverage, pos: a.positions.length, ref: true}; };
+  const rows = F.map(f => ({title: f.title, point: f.point, rules: f.rules, r: ret(f), dd: f.drawdown_pct || 0, lev: f.leverage,
+    pos: f.positions, ls: `${f.longs}/${f.shorts}`, ks: f.kill_switch}));
+  [ref("unic", "Contul oficial (toți 5 AI, cu reguli)"), ref("control", "Reguli matematice (fără AI)")].forEach(x => x && rows.push(x));
+  rows.sort((a, b) => b.r - a.r);
+  const max = Math.max(...rows.map(x => Math.abs(x.r)), 0.01);
+  const tr = rows.map((x, i) => `<tr${x.ref ? ' style="opacity:.75"' : ""}><td>${x.ref ? "–" : i + 1 - rows.slice(0, i).filter(y => y.ref).length}</td>
+      <td style="min-width:160px">${esc(x.title)}${x.ks ? ' <span class="loss">oprit</span>' : ""}<div class="sub">${x.ref ? "reper" : "punctul " + x.point}</div></td>
+      <td class="${x.r >= 0 ? "gain" : "loss"}" style="white-space:nowrap">${pct(x.r)}<div style="height:4px;margin-top:3px;width:${(100 * Math.abs(x.r) / max).toFixed(0)}%;background:var(--${x.r >= 0 ? "gain" : "loss"})"></div></td>
+      <td>${money2(x.dd)}%</td><td>${x.lev == null ? "–" : money2(x.lev) + "x"}</td><td>${x.pos}${x.ls ? ` <span class="sub">(${x.ls})</span>` : ""}</td></tr>`).join("");
+  const best = rows.find(x => !x.ref);
+  const lead = rows.every(x => Math.abs(x.r - best.r) < 0.005) ? "Deocamdată toate formațiile sunt la egalitate (abia au pornit)."
+    : `Acum conduce <b>${esc(best.title)}</b> cu ${pct(best.r)}.`;
+  return `<div class="panel hot"><div class="label">Formații AI · de la ${esc(start)}</div>
+      <p style="margin:8px 0 4px;font-size:17px">${lead}</p>
+      <p class="sub">14 conturi virtuale cu aceleași piețe, limite și capital (11.183 USD) ca în contul oficial. Fiecare urmează votul altei formații de AI. „Cu reguli” = 50% regula matematică + 50% votul formației; „fără reguli” = doar votul formației. Nu costă nimic în plus: folosesc voturile pe care consiliul le dă oricum. Câștigătorul se alege după 30.11 doar dacă are și pierderea maximă (drawdown) cel mult cât contul oficial și a câștigat și în zilele de creștere, nu doar în cele de scădere; cu 16 conturi, unul iese primul și din noroc.</p></div>
+    <div class="panel"><div class="scroll"><table><tr><th>Loc</th><th>Formație</th><th>Randament</th><th>Drawdown</th><th>Expunere</th><th>Poziții (L/S)</th></tr>${tr}</table></div></div>`;
 }
 
 function bridge() {
@@ -1843,7 +1871,7 @@ function controls(key) {
 function render() {
   const key = currentKey();
   signalsBar();
-  view.innerHTML = key === "rezumat" ? summary() : key === "comparatie" ? compareView() : key === "arhiva" ? archive() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
+  view.innerHTML = key === "rezumat" ? summary() : key === "comparatie" ? compareView() : key === "formatii" ? formationsView() : key === "arhiva" ? archive() : key === "consiliu" ? council(DATA.council) : key === "top50" ? top50()
     : key === "grafice" ? tvView() : key === "harta" ? hmView() : key === "risc" ? riskView()
     : account(DATA.accounts.find(a => a.key === names[key]));
   if (key === "grafice") requestAnimationFrame(drawAll);
