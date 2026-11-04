@@ -137,3 +137,19 @@ def test_scor_provizoriu_din_voturi(tmp_path):
     s = fm.vote_score(str(reg), {"BITCOIN": [0.9, "t"], "GOLD": [0.95, "t"]}, by["p3-gpt"])
     assert s["calls"] == 2 and s["hit_rate"] == 0.5 and abs(s["mean_pct"] - 2.5) < 1e-9
     assert fm.vote_score(None, {}, by["p3-gpt"]) is None
+
+
+def test_coloana_agresiv_leverage_si_lichidare(tmp_path):
+    reg = tmp_path / "registry.sqlite"
+    _registry(reg, {"BITCOIN": {"gpt": {"final": "SELL"}}, "GOLD": {"gpt": {"final": "BUY"}}})
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    # BITCOIN −10% (SELL câștigă 10%), GOLD −5% (BUY pierde 5%)
+    s = fm.vote_score(str(reg), {"BITCOIN": [0.9, "t"], "GOLD": [0.95, "t"]}, by["p3-gpt"])
+    assert s["pnl"]["1"] == 5.0                       # +10 − 5
+    assert s["pnl"]["2"] == 10.0                      # +20 − 10
+    assert s["pnl"]["5"] == 25.0                      # +50 − 25
+    assert s["pnl"]["10"] == 50.0                     # +100 − 50 (−5% nu atinge pragul de lichidare de −9%)
+    assert s["liquidated"] == {"2": 0, "5": 0, "10": 0}
+    s = fm.vote_score(str(reg), {"BITCOIN": [0.9, "t"], "GOLD": [0.85, "t"]}, by["p3-gpt"])
+    assert s["liquidated"]["10"] == 1 and s["pnl"]["10"] == 0.0     # +100 pe BTC, −100 (lichidat) pe GOLD
+    assert s["liquidated"]["5"] == 0 and s["pnl"]["5"] == -25.0     # +50 − 75

@@ -63,6 +63,9 @@ SIDE = {"BUY": 1, "SELL": -1}
 CONSENSUS = 4            # P8: câți din 5 trebuie să voteze la fel
 MIN_SETTLED = 20         # P7: sub atâtea apeluri încheiate pentru FIECARE agent, ponderile rămân egale
 CRYPTO_CLASSES = ("crypto", "memecoin")
+STAKE_USD = 100.0                         # scorul din voturi: miza (marja) pusă pe fiecare semnal
+LEVERAGES = (1, 2, 5, 10)                 # coloana „agresiv”: aceeași miză, cu leverage de la 2x în sus
+MAINTENANCE = 0.1                         # lichidare când pierderea atinge ~90% din marjă (mișcare adversă ≈ 0,9 / L)
 
 
 def threshold(members: int) -> int:
@@ -177,6 +180,7 @@ def vote_score(registry: str, quotes: dict, f: dict) -> dict | None:
     finally:
         db.close()
     calls, hits, total = 0, 0, 0.0
+    pnl, liquidated = dict.fromkeys(LEVERAGES, 0.0), dict.fromkeys(LEVERAGES, 0)
     for day in sorted({did[:10] for did in by}):
         todays = {decisions[d][0]: v for d, v in by.items() if d[:10] == day and d in decisions}
         for coin, signal in signals_for(f, todays, agent_weights(registry, day)).items():
@@ -189,10 +193,19 @@ def vote_score(registry: str, quotes: dict, f: dict) -> dict | None:
                 continue
             calls += 1
             hits += signal * move > 0
-            total += (1 if signal > 0 else -1) * move
+            side_move = (1 if signal > 0 else -1) * move
+            total += side_move
+            for lev in LEVERAGES:
+                if lev > 1 and side_move <= -(1 - MAINTENANCE) / lev:     # lichidat: se pierde toată miza
+                    pnl[lev] -= STAKE_USD
+                    liquidated[lev] += 1
+                else:
+                    pnl[lev] += STAKE_USD * lev * side_move
     if not calls:
         return {"calls": 0}
-    return {"calls": calls, "hit_rate": hits / calls, "mean_pct": 100 * total / calls}
+    return {"calls": calls, "hit_rate": hits / calls, "mean_pct": 100 * total / calls,
+            "stake": STAKE_USD, "pnl": {str(k): round(v, 2) for k, v in pnl.items()},
+            "liquidated": {str(k): v for k, v in liquidated.items() if k > 1}}
 
 
 def main(argv=None) -> int:
