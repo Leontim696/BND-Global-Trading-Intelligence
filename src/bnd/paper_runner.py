@@ -30,7 +30,7 @@ from datetime import datetime, timezone
 from math import log
 from pathlib import Path
 
-from . import audit_log
+from . import audit_log, recycling
 from .backtest_cli import _factory, _pairs, _split_list
 from .cross_sectional import cross_momentum_factory
 from .market_data import MarketDataError, load_csv
@@ -68,6 +68,8 @@ class RunnerConfig:
     # Opțional (cerut pe 4.11 pentru un cont-umbră): stop fix la x% de la preț în loc de x ATR, și take profit la y%.
     stop_pct: float | None = None
     take_profit_pct: float | None = None
+    # Opțional: ce se face cu capitalul eliberat de take profit/stop ("obisnuit" sau "reciclare"), vezi recycling.py.
+    recycle: str | None = None
     # Stay this fraction inside every engine limit, so rounding and
     # moving prices do not turn a planned order into a rejection.
     margin: float = 0.98
@@ -302,6 +304,14 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
                     mark = engine.mark(market.name)
                     weights[market.name] = (held.get(market.name, 0.0) * mark["price"] / equity
                                             if mark and equity > 0 else 0.0)
+        if config.recycle:
+            rules = recycling.RecycleRules(mode=config.recycle)
+            exits = recycling.recent_exits(engine.fills(), now, rules.cooldown_days)
+            past = [e["payload"]["equity"] for e in engine.journal("daily_run")] + [engine.equity()]
+            blocked = recycling.guard(past, account["peak_equity"], rules)
+            weights, report["recycling"] = recycling.adjust(
+                weights, signals, data, exits, rules, config.portfolio.max_weight,
+                config.portfolio.max_leverage, blocked)
         weights = fit_limits(engine, weights, config.margin)
         report.update(signals=signals, weights=weights,
                       orders=rebalance(engine, data, weights, config, now))
@@ -392,7 +402,7 @@ DEFAULTS = {
     "strategy": "regime_switch", "members": None, "param": [], "portfolio_vol": 15.0,
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
-    "max_sector": None, "stop_pct": None, "take_profit_pct": None,
+    "max_sector": None, "stop_pct": None, "take_profit_pct": None, "recycle": None,
 }
 
 
@@ -429,6 +439,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--stop-atr", type=float)
     parser.add_argument("--stop-pct", type=float, help="stop fix la x%% de la preț (în loc de x ATR), la crearea contului")
     parser.add_argument("--take-profit-pct", type=float, help="take profit la y%% de la preț, la crearea contului")
+    parser.add_argument("--recycle", choices=["obisnuit", "reciclare"],
+                        help="capitalul eliberat de take profit/stop: rămâne lichid sau se reciclează (la crearea contului)")
     parser.add_argument("--financing", type=float,
                         help="annual %% on exposure above equity (margin loan), default 5; "
                              "applies when the account is created")
@@ -510,7 +522,7 @@ def _config(settings) -> RunnerConfig:
             rebalance_threshold=settings["rebalance"] / 100,
             allow_short=not settings["no_shorts"]),
         stop_atr=settings["stop_atr"], stop_pct=settings.get("stop_pct"),
-        take_profit_pct=settings.get("take_profit_pct"))
+        take_profit_pct=settings.get("take_profit_pct"), recycle=settings.get("recycle"))
 
 
 def _read_signals(path) -> dict:
