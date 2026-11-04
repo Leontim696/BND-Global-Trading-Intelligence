@@ -271,6 +271,26 @@ def vote_score(registry: str, quotes: dict, f: dict) -> dict | None:
             "liquidated": {str(k): v for k, v in liquidated.items() if k > 1}}
 
 
+def snapshot(folder, quotes: dict, now: str) -> list[dict]:
+    """Instantaneul orar al conturilor-umbră (valoare la prețul de acum), ca la raportul orar al contului unic."""
+    from .dashboard import read_formations
+    rows = []
+    for r in read_formations(folder, quotes):
+        if not r.get("exists"):
+            continue
+        value = r["live_equity"] if r.get("live") else r["equity"]
+        rows.append({"time": now, "key": r["key"], "title": r["title"], "value": round(value, 2),
+                     "pnl": round(value - r["initial"], 2), "return_pct": round(100 * (value / r["initial"] - 1), 4),
+                     "positions": r["positions"], "longs": r["longs"], "shorts": r["shorts"],
+                     "leverage": round(r["leverage"], 4), "drawdown_pct": round(r["drawdown_pct"], 4),
+                     "kill_switch": r["kill_switch"]})
+    return rows
+
+
+CSV_COLUMNS = ("time", "key", "value", "pnl", "return_pct", "positions", "longs", "shorts", "leverage",
+               "drawdown_pct", "kill_switch")
+
+
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="formations")
     parser.add_argument("--list", action="store_true")
@@ -279,7 +299,20 @@ def main(argv=None) -> int:
     parser.add_argument("--day", help="AAAA-LL-ZZ (UTC), implicit azi")
     parser.add_argument("--out-dir")
     parser.add_argument("--data-dir", help="lumânările zilnice (pentru semnalul regulii la P10)")
+    parser.add_argument("--snapshot", help="folderul ramurii formatii-ai: scrie instantaneul orar (JSON + rânduri CSV)")
+    parser.add_argument("--quotes", help="quotes.json (prețurile de acum), pentru --snapshot")
+    parser.add_argument("--out", help="fișierul JSON pentru --snapshot; rândurile CSV merg alături (.csv)")
     args = parser.parse_args(argv)
+    if args.snapshot:
+        quotes = json.loads(Path(args.quotes).read_text())["quotes"] if args.quotes and Path(args.quotes).exists() else {}
+        now = datetime.now(timezone.utc).isoformat(timespec="minutes")
+        rows = snapshot(args.snapshot, quotes, now)
+        out = Path(args.out)
+        out.write_text(json.dumps(rows, indent=1, ensure_ascii=False), encoding="utf-8")
+        out.with_suffix(".csv").write_text("".join(",".join(str(r[c]) for c in CSV_COLUMNS) + "\n" for r in rows),
+                                           encoding="utf-8")
+        print(f"{len(rows)} conturi în instantaneu")
+        return 0
     if args.list:
         for f in FORMATIONS:
             print(f"{f['key']}\t{f['strategy']}\t{f['title']}\t{f.get('settings', STANDARD)}")

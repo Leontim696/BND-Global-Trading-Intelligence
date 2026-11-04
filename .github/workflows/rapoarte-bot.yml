@@ -57,6 +57,16 @@ jobs:
           fi
       - name: Current prices for the phone app
         run: python -m src.bnd.quotes_snapshot --out raport/quotes.json || echo "::warning::cursurile de acum nu s-au putut citi"
+      # Cerut pe 4.11: și conturile „Formații AI” primesc instantaneul orar (valoarea la prețul de acum),
+      # ca să avem cât mai multe date pentru 30.11. Doar citire; nu tranzacționează.
+      - name: Hourly snapshot of the Formații AI accounts
+        run: |
+          mkdir -p formatii
+          if git fetch -q --depth=1 origin formatii-ai 2>/dev/null; then
+            git archive FETCH_HEAD | tar -x -C formatii
+            python -m src.bnd.formations --snapshot formatii --quotes raport/quotes.json --out raport/formatii.json \
+              || echo "::warning::instantaneul formațiilor nu s-a putut face"
+          fi
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: bnd-raport-${{ github.run_id }}
@@ -64,6 +74,8 @@ jobs:
             raport/raport.md
             raport/raport.json
             raport/quotes.json
+            raport/formatii.json
+            raport/formatii.csv
           retention-days: 14
 
   # Separate job: the write token never runs project code.
@@ -100,6 +112,15 @@ jobs:
             if [ "$LIGHT" != "true" ]; then cp ../raport/raport.md "rapoarte/${stamp}.md"; fi
             cp ../raport/raport.md rapoarte/LATEST.md
             if [ -f ../raport/quotes.json ]; then cp ../raport/quotes.json rapoarte/quotes.json; fi
+            if [ -f ../raport/formatii.json ]; then
+              mkdir -p rapoarte/formatii
+              cp ../raport/formatii.json "rapoarte/formatii/${stamp}.json"
+              cp ../raport/formatii.json rapoarte/formatii/LATEST.json
+              if [ ! -f rapoarte/formatii/istoric.csv ]; then
+                echo "time,key,value,pnl,return_pct,positions,longs,shorts,leverage,drawdown_pct,kill_switch" > rapoarte/formatii/istoric.csv
+              fi
+              cat ../raport/formatii.csv >> rapoarte/formatii/istoric.csv
+            fi
             git add -A
             git commit -q -m "Raport ${stamp}"
             if git push -q origin HEAD:refs/heads/paper-trading; then pushed=1; break; fi
