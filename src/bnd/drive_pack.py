@@ -27,6 +27,25 @@ VOTE_RO = {"BUY": "cumpără", "SELL": "vinde", "HOLD": "așteaptă"}
 SIDE_RO = {"BUY": "cumpără", "SELL": "vinde (short)"}
 
 
+def side_label(order: dict) -> str:
+    """Direcția pe înțeles, după ponderea de dinainte și de după: închidere, reducere, deschidere sau mărire."""
+    side = order.get("side")
+    before, after = order.get("weight_from") or 0.0, order.get("weight_to") or 0.0
+    if side == "SELL":
+        if before > 0:
+            if after > 0:
+                return "vinde (reduce long)"
+            return "vinde (închide long)" if after == 0 else "vinde (închide long, deschide short)"
+        return "vinde (mărește short)" if before < 0 else "vinde (short)"
+    if side == "BUY":
+        if before < 0:
+            if after < 0:
+                return "cumpără (reduce short)"
+            return "cumpără (închide short)" if after == 0 else "cumpără (închide short, deschide long)"
+        return "cumpără (mărește long)" if before > 0 else "cumpără"
+    return SIDE_RO.get(side, str(side))
+
+
 def parse_council(text: str) -> list[dict]:
     """[{market, decision, lean, price, bot, votes: [{agent, vote, confidence, reason}]}] din raportul zilei."""
     markets, current = [], None
@@ -113,7 +132,7 @@ def investments_html(day: str, run: dict, council_signals: dict, council_votes: 
         ai = council_signals.get(market)
         rule = None if combined is None else (2 * combined - ai if ai is not None else combined)
         net = (council_votes or {}).get(market)
-        side = SIDE_RO.get(o["side"], o["side"])
+        side = side_label(o)
         rows.append(f"<tr><td>{esc(market)}</td><td>{side}</td><td>{o['quantity']:.4g}</td><td>{o['price']:.4g}</td>"
                     f"<td>{100 * o['weight_to']:+.1f}%</td><td>{'' if o.get('stop_loss') is None else format(o['stop_loss'], '.4g')}</td>"
                     f"<td>{o['status']}</td></tr>")

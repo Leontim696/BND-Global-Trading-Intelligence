@@ -121,3 +121,15 @@ def test_investments_count_open_positions_from_the_account_and_never_claim_zero_
                     "--unic", str(path), "--out", str(tmp_path / "o")]) == 0
     page = (tmp_path / "o" / "01 Investiții 2026-11-02.html").read_text(encoding="utf-8")
     assert "Poziții deschise: 2 (BITCOIN long, XRP short)." in page
+
+
+def test_side_label_distinge_inchiderea_de_short():
+    from src.bnd.drive_pack import side_label
+    assert side_label({"side": "SELL", "weight_from": 0.026, "weight_to": 0.0}) == "vinde (închide long)"
+    assert side_label({"side": "SELL", "weight_from": 0.05, "weight_to": 0.02}) == "vinde (reduce long)"
+    assert side_label({"side": "SELL", "weight_from": 0.02, "weight_to": -0.02}) == "vinde (închide long, deschide short)"
+    assert side_label({"side": "SELL", "weight_from": 0.0, "weight_to": -0.03}) == "vinde (short)"
+    assert side_label({"side": "SELL", "weight_from": -0.01, "weight_to": -0.03}) == "vinde (mărește short)"
+    assert side_label({"side": "BUY", "weight_from": -0.03, "weight_to": -0.01}) == "cumpără (reduce short)"
+    assert side_label({"side": "BUY", "weight_from": -0.03, "weight_to": 0.0}) == "cumpără (închide short)"
+    assert side_label({"side": "BUY", "weight_from": 0.0, "weight_to": 0.03}) == "cumpără"
