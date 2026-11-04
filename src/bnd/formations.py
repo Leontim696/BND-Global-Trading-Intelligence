@@ -12,6 +12,7 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
     P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
     P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
+    P14/P15 pereche: take profit +5%, capitalul eliberat lăsat lichid (14) sau reciclat cu protecții (15)
     P12 ca oficial + take profit +5% și stop −1%; P13 ca oficial + take profit +5% cu stopul normal (3×ATR)
     P11 la fel ca P10, dar agresiv: până la 3x (plafonul motorului), 50% pe piață, volatilitate-țintă 30%
     P10 miză după convingere: toți 5 + regula; semnal puternic (≥4/5 AI și regula în aceeași direcție) = miză
@@ -78,6 +79,13 @@ def _formations() -> list[dict]:
     out.append({"key": "p13-tp5-stop-normal", "point": 13, "members": AGENTS, "rules": True, "kind": "fix",
                 "strategy": "hibrid", "title": "Ca oficial, cu take profit +5% (stop normal 3×ATR)",
                 "settings": STANDARD + " --take-profit-pct 5"})
+    # P14–P15 (cerut pe 4.11): test pereche pentru reciclarea capitalului, ACELEAȘI limite de risc și semnale.
+    out.append({"key": "p14-tp-obisnuit", "point": 14, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Take profit +5%, capital eliberat lăsat lichid (obișnuit)",
+                "settings": STANDARD + " --take-profit-pct 5 --recycle obisnuit"})
+    out.append({"key": "p15-tp-reciclare", "point": 15, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Take profit +5%, capital eliberat reciclat (Adaptive Position Recycling)",
+                "settings": STANDARD + " --take-profit-pct 5 --recycle reciclare"})
     return out
 
 

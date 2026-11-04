@@ -38,7 +38,7 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
 
-## Formații AI (21 de conturi-umbră, din 4.11.2026)
+## Formații AI (23 de conturi-umbră, din 4.11.2026)
 
 Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
 (și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
@@ -60,6 +60,10 @@ le dă oricum, salvate pe fiecare agent în `registry.sqlite`.
 | 11 | ca 10, dar AGRESIV: până la 3x (plafonul motorului), 50% pe piață, 100% pe clasă, volatilitate-țintă 30%; marjele ESMA (crypto 50%, acțiuni 20%) limitează oricum leverage-ul pe piață; opririle de siguranță (−5%/zi, −25% de la vârf) rămân | cu reguli | 1 |
 | 12 | ca contul oficial (toți 5 AI + regula), dar fiecare poziție nouă are take profit +5% și stop fix −1% (cerut pe 4.11, ideea proprietarului) | cu reguli | 1 |
 | 13 | ca contul oficial, cu take profit +5%, dar stopul normal (3×ATR) | cu reguli | 1 |
+| 14 | Reciclare, varianta OBIȘNUITĂ: take profit +5%, stop normal; după un TP/stop piața stă 5 zile în pauză pe aceeași direcție și capitalul eliberat rămâne lichid | cu reguli | 1 |
+| 15 | Reciclare, varianta „Adaptive Position Recycling” (`src/bnd/recycling.py`): ca 14, dar capitalul eliberat se mută la rularea zilnică pe următoarele cele mai bune semnale (semnal/volatilitate), cu: expunere ≤ 2x, ≤ 25% pe piață, grup corelat (>0,7 pe 60 de zile, aceeași direcție) ≤ 50% din cont, nimic nou după o zi cu ≥ −2%, reciclare oprită dacă pe 10 rulări contul a pierdut ≥ 3% sau e ≥ 8% sub vârf, cel mult 10 poziții reciclate pe zi | cu reguli | 1 |
+
+14 și 15 au aceleași semnale și aceleași limite de risc; singura diferență e ce se face cu capitalul eliberat. Comparația de la 30.11: profit brut și net (după comisioane, alunecare, finanțare), pierdere maximă, eficiența capitalului (profit pe 1 $ expus în medie, rotație, comisioane plătite) și numărul de tranzacții. Fiecare rulare salvează în `runs/<zi>.json` blocul `recycling` (ce s-a eliberat, ce s-a reciclat, ce s-a blocat și de ce).
 
 La 12 și 13: după un take profit sau un stop, poziția se poate redeschide a doua zi dacă semnalul rămâne (tranzacție nouă, cu take profit și stop noi). Dacă în aceeași zi se ating și stopul și take profit-ul, motorul socotește stopul (prudent). Take profit-ul și stopul se calculează față de ultima închidere, iar ordinul se execută la deschiderea următoare.
 
