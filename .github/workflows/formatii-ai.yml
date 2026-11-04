@@ -1,6 +1,6 @@
-name: Formații AI (18 conturi-umbră, virtual)
+name: Formații AI (19 conturi-umbră, virtual)
 
-# Cerut de proprietar pe 4.11.2026. 18 conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto + miză după convingere), fiecare cu altă formație de AI
+# Cerut de proprietar pe 4.11.2026. 19 conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto + miză după convingere), fiecare cu altă formație de AI
 # (GPT+Grok, fiecare AI singur, GPT+Claude+Grok; cu reguli și fără reguli), ca să vedem după 30.11 ce
 # AI sau ce grupă de AI ia cele mai bune decizii. NU face niciun apel AI: refolosește voturile pe care
 # consiliul zilnic le-a dat deja (registry.sqlite de pe consiliu-umbra), prin src/bnd/formations.py.
@@ -80,7 +80,7 @@ jobs:
         run: |
           set -uo pipefail
           failed=0
-          while IFS=$'\t' read -r key strategy title; do
+          while IFS=$'\t' read -r key strategy title settings; do
             if [ -n "$ONLY" ] && [ "$key" != "$ONLY" ]; then continue; fi
             dir="state/$key"; mkdir -p "$dir" "prev/$key"
             args=(); flags=(--new)
@@ -89,8 +89,8 @@ jobs:
               [ -f "$dir/audit.jsonl" ] && cp "$dir/audit.jsonl" "prev/$key/"
               flags=(--previous "prev/$key")
             else
-              args+=(--capital "$CAPITAL" --universe unic --strategy "$strategy"
-                     --max-leverage 2 --max-weight 0.25 --max-sector 60 --portfolio-vol 15 --financing 5)
+              read -r -a extra <<< "$settings"     # setările vin din src/bnd/formations.py (STANDARD sau AGGRESSIVE)
+              args+=(--capital "$CAPITAL" --universe unic --strategy "$strategy" "${extra[@]}")
             fi
             if python -m src.bnd.paper_runner --state "$dir/paper.sqlite" --data-dir data \
                  --signals "signals/$key.json" --audit-log "$dir/audit.jsonl" \

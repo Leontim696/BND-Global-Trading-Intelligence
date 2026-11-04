@@ -12,6 +12,7 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
     P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
     P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
+    P11 la fel ca P10, dar agresiv: până la 3x (plafonul motorului), 50% pe piață, volatilitate-țintă 30%
     P10 miză după convingere: toți 5 + regula; semnal puternic (≥4/5 AI și regula în aceeași direcție) = miză
         întreagă (până la 25% din cont pe piață), semnal mediu = jumătate, slab sau contradictoriu = nimic
 
@@ -37,6 +38,13 @@ AGENTS = ("gpt", "grok", "claude", "gemini", "deepseek")
 LABEL = {"gpt": "GPT", "grok": "Grok", "claude": "Claude", "gemini": "Gemini", "deepseek": "DeepSeek"}
 
 
+# Setările conturilor-umbră (la creare). Standard = exact ca în contul unic.
+STANDARD = "--max-leverage 2 --max-weight 0.25 --max-sector 60 --portfolio-vol 15 --financing 5"
+# P11 agresiv (cerut pe 4.11): plafonul motorului e 3x, iar marjele ESMA (crypto 50%, acțiuni 20%) limitează oricum
+# leverage-ul pe piață; opririle de siguranță (−5% pe zi, −25% de la vârf) rămân aceleași.
+AGGRESSIVE = "--max-leverage 3 --max-weight 0.5 --max-sector 100 --portfolio-vol 30 --financing 5"
+
+
 def _formations() -> list[dict]:
     out = []
 
@@ -59,6 +67,9 @@ def _formations() -> list[dict]:
     add(9, "p9-doar-crypto", AGENTS, True, "crypto", "Toți 5 doar la crypto și memecoin, cu reguli")
     out.append({"key": "p10-convingere", "point": 10, "members": AGENTS, "rules": True, "kind": "convingere",
                 "strategy": "ai_council", "title": "Miză după convingere (toți 5 + regula)"})
+    out.append({"key": "p11-convingere-agresiv", "point": 11, "members": AGENTS, "rules": True, "kind": "convingere",
+                "strategy": "ai_council", "title": "Miză după convingere, agresiv (până la 3x)",
+                "settings": AGGRESSIVE})
     return out
 
 
@@ -271,7 +282,7 @@ def main(argv=None) -> int:
     args = parser.parse_args(argv)
     if args.list:
         for f in FORMATIONS:
-            print(f"{f['key']}\t{f['strategy']}\t{f['title']}")
+            print(f"{f['key']}\t{f['strategy']}\t{f['title']}\t{f.get('settings', STANDARD)}")
         return 0
     if not args.registry or not args.out_dir:
         parser.error("--registry și --out-dir sunt obligatorii")
