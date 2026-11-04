@@ -372,3 +372,11 @@ def test_rules_versus_ai_tab_compares_the_two_accounts():
     assert 'portfolioPanel("control", "Pozițiile deschise · Reguli matematice")' in t
     titles = {k: title for k, title, _ in dashboard.ACCOUNTS}
     assert titles["control"] == "Reguli matematice" and "arhivat" in titles["paper"]
+
+
+def test_comutator_de_limba_ro_de_en():
+    from pathlib import Path
+    t = Path("src/bnd/dashboard_template.html").read_text()
+    assert 'id="lang"' in t and 'const LANGS = ["ro", "de", "en"]' in t and "translateTree(document.body)" in t
+    assert t.index('id="lang"') < t.index('id="pal-btn"')          # lângă lupă
+    assert '"Formații AI": ["KI-Formationen", "AI formations"]' in t
