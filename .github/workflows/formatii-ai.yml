@@ -1,6 +1,6 @@
-name: Formații AI (14 conturi-umbră, virtual)
+name: Formații AI (17 conturi-umbră, virtual)
 
-# Cerut de proprietar pe 4.11.2026. 14 conturi-umbră virtuale, fiecare cu altă formație de AI
+# Cerut de proprietar pe 4.11.2026. 17 conturi-umbră virtuale (14 ale lui + 3 propuse: ponderat, consens 4/5, doar crypto), fiecare cu altă formație de AI
 # (GPT+Grok, fiecare AI singur, GPT+Claude+Grok; cu reguli și fără reguli), ca să vedem după 30.11 ce
 # AI sau ce grupă de AI ia cele mai bune decizii. NU face niciun apel AI: refolosește voturile pe care
 # consiliul zilnic le-a dat deja (registry.sqlite de pe consiliu-umbra), prin src/bnd/formations.py.
@@ -11,6 +11,11 @@ on:
   schedule:
     - cron: '50 22 * * *'
   workflow_dispatch:
+    inputs:
+      day:
+        description: 'Ziua voturilor consiliului (AAAA-LL-ZZ, gol = azi). Doar pentru pornire, de ex. cu voturile de ieri.'
+        default: ''
+        type: string
 
 permissions:
   contents: read
@@ -27,6 +32,7 @@ jobs:
       BND_ALLOW_LIVE_AI: "false"
       BND_TRADING_MODE: PAPER
       CAPITAL: "11183"
+      DAY: ${{ inputs.day }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
@@ -39,7 +45,7 @@ jobs:
       - name: Build the formation signals (no AI calls)
         run: |
           coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
-          python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals
+          python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals ${DAY:+--day "$DAY"}
       - name: Download the candles (ETF/forex and Yahoo crypto, then Binance coins)
         run: |
           names="$(python -c "from src.bnd.universe import UNIVERSES; print(','.join(m.name for m in UNIVERSES['unic']))")"

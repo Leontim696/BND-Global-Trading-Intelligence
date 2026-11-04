@@ -9,6 +9,9 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P4  fiecare AI singur      fără reguli (5 conturi)
     P5  GPT + Claude + Grok    cu reguli
     P6  GPT + Claude + Grok    fără reguli
+    P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
+    P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
+    P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
 
 Semnalul unei formații cu n membri pe o piață:
     net = voturi BUY − voturi SELL ale membrilor (votul final; dacă lipsește, cel inițial; HOLD = 0)
@@ -35,11 +38,11 @@ LABEL = {"gpt": "GPT", "grok": "Grok", "claude": "Claude", "gemini": "Gemini", "
 def _formations() -> list[dict]:
     out = []
 
-    def add(point, key, members, rules):
+    def add(point, key, members, rules, kind="fix", title=None):
         names = " + ".join(LABEL[m] for m in members)
-        out.append({"key": key, "point": point, "members": tuple(members), "rules": rules,
+        out.append({"key": key, "point": point, "members": tuple(members), "rules": rules, "kind": kind,
                     "strategy": "hibrid" if rules else "ai_council",
-                    "title": f"{names}, {'cu reguli' if rules else 'fără reguli'}"})
+                    "title": title or f"{names}, {'cu reguli' if rules else 'fără reguli'}"})
 
     add(1, "p1-gpt-grok", ("gpt", "grok"), True)
     add(2, "p2-gpt-grok-liber", ("gpt", "grok"), False)
@@ -49,11 +52,17 @@ def _formations() -> list[dict]:
         add(4, f"p4-{agent}-liber", (agent,), False)
     add(5, "p5-gpt-claude-grok", ("gpt", "claude", "grok"), True)
     add(6, "p6-gpt-claude-grok-liber", ("gpt", "claude", "grok"), False)
+    add(7, "p7-ponderat", AGENTS, True, "ponderat", "Toți 5, ponderați după rezultate, cu reguli")
+    add(8, "p8-consens", AGENTS, True, "consens", "Toți 5, doar la consens 4/5, cu reguli")
+    add(9, "p9-doar-crypto", AGENTS, True, "crypto", "Toți 5 doar la crypto și memecoin, cu reguli")
     return out
 
 
 FORMATIONS = _formations()
 SIDE = {"BUY": 1, "SELL": -1}
+CONSENSUS = 4            # P8: câți din 5 trebuie să voteze la fel
+MIN_SETTLED = 20         # P7: sub atâtea apeluri încheiate pentru FIECARE agent, ponderile rămân egale
+CRYPTO_CLASSES = ("crypto", "memecoin")
 
 
 def threshold(members: int) -> int:
@@ -66,6 +75,61 @@ def formation_signal(votes: dict, members) -> float:
     if net == 0:
         return 0.0
     return (1.0 if net > 0 else -1.0) * min(1.0, abs(net) / threshold(len(members)))
+
+
+def weighted_signal(votes: dict, weights: dict) -> float:
+    """P7: media ponderată a voturilor; cu ponderi egale e exact formula contului unic (net/2 la 5 agenți)."""
+    total = sum(weights.get(a, 0.0) for a in AGENTS)
+    if total <= 0:
+        return 0.0
+    mean = sum(weights.get(a, 0.0) * SIDE.get(votes.get(a, "HOLD"), 0) for a in AGENTS) / total
+    return max(-1.0, min(1.0, mean / (threshold(len(AGENTS)) / len(AGENTS))))
+
+
+def agent_weights(registry: str, day: str) -> dict:
+    """P7: ponderea fiecărui AI = avantajul lui (rata de reușită − 50%) pe deciziile ÎNCHEIATE înainte de `day`.
+    Doar informație din trecut. Până când fiecare agent are MIN_SETTLED apeluri încheiate, ponderile sunt egale."""
+    db = sqlite3.connect(f"file:{registry}?mode=ro", uri=True)
+    try:
+        rows = db.execute("SELECT v.agent, v.stage, v.vote, d.outcome_return, d.id FROM votes v JOIN decisions d"
+                          " ON d.id = v.decision_id WHERE d.settled_at IS NOT NULL AND d.outcome_return IS NOT NULL"
+                          " AND d.settled_at < ?", (day,)).fetchall()
+    finally:
+        db.close()
+    final = {}
+    for agent, stage, vote, outcome, did in sorted(rows, key=lambda r: r[1] != "initial"):
+        final[(agent, did)] = (vote, outcome)
+    calls, hits = dict.fromkeys(AGENTS, 0), dict.fromkeys(AGENTS, 0)
+    for (agent, _), (vote, outcome) in final.items():
+        side = SIDE.get(vote, 0)
+        if agent in calls and side:
+            calls[agent] += 1
+            hits[agent] += side * outcome > 0
+    if any(calls[a] < MIN_SETTLED for a in AGENTS):
+        return dict.fromkeys(AGENTS, 1.0)
+    edge = {a: max(0.0, hits[a] / calls[a] - 0.5) for a in AGENTS}
+    return edge if sum(edge.values()) > 0 else dict.fromkeys(AGENTS, 1.0)
+
+
+def _asset_class(symbol: str) -> str:
+    from .council_daily import ASSET_CLASS
+    return ASSET_CLASS.get(symbol, "alta")
+
+
+def signals_for(f: dict, votes: dict, weights: dict) -> dict:
+    """Semnalele unei formații; o piață care lipsește din rezultat = contul hibrid urmează doar regula acolo."""
+    if f["kind"] == "ponderat":
+        return {c: weighted_signal(v, weights) for c, v in votes.items()}
+    if f["kind"] == "consens":
+        out = {}
+        for c, v in votes.items():
+            net = sum(SIDE.get(v.get(a, "HOLD"), 0) for a in AGENTS)
+            if abs(net) >= CONSENSUS:
+                out[c] = 1.0 if net > 0 else -1.0
+        return out
+    if f["kind"] == "crypto":
+        return {c: formation_signal(v, AGENTS) for c, v in votes.items() if _asset_class(c) in CRYPTO_CLASSES}
+    return {c: formation_signal(v, f["members"]) for c, v in votes.items()}
 
 
 def day_votes(registry: str, coins, day: str) -> tuple[dict, list]:
@@ -91,10 +155,44 @@ def day_votes(registry: str, coins, day: str) -> tuple[dict, list]:
 
 def build_all(registry: str, coins, day: str) -> dict:
     votes, missing = day_votes(registry, coins, day)
+    weights = agent_weights(registry, day)
     return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]),
-                       "signals": {coin: formation_signal(v, f["members"]) for coin, v in votes.items()},
-                       "missing": missing}
+                       "signals": signals_for(f, votes, weights), "missing": missing,
+                       **({"weights": weights} if f["kind"] == "ponderat" else {})}
             for f in FORMATIONS}
+
+
+def vote_score(registry: str, quotes: dict, f: dict) -> dict | None:
+    """Scor provizoriu, din date reale: fiecare semnal al formației (din 31.10 încoace) comparat cu prețul de acum.
+    Câte un pariu virtual pe semnal, fără leverage și fără reguli; doar ca să se vadă ceva din prima zi."""
+    if not registry or not Path(registry).exists():
+        return None
+    db = sqlite3.connect(f"file:{registry}?mode=ro", uri=True)
+    try:
+        decisions = {i: (sym, price) for i, sym, price in db.execute("SELECT id, symbol, price FROM decisions")}
+        by = {}
+        for did, agent, stage, vote in sorted(db.execute("SELECT decision_id, agent, stage, vote FROM votes").fetchall(),
+                                              key=lambda r: r[2] != "initial"):
+            by.setdefault(did, {})[agent] = vote
+    finally:
+        db.close()
+    calls, hits, total = 0, 0, 0.0
+    for day in sorted({did[:10] for did in by}):
+        todays = {decisions[d][0]: v for d, v in by.items() if d[:10] == day and d in decisions}
+        for coin, signal in signals_for(f, todays, agent_weights(registry, day)).items():
+            price = decisions.get(f"{day}:{coin}", (None, 0))[1]
+            now = (quotes.get(coin) or [0])[0]
+            if not signal or not price or price <= 0 or not now:
+                continue
+            move = now / price - 1
+            if abs(move) > 0.8:          # preț greșit (ex. memecoin cu 0,0000), nu îl socotim
+                continue
+            calls += 1
+            hits += signal * move > 0
+            total += (1 if signal > 0 else -1) * move
+    if not calls:
+        return {"calls": 0}
+    return {"calls": calls, "hit_rate": hits / calls, "mean_pct": 100 * total / calls}
 
 
 def main(argv=None) -> int:
@@ -115,6 +213,11 @@ def main(argv=None) -> int:
         print("Error: registrul consiliului lipsește", file=sys.stderr)
         return 2
     day = args.day or datetime.now(timezone.utc).date().isoformat()
+    try:
+        datetime.strptime(day, "%Y-%m-%d")
+    except ValueError:
+        print("Error: --day trebuie să fie AAAA-LL-ZZ", file=sys.stderr)
+        return 2
     coins = [c.strip().upper() for c in args.coins.split(",") if c.strip()]
     result = build_all(args.registry, coins, day)
     out = Path(args.out_dir)
