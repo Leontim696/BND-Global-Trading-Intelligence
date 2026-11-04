@@ -26,8 +26,8 @@ def _registry(path, votes):
 
 
 def test_14_formatii_cu_strategii_corecte():
-    assert len(fm.FORMATIONS) == 18
-    assert len({f["key"] for f in fm.FORMATIONS}) == 18
+    assert len(fm.FORMATIONS) == 19
+    assert len({f["key"] for f in fm.FORMATIONS}) == 19
     by = {f["key"]: f for f in fm.FORMATIONS}
     assert by["p1-gpt-grok"]["strategy"] == "hibrid" and by["p2-gpt-grok-liber"]["strategy"] == "ai_council"
     assert by["p5-gpt-claude-grok"]["members"] == ("gpt", "claude", "grok")
@@ -60,14 +60,14 @@ def test_cli_scrie_un_fisier_pe_formatie(tmp_path):
     _registry(reg, {"BITCOIN": {"grok": {"final": "BUY"}}})
     assert fm.main(["--registry", str(reg), "--coins", "BITCOIN", "--day", DAY, "--out-dir", str(tmp_path / "s")]) == 0
     files = sorted(p.name for p in (tmp_path / "s").iterdir())
-    assert len(files) == 18
+    assert len(files) == 19
     assert json.loads((tmp_path / "s" / "p4-grok-liber.json").read_text())["signals"] == {"BITCOIN": 1.0}
 
 
 def test_list_pentru_workflow(capsys):
     assert fm.main(["--list"]) == 0
     lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 18 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
+    assert len(lines) == 19 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
 
 
 def test_dashboard_citeste_formatiile(tmp_path):
@@ -75,7 +75,7 @@ def test_dashboard_citeste_formatiile(tmp_path):
     (tmp_path / "p3-gpt").mkdir()
     PaperEngine.create(tmp_path / "p3-gpt" / "paper.sqlite", 11_183.0, currency="USD", now=now).close()
     rows = dashboard.read_formations(tmp_path)
-    assert len(rows) == 18
+    assert len(rows) == 19
     gpt = next(r for r in rows if r["key"] == "p3-gpt")
     assert gpt["exists"] and gpt["equity"] == 11_183.0 and gpt["positions"] == 0
     assert sum(r["exists"] for r in rows) == 1
@@ -190,3 +190,30 @@ def test_semnalul_regulii_din_lumanari_ca_in_contul_unic(tmp_path):
     _, ref = latest_weights(data, market, _make_factory({"strategy": "hibrid", "param": [], "members": None}, data),
                             PortfolioConfig())
     assert got["GOLD"] == ref["GOLD"]
+
+
+def test_p11_agresiv_se_poate_crea_si_respecta_plafonul(tmp_path, monkeypatch):
+    from datetime import timedelta
+    from src.bnd import paper_runner
+    monkeypatch.setenv("BND_TRADING_MODE", "PAPER")
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    agr = by["p11-convingere-agresiv"]
+    assert agr["kind"] == "convingere" and "--max-leverage 3" in agr["settings"]
+    assert "settings" not in by["p10-convingere"]                     # P10 rămâne standard
+    start = datetime(2024, 1, 1, tzinfo=timezone.utc)
+    rows, price = ["open_time,open,high,low,close,volume"], 100.0
+    for i in range(300):
+        price *= 1.003
+        rows.append(f"{(start + timedelta(days=i)).isoformat()},{price},{price * 1.01},{price * 0.99},{price},1000")
+    data = tmp_path / "data"; data.mkdir()
+    (data / "GOLD.csv").write_text("\n".join(rows) + "\n")
+    (tmp_path / "s.json").write_text(json.dumps({"signals": {"GOLD": 1.0}}))
+    code = paper_runner.main(["--state", str(tmp_path / "a" / "paper.sqlite"), "--data-dir", str(data),
+                              "--signals", str(tmp_path / "s.json"), "--capital", "11183", "--universe", "unic",
+                              "--strategy", "ai_council", *agr["settings"].split()])
+    assert code == 0
+    engine = PaperEngine.open(tmp_path / "a" / "paper.sqlite")
+    try:
+        assert engine.journal("runner_settings")[-1]["payload"]["max_leverage"] == 3.0
+    finally:
+        engine.close()
