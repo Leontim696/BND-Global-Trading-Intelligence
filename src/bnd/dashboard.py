@@ -17,7 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
-from . import chart_data, council_analytics, crypto50, market_groups, model_registry
+from . import chart_data, council_analytics, crypto50, formations, market_groups, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
 
@@ -120,6 +120,27 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
                 "last_run": history[-1]["t"] if history else None}
     finally:
         engine.close()
+
+
+def read_formations(folder, quotes: dict | None = None) -> list:
+    """Cele 14 conturi-umbră „Formații AI” (ramura formatii-ai), pe scurt, pentru clasament."""
+    if not folder or not Path(folder).is_dir():
+        return []
+    out = []
+    for f in formations.FORMATIONS:
+        a = read_account(Path(folder) / f["key"], f["key"], f["title"], "", quotes)
+        row = {"key": f["key"], "point": f["point"], "title": f["title"], "rules": f["rules"],
+               "members": list(f["members"]), "exists": a.get("exists", False)}
+        if a.get("exists"):
+            history = a["history"]
+            row.update({"initial": a["initial"], "equity": a["equity"], "live_equity": a["live_equity"],
+                        "live": a["live"], "drawdown_pct": a["drawdown_pct"], "leverage": a["leverage"],
+                        "positions": len(a["positions"]), "longs": sum(p["quantity"] > 0 for p in a["positions"]),
+                        "shorts": sum(p["quantity"] < 0 for p in a["positions"]), "fills": a["fills"],
+                        "kill_switch": a["kill_switch"], "start": history[0]["t"] if history else None,
+                        "history": [{"t": h["t"], "equity": h["equity"]} for h in history]})
+        out.append(row)
+    return out
 
 
 def read_council(folder, balance: dict | None = None, now: datetime | None = None) -> dict:
@@ -305,7 +326,7 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
             balance: dict | None = None, rls=None, unic=None, exposure: dict | None = None,
-            charts=None, reasons=None, control=None) -> dict:
+            charts=None, reasons=None, control=None, formations_dir=None) -> dict:
     now = now or datetime.now(timezone.utc)
     folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic, "control": control}
     prices = (quotes or {}).get("quotes", {})
@@ -342,6 +363,7 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
             "quotes_time": quotes_time, "system": system_status(runs),
             "schedule": SCHEDULE, "test": {"start": TEST_START, "end": TEST_END, "report": TEST_REPORT, "milestones": TEST_MILESTONES},
             "accounts": accounts, "council": council, "alerts": alerts,
+            "formations": read_formations(formations_dir, prices),
             "charts": chart_series, "group_of": {s: market_groups.group_of(s) for s in sorted(symbols)}}
 
 
@@ -424,6 +446,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="dashboard")
     for name in ("paper", "crypto", "ai", "council", "rls", "unic", "control"):
         parser.add_argument(f"--{name}")
+    parser.add_argument("--formations", help="folderul ramurii formatii-ai (14 conturi-umbră, câte un subfolder)")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
     parser.add_argument("--balance", help="JSON de la openrouter_balance (soldul real al cheii)")
@@ -442,7 +465,8 @@ def main(argv=None) -> int:
         exposure = json.loads(Path(args.exposure).read_text()) if args.exposure and Path(args.exposure).exists() else None
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
                        top50=args.top50, balance=balance, rls=args.rls, unic=args.unic, exposure=exposure,
-                       charts=args.charts, reasons=args.reasons, control=args.control)
+                       charts=args.charts, reasons=args.reasons, control=args.control,
+                       formations_dir=args.formations)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

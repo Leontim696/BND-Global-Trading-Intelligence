@@ -37,3 +37,28 @@ Contul unic are acum 101 de piețe: cele 71 de până atunci (ETF, forex, obliga
 - Datele vin de la Yahoo; un titlu care nu se descarcă într-o zi e sărit și notat în raport.
 
 Actualizare: cele 16 acțiuni americane intră acum și în consiliul AI (88 de piețe în total, ~2,4 $/zi); apărarea era deja acolo.
+
+## Formații AI (14 conturi-umbră, din 4.11.2026)
+
+Cerute de proprietar pe 4.11.2026, ca să vedem după 30.11 ce AI sau ce grupă de AI merită păstrată
+(și eventual să reducem costurile). Ramura `formatii-ai`, workflow `formatii-ai.yml` (22:50 UTC, după contul unic),
+cod în `src/bnd/formations.py`. **Fără niciun apel AI în plus**: refolosesc voturile pe care consiliul zilnic
+le dă oricum, salvate pe fiecare agent în `registry.sqlite`.
+
+| Punct | Formație | Reguli | Conturi |
+|---|---|---|---:|
+| 1 | GPT + Grok | cu reguli (50% regime_switch + 50% formația) | 1 |
+| 2 | GPT + Grok | fără reguli (100% formația) | 1 |
+| 3 | fiecare AI singur | cu reguli | 5 |
+| 4 | fiecare AI singur | fără reguli | 5 |
+| 5 | GPT + Claude + Grok | cu reguli | 1 |
+| 6 | GPT + Claude + Grok | fără reguli | 1 |
+
+Toate au aceleași setări ca contul unic (101 piețe, 11.183 USD, leverage 2x, 25%/piață, 60%/clasă, volatilitate 15%).
+Semnal: net = BUY − SELL ale membrilor; prag = max(1, round(0,4 × membri)); semnal = semn(net) × min(1, |net|/prag)
+(cu toți 5 membri e exact formula contului unic). Agenții văd ca informație indicatorii și ce spune regula, dar nu sunt
+obligați s-o urmeze, deci „fără reguli” înseamnă că votul lor nu e amestecat cu regula, nu că nu au văzut-o.
+
+Criteriu fixat dinainte (4.11): câștigă formația cu randamentul cel mai mare de la pornire până la 30.11, DOAR dacă
+drawdown-ul maxim e cel mult cât al contului oficial și a câștigat și în zilele de creștere ale pieței, nu doar în cele
+de scădere. Cu 16 conturi comparate, una iese prima și din noroc: rezultatul e un indiciu, nu o dovadă.
