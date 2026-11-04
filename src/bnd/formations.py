@@ -12,6 +12,7 @@ Cerut de proprietar pe 4.11.2026. Nu face niciun apel AI: citește din registrul
     P7  toți 5, ponderați după rezultate  cu reguli (ponderea fiecărui AI = cât a ghicit pe deciziile deja încheiate)
     P8  toți 5, doar la consens 4/5       cu reguli (consiliul contează doar când ≥4 din 5 votează la fel)
     P9  toți 5, doar la crypto/memecoin   cu reguli (la restul piețelor doar regulile)
+    P20 „Idee nebună”: P17 + P16 + P18 + take profit +5% + reciclare, toate deodată
     P16 frână la pierderi; P17 contra mulțimii pe crypto (funding); P18 prudență înaintea anunțurilor din SUA;
     P19 meta-formație (copiază cele mai bune 3 formații din ultimele 7 zile)
     P14/P15 pereche: take profit +5%, capitalul eliberat lăsat lichid (14) sau reciclat cu protecții (15)
@@ -99,6 +100,11 @@ def _formations() -> list[dict]:
                 "settings": STANDARD + " --event-cut 0.5"})
     out.append({"key": "p19-meta-top3", "point": 19, "members": AGENTS, "rules": True, "kind": "meta",
                 "strategy": "hibrid", "title": "Meta-formație: copiază cele mai bune 3 formații din ultimele 7 zile"})
+    # P20 „Idee nebună” (cerută pe 4.11): toate ingredientele deodată — semnalele oficialului cu filtrul de funding (P17),
+    # frâna la pierderi (P16), prudența la anunțuri (P18), take profit +5% cu stop normal (P13) și reciclarea (P15).
+    out.append({"key": "p20-idee-nebuna", "point": 20, "members": AGENTS, "rules": True, "kind": "funding",
+                "strategy": "ai_council", "title": "Idee nebună (funding + frână + anunțuri + take profit + reciclare)",
+                "settings": STANDARD + " --take-profit-pct 5 --recycle reciclare --dd-brake-pct 3 --event-cut 0.5"})
     return out
 
 

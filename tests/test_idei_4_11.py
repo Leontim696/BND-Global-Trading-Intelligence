@@ -94,3 +94,15 @@ def test_meta_alege_cele_mai_bune_3(tmp_path):
     f = {x["key"]: x for x in fm.FORMATIONS}["p19-meta-top3"]
     votes = {"BITCOIN": {"gpt": "BUY"}}
     assert fm.signals_for(f, votes, dict.fromkeys(fm.AGENTS, 1.0)) == {"BITCOIN": 0.5}   # fără clasament: tot consiliul
+
+
+def test_idee_nebuna_combina_toate_regulile(tmp_path, monkeypatch):
+    monkeypatch.setenv("BND_TRADING_MODE", "PAPER")
+    f = {x["key"]: x for x in fm.FORMATIONS}["p20-idee-nebuna"]
+    assert f["kind"] == "funding" and f["strategy"] == "ai_council"
+    for flag in ("--take-profit-pct 5", "--recycle reciclare", "--dd-brake-pct 3", "--event-cut 0.5", "--max-leverage 2"):
+        assert flag in f["settings"]
+    r = _run(tmp_path, "p20-idee-nebuna")
+    s = r["settings"]
+    assert s["take_profit_pct"] == 5 and s["recycle"] == "reciclare" and s["dd_brake_pct"] == 3 and s["event_cut"] == 0.5
+    assert r["recycling"]["mode"] == "reciclare" and r["exposure_scale"] == 1.0
