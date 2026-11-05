@@ -11,7 +11,7 @@ fiecare cont ce versiune a produs rezultatul. Sursa de adevăr în cod: `VERSION
 | P26 | v2 | 2026-11-05, prima rulare a buclei după PR | istoric zilnic pentru toate cele 100 de piețe + diagnostic pe motive (fără istoric / fără lumânări / bursă închisă / date vechi) | rezultatul v1 (≈2 ore, ordine doar pe 57 de piețe) se raportează separat; comparația P26–P24 se face din v2 |
 | P27 / P28 (conturile) | v1 | 2026-11-05 05:50 | neschimbate (doar împărțirea codului: aceeași decizie, testată identic) | niciunul |
 | E-017 / E-018 (test pe istoric) | v1 „simplificat” | 2026-11-05 05:37 | toate monedele egal ponderate, fără stop, fără selecția celor 10 | rezultatele păstrate în registru (respinse) cu eticheta „simplificat” |
-| E-017 / E-018 | v2 „motor” | 2026-11-05 | același motor, aceleași funcții, aceleași stopuri, costuri și selecție ca P27/P28 | rezultate noi adăugate ca notă, lângă cele vechi |
+| E-017 / E-018 | v2 „motor” | 2026-11-05 (run 41984069185) | același motor, aceleași funcții, aceleași stopuri, costuri, selecție și oprire de siguranță ca P27/P28; plus o variantă de diagnostic fără oprire | E-017 −6,9% / E-018 −5,1% (oprite la −5% într-o zi); fără oprire −87% / −95%; adăugate ca notă, v1 păstrat |
 | P29 / P31 / P33 | v1 | 2026-11-05 06:30 | pornire; percentila număra egalitățile „sub” (istoric constant → 1,0) | pe datele din 5.11 nicio decizie diferită față de v2 (verificat) |
 | P29 / P31 / P33 | v2 | 2026-11-05 22:50 (rularea de noapte) | percentilă cu rang mediu; istoric constant = neutru | niciunul |
 
