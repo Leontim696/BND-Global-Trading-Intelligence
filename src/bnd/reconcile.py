@@ -40,9 +40,18 @@ def reconcile(engine: PaperEngine) -> dict:
           _close(expected_cash, account["cash"], initial),
           f"așteptat {expected_cash:.6f}, în cont {account['cash']:.6f}")
 
+    # Divizările (split, src/bnd/splits.py) înmulțesc poziția deja existentă în momentul lor (după tranzacția
+    # `dupa_tranzactia`); valoarea și numerarul nu se schimbă.
+    splits = sorted((e["payload"] for e in engine.journal("split")), key=lambda p: p.get("dupa_tranzactia", 0))
     net: dict = {}
-    for fill in fills:
+    pending = list(splits)
+    for fill in sorted(fills, key=lambda f: f["id"]):
+        while pending and pending[0].get("dupa_tranzactia", 0) < fill["id"]:
+            sp = pending.pop(0)
+            net[sp["symbol"]] = net.get(sp["symbol"], 0.0) * sp["factor"]
         net[fill["symbol"]] = net.get(fill["symbol"], 0.0) + fill["quantity"]
+    for sp in pending:
+        net[sp["symbol"]] = net.get(sp["symbol"], 0.0) * sp["factor"]
     held = {p["symbol"]: p["quantity"] for p in engine.positions()}
     wrong = [s for s in set(net) | set(held)
              if not _close(net.get(s, 0.0), held.get(s, 0.0), max(abs(net.get(s, 0.0)), 1.0))]
