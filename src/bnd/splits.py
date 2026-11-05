@@ -13,6 +13,9 @@ from .paper_engine import PaperEngine, PaperEngineError, _iso
 
 RATIOS = (2, 3, 4, 5, 8, 10, 15, 20, 1 / 2, 1 / 3, 1 / 4, 1 / 5, 1 / 10)
 TOLERANCE = 0.03
+OPEN_GAP_RATIOS = (3, 4, 5, 8, 10, 15, 20, 1 / 3, 1 / 4, 1 / 5, 1 / 10)
+OPEN_GAP_TOLERANCE = 0.05
+OPEN_GAP_EXCLUDED = ("crypto", "memecoin")
 
 
 def detect(engine: PaperEngine, data: dict) -> dict:
@@ -24,15 +27,34 @@ def detect(engine: PaperEngine, data: dict) -> dict:
             continue
         seen = datetime.fromisoformat(mark["time"])
         same = next((c for c in reversed(candles) if c.open_time == seen), None)
-        if same is None or not same.close > 0:
-            continue
-        ratio = mark["price"] / same.close
-        for k in RATIOS:
-            if abs(ratio / k - 1) <= TOLERANCE:
-                out[name] = {"factor": k, "mark_vechi": mark["price"], "inchidere_ajustata": same.close,
-                             "zi": seen.date().isoformat()}
-                break
+        if same is not None and same.close > 0:
+            ratio = mark["price"] / same.close
+            k = _match(ratio, RATIOS, TOLERANCE)
+            if k:
+                out[name] = {"factor": k, "metoda": "istoric ajustat", "mark_vechi": mark["price"],
+                             "inchidere_ajustata": same.close, "zi": seen.date().isoformat()}
+                continue
+        # Rezervă (6.11, ITA): sursa n-a ajustat încă istoricul, dar prima lumânare nouă deschide de exact ≥3 ori sub
+        # (sau peste) ultima închidere. La acțiuni/ETF/mărfuri un astfel de salt la deschidere e practic doar un
+        # split; la crypto nu se aplică (acolo prăbușirile de 70% există), iar raportul 2 e lăsat deoparte.
+        nxt = next((c for c in candles if c.open_time > seen), None)
+        try:
+            klass = engine.instrument(name).asset_class
+        except Exception:
+            klass = ""
+        if nxt is not None and nxt.open > 0 and klass not in OPEN_GAP_EXCLUDED:
+            k = _match(mark["price"] / nxt.open, OPEN_GAP_RATIOS, OPEN_GAP_TOLERANCE)
+            if k:
+                out[name] = {"factor": k, "metoda": "salt la deschidere", "mark_vechi": mark["price"],
+                             "deschidere_noua": nxt.open, "zi": nxt.open_time.date().isoformat()}
     return out
+
+
+def _match(ratio: float, ratios, tolerance: float):
+    for k in ratios:
+        if abs(ratio / k - 1) <= tolerance:
+            return k
+    return None
 
 
 def apply(engine: PaperEngine, symbol: str, factor: float, now: datetime, evidence: dict | None = None) -> dict:

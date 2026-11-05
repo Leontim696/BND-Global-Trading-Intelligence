@@ -52,9 +52,9 @@ def test_fara_split_la_miscari_normale_sau_cotatii_gresite(tmp_path):
     try:
         normal = {"ITA": [_c(T + timedelta(days=1), 212.0 * 0.97), _c(T + timedelta(days=2), 200.0)]}
         assert splits.detect(e, normal) == {}
-        # o cotație greșită doar în ziua nouă (istoricul neatins) nu e split
-        glitch = {"ITA": [_c(T + timedelta(days=1), 212.0), _c(T + timedelta(days=2), 70.0)]}
-        assert splits.detect(e, glitch) == {}
+        # o scădere mare, dar fără raport de split (−58%), nu e luată drept split
+        crash = {"ITA": [_c(T + timedelta(days=1), 212.0), _c(T + timedelta(days=2), 90.0)]}
+        assert splits.detect(e, crash) == {}
     finally:
         e.close()
 
@@ -119,3 +119,32 @@ def test_aplicatia_split_cu_miscare_in_aceeasi_zi(tmp_path):
     assert a["positions"][0]["last"] == a["positions"][0]["close"]          # split 3:1 + −3,3% în ziua respectivă
     b = dashboard.read_account(tmp_path, "x", "x", "", {"ITA": [212.0 * 0.85, "2026-11-05T15:00:00+00:00"]})
     assert b["positions"][0]["last"] == pytest.approx(212.0 * 0.85)         # o scădere reală de 15% rămâne
+
+
+def test_rezerva_salt_la_deschidere_cand_istoricul_nu_e_ajustat(tmp_path):
+    from src.bnd.reconcile import reconcile
+    e = _engine(tmp_path)
+    try:
+        before = e.equity()
+        # Istoricul NEajustat (ziua procesată tot la 212), dar ziua nouă deschide la ~70,6 (split 3:1 + −0,1%).
+        data = {"ITA": [_c(T + timedelta(days=1), 212.0), Candle(T + timedelta(days=2), 70.6, 71.0, 69.5, 70.0, 1e6)]}
+        found = splits.detect(e, data)
+        assert found["ITA"]["factor"] == 3 and found["ITA"]["metoda"] == "salt la deschidere"
+        splits.apply(e, "ITA", 3, T + timedelta(days=2), found["ITA"])
+        paper_runner.feed_new_candles(e, data)
+        assert abs(e.equity() - before) < 15
+        assert reconcile(e)["ok"]
+    finally:
+        e.close()
+
+
+def test_rezerva_nu_se_aplica_la_crypto_sau_la_injumatatire(tmp_path):
+    e = _engine(tmp_path)
+    try:
+        half = {"ITA": [_c(T + timedelta(days=1), 212.0), _c(T + timedelta(days=2), 106.0)]}
+        assert splits.detect(e, half) == {}                     # −50% poate fi real: nu e tratat ca split
+        e.register_instrument(Instrument("PEPE", "memecoin"))
+        e.on_bar("PEPE", _c(T + timedelta(days=1), 3.0))
+        assert splits.detect(e, {"PEPE": [_c(T + timedelta(days=1), 3.0), _c(T + timedelta(days=2), 1.0)]}) == {}
+    finally:
+        e.close()
