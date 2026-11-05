@@ -135,6 +135,14 @@ def _formations() -> list[dict]:
             (33, "p33-toate-sursele", "toate", "Ca oficial + toate cele 4 surse noi deodată")):
         out.append({"key": key, "point": point, "members": AGENTS, "rules": True, "kind": "surse", "filter": filt,
                     "strategy": "ai_council", "title": title})
+    # P34 (cerut pe 5.11: „dublează suma”): geamănul contului oficial cu sumele dublate — aceleași semnale (toți 5 AI +
+    # regula), volatilitate-țintă 30% în loc de 15%, plafon 4x în loc de 2x (motorul până la 4,5x), câte o piață până la
+    # 50% și un sector până la 120%. Celelalte siguranțe rămân (−5% pe zi / −25% total oprește contul). Contul oficial
+    # rămâne neschimbat până pe 30.11; pe 1.12 se vede dacă dublarea ar fi meritat.
+    out.append({"key": "p34-oficial-x2", "point": 34, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Geamănul oficialului cu sumele dublate (×2)",
+                "settings": "--max-leverage 4 --max-weight 0.5 --max-sector 120 --portfolio-vol 30 --financing 5"
+                            " --engine-leverage 4.5"})
     return out
 
 

@@ -155,3 +155,11 @@ Semnalele de bază ca la P17 (50% regula + 50% toți 5 AI), filtrate cu datele s
   (la USDJPY, USDCHF, USDCAD inversat, pentru că contractul e pe cealaltă monedă).
 - **P32 stablecoin-uri** (DefiLlama): totalul în scădere pe 30 de zile → niciun long nou pe crypto.
 - **P33 toate patru** deodată.
+
+### P34: geamănul contului oficial cu sumele dublate (cerut pe 5.11.2026)
+Proprietarul a cerut „dublează suma”. Contul oficial are setările fixate pentru testul 31.10–30.11, deci dublarea se
+testează în paralel: aceleași semnale ca oficialul (toți 5 AI + regula), volatilitate-țintă 30% (oficial 15%),
+plafon de expunere 4x (oficial 2x; motorul până la 4,5x, setare nouă `--engine-leverage`), o piață până la 50% și un
+sector până la 120%. Siguranțele rămân aceleași (−5% pe zi sau −25% total opresc contul), deci la expunere dublă se
+pot declanșa mai ușor. Pornește pe 5.11 de la zero (oficialul are poziții din 31.10), deci comparația e pe
+randament de la 5.11. Pe 1.12 se decide dacă dublarea merită pentru contul principal.
