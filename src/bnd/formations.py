@@ -125,6 +125,16 @@ def _formations() -> list[dict]:
     out.append({"key": "p25-tp10-sl3-reciclare", "point": 25, "members": AGENTS, "rules": True, "kind": "fix",
                 "strategy": "hibrid", "title": "Take profit +10%, stop −3%, reciclare și redeschidere după 1 zi",
                 "settings": STANDARD + " --take-profit-pct 10 --stop-pct 3 --recycle reciclare --recycle-cooldown 1"})
+    # P29–P33 (cerute pe 5.11): semnalele de bază ale lui P17 (50% regula + 50% toți 5 AI), filtrate cu sursele noi
+    # strânse gratuit pe date-piete. Praguri fixate dinainte (mai jos, la SURSE_*); contul oficial nu le folosește.
+    for point, key, filt, title in (
+            (29, "p29-pozitionare-futures", "pozitionare", "Ca oficial + poziționarea pe futures crypto (raport long/short OKX)"),
+            (30, "p30-volatilitate-optiuni", "dvol", "Ca oficial + crypto pe jumătate când volatilitatea opțiunilor sare (Deribit DVOL)"),
+            (31, "p31-cot-speculatori", "cot", "Ca oficial + contra speculatorilor la extreme (raportul COT al CFTC)"),
+            (32, "p32-stablecoins", "stablecoins", "Ca oficial + fără long nou pe crypto când stablecoin-urile scad (DefiLlama)"),
+            (33, "p33-toate-sursele", "toate", "Ca oficial + toate cele 4 surse noi deodată")):
+        out.append({"key": key, "point": point, "members": AGENTS, "rules": True, "kind": "surse", "filter": filt,
+                    "strategy": "ai_council", "title": title})
     return out
 
 
@@ -287,9 +297,100 @@ def meta_top(state_dir, day: str, days: int = META_DAYS, n: int = META_TOP) -> l
     return sorted(scores, key=lambda k: (-scores[k], k))[:n]
 
 
+# P29–P33: pragurile pentru sursele noi, fixate pe 5.11 înainte de orice rezultat.
+SURSE_EXTREME = 0.9             # percentila (față de propriul istoric) peste care o parte e „aglomerată”
+SURSE_POS_DAYS = 90             # P29: istoricul raportului long/short luat în calcul
+SURSE_DVOL_DAYS, SURSE_DVOL_JUMP, SURSE_DVOL_CUT = 30, 1.2, 0.5    # P30: DVOL ≥ 1,2 × media pe 30 de zile → crypto × 0,5
+SURSE_COT_WEEKS = 156           # P31: 3 ani de rapoarte săptămânale
+SURSE_STABLE_DAYS = 30          # P32: variația totalului de stablecoin-uri pe 30 de zile
+# La perechile cu dolarul în față, contractul CFTC e pe cealaltă monedă: speculatori long JPY = short USDJPY.
+COT_INVERTED = ("USDJPY", "USDCHF", "USDCAD")
+
+
+def _csv_column(path: Path, column: str) -> list[float]:
+    import csv
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as handle:
+        out = []
+        for r in csv.DictReader(handle):
+            try:
+                out.append(float(r[column]))
+            except (KeyError, TypeError, ValueError):
+                continue
+        return out
+
+
+def _percentile(values: list[float]) -> float | None:
+    """Locul ultimei valori în istoricul ei (0 = cea mai mică, 1 = cea mai mare); None sub 20 de valori."""
+    if len(values) < 20:
+        return None
+    last = values[-1]
+    return sum(v <= last for v in values[:-1]) / (len(values) - 1)
+
+
+def load_surse(folder) -> dict:
+    """Indicatorii zilnici din sursele noi (date-piete: pozitionare/, deribit/, cot/, defi/)."""
+    root = Path(folder) if folder else None
+    if not root or not root.is_dir():
+        return {}
+    out = {"pozitionare": {}, "cot": {}}
+    for path in sorted((root / "pozitionare").glob("*.csv")):
+        pct = _percentile(_csv_column(path, "long_short_conturi")[-SURSE_POS_DAYS:])
+        if pct is not None:
+            out["pozitionare"][path.stem] = pct
+    ratios = []
+    for coin in ("BTC", "ETH"):
+        v = _csv_column(root / "deribit" / f"dvol_{coin}.csv", "dvol")
+        if len(v) > SURSE_DVOL_DAYS:
+            ratios.append(v[-1] / (sum(v[-SURSE_DVOL_DAYS - 1:-1]) / SURSE_DVOL_DAYS))
+    if ratios:
+        out["dvol_ratio"] = max(ratios)
+    for path in sorted((root / "cot").glob("*.csv")):
+        pct = _percentile(_csv_column(path, "spec_net")[-SURSE_COT_WEEKS:])
+        if pct is not None:
+            out["cot"][path.stem] = 1 - pct if path.stem in COT_INVERTED else pct
+    v = _csv_column(root / "defi" / "stablecoins.csv", "total_usd")
+    if len(v) > SURSE_STABLE_DAYS and v[-SURSE_STABLE_DAYS - 1] > 0:
+        out["stable_change"] = v[-1] / v[-SURSE_STABLE_DAYS - 1] - 1
+    return out
+
+
+def _crowd_clip(signal: float, pct: float | None) -> float:
+    if pct is None:
+        return signal
+    if pct >= SURSE_EXTREME:
+        return min(signal, 0.0)            # partea long e aglomerată: niciun long nou
+    if pct <= 1 - SURSE_EXTREME:
+        return max(signal, 0.0)            # partea short e aglomerată: niciun short nou
+    return signal
+
+
+def surse_filter(market: str, signal: float, filt: str, surse: dict) -> float:
+    crypto = _asset_class(market) in CRYPTO_CLASSES
+    use = ("pozitionare", "dvol", "cot", "stablecoins") if filt == "toate" else (filt,)
+    if "pozitionare" in use:
+        signal = _crowd_clip(signal, surse.get("pozitionare", {}).get(market))
+    if "cot" in use:
+        signal = _crowd_clip(signal, surse.get("cot", {}).get(market))
+    if "dvol" in use and crypto and (surse.get("dvol_ratio") or 0) >= SURSE_DVOL_JUMP:
+        signal *= SURSE_DVOL_CUT
+    if "stablecoins" in use and crypto and (surse.get("stable_change") or 0) < 0:
+        signal = min(signal, 0.0)          # banii ies din crypto: niciun long nou
+    return signal
+
+
 def signals_for(f: dict, votes: dict, weights: dict, rules: dict | None = None,
-                funding: dict | None = None, top: list | None = None) -> dict:
+                funding: dict | None = None, top: list | None = None, surse: dict | None = None) -> dict:
     """Semnalele unei formații; o piață care lipsește din rezultat = contul hibrid urmează doar regula acolo."""
+    if f["kind"] == "surse":
+        out = {}
+        for c, r in (rules or {}).items():
+            if r is None:
+                continue
+            s = 0.5 * r + 0.5 * formation_signal(votes[c], AGENTS) if c in votes else r
+            out[c] = max(-1.0, min(1.0, surse_filter(c, s, f["filter"], surse or {})))
+        return out
     if f["kind"] == "funding":
         out = {}
         for c, r in (rules or {}).items():
@@ -343,7 +444,7 @@ def day_votes(registry: str, coins, day: str) -> tuple[dict, list]:
 
 
 def build_all(registry: str, coins, day: str, rules: dict | None = None, funding: dict | None = None,
-              top: list | None = None) -> dict:
+              top: list | None = None, surse: dict | None = None) -> dict:
     votes, missing = day_votes(registry, coins, day)
     weights = agent_weights(registry, day)
     # P23: aceleași voturi, dar cele de IERI (execuție întârziată cu o zi).
@@ -351,7 +452,8 @@ def build_all(registry: str, coins, day: str, rules: dict | None = None, funding
     prev_votes, _ = day_votes(registry, coins, (_date.fromisoformat(day) - _td(days=1)).isoformat())
     return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]),
                        "signals": signals_for(f, prev_votes if f["kind"] == "intarziere" else votes, weights,
-                                              rules, funding, top), "missing": missing,
+                                              rules, funding, top, surse), "missing": missing,
+                       **({"surse": surse} if f["kind"] == "surse" else {}),
                        **({"top": top} if f["kind"] == "meta" else {}),
                        **({"funding": funding} if f["kind"] == "funding" else {}),
                        **({"weights": weights} if f["kind"] == "ponderat" else {})}
@@ -438,6 +540,7 @@ def main(argv=None) -> int:
     parser.add_argument("--out-dir")
     parser.add_argument("--data-dir", help="lumânările zilnice (pentru semnalul regulii la P10)")
     parser.add_argument("--funding-dir", help="date-piete/funding (P17)")
+    parser.add_argument("--surse-dir", help="date-piete cu pozitionare/, deribit/, cot/, defi/ (P29–P33)")
     parser.add_argument("--state-dir", help="folderul cu conturile formațiilor (clasamentul pentru P19)")
     parser.add_argument("--snapshot", help="folderul ramurii formatii-ai: scrie instantaneul orar (JSON + rânduri CSV)")
     parser.add_argument("--quotes", help="quotes.json (prețurile de acum), pentru --snapshot")
@@ -471,7 +574,8 @@ def main(argv=None) -> int:
     coins = [c.strip().upper() for c in args.coins.split(",") if c.strip()]
     rules = rule_signals(args.data_dir, coins) if args.data_dir else None
     top = meta_top(args.state_dir, day)
-    result = build_all(args.registry, coins, day, rules, load_funding(args.funding_dir), top)
+    result = build_all(args.registry, coins, day, rules, load_funding(args.funding_dir), top,
+                       load_surse(args.surse_dir))
     out = Path(args.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     for key, payload in result.items():
