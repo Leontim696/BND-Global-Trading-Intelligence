@@ -115,7 +115,7 @@ jobs:
             [ -f p24/paper.sqlite ] && args+=(--p24 p24/paper.sqlite)
             py -m src.bnd.intraday_live cycle "${args[@]}" || echo "::warning::ciclul intraday de la $(date -u +%H:%M) a avut erori"
             n=$((n + 1))
-            [ $((n % 6)) -eq 0 ] && publish
+            { [ "$n" -eq 1 ] || [ $((n % 6)) -eq 0 ]; } && publish   # prima dată imediat, apoi o dată pe oră
             left=$(( 600 - ($(date +%s) - start) ))
             [ "$left" -gt 0 ] && sleep "$left"
           done
