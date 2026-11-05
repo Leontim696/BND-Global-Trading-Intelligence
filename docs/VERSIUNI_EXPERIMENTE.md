@@ -28,3 +28,8 @@ contului; evenimentul se notează în jurnal („split”) și în raportul rul�
 (o cotație greșită doar în ziua nouă) nu se ajustează nimic. Nu e o schimbare de strategie: e corectarea datelor,
 la fel pentru toate conturile (oficial, control, formații). Aplicația nu mai folosește un preț live „de split”
 până la procesare. Reconcilierea contabilă ține cont de split.
+
+Completare 6.11: la rularea din noaptea de 5.11 sursa nu ajustase încă istoricul ITA (ziua de 4.11 tot la 212,84),
+iar lumânarea de 5.11 (cu split-ul) se procesează abia la rularea următoare. S-a adăugat o rezervă: dacă prima
+lumânare nouă deschide de exact ≥ 3 ori sub/peste ultima închidere (±5%), la acțiuni/ETF/mărfuri (nu la crypto),
+se tratează ca split. Raportul 2 rămâne doar cu confirmarea din istoric (o scădere reală de 50% e posibilă).
