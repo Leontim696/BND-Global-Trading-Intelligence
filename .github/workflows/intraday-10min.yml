@@ -104,7 +104,7 @@ jobs:
               git archive FETCH_HEAD zilnic crypto50 | tar -x -C tmp
               cp tmp/zilnic/*.csv tmp/crypto50/*.csv daily/ 2>/dev/null
             fi
-            echo "date zilnice: $(ls daily | wc -l) fișiere"
+            echo "date zilnice: $(find daily -name "*.csv" | wc -l) fișiere"
             if gitr fetch -q --depth=1 origin formatii-ai 2>/dev/null && git cat-file -e "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" 2>/dev/null; then
               git show "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" > p24/paper.sqlite
             fi
