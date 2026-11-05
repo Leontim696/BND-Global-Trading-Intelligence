@@ -109,3 +109,14 @@ Varianta v1 de mai sus e simplificată (toate monedele egal, fără stop, fără
 testul s-a refăcut cu ACELAȘI motor și aceleași funcții ca P27/P28 (v2 „motor”, `backtest_engine`); pe aceleași
 lumânări face exact aceleași tranzacții ca execuția contului (test automat). Rezultatele v2 sunt adăugate ca notă în
 registru, lângă cele v1; vezi și `docs/VERSIUNI_EXPERIMENTE.md`.
+
+Rezultat v2 „motor” (5.11, run 41984069185, aceleași 30 de zile și 49 de monede):
+
+| ID | Ca în cont (cu oprirea de siguranță) | Fără oprire (diagnostic) |
+|---|---|---|
+| E-017 trend 15m | −6,9%; oprit pe 8.10 la −5% într-o zi; 523 de tranzacții | −87,1%; 12.252 tranzacții, rulaj 561× capitalul, 3% din zile pe plus |
+| E-018 revenire 5m | −5,1%; oprit pe 7.10 la −5% într-o zi; 252 de tranzacții | −95,2%; 17.736 tranzacții (523 pe stop), rulaj 538×, 3% din zile pe plus |
+
+Diferența față de v1 vine din execuția reală (top 10, câte 10%, stop, rebalansare la 10 minute care schimbă des cele
+10 monede) și din oprirea de siguranță a contului. Ambele confirmă verdictul: RESPINS. Conturile P27/P28 au aceeași
+oprire de siguranță, deci se pot opri singure la prima zi cu −5%.
