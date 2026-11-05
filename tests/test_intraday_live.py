@@ -237,3 +237,22 @@ def test_actiunile_si_apararea_primesc_ordine(tmp_path, monkeypatch):
         engine.close()
     assert sorted(o["market"] for o in out["orders"]) == ["AAPL", "RHEINMETALL"]
     assert not any(out["diagnostic"].values())
+
+
+def test_backtest_raporteaza_oprirea_de_siguranta(tmp_path):
+    import random
+    rng = random.Random(3)
+    start = datetime(2026, 10, 1, tzinfo=timezone.utc)
+    bars = {}
+    for n in [m.name for m in il.markets(True)][:8]:
+        p, out = 100.0, []
+        for i in range(288 * 4):
+            o = p
+            p *= 1 + rng.gauss(0, 0.004) * (6 if 600 < i < 700 else 1)
+            out.append(Candle(start + i * il.STEP, o, max(o, p) * 1.001, min(o, p) * 0.999, p, 1e9))
+        bars[n] = out
+    a = il.backtest_engine(il.TREND, bars, start + timedelta(days=1), start + timedelta(days=4), tmp_path / "a.sqlite")
+    b = il.backtest_engine(il.TREND, bars, start + timedelta(days=1), start + timedelta(days=4), tmp_path / "b.sqlite",
+                           safety=False)
+    assert a["oprit_de_siguranta"] and "Daily loss" in a["motiv_oprire"]
+    assert not b["oprit_de_siguranta"] and b["tranzactii"] > a["tranzactii"]
