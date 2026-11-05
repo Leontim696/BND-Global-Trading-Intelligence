@@ -40,3 +40,19 @@ def test_pauza_de_o_zi_permite_redeschiderea():
 def test_pauza_negativa_respinsa():
     with pytest.raises(ValueError):
         paper_runner.RunnerConfig(recycle="reciclare", recycle_cooldown=-1)
+
+
+def test_p34_dublat(tmp_path, monkeypatch):
+    monkeypatch.setenv("BND_TRADING_MODE", "PAPER")
+    (tmp_path / "a").mkdir()
+    (tmp_path / "b").mkdir()
+    base = _run(tmp_path / "a", "p12-tp5-sl1")            # semnale ca oficialul, STANDARD
+    x2 = _run(tmp_path / "b", "p34-oficial-x2")
+    assert x2["settings"]["portfolio_vol"] == 30.0 and x2["settings"]["engine_leverage"] == 4.5
+    assert x2["weights"]["GOLD"] == pytest.approx(min(0.5, 2 * base["weights"]["GOLD"]), rel=1e-6)
+    from src.bnd.paper_engine import PaperEngine
+    e = PaperEngine.open(tmp_path / "b" / "p34-oficial-x2" / "paper.sqlite")
+    try:
+        assert e.limits().max_gross_leverage == 4.5
+    finally:
+        e.close()

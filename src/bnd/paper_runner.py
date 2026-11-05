@@ -452,6 +452,7 @@ DEFAULTS = {
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
     "max_sector": None, "stop_pct": None, "take_profit_pct": None, "recycle": None,
     "recycle_cooldown": None, "dd_brake_pct": None, "event_cut": None, "cost_mult": None, "skip_pct": None,
+    "engine_leverage": None,
 }
 
 
@@ -491,6 +492,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--dd-brake-pct", type=float, help="frână: expunere ×0,5 sub vârf cu x%% (la crearea contului)")
     parser.add_argument("--event-cut", type=float, help="expunerea × acest factor în ziua dinaintea unui anunț mare (la creare)")
     parser.add_argument("--cost-mult", type=float, help="geamăn R08: comisioane și alunecare × acest factor (la creare)")
+    parser.add_argument("--engine-leverage", type=float,
+                        help="plafonul de expunere al motorului (implicit 3x), la crearea contului; P34 (5.11)")
     parser.add_argument("--skip-pct", type=float, help="geamăn R08: %% din ordinele de deschidere ratate (la creare)")
     parser.add_argument("--events", help="calendar economic CSV (date-piete/calendar/economic.csv), pentru --event-cut")
     parser.add_argument("--recycle", choices=["obisnuit", "reciclare"],
@@ -540,7 +543,9 @@ def _open_account(args) -> tuple[PaperEngine, dict]:
     engine = PaperEngine.create(args.state, args.capital, currency=args.currency,
                                 limits=EngineLimits(financing_pct_annual=settings["financing"],
                                         **({"max_sector_pct": settings["max_sector"]}
-                                           if settings.get("max_sector") else {})))
+                                           if settings.get("max_sector") else {}),
+                                        **({"max_gross_leverage": settings["engine_leverage"]}
+                                           if settings.get("engine_leverage") else {})))
     engine.record("runner_settings", settings, datetime.now(timezone.utc))
     return engine, settings
 
