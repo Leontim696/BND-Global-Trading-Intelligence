@@ -163,3 +163,9 @@ plafon de expunere 4x (oficial 2x; motorul până la 4,5x, setare nouă `--engin
 sector până la 120%. Siguranțele rămân aceleași (−5% pe zi sau −25% total opresc contul), deci la expunere dublă se
 pot declanșa mai ușor. Pornește pe 5.11 de la zero (oficialul are poziții din 31.10), deci comparația e pe
 randament de la 5.11. Pe 1.12 se decide dacă dublarea merită pentru contul principal.
+
+### P35: aceleași piețe ca oficialul, totul pe short, sume dublate (cerut pe 5.11.2026)
+Aceeași mărime a semnalului ca oficialul (50% regula + 50% toți 5 AI), dar întotdeauna short (și unde oficialul e
+long), cu setările dublate ale lui P34. Comparat cu P34 (aceleași sume, direcțiile oficialului) arată dacă profitul vine
+din alegerea direcției sau doar din faptul că piața a scăzut. Atenție: short pe tot înseamnă pierderi mari într-o zi de
+creștere generală; siguranța de −5% pe zi poate opri contul.
