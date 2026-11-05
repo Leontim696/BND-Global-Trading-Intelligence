@@ -239,7 +239,7 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
         order_id = f"{order_prefix or candles[-1].open_time.date().isoformat()}:{name}"
         # Orders from an earlier date are obsolete whatever today's signal is,
         # also when no new order is needed (the position is already close enough).
-        for old in engine.orders():
+        for old in engine.open_orders(name):
             if (old["symbol"] == name and old["status"] in ("PENDING", "PARTIAL")
                     and not old["client_order_id"].startswith(order_id)):
                 engine.cancel_order(old["client_order_id"], now)

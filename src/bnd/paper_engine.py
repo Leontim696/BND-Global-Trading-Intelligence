@@ -286,6 +286,15 @@ class PaperEngine:
             query, args = query + " WHERE status = ?", (status,)
         return [dict(r) for r in self._db.execute(query + " ORDER BY created_at, client_order_id", args)]
 
+    def open_orders(self, symbol: str | None = None) -> list[dict]:
+        """Ordinele PENDING/PARTIAL (opțional ale unei piețe), în aceeași ordine ca orders(). Aceleași rânduri pe care
+        le-ar alege un filtru peste orders(), dar fără să citească tot istoricul: la conturile la 10 minute (5.11)
+        tabela de ordine crește repede și scanarea completă la fiecare bară devenea pătratică."""
+        query, args = "SELECT * FROM orders WHERE status IN ('PENDING', 'PARTIAL')", ()
+        if symbol is not None:
+            query, args = query + " AND symbol = ?", (symbol,)
+        return [dict(r) for r in self._db.execute(query + " ORDER BY created_at, client_order_id", args)]
+
     def order(self, client_order_id: str) -> dict | None:
         row = self._db.execute("SELECT * FROM orders WHERE client_order_id = ?",
                                (client_order_id,)).fetchone()
@@ -727,7 +736,7 @@ class PaperEngine:
 
     def _fill_orders(self, symbol, instrument, candle, time):
         limits = self.limits()
-        for order in self.orders():
+        for order in self.open_orders(symbol):
             if order["symbol"] != symbol or order["status"] not in ("PENDING", "PARTIAL"):
                 continue
             if self.account()["kill_switch"] and not order["reduce_only"]:

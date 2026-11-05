@@ -160,3 +160,80 @@ def test_aplicatia_arata_intraday(tmp_path, monkeypatch):
     assert dashboard.main(["--intraday", str(st), "--template", "src/bnd/dashboard_template.html", "--out", str(out)]) == 0
     html = out.read_text()
     assert "Intraday la 10 minute" in html and il.TREND in html
+
+
+@pytest.mark.parametrize("kind", [il.TREND, il.REVERT])
+def test_backtestul_cu_motor_ia_aceleasi_decizii_ca_contul(tmp_path, kind):
+    """Punctul 2 din auditul din 5.11: pe aceleași lumânări, testul pe istoric și contul la 10 minute fac aceleași
+    tranzacții (fereastra contului acoperă aici tot istoricul, deci nu există nici diferența de pornire a EMA)."""
+    import random
+    rng = random.Random(7)
+    start = T0 - timedelta(days=2)
+    series = {}
+    for name in ("BITCOIN", "ETHEREUM", "DOGE"):
+        price, out = 100.0, []
+        for i in range(12 * 36):
+            o = price
+            price *= 1 + rng.gauss(0.0002 if name != "DOGE" else -0.0002, 0.004)
+            out.append(Candle(start + i * il.STEP, o, max(o, price) * 1.001, min(o, price) * 0.999, price, 1e9))
+        series[name] = out
+    begin, end = start + timedelta(hours=8), start + timedelta(hours=35)
+    bt = il.backtest_engine(kind, series, begin, end, tmp_path / "bt.sqlite")
+    engine = il.open_account(tmp_path / "live.sqlite", None, begin)
+    chosen = [m for m in il.markets(crypto_only=True) if m.name in series]
+    t = begin
+    try:
+        while t <= end:
+            window = {n: [c for c in v if c.open_time + il.STEP <= t] for n, v in series.items()}
+            il.strategy_cycle(engine, kind, window, chosen, t)
+            t += timedelta(minutes=10)
+        live = [(f["symbol"], f["time"], round(f["quantity"], 6), round(f["price"], 6), f["reason"]) for f in engine.fills()]
+    finally:
+        engine.close()
+    back = il.open_account(tmp_path / "bt.sqlite", None, begin)
+    try:
+        sim = [(f["symbol"], f["time"], round(f["quantity"], 6), round(f["price"], 6), f["reason"]) for f in back.fills()]
+    finally:
+        back.close()
+    assert live and sim == live and bt["tranzactii"] == len(live)
+
+
+def test_diagnostic_pe_motive(tmp_path):
+    """Punctul 1 din auditul din 5.11: piețele cu țintă care nu pot primi ordin, raportate separat pe motive."""
+    by = {m.name: m for m in il.markets()}
+    engine = il.open_account(tmp_path / "d.sqlite", None, T0)
+    sunday = datetime(2026, 11, 8, 12, 0, tzinfo=timezone.utc)          # duminică: bursele închise, crypto deschis
+    try:
+        for name in ("AAPL", "BITCOIN", "RHEINMETALL"):
+            engine.register_instrument(il.paper_runner.instrument_for(by[name]))
+        engine.on_bar("AAPL", _bars(1, start=sunday - timedelta(days=2))[0])
+        engine.on_bar("BITCOIN", _bars(1, start=sunday - timedelta(hours=2))[0])
+        daily = {"AAPL": _bars(30), "BITCOIN": _bars(30), "NVDA": _bars(30)}
+        d = il.diagnose(engine, {"AAPL": 0.1, "BITCOIN": 0.1, "RHEINMETALL": 0.1, "NVDA": -0.1, "KO": 0.0}, daily, by,
+                        sunday)
+    finally:
+        engine.close()
+    assert d == {"fara_istoric_zilnic": ["RHEINMETALL"], "fara_lumanari_intraday": ["NVDA"],
+                 "bursa_inchisa": ["AAPL"], "date_vechi": ["BITCOIN"]}
+    assert il.session(by["RHEINMETALL"]) == "xetra" and il.session(by["BAE"]) == "lse"
+    assert il.session(by["EURUSD"]) == "forex" and il.session(by["DOGE"]) == "crypto"
+
+
+def test_actiunile_si_apararea_primesc_ordine(tmp_path, monkeypatch):
+    """Criteriul de acceptare al punctului 1: țintă nenulă + istoric zilnic + lumânări intraday recente = ordin,
+    inclusiv la acțiuni (AAPL) și apărare (RHEINMETALL)."""
+    monkeypatch.setenv("BND_TRADING_MODE", "PAPER")
+    _run(tmp_path, il.TWIN_OF)
+    settings, _ = il.p24_state(tmp_path / il.TWIN_OF / "paper.sqlite")
+    now = datetime.now(timezone.utc).replace(second=0, microsecond=0)
+    daily = {n: _bars(40, start=now - timedelta(days=41), step=lambda i: 0.002 if i % 2 else -0.0015)
+             for n in ("AAPL", "RHEINMETALL")}
+    bars = {n: _bars(30, start=now - timedelta(minutes=5 * 31)) for n in ("AAPL", "RHEINMETALL")}
+    report = {"time": now.isoformat(), "weights_base": {"AAPL": 0.1, "RHEINMETALL": -0.1}, "signals": {}}
+    engine = il.open_account(tmp_path / "twin.sqlite", settings, now)
+    try:
+        out = il.twin_cycle(engine, settings, report, daily, bars, il.markets(), now)
+    finally:
+        engine.close()
+    assert sorted(o["market"] for o in out["orders"]) == ["AAPL", "RHEINMETALL"]
+    assert not any(out["diagnostic"].values())
