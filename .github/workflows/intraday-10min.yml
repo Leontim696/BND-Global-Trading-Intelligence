@@ -75,7 +75,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
         run: |
-          set -uo pipefail
+          # Fără -e: o eroare într-un ciclu (rețea, date lipsă) nu trebuie să oprească bucla; fiecare pas raportează singur.
+          set +e -uo pipefail
           b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
           echo "::add-mask::$b64"
           gitr() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $b64" "$@"; }
@@ -90,6 +91,7 @@ jobs:
               ( cd "$dir" && git init -q && git remote add origin "https://github.com/$REPO.git" && git checkout -q --orphan intraday ) || return 1
               cp -r st/. "$dir"/
               git -C "$dir" add -A
+              git -C "$dir" diff --cached --quiet && { echo "starea intraday e goală, nu public"; return 0; }
               git -C "$dir" commit -q -m "Intraday $(date -u +%Y-%m-%dT%H:%M) UTC"
               gitr -C "$dir" push -q --force origin "HEAD:refs/heads/intraday" && return 0
               sleep $((attempt * 5))
@@ -99,11 +101,14 @@ jobs:
           refresh_inputs() {
             rm -rf tmp daily p24; mkdir -p tmp daily p24
             if gitr fetch -q --depth=1 origin date-piete 2>/dev/null; then
-              git archive FETCH_HEAD zilnic crypto50 | tar -x -C tmp && cp tmp/zilnic/*.csv tmp/crypto50/*.csv daily/ 2>/dev/null
+              git archive FETCH_HEAD zilnic crypto50 | tar -x -C tmp
+              cp tmp/zilnic/*.csv tmp/crypto50/*.csv daily/ 2>/dev/null
             fi
+            echo "date zilnice: $(ls daily | wc -l) fișiere"
             if gitr fetch -q --depth=1 origin formatii-ai 2>/dev/null && git cat-file -e "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" 2>/dev/null; then
               git show "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" > p24/paper.sqlite
             fi
+            echo "P24: $( [ -f p24/paper.sqlite ] && echo găsit || echo lipsă )"
           }
           mkdir -p st
           if gitr fetch -q --depth=1 origin intraday 2>/dev/null; then git archive FETCH_HEAD | tar -x -C st; fi
