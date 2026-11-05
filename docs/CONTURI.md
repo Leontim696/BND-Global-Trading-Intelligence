@@ -105,6 +105,15 @@ Limite: funding există doar pentru 5 monede și ~1 lună de istoric; calendarul
   P22 20% din ordinele de deschidere ratate (alegere deterministă), P23 voturile executate cu o zi întârziere.
   Arată cât din profit ar rezista unei execuții reale.
 
+### P24–P25: take profit mare, stop strâns, reciclare cu redeschidere (cerute pe 5.11.2026)
+Aceleași semnale și limite ca oficialul (toți 5 AI + regula, STANDARD 2x), bani virtuali, fără apeluri AI în plus.
+- **P24:** închide la **+7%** (chiar dacă poziția ar mai urca) sau la **−2%**.
+- **P25:** închide la **+10%** sau la **−3%**.
+- Capitalul eliberat se mută la aceeași rulare pe următoarele cele mai bune semnale (reciclarea din P15, cu toate
+  protecțiile ei), iar piața închisă stă în pauză **o singură zi** (`--recycle-cooldown 1`, față de 5 la P15): de la
+  rularea următoare aceeași poziție se poate redeschide dacă semnalul e tot acolo.
+- Verificarea TP/stop se face pe lumânarea zilnică (maxim/minim al zilei), la rularea de noapte; varianta pe ore e după 1.12.
+
 ### Leverage în simulări: fiecare formație „decide” singură (cerut pe 4.11.2026)
 
 Doar în SIMULĂRI (rapoartele din 17.11 și 1.12), nu în conturi. Pentru fiecare formație se simulează propriile semnale
