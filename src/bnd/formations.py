@@ -297,6 +297,19 @@ def meta_top(state_dir, day: str, days: int = META_DAYS, n: int = META_TOP) -> l
     return sorted(scores, key=lambda k: (-scores[k], k))[:n]
 
 
+# Istoricul versiunilor (punctul 4 din auditul GPT, 5.11): formațiile al căror comportament s-a schimbat după pornire.
+# (versiune, activare UTC, ce s-a schimbat). Celelalte formații sunt la v1 de la pornire.
+VERSIONS = {
+    key: [("v1", "2026-11-05T06:30Z", "pornire (percentilă cu egalitățile numărate „sub”)"),
+          ("v2", "2026-11-05T22:50Z", "percentilă cu rang mediu; istoric constant = neutru. Pe datele din 5.11 nu "
+                                      "schimbă nicio decizie, deci ordinele puse cu v1 sunt identice cu cele din v2")]
+    for key in ("p29-pozitionare-futures", "p31-cot-speculatori", "p33-toate-sursele")}
+
+
+def version(key: str) -> str:
+    return VERSIONS[key][-1][0] if key in VERSIONS else "v1"
+
+
 # P29–P33: pragurile pentru sursele noi, fixate pe 5.11 înainte de orice rezultat.
 SURSE_EXTREME = 0.9             # percentila (față de propriul istoric) peste care o parte e „aglomerată”
 SURSE_POS_DAYS = 90             # P29: istoricul raportului long/short luat în calcul
@@ -322,11 +335,18 @@ def _csv_column(path: Path, column: str) -> list[float]:
 
 
 def _percentile(values: list[float]) -> float | None:
-    """Locul ultimei valori în istoricul ei (0 = cea mai mică, 1 = cea mai mare); None sub 20 de valori."""
+    """Locul ultimei valori față de istoricul de dinainte (0 = sub toate, 1 = peste toate), cu RANG MEDIU la egalități:
+    valorile egale cu ultima numără pe jumătate. None (neutru, fără filtru) sub 20 de valori sau când nici istoricul,
+    nici ultima valoare nu se schimbă (nimic de comparat); un salt după un istoric constant rămâne o extremă reală. Versiunea 2 (5.11, după auditul GPT): v1 număra egalitățile ca „sub”, deci un istoric constant
+    dădea 1,0 și bloca longurile fără motiv."""
     if len(values) < 20:
         return None
-    last = values[-1]
-    return sum(v <= last for v in values[:-1]) / (len(values) - 1)
+    last, past = values[-1], values[:-1]
+    if max(past) == min(past) == last:
+        return None
+    below = sum(v < last for v in past)
+    equal = sum(v == last for v in past)
+    return (below + 0.5 * equal) / len(past)
 
 
 def load_surse(folder) -> dict:
@@ -450,7 +470,7 @@ def build_all(registry: str, coins, day: str, rules: dict | None = None, funding
     # P23: aceleași voturi, dar cele de IERI (execuție întârziată cu o zi).
     from datetime import date as _date, timedelta as _td
     prev_votes, _ = day_votes(registry, coins, (_date.fromisoformat(day) - _td(days=1)).isoformat())
-    return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]),
+    return {f["key"]: {"date": day, "formation": f["title"], "members": list(f["members"]), "versiune": version(f["key"]),
                        "signals": signals_for(f, prev_votes if f["kind"] == "intarziere" else votes, weights,
                                               rules, funding, top, surse), "missing": missing,
                        **({"surse": surse} if f["kind"] == "surse" else {}),

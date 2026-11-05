@@ -31,7 +31,7 @@ jobs:
   backtest:
     if: inputs.mode == 'backtest'
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       BND_ALLOW_LIVE_AI: "false"
       BND_TRADING_MODE: PAPER
@@ -98,24 +98,29 @@ jobs:
             done
             echo "::warning::starea intraday nu s-a putut salva"; return 1
           }
-          refresh_inputs() {
-            rm -rf tmp daily p24; mkdir -p tmp daily p24
-            if gitr fetch -q --depth=1 origin date-piete 2>/dev/null; then
-              git archive FETCH_HEAD zilnic crypto50 | tar -x -C tmp
-              cp tmp/zilnic/*.csv tmp/crypto50/*.csv daily/ 2>/dev/null
-            fi
-            echo "date zilnice: $(find daily -name "*.csv" | wc -l) fișiere"
+          refresh_p24() {   # o dată pe oră: ținta zilnică a lui P24
+            rm -rf p24; mkdir -p p24
             if gitr fetch -q --depth=1 origin formatii-ai 2>/dev/null && git cat-file -e "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" 2>/dev/null; then
               git show "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" > p24/paper.sqlite
             fi
             echo "P24: $( [ -f p24/paper.sqlite ] && echo găsit || echo lipsă )"
           }
+          refresh_daily() { # o dată pe zi: istoricul zilnic pentru TOATE cele 100 de piețe (v2, după auditul din 5.11)
+            rm -rf tmp daily; mkdir -p tmp daily
+            if gitr fetch -q --depth=1 origin date-piete 2>/dev/null; then
+              git archive FETCH_HEAD zilnic crypto50 | tar -x -C tmp
+              cp tmp/zilnic/*.csv tmp/crypto50/*.csv daily/ 2>/dev/null
+            fi
+            env -u GH_TOKEN -u b64 bash scripts/date_zilnice_unic.sh daily
+          }
           mkdir -p st
           if gitr fetch -q --depth=1 origin intraday 2>/dev/null; then git archive FETCH_HEAD | tar -x -C st; fi
-          deadline=$(( $(date +%s) + 340*60 )); n=0
+          deadline=$(( $(date +%s) + 340*60 )); n=0; day=""
           while [ "$(date +%s)" -lt "$deadline" ]; do
             start=$(date +%s)
-            [ $((n % 6)) -eq 0 ] && refresh_inputs
+            [ $((n % 6)) -eq 0 ] && refresh_p24
+            today=$(date -u +%F)
+            if [ "$today" != "$day" ]; then refresh_daily; day=$today; fi
             args=(--dir st --daily-dir daily)
             [ -f p24/paper.sqlite ] && args+=(--p24 p24/paper.sqlite)
             py -m src.bnd.intraday_live cycle "${args[@]}" || echo "::warning::ciclul intraday de la $(date -u +%H:%M) a avut erori"

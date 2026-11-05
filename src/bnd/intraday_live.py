@@ -54,6 +54,17 @@ ACCOUNTS = {
     REVERT: "Revenire la medie crypto pe 5 minute (≥ 2,5σ față de media pe 3h, stop −2%)",
 }
 
+# Istoricul versiunilor (punctul 4 din auditul GPT, 5.11): ce s-a schimbat și de când, ca raportul final să știe exact
+# ce configurație a produs fiecare rezultat. (versiune, activare UTC, ce s-a schimbat)
+VERSIONS = {
+    TWIN: [("v1", "2026-11-05T05:50Z", "pornire: istoric zilnic doar din date-piete (57 din 100 de piețe)"),
+           ("v2", "2026-11-05T08:00Z", "istoric zilnic pentru toate cele 100 de piețe (scripts/date_zilnice_unic.sh) "
+                                       "și diagnostic pe motive; înainte, 43 de piețe (acțiuni, apărare, unele valute "
+                                       "și mărfuri) nu puteau primi ordine")],
+    TREND: [("v1", "2026-11-05T05:50Z", "pornire")],
+    REVERT: [("v1", "2026-11-05T05:50Z", "pornire")],
+}
+
 # P27/P28: cel mult 10 poziții a câte 10% din cont (expunere totală ≤ 1x), aceleași costuri ca în conturile zilnice.
 MAX_POSITIONS = 10
 POSITION_WEIGHT = 0.10
@@ -286,6 +297,43 @@ def _fresh(engine, names, now) -> set:
     return out
 
 
+EUROPE = ("DE", "PA", "MI", "ST", "OL")
+
+
+def session(market) -> str:
+    """Sesiunea de tranzacționare (aproximativă, doar pentru diagnostic): după clasă și sufixul Yahoo."""
+    from .calendars import session_of
+    suffix = market.symbol.rsplit(".", 1)[-1] if "." in market.symbol else ""
+    if market.asset_class in CRYPTO:
+        return "crypto"
+    if market.symbol.endswith("=X"):
+        return "forex"
+    if suffix in EUROPE:
+        return "xetra"                    # Frankfurt/Paris/Milano/Stockholm/Oslo: ~9:00–17:30 ora Europei Centrale
+    if suffix == "L":
+        return "lse"
+    return session_of(market.name, market.asset_class)
+
+
+def diagnose(engine, weights: dict, daily: dict, by_name: dict, now) -> dict:
+    """Piețele cu țintă nenulă care NU pot primi ordin acum, pe motive: fără istoric zilnic, fără lumânări intraday,
+    bursa închisă sau date vechi (bursa deschisă, dar ultima lumânare de 5 minute e mai veche de 20 de minute)."""
+    from .calendars import is_open
+    out = {"fara_istoric_zilnic": [], "fara_lumanari_intraday": [], "bursa_inchisa": [], "date_vechi": []}
+    for name, w in sorted(weights.items()):
+        if not w:
+            continue
+        mark = engine.mark(name)
+        if name not in daily or len(daily[name]) <= paper_runner.RunnerConfig().atr_period:
+            out["fara_istoric_zilnic"].append(name)
+        elif mark is None:
+            out["fara_lumanari_intraday"].append(name)
+        elif datetime.fromisoformat(mark["time"]) < now - FRESH:
+            market = by_name.get(name)
+            out["bursa_inchisa" if market and not is_open(session(market), now) else "date_vechi"].append(name)
+    return out
+
+
 def twin_cycle(engine, settings: dict, p24_report: dict, daily: dict, bars: dict, chosen, now) -> dict:
     """Un pas al geamănului: lumânările noi de 5 minute (umpleri, TP, stop), apoi ordinele spre ținta lui P24."""
     config = paper_runner._config(settings)
@@ -312,6 +360,7 @@ def twin_cycle(engine, settings: dict, p24_report: dict, daily: dict, bars: dict
         data = {k: daily[k] for k in weights if k in daily and k in live}
         report["weights"] = weights
         report["markets_open"] = len(data)
+        report["diagnostic"] = diagnose(engine, weights, daily, {m.name: m for m in chosen}, now)
         report["orders"] = paper_runner.rebalance(engine, data, weights, config, now, order_prefix=_prefix(now))
     return _finish(engine, report, now)
 
@@ -323,23 +372,29 @@ def strategy_config(kind: str) -> paper_runner.RunnerConfig:
 
 
 def strategy_cycle(engine, kind: str, bars: dict, chosen, now) -> dict:
-    config = strategy_config(kind)
     for m in chosen:
         engine.register_instrument(paper_runner.instrument_for(m))
     data = {m.name: bars[m.name] for m in chosen if bars.get(m.name)}
     fed = paper_runner.feed_new_candles(engine, data)
+    signals = {n: strategy_signal(kind, c) for n, c in data.items()}
+    return _finish(engine, strategy_decide(engine, kind, signals, data, now, fed), now)
+
+
+def strategy_decide(engine, kind: str, signals: dict, data: dict, now, fed: int = 0) -> dict:
+    """Decizia P27/P28 dintr-un set de semnale: cele mai puternice 10, câte 10%, limitele motorului, ordine pentru
+    următoarea lumânare. Aceeași funcție în cont (la 10 minute) și în testul pe istoric cu motor (E-017/E-018 v2)."""
+    config = strategy_config(kind)
     account = engine.account()
     report = {"time": now.isoformat(), "account": kind, "candles_processed": fed,
               "kill_switch": bool(account["kill_switch"]), "orders": []}
     if not account["kill_switch"]:
-        signals = {n: strategy_signal(kind, c) for n, c in data.items()}
         weights = paper_runner.fit_limits(engine, pick(signals), config.margin)
         report["signals"] = {n: s for n, s in signals.items() if s[0]}
         report["weights"] = {n: w for n, w in weights.items() if w}
         live = _fresh(engine, data, now)
         report["orders"] = paper_runner.rebalance(engine, {k: v for k, v in data.items() if k in live}, weights,
                                                   config, now, order_prefix=_prefix(now))
-    return _finish(engine, report, now)
+    return report
 
 
 def _finish(engine, report, now) -> dict:
@@ -390,7 +445,10 @@ def cycle(folder: Path, p24_path: Path | None, daily_dir: Path | None, now: date
                 engine.close()
             (folder / key / "last_run.json").write_text(json.dumps(report, indent=1, default=str), encoding="utf-8")
             status["accounts"][key] = {"equity": round(report["equity"], 2), "positions": report["positions"],
-                                       "orders": len(report["orders"]), "kill_switch": report["kill_switch"]}
+                                       "orders": len(report["orders"]), "kill_switch": report["kill_switch"],
+                                       "version": VERSIONS[key][-1][0],
+                                       **({"diagnostic": {k: len(v) for k, v in report["diagnostic"].items()}}
+                                          if "diagnostic" in report else {})}
         except Exception as exc:          # un cont stricat nu le oprește pe celelalte
             status["accounts"][key] = {"error": f"{type(exc).__name__}: {exc}"[:200]}
     (folder / "status.json").write_text(json.dumps(status, indent=1, ensure_ascii=False), encoding="utf-8")
@@ -459,7 +517,87 @@ def backtest(kind: str, bars: dict, costs: dict) -> dict:
             "cele_mai_slabe": sorted((round(100 * r["net"], 2), n) for n, r in results.items())[:5]}
 
 
-def run_backtest(days: int, out: Path, fetch=fetch_bars, now: datetime | None = None) -> dict:
+def _series_by_close(kind: str, candles5) -> list[tuple[datetime, tuple]]:
+    """(momentul încheierii, semnal) pentru fiecare lumânare a regulii: 15 minute la trend, 5 minute la revenire."""
+    if kind == TREND:
+        c15 = resample(candles5, 15)
+        return [(c.open_time + timedelta(minutes=15), s) for c, s in zip(c15, trend_series(c15))]
+    return [(c.open_time + STEP, s) for c, s in zip(candles5, revert_series(candles5))]
+
+
+def backtest_engine(kind: str, bars: dict, start: datetime, end: datetime, path: Path) -> dict:
+    """Test pe istoric cu ACELAȘI motor ca P27/P28 (v2, după auditul din 5.11): la fiecare 10 minute se dau motorului
+    lumânările de 5 minute încheiate, apoi strategy_decide (aceeași funcție ca în cont) alege cele mai puternice 10
+    semnale, câte 10%, cu stopul contului, costurile instrumentelor, limitele motorului și execuția la deschiderea
+    lumânării următoare. Singura diferență față de cont: semnalul se calculează o dată pe tot istoricul, nu pe
+    fereastra de 3 zile a contului (EMA pornește de mai devreme și starea revenirii nu se resetează la marginea
+    ferestrei); efectul e neglijabil după primele ore, verificat în teste pe aceleași lumânări."""
+    from bisect import bisect_right
+    chosen = [m for m in markets(crypto_only=True) if len(bars.get(m.name) or []) > 300]
+    if not chosen:
+        return {"nota": "fără date"}
+    path = Path(path)
+    if path.exists():
+        path.unlink()
+    engine = open_account(path, None, start)
+    # Baza de test e de unică folosință: fără fsync la fiecare bară (de ~8 ori mai repede); logica e neatinsă.
+    engine._db.execute("PRAGMA synchronous = OFF")
+    try:
+        for m in chosen:
+            engine.register_instrument(paper_runner.instrument_for(m))
+        series = {m.name: _series_by_close(kind, bars[m.name]) for m in chosen}
+        closes = {n: [t for t, _ in v] for n, v in series.items()}
+        done = {m.name: 0 for m in chosen}
+        t = start.replace(second=0, microsecond=0) - timedelta(minutes=start.minute % 10)
+        curve, cycles = [], 0
+        while t <= end:
+            pending = []
+            for m in chosen:
+                candles, i = bars[m.name], done[m.name]
+                while i < len(candles) and candles[i].open_time + STEP <= t:
+                    pending.append((candles[i].open_time, m.name, candles[i]))
+                    i += 1
+                done[m.name] = i
+            pending.sort(key=lambda x: (x[0], x[1]))
+            for _, name, candle in pending:
+                engine.on_bar(name, candle)
+            signals, data = {}, {}
+            for n in closes:
+                k = bisect_right(closes[n], t) - 1
+                signals[n] = series[n][k][1] if k >= 0 else (0, 0.0)
+                i = done[n]
+                if i > paper_runner.RunnerConfig().atr_period:
+                    data[n] = bars[n][i - 15:i]
+            strategy_decide(engine, kind, signals, data, t, len(pending))
+            curve.append((t, engine.equity()))
+            cycles += 1
+            t += timedelta(minutes=10)
+        fills = engine.fills()
+    finally:
+        engine.close()
+    by_day = {}
+    for when, eq in curve:
+        by_day[when.date().isoformat()] = eq
+    days = sorted(by_day)
+    values = [CAPITAL] + [by_day[d] for d in days]
+    daily = [b / a - 1 for a, b in zip(values, values[1:]) if a > 0]
+    peak, dd = CAPITAL, 0.0
+    for _, eq in curve:
+        peak = max(peak, eq)
+        dd = max(dd, 1 - eq / peak)
+    sd = pstdev(daily) if len(daily) > 1 else 0.0
+    cost = sum(abs(f["quantity"]) * f["price"] for f in fills)
+    return {"strategie": kind, "varianta": "motor (v2): aceeași execuție ca în cont", "monede": len(chosen),
+            "zile": len(days), "cicluri": cycles, "net_pct": round(100 * (curve[-1][1] / CAPITAL - 1), 2),
+            "medie_zi_pct": round(100 * mean(daily), 3) if daily else None,
+            "sharpe_anual": round(mean(daily) / sd * sqrt(365), 2) if sd > 0 else None,
+            "scadere_maxima_pct": round(100 * dd, 2), "tranzactii": len(fills),
+            "iesiri": {r: sum(f["reason"] == r for f in fills) for r in ("stop_loss", "take_profit", "order")},
+            "rulaj_x_capital": round(cost / CAPITAL, 1),
+            "zile_pe_plus_pct": round(100 * sum(1 for r in daily if r > 0) / len(daily), 1) if daily else None}
+
+
+def run_backtest(days: int, out: Path, fetch=fetch_bars, now: datetime | None = None, engine: bool = True) -> dict:
     now = now or datetime.now(timezone.utc)
     end = now.replace(second=0, microsecond=0) - timedelta(minutes=now.minute % 5)
     start = end - timedelta(days=days)
@@ -472,8 +610,14 @@ def run_backtest(days: int, out: Path, fetch=fetch_bars, now: datetime | None = 
             errors[m.name] = str(exc)[:120]
     result = {"time": now.isoformat(timespec="minutes"), "start": start.isoformat(), "end": end.isoformat(),
               "E-017": backtest(TREND, bars, costs), "E-018": backtest(REVERT, bars, costs), "erori": errors,
-              "nota": ("Fără stop în test (simplificare); costurile sunt cele din conturi (comision + alunecare la "
-                       "fiecare schimbare de poziție). Rezultat pe o singură perioadă: de citit cu prudență.")}
+              "nota": ("E-017/E-018 = varianta SIMPLIFICATĂ (v1, păstrată pentru comparație): toate monedele egal, fără "
+                       "stop, fără selecția celor 10. E-017-motor/E-018-motor = v2, aceeași execuție ca în conturile "
+                       "P27/P28. Rezultat pe o singură perioadă: de citit cu prudență.")}
+    if engine:
+        warm = start + timedelta(days=1)                   # ca în cont: semnalele au nevoie de istoric
+        tmp = out.parent if isinstance(out, Path) else Path(out).parent
+        result["E-017-motor"] = backtest_engine(TREND, bars, warm, end, Path(tmp) / "bt-p27.sqlite")
+        result["E-018-motor"] = backtest_engine(REVERT, bars, warm, end, Path(tmp) / "bt-p28.sqlite")
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
@@ -490,6 +634,7 @@ def main(argv=None) -> int:
     b = sub.add_parser("backtest", help="E-017/E-018 pe ultimele zile de lumânări de 5 minute (crypto)")
     b.add_argument("--days", type=int, default=30)
     b.add_argument("--out", required=True)
+    b.add_argument("--simplified-only", action="store_true", help="doar varianta simplificată (v1), fără motor")
     args = parser.parse_args(argv)
     now = datetime.now(timezone.utc)
     if args.cmd == "cycle":
@@ -498,8 +643,8 @@ def main(argv=None) -> int:
         print(json.dumps({k: status[k] for k in ("time", "markets_with_bars", "accounts")}, ensure_ascii=False))
         broken = [k for k, v in status["accounts"].items() if "error" in v and k != TWIN]
         return 1 if broken else 0
-    result = run_backtest(args.days, Path(args.out))
-    print(json.dumps({k: result[k] for k in ("E-017", "E-018")}, ensure_ascii=False, indent=1))
+    result = run_backtest(args.days, Path(args.out), engine=not args.simplified_only)
+    print(json.dumps({k: result[k] for k in result if k.startswith("E-")}, ensure_ascii=False, indent=1))
     return 0
 
 

@@ -67,3 +67,14 @@ def test_semnalele_din_voturi(tmp_path):
     out = fm.signals_for(f, votes, {}, {"BITCOIN": 1.0, "GOLD": -1.0}, surse=s)
     assert out == {"BITCOIN": 0.0, "GOLD": -1.0}
     assert fm.signals_for(f, votes, {}, {"BITCOIN": 1.0}, surse={}) == {"BITCOIN": 1.0}
+
+
+def test_percentila_egalitati_v2():
+    p = fm._percentile
+    assert p([1.0] * 90) is None                                   # istoric constant: neinformativ, fără filtru
+    assert fm._crowd_clip(1.0, p([1.0] * 90)) == 1.0               # v1 dădea 1,0 și bloca longul
+    assert p([1.0] * 89 + [2.0]) == 1.0 and p([1.0] * 89 + [0.5]) == 0.0   # salt după istoric constant = extremă reală
+    assert abs(p([1.0] * 45 + [2.0] * 45) - (45 + 0.5 * 44) / 89) < 1e-12 # multe egalități: rang mediu
+    assert 0.1 < p([1.0, 2.0] * 45) < 0.9                          # egalități alternante: nu e extremă
+    assert p(list(range(90))) == 1.0 and p(list(range(89)) + [-5]) == 0.0  # extreme reale
+    assert p([1.0] * 19) is None                                   # istoric insuficient

@@ -98,9 +98,14 @@ de 5 minute de la Binance. Testul rulează pe GitHub (`intraday-10min.yml`, mode
 
 | ID | Strategie | Verdict | Pe scurt |
 |---|---|---|---|
-| E-017 | Trend crypto 15 minute (P27) | respins | 30 de zile, 49 de monede: −2,1% înainte de costuri, **−48,3% după costuri** (18.415 schimbări de poziție, ~12/zi pe monedă). 13% din zile pe plus. |
-| E-018 | Revenire la medie crypto 5 minute (P28) | respins | −8,8% înainte de costuri, **−43,9% după costuri** (14.018 schimbări de poziție). |
+| E-017 (v1 simplificat) | Trend crypto 15 minute (P27) | respins | 30 de zile, 49 de monede: −2,1% înainte de costuri, **−48,3% după costuri** (18.415 schimbări de poziție, ~12/zi pe monedă). 13% din zile pe plus. |
+| E-018 (v1 simplificat) | Revenire la medie crypto 5 minute (P28) | respins | −8,8% înainte de costuri, **−43,9% după costuri** (14.018 schimbări de poziție). |
 
 Concluzie: pe lumânări de 5–15 minute, costurile (0,15–0,25% la fiecare intrare/ieșire) sunt mai mari decât orice
 avantaj al acestor reguli; niciuna nu câștigă nici înainte de costuri. Ce poate aduce frecvența mare e verificat separat
 de P26 (aceleași semnale zilnice ca P24, doar TP/stop verificate la 10 minute), unde numărul de tranzacții rămâne mic.
+
+Varianta v1 de mai sus e simplificată (toate monedele egal, fără stop, fără selecția celor 10). După auditul din 5.11
+testul s-a refăcut cu ACELAȘI motor și aceleași funcții ca P27/P28 (v2 „motor”, `backtest_engine`); pe aceleași
+lumânări face exact aceleași tranzacții ca execuția contului (test automat). Rezultatele v2 sunt adăugate ca notă în
+registru, lângă cele v1; vezi și `docs/VERSIUNI_EXPERIMENTE.md`.
