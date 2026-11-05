@@ -156,6 +156,41 @@ def read_formations(folder, quotes: dict | None = None, registry=None) -> list:
     return out
 
 
+def read_intraday(folder, quotes: dict | None = None, limit: int = 15) -> dict:
+    """Conturile intraday la 10 minute (ramura intraday, 5.11): valoarea, pozițiile și ultimele tranzacții."""
+    from . import intraday_live
+    root = Path(folder) if folder else None
+    if not root or not root.is_dir():
+        return {"exists": False}
+    status = _read_json(root / "status.json") or {}
+    accounts = []
+    for key, title in intraday_live.ACCOUNTS.items():
+        a = read_account(root / key, key, title, "", quotes)
+        row = {"key": key, "title": title, "exists": a.get("exists", False),
+               "error": (status.get("accounts", {}).get(key) or {}).get("error")}
+        if a.get("exists"):
+            engine = PaperEngine.open(root / key / "paper.sqlite")
+            try:
+                fills = engine.fills()
+                runs = engine.journal("intraday_run")
+            finally:
+                engine.close()
+            row.update({"initial": a["initial"], "equity": a["equity"], "live_equity": a["live_equity"],
+                        "drawdown_pct": a["drawdown_pct"], "leverage": a["leverage"],
+                        "positions": len(a["positions"]),
+                        "longs": sum(p["quantity"] > 0 for p in a["positions"]),
+                        "shorts": sum(p["quantity"] < 0 for p in a["positions"]),
+                        "fills": len(fills), "exits": {r: sum(f["reason"] == r for f in fills)
+                                                       for r in ("take_profit", "stop_loss")},
+                        "start": runs[0]["payload"]["time"] if runs else None,
+                        "last_run": runs[-1]["payload"]["time"] if runs else None,
+                        "trades": [{"t": f["time"], "symbol": f["symbol"], "qty": f["quantity"],
+                                    "price": f["price"], "reason": f["reason"]} for f in fills[-limit:]][::-1]})
+        accounts.append(row)
+    return {"exists": True, "time": status.get("time"), "markets": status.get("markets_with_bars"),
+            "errors": len(status.get("fetch_errors") or {}), "accounts": accounts}
+
+
 def read_council(folder, balance: dict | None = None, now: datetime | None = None) -> dict:
     path = Path(folder) / "registry.sqlite" if folder else None
     if not path or not path.exists():
@@ -339,7 +374,7 @@ def alerts_from(accounts: list, runs: list | None, now: datetime) -> list:
 def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None = None,
             quotes: dict | None = None, runs: list | None = None, top50=None,
             balance: dict | None = None, rls=None, unic=None, exposure: dict | None = None,
-            charts=None, reasons=None, control=None, formations_dir=None) -> dict:
+            charts=None, reasons=None, control=None, formations_dir=None, intraday_dir=None) -> dict:
     now = now or datetime.now(timezone.utc)
     folders = {"paper": paper, "crypto": crypto, "ai": ai, "rls": rls, "unic": unic, "control": control}
     prices = (quotes or {}).get("quotes", {})
@@ -380,6 +415,7 @@ def collect(paper=None, crypto=None, ai=None, council=None, now: datetime | None
             "independenta_ai": _read_json(Path(formations_dir) / "ortogonalitate.json") if formations_dir else None,
             "formations": read_formations(formations_dir, prices,
                                           Path(council_dir) / "registry.sqlite" if council_dir else None),
+            "intraday": read_intraday(intraday_dir, prices),
             "charts": chart_series, "group_of": {s: market_groups.group_of(s) for s in sorted(symbols)}}
 
 
@@ -462,6 +498,7 @@ def main(argv=None) -> int:
     parser = argparse.ArgumentParser(prog="dashboard")
     for name in ("paper", "crypto", "ai", "council", "rls", "unic", "control"):
         parser.add_argument(f"--{name}")
+    parser.add_argument("--intraday", help="folderul ramurii intraday (P26–P28, execuție la 10 minute)")
     parser.add_argument("--formations", help="folderul ramurii formatii-ai (14 conturi-umbră, câte un subfolder)")
     parser.add_argument("--quotes", help="JSON de la quotes_snapshot (prețuri de acum)")
     parser.add_argument("--runs", help="JSON de la `gh run list --json workflowName,event,conclusion,createdAt`")
@@ -482,7 +519,7 @@ def main(argv=None) -> int:
         data = collect(args.paper, args.crypto, args.ai, args.council, quotes=quotes, runs=runs,
                        top50=args.top50, balance=balance, rls=args.rls, unic=args.unic, exposure=exposure,
                        charts=args.charts, reasons=args.reasons, control=args.control,
-                       formations_dir=args.formations)
+                       formations_dir=args.formations, intraday_dir=args.intraday)
         html = render(data, Path(args.template).read_text(encoding="utf-8"))
     except (OSError, ValueError, TypeError) as exc:
         print("Error:", exc, file=sys.stderr)

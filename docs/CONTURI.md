@@ -112,7 +112,22 @@ Aceleași semnale și limite ca oficialul (toți 5 AI + regula, STANDARD 2x), ba
 - Capitalul eliberat se mută la aceeași rulare pe următoarele cele mai bune semnale (reciclarea din P15, cu toate
   protecțiile ei), iar piața închisă stă în pauză **o singură zi** (`--recycle-cooldown 1`, față de 5 la P15): de la
   rularea următoare aceeași poziție se poate redeschide dacă semnalul e tot acolo.
-- Verificarea TP/stop se face pe lumânarea zilnică (maxim/minim al zilei), la rularea de noapte; varianta pe ore e după 1.12.
+- Verificarea TP/stop se face pe lumânarea zilnică (maxim/minim al zilei), la rularea de noapte.
+
+### Intraday la 10 minute: P26–P28 (cerute pe 5.11.2026)
+Cod: `src/bnd/intraday_live.py`, workflow `intraday-10min.yml` (buclă de ~6 ore care se repornește singură), stare pe ramura
+`intraday` (publicată o dată pe oră, un singur commit). Bani virtuali, fără apeluri AI, contul oficial neatins.
+- **P26 — geamănul lui P24 la 10 minute:** aceleași ponderi țintă ca P24 (`weights_base` din raportul zilnic al lui P24,
+  adică înainte de reciclare), aceleași limite și setări (TP +7%, stop −2%, reciclare, pauză 1 zi). Diferă doar frecvența:
+  umplerile, TP și stopul se verifică pe lumânări de 5 minute la fiecare 10 minute. Piețele fără lumânare recentă (bursa
+  închisă) nu primesc ordine noi; ordinul rămas se execută la prima lumânare de după deschidere.
+- **P27 — trend crypto pe 15 minute:** long dacă prețul și EMA 20 sunt peste EMA 80 și impulsul pe 4 ore e pozitiv (short
+  invers); cele mai puternice 10 semnale (impuls/volatilitate), câte 10% din cont, stop −3%. Experimentul E-017.
+- **P28 — revenire la medie crypto pe 5 minute:** intră contra unei abateri ≥ 2,5σ față de media pe 3 ore, iese când prețul
+  revine (|z| < 0,3) sau după 2 ore; cele mai puternice 10, câte 10%, stop −2%. Experimentul E-018.
+- Date: crypto din API-ul public Binance, restul din Yahoo la 5 minute (doar cât e bursa deschisă).
+- Limita de volatilitate a portofoliului din motor e oprită la aceste conturi: e calculată pe randamente zilnice și pe
+  lumânări de 5 minute ar subestima riscul. Celelalte limite (pierdere zilnică, drawdown, risc pe tranzacție) rămân.
 
 ### Leverage în simulări: fiecare formație „decide” singură (cerut pe 4.11.2026)
 

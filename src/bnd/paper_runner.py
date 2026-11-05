@@ -218,8 +218,11 @@ def _submit(engine, request, now) -> dict:
 
 
 def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConfig,
-              now: datetime) -> list[dict]:
-    """Orders that move each position toward its weight at the next open."""
+              now: datetime, order_prefix: str | None = None) -> list[dict]:
+    """Orders that move each position toward its weight at the next open.
+
+    ``order_prefix`` (intraday, 5.11): the order ids start with it instead of the last candle's date, so a run every
+    10 minutes gets fresh ids and replaces its own unfilled orders from the run before."""
     limits = engine.limits()
     equity = engine.equity()
     held = {p["symbol"]: p["quantity"] for p in engine.positions()}
@@ -233,7 +236,7 @@ def rebalance(engine: PaperEngine, data: dict, weights: dict, config: RunnerConf
         current = held.get(name, 0.0)
         weight = weights.get(name, 0.0)
         now_weight = current * price / equity
-        order_id = f"{candles[-1].open_time.date().isoformat()}:{name}"
+        order_id = f"{order_prefix or candles[-1].open_time.date().isoformat()}:{name}"
         # Orders from an earlier date are obsolete whatever today's signal is,
         # also when no new order is needed (the position is already close enough).
         for old in engine.orders():
@@ -342,6 +345,8 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
         if scale != 1.0:
             weights = {k: v * scale for k, v in weights.items()}
         report["exposure_scale"] = scale
+        # Ținta înainte de reciclare și de limite: de aici pornește geamănul intraday (P26), cu propriile ieșiri.
+        report["weights_base"] = dict(weights)
         if config.recycle:
             rules = recycling.RecycleRules(mode=config.recycle, **(
                 {"cooldown_days": config.recycle_cooldown} if config.recycle_cooldown is not None else {}))

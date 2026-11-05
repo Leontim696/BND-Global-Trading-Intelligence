@@ -89,3 +89,14 @@ bun în ambele părți 60/40). Zero cost, fără AI. Doar long, fără leverage,
 
 Concluzie: niciuna nu bate „cumperi și ții” la același risc, în mod dovedit. Singurul indiciu interesant e filtrul Bitcoin
 din E-013 (reduce mult pierderile pe altcoin-uri), dar pe prea puțini ani ca să conteze. Nimic nu se promovează în conturi.
+
+## Intraday crypto, 5.11.2026 (E-017, E-018)
+Cerute de proprietar (execuție la 10 minute). Cod: `src/bnd/intraday_live.py`. Reguli și criteriu scrise înainte de test
+(registru): net după costuri > 0 pe portofoliul egal ponderat al monedelor și Sharpe anual > 1, pe 30 de zile de lumânări
+de 5 minute de la Binance. Testul rulează pe GitHub (`intraday-10min.yml`, mode=backtest). Conturile P27/P28 rulează oricum
+în paralel ca observație; rezultatul nu mută nimic în contul oficial.
+
+| ID | Strategie | Verdict | Pe scurt |
+|---|---|---|---|
+| E-017 | Trend crypto 15 minute (P27) | în curs | – |
+| E-018 | Revenire la medie crypto 5 minute (P28) | în curs | – |
