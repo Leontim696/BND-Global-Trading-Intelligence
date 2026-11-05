@@ -525,7 +525,7 @@ def _series_by_close(kind: str, candles5) -> list[tuple[datetime, tuple]]:
     return [(c.open_time + STEP, s) for c, s in zip(candles5, revert_series(candles5))]
 
 
-def backtest_engine(kind: str, bars: dict, start: datetime, end: datetime, path: Path) -> dict:
+def backtest_engine(kind: str, bars: dict, start: datetime, end: datetime, path: Path, safety: bool = True) -> dict:
     """Test pe istoric cu ACELAȘI motor ca P27/P28 (v2, după auditul din 5.11): la fiecare 10 minute se dau motorului
     lumânările de 5 minute încheiate, apoi strategy_decide (aceeași funcție ca în cont) alege cele mai puternice 10
     semnale, câte 10%, cu stopul contului, costurile instrumentelor, limitele motorului și execuția la deschiderea
@@ -539,7 +539,13 @@ def backtest_engine(kind: str, bars: dict, start: datetime, end: datetime, path:
     path = Path(path)
     if path.exists():
         path.unlink()
-    engine = open_account(path, None, start)
+    if safety:
+        engine = open_account(path, None, start)            # exact ca în cont, cu oprirea la −5% pe zi / −25% total
+    else:
+        # Varianta de diagnostic: fără oprirea de siguranță, ca să se vadă cum merge regula după prima zi proastă.
+        from dataclasses import replace as _replace
+        engine = PaperEngine.create(path, CAPITAL, currency="USD", now=start,
+                                    limits=_replace(_limits(None), max_daily_loss_pct=100.0, max_drawdown_pct=99.0))
     # Baza de test e de unică folosință: fără fsync la fiecare bară (de ~8 ori mai repede); logica e neatinsă.
     engine._db.execute("PRAGMA synchronous = OFF")
     try:
@@ -573,6 +579,7 @@ def backtest_engine(kind: str, bars: dict, start: datetime, end: datetime, path:
             cycles += 1
             t += timedelta(minutes=10)
         fills = engine.fills()
+        account = dict(engine.account())
     finally:
         engine.close()
     by_day = {}
@@ -587,13 +594,16 @@ def backtest_engine(kind: str, bars: dict, start: datetime, end: datetime, path:
         dd = max(dd, 1 - eq / peak)
     sd = pstdev(daily) if len(daily) > 1 else 0.0
     cost = sum(abs(f["quantity"]) * f["price"] for f in fills)
-    return {"strategie": kind, "varianta": "motor (v2): aceeași execuție ca în cont", "monede": len(chosen),
+    return {"strategie": kind, "varianta": ("motor (v2): aceeași execuție ca în cont" if safety else
+                                            "motor (v2) fără oprirea de siguranță (diagnostic)"), "monede": len(chosen),
             "zile": len(days), "cicluri": cycles, "net_pct": round(100 * (curve[-1][1] / CAPITAL - 1), 2),
             "medie_zi_pct": round(100 * mean(daily), 3) if daily else None,
             "sharpe_anual": round(mean(daily) / sd * sqrt(365), 2) if sd > 0 else None,
             "scadere_maxima_pct": round(100 * dd, 2), "tranzactii": len(fills),
             "iesiri": {r: sum(f["reason"] == r for f in fills) for r in ("stop_loss", "take_profit", "order")},
             "rulaj_x_capital": round(cost / CAPITAL, 1),
+            "oprit_de_siguranta": bool(account.get("kill_switch")), "motiv_oprire": account.get("kill_reason"),
+            "oprit_la": account.get("kill_at"),
             "zile_pe_plus_pct": round(100 * sum(1 for r in daily if r > 0) / len(daily), 1) if daily else None}
 
 
@@ -618,6 +628,8 @@ def run_backtest(days: int, out: Path, fetch=fetch_bars, now: datetime | None = 
         tmp = out.parent if isinstance(out, Path) else Path(out).parent
         result["E-017-motor"] = backtest_engine(TREND, bars, warm, end, Path(tmp) / "bt-p27.sqlite")
         result["E-018-motor"] = backtest_engine(REVERT, bars, warm, end, Path(tmp) / "bt-p28.sqlite")
+        result["E-017-motor-fara-oprire"] = backtest_engine(TREND, bars, warm, end, Path(tmp) / "bt-p27b.sqlite", False)
+        result["E-018-motor-fara-oprire"] = backtest_engine(REVERT, bars, warm, end, Path(tmp) / "bt-p28b.sqlite", False)
     out = Path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=1, ensure_ascii=False), encoding="utf-8")
