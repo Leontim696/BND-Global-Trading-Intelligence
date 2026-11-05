@@ -1,9 +1,9 @@
-# Raport bot virtual, 2026-11-05 02:26 UTC
+# Raport bot virtual, 2026-11-05 02:36 UTC
 
 **Ziua 4 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 145.45 USD** (-0,34% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 145.52 USD** (-0,34% față de start, 11 183.00 USD)
 - La ultima închidere: 11 195.74 USD; bani liberi: 19 144.75 USD
 - Poziții deschise: 75; ordine pregătite pentru mâine: 27
 - Piețe deschise acum: bursa din Tokyo, forex, crypto
@@ -16,17 +16,17 @@
 
 | Piață | Valoare | Câștig/pierdere | Azi | Stop |
 |---|---:|---:|---:|---:|
-| scurt GBPUSD | -1 503.62 USD | -11.56 USD | +0,59% | 1.36 |
-| scurt EURUSD | -1 500.94 USD | -13.11 USD | +0,56% | 1.14 |
-| USDCAD | 1 487.97 USD | -1.80 USD | -0,20% | 1.38 |
-| USDCHF | 1 475.00 USD | -18.49 USD | -0,46% | 0.81 |
+| scurt GBPUSD | -1 503.73 USD | -11.67 USD | +0,60% | 1.36 |
+| scurt EURUSD | -1 501.48 USD | -13.65 USD | +0,60% | 1.14 |
+| USDCAD | 1 487.75 USD | -2.02 USD | -0,21% | 1.38 |
+| USDCHF | 1 475.18 USD | -18.31 USD | -0,45% | 0.81 |
 | scurt US10Y_NOTE | -1 468.96 USD | -2.39 USD | +0,55% | 93.17 |
 | scurt US20Y_BOND | -1 246.21 USD | 0.94 USD | +0,80% | 84.22 |
 | scurt AGRICULTURE | -1 122.08 USD | 18.75 USD | -0,26% | 27.64 |
 | scurt GERMANY | -1 065.30 USD | -32.43 USD | +3,42% | 43.41 |
 | JAPAN | 845.17 USD | 8.47 USD | +1,37% | 89.08 |
 | SP500 | 688.30 USD | 6.54 USD | +1,65% | 732.57 |
-| scurt USDJPY | -610.90 USD | -1.11 USD | +0,02% | 160.85 |
+| scurt USDJPY | -611.00 USD | -1.21 USD | +0,04% | 160.85 |
 | NASDAQ100 | 572.30 USD | -2.84 USD | +0,97% | 652.33 |
 | KO | 539.77 USD | 8.40 USD | +1,05% | 89.21 |
 | scurt GENERAL_DYNAMICS | -459.60 USD | 11.03 USD | -2,57% | 394.36 |
@@ -43,53 +43,53 @@
 | scurt JPM | -294.69 USD | -9.43 USD | +4,18% | 356.05 |
 | AMZN | 266.61 USD | 23.00 USD | +6,12% | 218.58 |
 | scurt SILVER | -265.36 USD | -7.28 USD | +5,17% | 49.44 |
-| scurt XRP | -238.48 USD | -9.78 USD | +2,35% | 1.42 |
+| scurt XRP | -238.29 USD | -9.60 USD | +2,28% | 1.42 |
 | scurt SAAB | -233.17 USD | 8.97 USD | -2,39% | 733.83 |
 | scurt KONGSBERG | -232.73 USD | 1.11 USD | -1,72% | 388.01 |
 | scurt SHIB | -229.94 USD | -4.20 USD | +2,81% | 0.00 |
-| scurt DOGE | -215.39 USD | -4.86 USD | +2,71% | 0.09 |
-| scurt ETC | -212.19 USD | -7.88 USD | +4,54% | 8.27 |
+| scurt DOGE | -215.14 USD | -4.61 USD | +2,59% | 0.09 |
+| scurt ETC | -211.61 USD | -7.30 USD | +4,26% | 8.27 |
 | scurt RTX | -210.57 USD | 2.29 USD | -2,64% | 214.30 |
 | scurt THALES | -195.59 USD | 6.13 USD | -2,36% | 251.79 |
 | scurt JNJ | -195.07 USD | -3.06 USD | +3,81% | 293.32 |
-| scurt XLM | -193.36 USD | 0.59 USD | +4,07% | 0.20 |
+| scurt XLM | -192.78 USD | 1.16 USD | +3,76% | 0.20 |
 | CVX | 188.65 USD | -13.57 USD | -3,69% | 221.79 |
 | scurt GS | -188.24 USD | -3.95 USD | +3,56% | 969.51 |
-| scurt ETHEREUM | -182.23 USD | -14.24 USD | +6,91% | 2506.20 |
+| scurt ETHEREUM | -181.95 USD | -13.96 USD | +6,75% | 2506.20 |
 | XOM | 169.99 USD | -14.83 USD | -4,62% | 175.34 |
 | scurt VET | -158.09 USD | 1.09 USD | +2,86% | 0.01 |
-| scurt PENGU | -155.31 USD | -1.21 USD | +3,04% | 0.01 |
-| scurt HBAR | -140.78 USD | -2.21 USD | +4,84% | 0.09 |
-| scurt WIF | -137.44 USD | 2.33 USD | +0,58% | 0.22 |
-| BITCOIN | 133.08 USD | 6.53 USD | +4,30% | 70804.23 |
+| scurt PENGU | -155.35 USD | -1.25 USD | +3,07% | 0.01 |
+| scurt HBAR | -140.62 USD | -2.06 USD | +4,73% | 0.09 |
+| scurt WIF | -137.76 USD | 2.01 USD | +0,81% | 0.22 |
+| BITCOIN | 132.91 USD | 6.35 USD | +4,17% | 70804.23 |
 | scurt GOOGL | -132.04 USD | -3.00 USD | +3,18% | 311.06 |
-| scurt SOLANA | -126.70 USD | -0.04 USD | +3,53% | 108.83 |
+| scurt SOLANA | -126.74 USD | -0.08 USD | +3,56% | 108.83 |
 | scurt RHEINMETALL | -122.72 USD | 4.02 USD | -0,14% | 1141.21 |
-| scurt LINK | -117.72 USD | -3.87 USD | +4,29% | 13.22 |
+| scurt LINK | -117.59 USD | -3.74 USD | +4,17% | 13.22 |
 | scurt RENK | -116.13 USD | -1.97 USD | +0,46% | 40.89 |
 | scurt ALGO | -114.98 USD | -10.44 USD | +8,05% | 0.11 |
-| STX | 111.75 USD | 10.90 USD | +10,22% | 0.22 |
-| scurt AAVE | -111.31 USD | -5.22 USD | +4,45% | 156.44 |
-| scurt POL | -104.03 USD | -5.65 USD | +4,92% | 0.11 |
+| scurt AAVE | -111.30 USD | -5.21 USD | +4,44% | 156.44 |
+| STX | 110.54 USD | 9.69 USD | +9,02% | 0.22 |
+| scurt POL | -103.90 USD | -5.52 USD | +4,79% | 0.11 |
 | scurt UNH | -99.40 USD | -0.85 USD | +1,22% | 439.85 |
-| scurt TAO | -98.01 USD | -5.32 USD | +4,52% | 270.85 |
-| scurt SEI | -96.65 USD | -1.19 USD | +2,77% | 0.06 |
+| scurt TAO | -98.05 USD | -5.36 USD | +4,56% | 270.85 |
+| scurt SEI | -96.57 USD | -1.11 USD | +2,69% | 0.06 |
 | scurt ADA | -95.26 USD | -2.45 USD | +4,21% | 0.23 |
 | scurt FLOKI | -87.43 USD | 0.44 USD | +2,94% | 0.00 |
 | WMT | 81.28 USD | 3.17 USD | +3,45% | 116.24 |
 | LOCKHEED | 69.95 USD | -4.51 USD | -6,88% | 583.88 |
-| NEAR | 66.36 USD | -6.29 USD | +5,77% | 3.01 |
+| NEAR | 66.35 USD | -6.31 USD | +5,74% | 3.01 |
 | NVDA | 63.15 USD | -2.35 USD | -3,17% | 185.97 |
 | scurt HENSOLDT | -58.88 USD | 2.56 USD | -1,67% | 94.46 |
 | scurt CAT | -57.63 USD | 3.75 USD | -5,23% | 713.69 |
-| scurt OP | -52.26 USD | 1.30 USD | +0,91% | 0.15 |
-| scurt ICP | -52.19 USD | -3.36 USD | +4,60% | 2.98 |
-| TIA | 49.33 USD | -1.73 USD | +5,60% | 0.29 |
-| scurt BCH | -46.37 USD | -1.06 USD | +2,91% | 325.77 |
-| AVAX | 39.12 USD | 0.99 USD | +3,36% | 6.93 |
-| scurt PEPE | -34.99 USD | -0.33 USD | +3,49% | 0.00 |
-| INJ | 33.40 USD | 3.38 USD | +11,00% | 5.12 |
-| ATOM | 25.94 USD | 0.91 USD | +5,69% | 1.14 |
+| scurt OP | -52.40 USD | 1.16 USD | +1,19% | 0.15 |
+| scurt ICP | -52.01 USD | -3.18 USD | +4,24% | 2.98 |
+| TIA | 49.32 USD | -1.74 USD | +5,58% | 0.29 |
+| scurt BCH | -46.21 USD | -0.89 USD | +2,55% | 325.77 |
+| AVAX | 39.16 USD | 1.02 USD | +3,45% | 6.93 |
+| scurt PEPE | -34.92 USD | -0.26 USD | +3,29% | 0.00 |
+| INJ | 33.36 USD | 3.35 USD | +10,89% | 5.12 |
+| ATOM | 26.01 USD | 0.98 USD | +5,98% | 1.14 |
 | scurt FIL | -19.56 USD | 0.06 USD | +1,54% | 1.11 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
