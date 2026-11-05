@@ -70,6 +70,9 @@ class RunnerConfig:
     take_profit_pct: float | None = None
     # Opțional: ce se face cu capitalul eliberat de take profit/stop ("obisnuit" sau "reciclare"), vezi recycling.py.
     recycle: str | None = None
+    # Opțional (cerut pe 5.11, P24–P25): câte zile stă o piață în pauză după TP/stop înainte să poată fi redeschisă
+    # (implicit 5, ca în recycling.RecycleRules). Cu 1, aceeași poziție se poate redeschide de la rularea următoare.
+    recycle_cooldown: int | None = None
     # Opțional (cerute pe 4.11): frână la pierderi (expunere ×0,5 când contul e cu ≥ x% sub vârf, până la un vârf nou)
     # și prudență înaintea anunțurilor mari din SUA (expunere × event_cut în ziua dinaintea unui eveniment „High”).
     dd_brake_pct: float | None = None
@@ -89,6 +92,8 @@ class RunnerConfig:
             raise ValueError("stop_pct must be between 0 and 100")
         if self.take_profit_pct is not None and not self.take_profit_pct > 0:
             raise ValueError("take_profit_pct must be > 0")
+        if self.recycle_cooldown is not None and self.recycle_cooldown < 0:
+            raise ValueError("recycle_cooldown must be >= 0")
 
 
 def instrument_for(market, cost_mult: float | None = None) -> Instrument:
@@ -338,7 +343,8 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
             weights = {k: v * scale for k, v in weights.items()}
         report["exposure_scale"] = scale
         if config.recycle:
-            rules = recycling.RecycleRules(mode=config.recycle)
+            rules = recycling.RecycleRules(mode=config.recycle, **(
+                {"cooldown_days": config.recycle_cooldown} if config.recycle_cooldown is not None else {}))
             exits = recycling.recent_exits(engine.fills(), now, rules.cooldown_days)
             past = [e["payload"]["equity"] for e in engine.journal("daily_run")] + [engine.equity()]
             blocked = recycling.guard(past, account["peak_equity"], rules)
@@ -436,7 +442,7 @@ DEFAULTS = {
     "sizing_lookback": 60, "max_leverage": 3.0, "max_weight": 1.0,
     "rebalance": 5.0, "no_shorts": False, "stop_atr": 3.0, "financing": 5.0,
     "max_sector": None, "stop_pct": None, "take_profit_pct": None, "recycle": None,
-    "dd_brake_pct": None, "event_cut": None, "cost_mult": None, "skip_pct": None,
+    "recycle_cooldown": None, "dd_brake_pct": None, "event_cut": None, "cost_mult": None, "skip_pct": None,
 }
 
 
@@ -480,6 +486,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--events", help="calendar economic CSV (date-piete/calendar/economic.csv), pentru --event-cut")
     parser.add_argument("--recycle", choices=["obisnuit", "reciclare"],
                         help="capitalul eliberat de take profit/stop: rămâne lichid sau se reciclează (la crearea contului)")
+    parser.add_argument("--recycle-cooldown", type=int,
+                        help="zile de pauză pentru o piață după TP/stop, cu --recycle (implicit 5; la crearea contului)")
     parser.add_argument("--financing", type=float,
                         help="annual %% on exposure above equity (margin loan), default 5; "
                              "applies when the account is created")
@@ -562,6 +570,7 @@ def _config(settings) -> RunnerConfig:
             allow_short=not settings["no_shorts"]),
         stop_atr=settings["stop_atr"], stop_pct=settings.get("stop_pct"),
         take_profit_pct=settings.get("take_profit_pct"), recycle=settings.get("recycle"),
+        recycle_cooldown=settings.get("recycle_cooldown"),
         dd_brake_pct=settings.get("dd_brake_pct"), event_cut=settings.get("event_cut"),
         cost_mult=settings.get("cost_mult"), skip_pct=settings.get("skip_pct"))
 

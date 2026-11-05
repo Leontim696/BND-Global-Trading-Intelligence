@@ -116,6 +116,15 @@ def _formations() -> list[dict]:
                 "settings": STANDARD + " --skip-pct 20"})
     out.append({"key": "p23-geaman-intarziere", "point": 23, "members": AGENTS, "rules": True, "kind": "intarziere",
                 "strategy": "hibrid", "title": "Geamăn oficial: execută voturile cu o zi întârziere"})
+    # P24–P25 (cerute pe 5.11): semnalele oficialului, take profit mare (+7% / +10%) chiar dacă poziția ar mai urca,
+    # stop fix (−2% / −3%), capitalul eliberat se reciclează pe alte semnale, iar aceeași piață se poate redeschide
+    # după o singură zi de pauză (nu 5, ca la P15).
+    out.append({"key": "p24-tp7-sl2-reciclare", "point": 24, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Take profit +7%, stop −2%, reciclare și redeschidere după 1 zi",
+                "settings": STANDARD + " --take-profit-pct 7 --stop-pct 2 --recycle reciclare --recycle-cooldown 1"})
+    out.append({"key": "p25-tp10-sl3-reciclare", "point": 25, "members": AGENTS, "rules": True, "kind": "fix",
+                "strategy": "hibrid", "title": "Take profit +10%, stop −3%, reciclare și redeschidere după 1 zi",
+                "settings": STANDARD + " --take-profit-pct 10 --stop-pct 3 --recycle reciclare --recycle-cooldown 1"})
     return out
 
 
