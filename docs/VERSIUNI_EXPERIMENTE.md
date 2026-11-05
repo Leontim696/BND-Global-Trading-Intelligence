@@ -17,3 +17,14 @@ fiecare cont ce versiune a produs rezultatul. Sursa de adevăr în cod: `VERSION
 
 Optimizare fără efect asupra rezultatelor: `PaperEngine.open_orders()` citește doar ordinele PENDING/PARTIAL în loc să
 filtreze tot istoricul (aceleași rânduri, aceeași ordine), ca buclele la 10 minute să nu încetinească pe măsură ce cresc.
+
+## Corecție de date: divizări (split), 5.11.2026
+ITA (ETF-ul american de apărare) a apărut pe 5.11 la ~70 față de 216 cu o zi înainte (~3:1, celelalte acțiuni de
+apărare din SUA aproape neschimbate). Fără ajustare, pozițiile short pe ITA (contul oficial, contul de control) ar fi
+înregistrat un câștig fals de ~67% (≈ +250 $ în contul oficial). Corecția (`src/bnd/splits.py`): la pasul zilnic,
+dacă istoricul descărcat arată ziua deja procesată de exact 2, 3, 4… ori mai mică/mare, poziția, stopul, take
+profit-ul, marcajul, istoricul de închideri și ordinele în așteptare se ajustează, fără să se schimbe valoarea
+contului; evenimentul se notează în jurnal („split”) și în raportul rulării („splits”). Fără confirmarea din istoric
+(o cotație greșită doar în ziua nouă) nu se ajustează nimic. Nu e o schimbare de strategie: e corectarea datelor,
+la fel pentru toate conturile (oficial, control, formații). Aplicația nu mai folosește un preț live „de split”
+până la procesare. Reconcilierea contabilă ține cont de split.

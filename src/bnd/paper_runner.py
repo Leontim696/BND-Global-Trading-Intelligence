@@ -308,9 +308,13 @@ def run_daily(engine: PaperEngine, data: dict, markets, factory, config: RunnerC
     now = now or datetime.now(timezone.utc)
     for market in markets:
         engine.register_instrument(instrument_for(market, config.cost_mult))
+    from . import splits as _splits
+    splits = _splits.detect(engine, data)
+    for name, info in splits.items():
+        _splits.apply(engine, name, info["factor"], now, info)
     fed = feed_new_candles(engine, data)
     account = engine.account()
-    report = {"time": now.isoformat(), "strategy": strategy, "candles_processed": fed,
+    report = {"time": now.isoformat(), "strategy": strategy, "candles_processed": fed, "splits": splits,
               "kill_switch": bool(account["kill_switch"]),
               "kill_reason": account["kill_reason"], "signals": {}, "weights": {},
               "orders": []}
