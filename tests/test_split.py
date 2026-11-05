@@ -109,3 +109,13 @@ def test_aplicatia_ignora_pretul_live_de_split(tmp_path):
     assert a["positions"][0]["last"] == a["positions"][0]["close"]
     b = dashboard.read_account(tmp_path, "x", "x", "", {"ITA": [205.0, "2026-11-05T15:00:00+00:00"]})
     assert b["positions"][0]["last"] == 205.0
+
+
+def test_aplicatia_split_cu_miscare_in_aceeasi_zi(tmp_path):
+    from src.bnd import dashboard
+    e = _engine(tmp_path)
+    e.close()
+    a = dashboard.read_account(tmp_path, "x", "x", "", {"ITA": [212.0 / 3 * 0.967, "2026-11-05T15:00:00+00:00"]})
+    assert a["positions"][0]["last"] == a["positions"][0]["close"]          # split 3:1 + −3,3% în ziua respectivă
+    b = dashboard.read_account(tmp_path, "x", "x", "", {"ITA": [212.0 * 0.85, "2026-11-05T15:00:00+00:00"]})
+    assert b["positions"][0]["last"] == pytest.approx(212.0 * 0.85)         # o scădere reală de 15% rămâne

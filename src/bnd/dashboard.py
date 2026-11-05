@@ -75,7 +75,7 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
             # Un preț live de exact 2, 3, 4… ori diferit față de ultima închidere e aproape sigur un split încă
             # neprocesat de motor (5.11, ITA): nu-l folosim, altfel apare un câștig sau o pierdere falsă până la rulare.
             if quote and quote[0] > 0 and close > 0 and any(
-                    abs((close / float(quote[0])) / k - 1) <= 0.03 for k in (2, 3, 4, 5, 10, 1 / 2, 1 / 3, 1 / 4)):
+                    abs((close / float(quote[0])) / k - 1) <= 0.10 for k in (2, 3, 4, 5, 10, 1 / 2, 1 / 3, 1 / 4)):
                 quote = None
             if quote and quote[0] > 0:
                 last = float(quote[0])
