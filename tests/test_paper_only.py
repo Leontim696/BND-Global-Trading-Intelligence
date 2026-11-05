@@ -82,7 +82,9 @@ def test_network_hosts_are_only_the_known_data_ai_and_notification_services():
                "api.x.ai", "api.deepseek.com", "github.com", "x-access-token",
                "api.alternative.me", "www.okx.com",
                "nfs.faireconomy.media", "data.solanatracker.io",
-               "gamma-api.polymarket.com", "api.stlouisfed.org", "data.sec.gov", "www.sec.gov"}   # calendar economic public, doar citire (calendar_data.py)
+               "gamma-api.polymarket.com", "api.stlouisfed.org", "data.sec.gov", "www.sec.gov",
+               # surse_noi.py (5.11): doar citire de date publice (opțiuni, COT, DeFi), fără conturi și fără ordine
+               "www.deribit.com", "publicreporting.cftc.gov", "stablecoins.llama.fi", "api.llama.fi"}   # calendar economic public, doar citire (calendar_data.py)
     hosts = set()
     for text in _sources().values():
         hosts |= set(re.findall(r"https?://([A-Za-z0-9.-]+)", text))
