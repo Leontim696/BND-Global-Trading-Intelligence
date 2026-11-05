@@ -95,6 +95,8 @@ jobs:
             if gitr fetch -q --depth=1 origin date-piete 2>/dev/null; then git archive FETCH_HEAD zilnic crypto50 | tar -x -C out/ch; fi
             if gitr fetch -q --depth=1 origin consiliu-umbra 2>/dev/null; then git archive FETCH_HEAD consiliu | tar -x -C out/cr; fi
             if gitr fetch -q --depth=1 origin formatii-ai 2>/dev/null; then git archive FETCH_HEAD | tar -x -C out/f; fi
+            mkdir -p out/i
+            if gitr fetch -q --depth=1 origin intraday 2>/dev/null; then git archive FETCH_HEAD status.json p26-p24-la-10-min p27-trend-15m p28-revenire-5m 2>/dev/null | tar -x -C out/i; fi
             gh run list -R "$REPO" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json 2>/dev/null || echo '[]' > out/runs.json
 
             if py -m src.bnd.quotes_snapshot --out out/quotes.json; then
@@ -102,7 +104,7 @@ jobs:
               if [ -f out/u/paper.sqlite ] && py -m src.bnd.report_card --state out/u/paper.sqlite --quotes out/quotes.json \
                    --out site/rapoarte/LATEST.md > /dev/null; then :; fi
               publish paper-trading site "Prețuri live $stamp UTC" || echo "::warning::prețurile de la $stamp nu s-au salvat"
-              args=(--paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --control out/ctl --formations out/f --council out/k
+              args=(--paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --control out/ctl --formations out/f --intraday out/i --council out/k
                     --quotes out/quotes.json --runs out/runs.json --template src/bnd/dashboard_template.html --out page/index.html)
               [ -f out/balance.json ] && args+=(--balance out/balance.json)
               [ -f out/expuneri.json ] && args+=(--exposure out/expuneri.json)

@@ -1,0 +1,124 @@
+name: Intraday la 10 minute (P26–P28, buclă)
+
+# Cerut de proprietar pe 5.11.2026: execuție la 10 minute pentru trei conturi paralele (bani virtuali, fără apeluri AI):
+# P26 geamănul lui P24, P27 trend crypto 15m, P28 revenire crypto 5m. Contul oficial NU e atins.
+# Starea stă pe ramura `intraday`, publicată o dată pe oră ca un singur commit (fără istoric care să crească).
+# mode=backtest rulează doar testul pe istoric E-017/E-018 (rezultatul în rezumatul rulării și ca artefact).
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'loop = buclă la 10 minute; backtest = testul pe istoric E-017/E-018'
+        default: loop
+        type: choice
+        options: [loop, backtest]
+      days:
+        description: 'Zile de istoric pentru backtest'
+        default: '30'
+        type: string
+  schedule:
+    - cron: '23 */6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bnd-intraday-${{ inputs.mode || 'loop' }}
+  cancel-in-progress: false
+
+jobs:
+  backtest:
+    if: inputs.mode == 'backtest'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      BND_ALLOW_LIVE_AI: "false"
+      BND_TRADING_MODE: PAPER
+      DAYS: ${{ inputs.days }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Test pe istoric E-017 (trend 15m) și E-018 (revenire 5m), crypto
+        run: |
+          python -m src.bnd.intraday_live backtest --days "${DAYS:-30}" --out out/intraday-backtest.json
+          { echo '```json'; cat out/intraday-backtest.json; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: intraday-backtest-${{ github.run_id }}
+          path: out/intraday-backtest.json
+          retention-days: 30
+
+  loop:
+    if: inputs.mode != 'backtest'
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    permissions:
+      contents: write   # doar pentru push pe ramura intraday
+      actions: write    # doar pentru repornirea buclei la final
+    env:
+      BND_ALLOW_LIVE_AI: "false"
+      BND_TRADING_MODE: PAPER
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.13"
+      - name: Execuție la 10 minute
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          b64="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+          echo "::add-mask::$b64"
+          gitr() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $b64" "$@"; }
+          # Codul proiectului rulează FĂRĂ token în mediu.
+          py() { env -u GH_TOKEN -u b64 python "$@"; }
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          publish() { # un singur commit pe ramura intraday (starea curentă), fără istoric
+            local dir; dir=$(mktemp -d)
+            for attempt in 1 2 3; do
+              rm -rf "$dir"; mkdir -p "$dir"
+              ( cd "$dir" && git init -q && git remote add origin "https://github.com/$REPO.git" && git checkout -q --orphan intraday ) || return 1
+              cp -r st/. "$dir"/
+              git -C "$dir" add -A
+              git -C "$dir" commit -q -m "Intraday $(date -u +%Y-%m-%dT%H:%M) UTC"
+              gitr -C "$dir" push -q --force origin "HEAD:refs/heads/intraday" && return 0
+              sleep $((attempt * 5))
+            done
+            echo "::warning::starea intraday nu s-a putut salva"; return 1
+          }
+          refresh_inputs() {
+            rm -rf tmp daily p24; mkdir -p tmp daily p24
+            if gitr fetch -q --depth=1 origin date-piete 2>/dev/null; then
+              git archive FETCH_HEAD zilnic crypto50 | tar -x -C tmp && cp tmp/zilnic/*.csv tmp/crypto50/*.csv daily/ 2>/dev/null
+            fi
+            if gitr fetch -q --depth=1 origin formatii-ai 2>/dev/null && git cat-file -e "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" 2>/dev/null; then
+              git show "FETCH_HEAD:p24-tp7-sl2-reciclare/paper.sqlite" > p24/paper.sqlite
+            fi
+          }
+          mkdir -p st
+          if gitr fetch -q --depth=1 origin intraday 2>/dev/null; then git archive FETCH_HEAD | tar -x -C st; fi
+          deadline=$(( $(date +%s) + 340*60 )); n=0
+          while [ "$(date +%s)" -lt "$deadline" ]; do
+            start=$(date +%s)
+            [ $((n % 6)) -eq 0 ] && refresh_inputs
+            args=(--dir st --daily-dir daily)
+            [ -f p24/paper.sqlite ] && args+=(--p24 p24/paper.sqlite)
+            py -m src.bnd.intraday_live cycle "${args[@]}" || echo "::warning::ciclul intraday de la $(date -u +%H:%M) a avut erori"
+            n=$((n + 1))
+            [ $((n % 6)) -eq 0 ] && publish
+            left=$(( 600 - ($(date +%s) - start) ))
+            [ "$left" -gt 0 ] && sleep "$left"
+          done
+          publish
+          gh api -X POST "repos/$REPO/actions/workflows/intraday-10min.yml/dispatches" -f ref=main -f inputs[mode]=loop \
+            || echo "::warning::repornirea nu a mers; o preia programul la 6 ore"
