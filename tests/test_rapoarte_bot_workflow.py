@@ -31,3 +31,8 @@ def test_ci_audits_dependencies_for_known_vulnerabilities():
 def test_hourly_report_is_saved_but_not_posted_to_the_phone():
     assert "repos/$REPO/issues" not in TEXT and "issues: write" not in TEXT
     assert 'cp ../raport/raport.md rapoarte/LATEST.md' in TEXT          # salvarea rămâne
+
+
+def test_dashboardul_live_primeste_top50_si_intraday():
+    # 5.11: fila „Top 50 crypto” era goală pe GitHub Pages pentru că bucla nu dădea --top50.
+    assert "--top50 out/ch/crypto50" in LOOP and "--intraday out/i" in LOOP

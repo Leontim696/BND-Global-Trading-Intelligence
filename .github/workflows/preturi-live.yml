@@ -109,6 +109,8 @@ jobs:
               [ -f out/balance.json ] && args+=(--balance out/balance.json)
               [ -f out/expuneri.json ] && args+=(--exposure out/expuneri.json)
               [ -d out/ch/zilnic ] && args+=(--charts out/ch/zilnic out/ch/crypto50)
+              # Fila „Top 50 crypto” (lipsea aici, deci pe GitHub Pages fila era goală; reparat pe 5.11)
+              [ -d out/ch/crypto50 ] && args+=(--top50 out/ch/crypto50)
               [ -d out/cr/consiliu ] && args+=(--reasons out/cr/consiliu)
               if py -m src.bnd.dashboard "${args[@]}"; then
                 touch page/.nojekyll
