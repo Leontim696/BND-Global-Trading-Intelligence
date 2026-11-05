@@ -50,6 +50,11 @@ jobs:
           # P17 (funding) și P18 (calendarul anunțurilor): date colectate deja pe date-piete; lipsa lor nu oprește rularea.
           bash scripts/restore_branch.sh date-piete extra calendar/economic.csv funding/BITCOIN.csv funding/ETHEREUM.csv \
             funding/SOLANA.csv funding/BNB.csv funding/XRP.csv || echo "::warning::datele extra (funding/calendar) lipsesc"
+          # P29–P33 (5.11): sursele noi strânse gratuit (poziționare OKX, Deribit, COT, DefiLlama); lipsa lor nu oprește rularea.
+          mkdir -p surse
+          if git fetch -q --depth=1 origin date-piete 2>/dev/null; then
+            git archive FETCH_HEAD deribit pozitionare cot defi | tar -x -C surse || echo "::warning::sursele noi lipsesc"
+          fi
           mkdir -p extra/funding && mv extra/BITCOIN.csv extra/ETHEREUM.csv extra/SOLANA.csv extra/BNB.csv extra/XRP.csv extra/funding/ 2>/dev/null || true
       - name: Download the candles (ETF/forex and Yahoo crypto, then Binance coins)
         run: |
@@ -78,7 +83,7 @@ jobs:
         run: |
           coins="$(python -c "from src.bnd.council_daily import BASE_PEERS; from src.bnd.crypto50 import EXTRA; from src.bnd.universe import DEFENSE_NAMES, STOCK_NAMES; print(','.join(BASE_PEERS + EXTRA + DEFENSE_NAMES + STOCK_NAMES))")"
           python -m src.bnd.formations --registry council/registry.sqlite --coins "$coins" --out-dir signals --data-dir data \
-            --funding-dir extra/funding --state-dir state ${DAY:+--day "$DAY"}
+            --funding-dir extra/funding --surse-dir surse --state-dir state ${DAY:+--day "$DAY"}
       - name: AI independence and negative-alpha check (R02/R09, read-only, no AI calls)
         run: |
           python -m src.bnd.ortogonalitate --registry council/registry.sqlite --out state/ortogonalitate.json \

@@ -26,8 +26,8 @@ def _registry(path, votes):
 
 
 def test_14_formatii_cu_strategii_corecte():
-    assert len(fm.FORMATIONS) == 33
-    assert len({f["key"] for f in fm.FORMATIONS}) == 33
+    assert len(fm.FORMATIONS) == 38
+    assert len({f["key"] for f in fm.FORMATIONS}) == 38
     by = {f["key"]: f for f in fm.FORMATIONS}
     assert by["p1-gpt-grok"]["strategy"] == "hibrid" and by["p2-gpt-grok-liber"]["strategy"] == "ai_council"
     assert by["p5-gpt-claude-grok"]["members"] == ("gpt", "claude", "grok")
@@ -60,14 +60,14 @@ def test_cli_scrie_un_fisier_pe_formatie(tmp_path):
     _registry(reg, {"BITCOIN": {"grok": {"final": "BUY"}}})
     assert fm.main(["--registry", str(reg), "--coins", "BITCOIN", "--day", DAY, "--out-dir", str(tmp_path / "s")]) == 0
     files = sorted(p.name for p in (tmp_path / "s").iterdir())
-    assert len(files) == 33
+    assert len(files) == 38
     assert json.loads((tmp_path / "s" / "p4-grok-liber.json").read_text())["signals"] == {"BITCOIN": 1.0}
 
 
 def test_list_pentru_workflow(capsys):
     assert fm.main(["--list"]) == 0
     lines = capsys.readouterr().out.strip().splitlines()
-    assert len(lines) == 33 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
+    assert len(lines) == 38 and lines[0].split("\t")[:2] == ["p1-gpt-grok", "hibrid"]
 
 
 def test_dashboard_citeste_formatiile(tmp_path):
@@ -75,7 +75,7 @@ def test_dashboard_citeste_formatiile(tmp_path):
     (tmp_path / "p3-gpt").mkdir()
     PaperEngine.create(tmp_path / "p3-gpt" / "paper.sqlite", 11_183.0, currency="USD", now=now).close()
     rows = dashboard.read_formations(tmp_path)
-    assert len(rows) == 33
+    assert len(rows) == 38
     gpt = next(r for r in rows if r["key"] == "p3-gpt")
     assert gpt["exists"] and gpt["equity"] == 11_183.0 and gpt["positions"] == 0
     assert sum(r["exists"] for r in rows) == 1

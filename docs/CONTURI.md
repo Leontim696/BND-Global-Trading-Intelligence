@@ -143,3 +143,15 @@ O formație „alege” leverage-ul L > 2 (pe long, pe short sau pe ambele) DOAR
 Altfel rămâne la 2x. Dacă mai multe niveluri trec, se alege cel mai mic care trece (prudență). Rezultatul e o
 recomandare pentru proprietar, nu o schimbare automată: limitele conturilor (2x, plafon tehnic 3x) nu se ating
 fără decizia lui.
+
+### P29–P33: sursele noi gratuite în conturile simulate (cerute pe 5.11.2026)
+Semnalele de bază ca la P17 (50% regula + 50% toți 5 AI), filtrate cu datele strânse zilnic pe `date-piete`
+(`src/bnd/surse_noi.py`). Doar conturi simulate: contul oficial (cel plătit) NU le folosește. Praguri fixate dinainte:
+- **P29 poziționare pe futures** (BTC, ETH, SOL, XRP, BNB, DOGE; OKX): raportul long/short al conturilor în top 10% din
+  ultimele 90 de zile → niciun long nou; în ultimele 10% → niciun short nou.
+- **P30 volatilitatea opțiunilor** (Deribit DVOL, BTC/ETH): DVOL ≥ 1,2 × media pe 30 de zile → toate pozițiile crypto × 0,5.
+- **P31 raportul COT** (15 piețe: aur, argint, petrol, gaz, cupru, S&P 500, Nasdaq, 6 valute, obligațiuni 10 ani, Bitcoin):
+  poziția netă a speculatorilor în top 10% din ultimii 3 ani → niciun long nou; în ultimele 10% → niciun short nou
+  (la USDJPY, USDCHF, USDCAD inversat, pentru că contractul e pe cealaltă monedă).
+- **P32 stablecoin-uri** (DefiLlama): totalul în scădere pe 30 de zile → niciun long nou pe crypto.
+- **P33 toate patru** deodată.
