@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-05T04:31+00:00",
+  "generated": "2026-11-05T05:34+00:00",
   "ok": true,
   "alerts": [],
   "events": [
@@ -48,10 +48,10 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 11151.35,
+      "equity": 11161.04,
       "currency": "USD",
-      "return_pct": -0.283,
-      "drawdown_pct": 0.634,
+      "return_pct": -0.196,
+      "drawdown_pct": 0.547,
       "positions": 75,
       "orders": 27,
       "kill_switch": false,
