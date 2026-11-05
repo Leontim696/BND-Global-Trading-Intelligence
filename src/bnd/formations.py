@@ -143,6 +143,13 @@ def _formations() -> list[dict]:
                 "strategy": "hibrid", "title": "Geamănul oficialului cu sumele dublate (×2)",
                 "settings": "--max-leverage 4 --max-weight 0.5 --max-sector 120 --portfolio-vol 30 --financing 5"
                             " --engine-leverage 4.5"})
+    # P35 (cerut pe 5.11: „aceleași poziții, dar totul pe short, ×2”): aceleași piețe și aceeași mărime a semnalului ca
+    # oficialul (50% regula + 50% toți 5 AI), dar ÎNTOTDEAUNA short, cu setările dublate ale lui P34. Arată dacă
+    # profitul vine din alegerea pieței sau doar din direcția short.
+    out.append({"key": "p35-tot-short-x2", "point": 35, "members": AGENTS, "rules": True, "kind": "short",
+                "strategy": "ai_council", "title": "Aceleași piețe ca oficialul, totul pe short, sume dublate (×2)",
+                "settings": "--max-leverage 4 --max-weight 0.5 --max-sector 120 --portfolio-vol 30 --financing 5"
+                            " --engine-leverage 4.5"})
     return out
 
 
@@ -411,6 +418,14 @@ def surse_filter(market: str, signal: float, filt: str, surse: dict) -> float:
 def signals_for(f: dict, votes: dict, weights: dict, rules: dict | None = None,
                 funding: dict | None = None, top: list | None = None, surse: dict | None = None) -> dict:
     """Semnalele unei formații; o piață care lipsește din rezultat = contul hibrid urmează doar regula acolo."""
+    if f["kind"] == "short":
+        out = {}
+        for c, r in (rules or {}).items():
+            if r is None:
+                continue
+            s = 0.5 * r + 0.5 * formation_signal(votes[c], AGENTS) if c in votes else r
+            out[c] = -min(1.0, abs(s))
+        return out
     if f["kind"] == "surse":
         out = {}
         for c, r in (rules or {}).items():

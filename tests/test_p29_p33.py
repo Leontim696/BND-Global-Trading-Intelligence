@@ -78,3 +78,13 @@ def test_percentila_egalitati_v2():
     assert 0.1 < p([1.0, 2.0] * 45) < 0.9                          # egalități alternante: nu e extremă
     assert p(list(range(90))) == 1.0 and p(list(range(89)) + [-5]) == 0.0  # extreme reale
     assert p([1.0] * 19) is None                                   # istoric insuficient
+
+
+def test_p35_totul_pe_short():
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    f = by["p35-tot-short-x2"]
+    assert "--portfolio-vol 30" in f["settings"] and "--engine-leverage 4.5" in f["settings"]
+    votes = {"BITCOIN": {a: "BUY" for a in fm.AGENTS}, "GOLD": {a: "SELL" for a in fm.AGENTS}}
+    out = fm.signals_for(f, votes, {}, {"BITCOIN": 1.0, "GOLD": -0.5, "SP500": 0.0, "EURUSD": 0.4})
+    assert out == {"BITCOIN": -1.0, "GOLD": -0.75, "SP500": -0.0, "EURUSD": -0.4}
+    assert all(v <= 0 for v in out.values())
