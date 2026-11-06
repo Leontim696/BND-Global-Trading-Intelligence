@@ -60,7 +60,12 @@ jobs:
           grab consiliu-umbra costs.sqlite out/k/costs.sqlite
           grab status alerts.json out/alerts.json
           grab smart-money descoperite.csv out/descoperite.csv
-          gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json
+          # GitHub API răspunde uneori cu 502 trecător: 3 încercări, apoi listă goală (statusul se construiește oricum).
+          for i in 1 2 3; do
+            gh run list -R "$GITHUB_REPOSITORY" -L 40 --json workflowName,event,conclusion,createdAt > out/runs.json && break
+            echo "::warning::gh run list a eșuat (încercarea $i)"; sleep $((i * 10))
+          done
+          python -c "import json; json.load(open('out/runs.json'))" 2>/dev/null || echo '[]' > out/runs.json
       - name: Read the real OpenRouter balance (read-only, free)
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
