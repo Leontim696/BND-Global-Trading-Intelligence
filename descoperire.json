@@ -1,8 +1,8 @@
 {
   "outcome": "ok",
   "tokens_checked": 100,
-  "wallets_with_hits": 56,
-  "candidates": 56,
+  "wallets_with_hits": 86,
+  "candidates": 86,
   "validated": 0,
   "insufficient": 0,
   "rate_limited": 0,
