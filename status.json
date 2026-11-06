@@ -1,10 +1,10 @@
 {
-  "time": "2026-11-05T07:30+00:00",
+  "time": "2026-11-06T07:28+00:00",
   "sources": {
     "polymarket": {
       "ok": true,
-      "markets": 12,
-      "added": 12
+      "markets": 9,
+      "added": 9
     },
     "fred": {
       "ok": true,
