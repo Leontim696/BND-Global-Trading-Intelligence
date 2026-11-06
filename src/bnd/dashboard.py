@@ -17,6 +17,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from .decision_registry import DecisionRegistry
+from .splits import looks_like_split
 from . import chart_data, council_analytics, crypto50, formations, market_groups, model_registry
 from .paper_engine import PaperEngine, PaperEngineError
 from .reconcile import reconcile
@@ -74,8 +75,7 @@ def read_account(folder, key: str, title: str, subtitle: str, quotes: dict | Non
             quote = (quotes or {}).get(p["symbol"])
             # Un preț live de exact 2, 3, 4… ori diferit față de ultima închidere e aproape sigur un split încă
             # neprocesat de motor (5.11, ITA): nu-l folosim, altfel apare un câștig sau o pierdere falsă până la rulare.
-            if quote and quote[0] > 0 and close > 0 and any(
-                    abs((close / float(quote[0])) / k - 1) <= 0.10 for k in (2, 3, 4, 5, 10, 1 / 2, 1 / 3, 1 / 4)):
+            if quote and quote[0] > 0 and looks_like_split(close, float(quote[0])):
                 quote = None
             if quote and quote[0] > 0:
                 last = float(quote[0])
