@@ -80,3 +80,15 @@ def apply(engine: PaperEngine, symbol: str, factor: float, now: datetime, eviden
         payload = {"symbol": symbol, "factor": factor, "dupa_tranzactia": last_fill, **(evidence or {})}
         engine._log("split", payload, _iso(now))
     return payload
+
+
+LIVE_RATIOS = (2, 3, 4, 5, 10, 1 / 2, 1 / 3, 1 / 4)
+LIVE_TOLERANCE = 0.10
+
+
+def looks_like_split(last_close: float, live: float) -> bool:
+    """Un preț live de exact 2, 3, 4… ori diferit față de ultima închidere (±10%, cât poate mișca piața în ziua
+    respectivă) e aproape sigur un split încă neprocesat de motor; afișările nu-l folosesc până la rularea zilnică."""
+    if not (last_close and live and last_close > 0 and live > 0):
+        return False
+    return _match(last_close / live, LIVE_RATIOS, LIVE_TOLERANCE) is not None

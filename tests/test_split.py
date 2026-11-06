@@ -148,3 +148,15 @@ def test_rezerva_nu_se_aplica_la_crypto_sau_la_injumatatire(tmp_path):
         assert splits.detect(e, {"PEPE": [_c(T + timedelta(days=1), 3.0), _c(T + timedelta(days=2), 1.0)]}) == {}
     finally:
         e.close()
+
+
+def test_raportul_orar_ignora_pretul_live_de_split(tmp_path):
+    from src.bnd import report_card
+    e = _engine(tmp_path)
+    e.close()
+    now = T + timedelta(days=2)
+    r = report_card.build(tmp_path / "paper.sqlite", now, {"ITA": (212.0 / 3 * 0.967, now.isoformat())})
+    ita = next(p for p in r["positions"] if p["market"] == "ITA")
+    assert ita["price_now"] == ita["last_close"] and not ita["is_live"]
+    r2 = report_card.build(tmp_path / "paper.sqlite", now, {"ITA": (205.0, now.isoformat())})
+    assert next(p for p in r2["positions"] if p["market"] == "ITA")["price_now"] == 205.0

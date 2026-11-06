@@ -15,6 +15,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from urllib.error import URLError
 from urllib.parse import quote as url_quote
+
+from .splits import looks_like_split
 from urllib.request import Request, urlopen
 
 from .health_check import check
@@ -96,6 +98,8 @@ def build(state_path, now: datetime, quotes: dict | None = None) -> dict:
             name, quantity = position["symbol"], position["quantity"]
             mark = engine.mark(name)["price"]
             live = quotes.get(name)
+            if live and looks_like_split(mark, float(live[0])):
+                live = None                       # split neprocesat încă (5.11, ITA): fără câștig/pierdere falsă
             price = live[0] if live else mark
             positions.append({
                 "market": name, "quantity": quantity, "avg_price": position["avg_price"],
