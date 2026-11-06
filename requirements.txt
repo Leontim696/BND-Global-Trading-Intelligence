@@ -1,4 +1,4 @@
 # Dependencies for the offline unit-test suite.
 # Runtime BND modules currently use the Python standard library.
-pytest>=9.1.1,<10
+pytest>=9.2.0,<10
 tzdata>=2024.1; sys_platform == "win32"   # fusurile orare (morning.py) cer baza de date pe Windows
