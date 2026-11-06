@@ -1,66 +1,66 @@
 {
- "decizii": 448,
+ "decizii": 535,
  "incheiate": 0,
  "hold_pct": {
-  "gpt": 73.2,
-  "grok": 75.7,
-  "claude": 96.7,
-  "gemini": 71.7,
-  "deepseek": 32.1
+  "gpt": 70.3,
+  "grok": 73.5,
+  "claude": 96.1,
+  "gemini": 72.3,
+  "deepseek": 30.5
  },
  "perechi": {
   "gpt-grok": {
-   "acord": 0.819,
-   "kappa": 0.526,
-   "corelatie": 0.53
+   "acord": 0.811,
+   "kappa": 0.534,
+   "corelatie": 0.538
   },
   "gpt-claude": {
-   "acord": 0.752,
-   "kappa": 0.131,
-   "corelatie": 0.266
+   "acord": 0.727,
+   "kappa": 0.135,
+   "corelatie": 0.273
   },
   "gpt-gemini": {
    "acord": 0.654,
-   "kappa": 0.173,
-   "corelatie": 0.286
+   "kappa": 0.194,
+   "corelatie": 0.306
   },
   "gpt-deepseek": {
-   "acord": 0.513,
-   "kappa": 0.21,
-   "corelatie": 0.346
+   "acord": 0.523,
+   "kappa": 0.23,
+   "corelatie": 0.367
   },
   "grok-claude": {
-   "acord": 0.772,
-   "kappa": 0.132,
-   "corelatie": 0.252
+   "acord": 0.755,
+   "kappa": 0.143,
+   "corelatie": 0.27
   },
   "grok-gemini": {
-   "acord": 0.728,
-   "kappa": 0.33,
-   "corelatie": 0.423
+   "acord": 0.731,
+   "kappa": 0.348,
+   "corelatie": 0.438
   },
   "grok-deepseek": {
-   "acord": 0.516,
-   "kappa": 0.222,
-   "corelatie": 0.359
+   "acord": 0.529,
+   "kappa": 0.25,
+   "corelatie": 0.402
   },
   "claude-gemini": {
-   "acord": 0.737,
-   "kappa": 0.126,
-   "corelatie": 0.257
+   "acord": 0.744,
+   "kappa": 0.14,
+   "corelatie": 0.265
   },
   "claude-deepseek": {
-   "acord": 0.355,
-   "kappa": 0.042,
-   "corelatie": 0.194
+   "acord": 0.344,
+   "kappa": 0.047,
+   "corelatie": 0.205
   },
   "gemini-deepseek": {
-   "acord": 0.545,
-   "kappa": 0.292,
-   "corelatie": 0.47
+   "acord": 0.531,
+   "kappa": 0.281,
+   "corelatie": 0.468
   }
  },
- "ai_independente_efectiv": 2.12,
+ "ai_independente_efectiv": 2.07,
  "contributie": {
   "toti_5": {
    "semnale": 0,
@@ -71,13 +71,13 @@
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 2.9
+   "directie_schimbata_pct": 3.4
   },
   "fara_grok": {
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 1.1
+   "directie_schimbata_pct": 0.9
   },
   "fara_claude": {
    "semnale": 0,
@@ -89,13 +89,13 @@
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 3.3
+   "directie_schimbata_pct": 2.8
   },
   "fara_deepseek": {
    "semnale": 0,
    "corecte_pct": null,
    "medie_pct": null,
-   "directie_schimbata_pct": 27.2
+   "directie_schimbata_pct": 26.9
   }
  },
  "alfa_negativ": {
