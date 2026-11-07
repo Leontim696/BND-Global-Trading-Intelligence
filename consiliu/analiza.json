@@ -1,20 +1,244 @@
 {
   "incomplete_excluded": 0,
   "stale_excluded": 1,
-  "settled": 0,
+  "settled": 13,
   "enough_data": false,
-  "note": "Doar 0 decizii încheiate (sub 20): rezultatele sunt orientative, nu concluzii.",
-  "agents": {},
+  "note": "Doar 13 decizii încheiate (sub 20): rezultatele sunt orientative, nu concluzii.",
+  "agents": {
+    "gpt": {
+      "calls": 2,
+      "hit_rate": 0.5,
+      "mean_net_return_pct": 2.83927069618945,
+      "holds": 11,
+      "hold_correct_rate": 0.2727272727272727,
+      "minority_calls": 1,
+      "minority_right": 0,
+      "calibration_gap": 0.07999999999999996,
+      "calibration": [
+        {
+          "confidence_bucket": "0.5-0.6",
+          "calls": 2,
+          "hit_rate": 0.5,
+          "declared": 0.58
+        }
+      ],
+      "overconfidence": 0.07999999999999996,
+      "mean_brier": 0.2564,
+      "by_class": {
+        "forex": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "crypto": {
+          "calls": 1,
+          "hit_rate": 1.0
+        }
+      },
+      "by_market": {
+        "EURUSD": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "XRP": {
+          "calls": 1,
+          "hit_rate": 1.0
+        }
+      }
+    },
+    "claude": {
+      "calls": 0,
+      "hit_rate": null,
+      "mean_net_return_pct": null,
+      "holds": 13,
+      "hold_correct_rate": 0.3076923076923077,
+      "minority_calls": 0,
+      "minority_right": 0,
+      "calibration_gap": null,
+      "calibration": [],
+      "overconfidence": null,
+      "mean_brier": null,
+      "by_class": {},
+      "by_market": {}
+    },
+    "gemini": {
+      "calls": 3,
+      "hit_rate": 0.6666666666666666,
+      "mean_net_return_pct": 2.477138672158219,
+      "holds": 10,
+      "hold_correct_rate": 0.3,
+      "minority_calls": 2,
+      "minority_right": 1,
+      "calibration_gap": 0.016666666666666607,
+      "calibration": [
+        {
+          "confidence_bucket": "0.6-0.7",
+          "calls": 3,
+          "hit_rate": 0.6666666666666666,
+          "declared": 0.65
+        }
+      ],
+      "overconfidence": -0.016666666666666607,
+      "mean_brier": 0.2225,
+      "by_class": {
+        "bond": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "crypto": {
+          "calls": 2,
+          "hit_rate": 1.0
+        }
+      },
+      "by_market": {
+        "US10Y_NOTE": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "BNB": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "XRP": {
+          "calls": 1,
+          "hit_rate": 1.0
+        }
+      }
+    },
+    "grok": {
+      "calls": 1,
+      "hit_rate": 1.0,
+      "mean_net_return_pct": 1.8799415587169022,
+      "holds": 12,
+      "hold_correct_rate": 0.3333333333333333,
+      "minority_calls": 1,
+      "minority_right": 1,
+      "calibration_gap": 0.43999999999999995,
+      "calibration": [
+        {
+          "confidence_bucket": "0.5-0.6",
+          "calls": 1,
+          "hit_rate": 1.0,
+          "declared": 0.56
+        }
+      ],
+      "overconfidence": -0.43999999999999995,
+      "mean_brier": 0.19359999999999997,
+      "by_class": {
+        "crypto": {
+          "calls": 1,
+          "hit_rate": 1.0
+        }
+      },
+      "by_market": {
+        "BITCOIN": {
+          "calls": 1,
+          "hit_rate": 1.0
+        }
+      }
+    },
+    "deepseek": {
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_net_return_pct": 1.9684004541079534,
+      "holds": 4,
+      "hold_correct_rate": 0.5,
+      "minority_calls": 8,
+      "minority_right": 4,
+      "calibration_gap": 0.2166666666666666,
+      "calibration": [
+        {
+          "confidence_bucket": "0.5-0.6",
+          "calls": 1,
+          "hit_rate": 0.0,
+          "declared": 0.55
+        },
+        {
+          "confidence_bucket": "0.6-0.7",
+          "calls": 7,
+          "hit_rate": 0.7142857142857143,
+          "declared": 0.6214285714285716
+        },
+        {
+          "confidence_bucket": "0.7-0.8",
+          "calls": 1,
+          "hit_rate": 0.0,
+          "declared": 0.75
+        }
+      ],
+      "overconfidence": 0.07222222222222219,
+      "mean_brier": 0.25250000000000006,
+      "by_class": {
+        "commodity": {
+          "calls": 2,
+          "hit_rate": 0.5
+        },
+        "index": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "crypto": {
+          "calls": 4,
+          "hit_rate": 1.0
+        },
+        "forex": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "bond": {
+          "calls": 1,
+          "hit_rate": 0.0
+        }
+      },
+      "by_market": {
+        "GOLD": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "NASDAQ100": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "CRUDE_OIL": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "BITCOIN": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "EURUSD": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "US10Y_NOTE": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "SOLANA": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "BNB": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "XRP": {
+          "calls": 1,
+          "hit_rate": 1.0
+        }
+      }
+    }
+  },
   "disagreement": {
     "scazut": {
-      "decisions": 0,
-      "mean_abs_move_pct": null,
-      "share_big_moves": null
+      "decisions": 8,
+      "mean_abs_move_pct": 4.5546365113745875,
+      "share_big_moves": 0.625
     },
     "mediu": {
-      "decisions": 0,
-      "mean_abs_move_pct": null,
-      "share_big_moves": null
+      "decisions": 5,
+      "mean_abs_move_pct": 1.9871563869110465,
+      "share_big_moves": 0.2
     },
     "ridicat": {
       "decisions": 0,
@@ -24,87 +248,178 @@
   },
   "strategies": {
     "bot": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null
+      "calls": 13,
+      "hit_rate": 0.38461538461538464,
+      "mean_return_pct": -1.0917953834029868
     },
     "council": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null
+      "calls": 1,
+      "hit_rate": 1.0,
+      "mean_return_pct": 6.085009187241541
     },
     "lean": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534
     },
     "hybrid": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null
+      "calls": 8,
+      "hit_rate": 0.5,
+      "mean_return_pct": 0.7025748113897834
     }
   },
   "vs_rule": {
-    "comparable": 0,
-    "same": 0,
+    "comparable": 13,
+    "same": 1,
     "opposite": 0,
-    "abstain": 0,
-    "agreement_rate": null,
+    "abstain": 12,
+    "agreement_rate": 0.07692307692307693,
     "opposite_council_wins": 0,
     "opposite_rule_wins": 0,
     "opposite_council_mean_pct": null,
     "opposite_sign_test_p": null,
-    "abstain_rule_mean_pct": null,
-    "differ_mean_pct": null,
-    "differ_calls": 0,
+    "abstain_rule_mean_pct": -1.6898624309566976,
+    "differ_mean_pct": 1.6898624309566976,
+    "differ_calls": 12,
     "council_only_calls": 0,
     "council_only_mean_pct": null,
-    "verdict": "Doar 0 decizii comparabile (sub 20): fără concluzie."
+    "verdict": "Doar 13 decizii comparabile (sub 20): fără concluzie."
   },
   "cost_to_value": {
     "toți": {
-      "agents": [],
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null,
-      "cost_per_decision_usd": 0
+      "agents": [
+        "claude",
+        "deepseek",
+        "gemini",
+        "gpt",
+        "grok"
+      ],
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534,
+      "cost_per_decision_usd": 0.0
     },
     "primii 3": {
-      "agents": [],
+      "agents": [
+        "grok",
+        "gemini",
+        "deepseek"
+      ],
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534,
+      "cost_per_decision_usd": 0.0
+    },
+    "doar claude": {
+      "agents": [
+        "claude"
+      ],
       "calls": 0,
       "hit_rate": null,
       "mean_return_pct": null,
-      "cost_per_decision_usd": 0
+      "cost_per_decision_usd": 0.0
+    },
+    "doar deepseek": {
+      "agents": [
+        "deepseek"
+      ],
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534,
+      "cost_per_decision_usd": 0.0
+    },
+    "doar gemini": {
+      "agents": [
+        "gemini"
+      ],
+      "calls": 3,
+      "hit_rate": 0.6666666666666666,
+      "mean_return_pct": 2.477138672158219,
+      "cost_per_decision_usd": 0.0
+    },
+    "doar gpt": {
+      "agents": [
+        "gpt"
+      ],
+      "calls": 2,
+      "hit_rate": 0.5,
+      "mean_return_pct": 2.83927069618945,
+      "cost_per_decision_usd": 0.0
+    },
+    "doar grok": {
+      "agents": [
+        "grok"
+      ],
+      "calls": 1,
+      "hit_rate": 1.0,
+      "mean_return_pct": 1.8799415587169022,
+      "cost_per_decision_usd": 0.0
     }
   },
-  "by_regime": {},
-  "by_horizon": {},
+  "by_regime": {
+    "deepseek": {
+      "necunoscut": {
+        "calls": 9,
+        "hit_rate": 0.5555555555555556,
+        "reliable": false
+      }
+    },
+    "grok": {
+      "necunoscut": {
+        "calls": 1,
+        "hit_rate": 1.0,
+        "reliable": false
+      }
+    },
+    "gpt": {
+      "necunoscut": {
+        "calls": 2,
+        "hit_rate": 0.5,
+        "reliable": false
+      }
+    },
+    "gemini": {
+      "necunoscut": {
+        "calls": 3,
+        "hit_rate": 0.6666666666666666,
+        "reliable": false
+      }
+    }
+  },
+  "by_horizon": {
+    "5 zile": {
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534,
+      "reliable": false
+    }
+  },
   "alpha": {
     "raw": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null,
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534,
       "reliable": false
     },
     "entry_next": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null,
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.5460656449166832,
       "reliable": false
     },
     "alpha_next": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null,
+      "calls": 8,
+      "hit_rate": 0.375,
+      "mean_return_pct": -0.6972783567512658,
       "reliable": false
     },
     "alpha_raw": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null,
+      "calls": 8,
+      "hit_rate": 0.375,
+      "mean_return_pct": -0.011826906645714952,
       "reliable": false
     },
-    "note": "Încă nicio decizie decontată cu detalii de alpha (apar de la primele decontări, ~6.11)."
+    "note": null
   },
   "revision": {
     "changed_votes": 0,
@@ -114,14 +429,14 @@
   },
   "before_after": {
     "initial": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534
     },
     "final": {
-      "calls": 0,
-      "hit_rate": null,
-      "mean_return_pct": null
+      "calls": 9,
+      "hit_rate": 0.5555555555555556,
+      "mean_return_pct": 1.9684004541079534
     },
     "lean_changed": 0,
     "improved": 0,
@@ -130,23 +445,23 @@
   },
   "weights": {
     "base": {
-      "gpt": 0.2,
-      "claude": 0.2,
-      "gemini": 0.2,
-      "grok": 0.2,
-      "deepseek": 0.2
+      "gpt": 0.20333630221270785,
+      "claude": 0.22366993243397865,
+      "gemini": 0.2009139480037391,
+      "grok": 0.21782469153303735,
+      "deepseek": 0.15425512581653703
     },
     "penalized": {
-      "gpt": 0.2,
-      "claude": 0.2,
-      "gemini": 0.2,
-      "grok": 0.2,
-      "deepseek": 0.2
+      "gpt": 0.19234099385589012,
+      "claude": 0.22997292743639036,
+      "gemini": 0.20657568177547067,
+      "grok": 0.22396296826605272,
+      "deepseek": 0.14714742866619618
     }
   },
   "out_of_sample": {
     "evaluated": false,
-    "days": 0,
-    "note": "Doar 0 zile cu decizii încheiate (minim 8): nu se poate testa ponderarea pe date nevăzute."
+    "days": 1,
+    "note": "Doar 1 zile cu decizii încheiate (minim 8): nu se poate testa ponderarea pe date nevăzute."
   }
 }
