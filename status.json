@@ -1,0 +1,34 @@
+{
+ "time": "2026-11-07T18:15+00:00",
+ "markets_with_bars": 100,
+ "fetch_errors": {},
+ "accounts": {
+  "p26-p24-la-10-min": {
+   "equity": 11419.96,
+   "positions": 70,
+   "orders": 0,
+   "kill_switch": false,
+   "version": "v2",
+   "diagnostic": {
+    "fara_istoric_zilnic": 0,
+    "fara_lumanari_intraday": 0,
+    "bursa_inchisa": 40,
+    "date_vechi": 0
+   }
+  },
+  "p27-trend-15m": {
+   "equity": 10566.71,
+   "positions": 0,
+   "orders": 0,
+   "kill_switch": true,
+   "version": "v1"
+  },
+  "p28-revenire-5m": {
+   "equity": 10581.28,
+   "positions": 0,
+   "orders": 0,
+   "kill_switch": true,
+   "version": "v1"
+  }
+ }
+}

@@ -1,0 +1,11 @@
+{
+ "time": "2026-11-07T18:15:36.307362+00:00",
+ "account": "p28-revenire-5m",
+ "candles_processed": 98,
+ "kill_switch": true,
+ "orders": [],
+ "equity": 10581.284085152112,
+ "cash": 10581.284085152112,
+ "gross_leverage": 0.0,
+ "positions": 0
+}

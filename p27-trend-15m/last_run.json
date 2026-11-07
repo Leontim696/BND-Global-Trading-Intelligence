@@ -1,0 +1,11 @@
+{
+ "time": "2026-11-07T18:15:36.307362+00:00",
+ "account": "p27-trend-15m",
+ "candles_processed": 98,
+ "kill_switch": true,
+ "orders": [],
+ "equity": 10566.714685289093,
+ "cash": 10566.714685289093,
+ "gross_leverage": 0.0,
+ "positions": 0
+}
