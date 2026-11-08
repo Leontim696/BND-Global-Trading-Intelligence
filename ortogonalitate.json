@@ -1,101 +1,101 @@
 {
- "decizii": 622,
- "incheiate": 13,
+ "decizii": 709,
+ "incheiate": 62,
  "hold_pct": {
-  "gpt": 70.1,
-  "grok": 73.6,
-  "claude": 96.5,
-  "gemini": 72.5,
-  "deepseek": 30.4
+  "gpt": 69.4,
+  "grok": 72.8,
+  "claude": 95.9,
+  "gemini": 72.4,
+  "deepseek": 29.3
  },
  "perechi": {
   "gpt-grok": {
    "acord": 0.817,
-   "kappa": 0.548,
-   "corelatie": 0.552
+   "kappa": 0.555,
+   "corelatie": 0.559
   },
   "gpt-claude": {
-   "acord": 0.723,
-   "kappa": 0.123,
-   "corelatie": 0.26
+   "acord": 0.721,
+   "kappa": 0.137,
+   "corelatie": 0.269
   },
   "gpt-gemini": {
-   "acord": 0.664,
-   "kappa": 0.215,
-   "corelatie": 0.319
+   "acord": 0.671,
+   "kappa": 0.237,
+   "corelatie": 0.337
   },
   "gpt-deepseek": {
-   "acord": 0.526,
-   "kappa": 0.233,
-   "corelatie": 0.372
+   "acord": 0.529,
+   "kappa": 0.243,
+   "corelatie": 0.391
   },
   "grok-claude": {
-   "acord": 0.756,
-   "kappa": 0.134,
-   "corelatie": 0.26
+   "acord": 0.749,
+   "kappa": 0.141,
+   "corelatie": 0.258
   },
   "grok-gemini": {
-   "acord": 0.735,
-   "kappa": 0.353,
-   "corelatie": 0.436
+   "acord": 0.736,
+   "kappa": 0.363,
+   "corelatie": 0.443
   },
   "grok-deepseek": {
-   "acord": 0.529,
-   "kappa": 0.25,
-   "corelatie": 0.402
+   "acord": 0.532,
+   "kappa": 0.259,
+   "corelatie": 0.418
   },
   "claude-gemini": {
-   "acord": 0.744,
-   "kappa": 0.13,
-   "corelatie": 0.255
+   "acord": 0.748,
+   "kappa": 0.153,
+   "corelatie": 0.276
   },
   "claude-deepseek": {
-   "acord": 0.339,
-   "kappa": 0.042,
-   "corelatie": 0.192
+   "acord": 0.334,
+   "kappa": 0.046,
+   "corelatie": 0.195
   },
   "gemini-deepseek": {
-   "acord": 0.532,
-   "kappa": 0.281,
-   "corelatie": 0.471
+   "acord": 0.526,
+   "kappa": 0.277,
+   "corelatie": 0.472
   }
  },
- "ai_independente_efectiv": 2.08,
+ "ai_independente_efectiv": 2.04,
  "contributie": {
   "toti_5": {
-   "semnale": 9,
-   "corecte_pct": 55.6,
-   "medie_pct": 1.968
+   "semnale": 53,
+   "corecte_pct": 77.4,
+   "medie_pct": 4.488
   },
   "fara_gpt": {
-   "semnale": 9,
-   "corecte_pct": 55.6,
-   "medie_pct": 1.968,
-   "directie_schimbata_pct": 3.2
+   "semnale": 50,
+   "corecte_pct": 76.0,
+   "medie_pct": 4.492,
+   "directie_schimbata_pct": 3.0
   },
   "fara_grok": {
-   "semnale": 9,
-   "corecte_pct": 55.6,
-   "medie_pct": 1.968,
-   "directie_schimbata_pct": 0.8
+   "semnale": 52,
+   "corecte_pct": 76.9,
+   "medie_pct": 4.475,
+   "directie_schimbata_pct": 0.7
   },
   "fara_claude": {
-   "semnale": 9,
-   "corecte_pct": 55.6,
-   "medie_pct": 1.968,
+   "semnale": 53,
+   "corecte_pct": 77.4,
+   "medie_pct": 4.488,
    "directie_schimbata_pct": 0.0
   },
   "fara_gemini": {
-   "semnale": 9,
-   "corecte_pct": 55.6,
-   "medie_pct": 1.968,
-   "directie_schimbata_pct": 2.6
+   "semnale": 53,
+   "corecte_pct": 77.4,
+   "medie_pct": 4.488,
+   "directie_schimbata_pct": 2.4
   },
   "fara_deepseek": {
-   "semnale": 5,
-   "corecte_pct": 60.0,
-   "medie_pct": 1.781,
-   "directie_schimbata_pct": 27.5
+   "semnale": 44,
+   "corecte_pct": 81.8,
+   "medie_pct": 5.145,
+   "directie_schimbata_pct": 27.6
   }
  },
  "alfa_negativ": {
@@ -103,8 +103,8 @@
   "agenti": {
    "gpt": {
     "prima": {
-     "voturi": 2,
-     "medie_pct": 2.839
+     "voturi": 34,
+     "medie_pct": 5.402
     },
     "a_doua": {
      "voturi": 0,
@@ -115,8 +115,8 @@
    },
    "grok": {
     "prima": {
-     "voturi": 1,
-     "medie_pct": 1.88
+     "voturi": 26,
+     "medie_pct": 5.386
     },
     "a_doua": {
      "voturi": 0,
@@ -127,8 +127,8 @@
    },
    "claude": {
     "prima": {
-     "voturi": 0,
-     "medie_pct": null
+     "voturi": 3,
+     "medie_pct": 11.102
     },
     "a_doua": {
      "voturi": 0,
@@ -139,8 +139,8 @@
    },
    "gemini": {
     "prima": {
-     "voturi": 3,
-     "medie_pct": 2.477
+     "voturi": 19,
+     "medie_pct": 5.864
     },
     "a_doua": {
      "voturi": 0,
@@ -151,8 +151,8 @@
    },
    "deepseek": {
     "prima": {
-     "voturi": 9,
-     "medie_pct": 1.968
+     "voturi": 50,
+     "medie_pct": 4.351
     },
     "a_doua": {
      "voturi": 0,
