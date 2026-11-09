@@ -1,16 +1,19 @@
 id,day,slug,question,p_yes,volume,end_date
-2026-11-08|bijan-robinson-4pt5-rushing-touchdowns-2026-27,2026-11-08,bijan-robinson-4pt5-rushing-touchdowns-2026-27,Will Bijan Robinson have 4.5+ rushing touchdowns in the 2026-27 NFL regular season?,0.9245,99.985824,2027-01-27
-2026-11-08|highest-temperature-in-lucknow-on-november-8-2026-33c,2026-11-08,highest-temperature-in-lucknow-on-november-8-2026-33c,Will the highest temperature in Lucknow be 33°C on November 8?,0.0005,99.994,2026-11-08
-2026-11-08|highest-temperature-in-madrid-on-november-8-2026-13c,2026-11-08,highest-temperature-in-madrid-on-november-8-2026-13c,Will the highest temperature in Madrid be 13°C on November 8?,0.0005,99.991,2026-11-08
-2026-11-08|highest-temperature-in-paris-on-november-9-2026-15c,2026-11-08,highest-temperature-in-paris-on-november-9-2026-15c,Will the highest temperature in Paris be 15°C on November 9?,0.0045,99.994666,2026-11-09
-2026-11-08|kor-seo-uls-2026-11-08-exact-score-5-5,2026-11-08,kor-seo-uls-2026-11-08-exact-score-5-5,Exact Score: FC Seoul 5 - 5 Ulsan HD FC?,0.0005,99.9898,2026-11-08
-2026-11-08|par1-ssl-rub-2026-11-09-exact-score-1-5,2026-11-08,par1-ssl-rub-2026-11-09-exact-score-1-5,Exact Score: Sportivo San Lorenzo 1 - 5 Rubio Nu?,0.2500,9.99888,2026-11-09
-2026-11-08|spl-fai-dir-2026-11-07-exact-score-0-4,2026-11-08,spl-fai-dir-2026-11-07-exact-score-0-4,Exact Score: Al Faisaly Saudi Club 0 - 4 Al Diraiyah Saudi Club?,0.4000,99.9898,2026-11-07
-2026-11-08|spl-fai-dir-2026-11-07-exact-score-1-4,2026-11-08,spl-fai-dir-2026-11-07-exact-score-1-4,Exact Score: Al Faisaly Saudi Club 1 - 4 Al Diraiyah Saudi Club?,0.3995,99.9898,2026-11-07
-2026-11-08|spl-fai-dir-2026-11-07-exact-score-2-4,2026-11-08,spl-fai-dir-2026-11-07-exact-score-2-4,Exact Score: Al Faisaly Saudi Club 2 - 4 Al Diraiyah Saudi Club?,0.4020,99.9898,2026-11-07
-2026-11-08|spl-fat-riy-2026-11-06-exact-score-4-0,2026-11-08,spl-fat-riy-2026-11-06-exact-score-4-0,Exact Score: Al Fateh Saudi Club 4 - 0 Al Riyadh Saudi Club?,0.0140,99.9898,2026-11-06
-2026-11-08|spl-fat-riy-2026-11-06-exact-score-4-1,2026-11-08,spl-fat-riy-2026-11-06-exact-score-4-1,Exact Score: Al Fateh Saudi Club 4 - 1 Al Riyadh Saudi Club?,0.4985,99.9898,2026-11-06
-2026-11-08|sui-stg-lug-2026-11-08-btts,2026-11-08,sui-stg-lug-2026-11-08-btts,FC St. Gallen 1879 vs. FC Lugano: Both Teams to Score,0.6300,99.99143,2026-11-08
-2026-11-08|will-connor-bedard-record-30-goals-in-the-2026-27-regular-season,2026-11-08,will-connor-bedard-record-30-goals-in-the-2026-27-regular-season,Will Connor Bedard record 30+ goals in the 2026-27 regular season?,0.4650,99.99,2027-04-30
-2026-11-08|will-texas-longhorns-win-the-2027-cfp-national-championship,2026-11-08,will-texas-longhorns-win-the-2027-cfp-national-championship,Will Texas Longhorns win the 2027 CFP National Championship?,0.0770,99988.55632699997,2027-01-26
-2026-11-08|will-the-us-birth-rate-in-2026-be-53pt0-or-higher,2026-11-08,will-the-us-birth-rate-in-2026-be-53pt0-or-higher,Will the US birth rate in 2026 be 53.0 or higher?,0.2250,99.999426,2027-05-01
+2026-11-09|bra2-rec-goi-2026-11-14-rec,2026-11-09,bra2-rec-goi-2026-11-14-rec,Will SC Recife win on 2026-11-14?,0.3300,99.983332,2026-11-14
+2026-11-09|el1-mkd-bur-2026-11-14-mkd,2026-11-09,el1-mkd-bur-2026-11-14-mkd,Will Milton Keynes Dons FC win on 2026-11-14?,0.5600,99.976191,2026-11-14
+2026-11-09|nba-2026-27-spg-leader-jalen-johnson,2026-11-09,nba-2026-27-spg-leader-jalen-johnson,Will Jalen Johnson lead the NBA in steals per game in 2026-27?,0.0195,99.98,2027-04-26
+2026-11-09|par1-ssl-rub-2026-11-09-exact-score-1-5,2026-11-09,par1-ssl-rub-2026-11-09-exact-score-1-5,Exact Score: Sportivo San Lorenzo 1 - 5 Rubio Nu?,0.2200,9.99888,2026-11-09
+2026-11-09|rou1-fcb-aog-2026-11-09-btts,2026-11-09,rou1-fcb-aog-2026-11-09-btts,FC Botoşani vs. ASC Oțelul Galați: Both Teams to Score,0.5500,99.97674500000001,2026-11-09
+2026-11-09|spl-fai-dir-2026-11-07-exact-score-0-4,2026-11-09,spl-fai-dir-2026-11-07-exact-score-0-4,Exact Score: Al Faisaly Saudi Club 0 - 4 Al Diraiyah Saudi Club?,0.0915,99.9898,2026-11-07
+2026-11-09|spl-fai-dir-2026-11-07-exact-score-1-4,2026-11-09,spl-fai-dir-2026-11-07-exact-score-1-4,Exact Score: Al Faisaly Saudi Club 1 - 4 Al Diraiyah Saudi Club?,0.0915,99.9898,2026-11-07
+2026-11-09|spl-fai-dir-2026-11-07-exact-score-2-4,2026-11-09,spl-fai-dir-2026-11-07-exact-score-2-4,Exact Score: Al Faisaly Saudi Club 2 - 4 Al Diraiyah Saudi Club?,0.0915,99.9898,2026-11-07
+2026-11-09|spl-fat-riy-2026-11-06-exact-score-4-1,2026-11-09,spl-fat-riy-2026-11-06-exact-score-4-1,Exact Score: Al Fateh Saudi Club 4 - 1 Al Riyadh Saudi Club?,0.0005,99.9898,2026-11-06
+2026-11-09|titled-tuesday-2026-11-10-top8-jan-krzysztof-duda,2026-11-09,titled-tuesday-2026-11-10-top8-jan-krzysztof-duda,Will Jan-Krzysztof Duda finish in the Top 8 of Titled Tuesday on November 10?,0.4900,99.93,2026-11-25
+2026-11-09|will-anthropic-be-the-second-best-ai-agent-lab-at-the-end-of-november-2026,2026-11-09,will-anthropic-be-the-second-best-ai-agent-lab-at-the-end-of-november-2026,Will Anthropic be the second-best AI Agent Lab at the end of November 2026?,0.1500,9998.907292,2026-12-01
+2026-11-09|will-connor-bedard-record-30-goals-in-the-2026-27-regular-season,2026-11-09,will-connor-bedard-record-30-goals-in-the-2026-27-regular-season,Will Connor Bedard record 30+ goals in the 2026-27 regular season?,0.5250,99.99,2027-04-30
+2026-11-09|will-gamerlegion-win-blast-slam-ix,2026-11-09,will-gamerlegion-win-blast-slam-ix,Will GamerLegion win BLAST Slam IX?,0.0020,99.97966600000001,2026-12-01
+2026-11-09|will-gavin-newsom-announce-a-presidential-run-before-2027,2026-11-09,will-gavin-newsom-announce-a-presidential-run-before-2027,Will Gavin Newsom announce a Presidential run before 2027?,0.0750,99963.37536199999,2027-01-01
+2026-11-09|will-openais-valuation-be-at-least-1pt90t-at-the-end-of-december-2026,2026-11-09,will-openais-valuation-be-at-least-1pt90t-at-the-end-of-december-2026,Will OpenAI’s valuation be at least $1.90T at the end of December 2026?,0.0380,99.92999999999999,2026-12-31
+2026-11-09|will-seedy-jatta-score-the-most-goals-in-the-2026-27-uefa-europa-league,2026-11-09,will-seedy-jatta-score-the-most-goals-in-the-2026-27-uefa-europa-league,Will Seedy Jatta score the most goals in the 2026-27 UEFA Europa League?,0.4975,99.98,2027-06-09
+2026-11-09|will-texas-longhorns-win-the-2027-cfp-national-championship,2026-11-09,will-texas-longhorns-win-the-2027-cfp-national-championship,Will Texas Longhorns win the 2027 CFP National Championship?,0.0785,99995.64632699997,2027-01-26
+2026-11-09|will-the-30-year-treasury-yield-dip-below-5pt25-before-2027,2026-11-09,will-the-30-year-treasury-yield-dip-below-5pt25-before-2027,Will the 30-year Treasury yield dip below 5.25% before 2027?,0.8900,9996.734868,2027-01-01
