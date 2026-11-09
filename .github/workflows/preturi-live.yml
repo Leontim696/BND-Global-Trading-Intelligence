@@ -1,4 +1,4 @@
-name: Prețuri live la 10 minute (buclă)
+name: Prețuri live la 60 de minute (buclă)
 
 # Cerut de proprietar pe 3.11.2026 (repo public: minute nelimitate).
 # O buclă de ~5 h 50 min care, la fiecare 10 minute, citește prețurile de acum pentru toate
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
         with:
           python-version: "3.13"
-      - name: Prices every 10 minutes
+      - name: Prices every 60 minutes
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
@@ -121,7 +121,7 @@ jobs:
             else
               echo "::warning::prețurile nu s-au putut citi la $stamp"
             fi
-            left=$(( 600 - ($(date +%s) - start) ))
+            left=$(( 3600 - ($(date +%s) - start) ))   # rărit la 60 de minute pe 9.11.2026 (după suspendarea contului GitHub)
             [ "$left" -gt 0 ] && sleep "$left"
           done
           # Repornire: bucla următoare preia imediat (workflow_dispatch cu tokenul rulării e permis).
