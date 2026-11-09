@@ -1,4 +1,4 @@
-name: Intraday la 10 minute (P26–P28, buclă)
+name: Intraday la 60 de minute (P26–P28, buclă)
 
 # Cerut de proprietar pe 5.11.2026: execuție la 10 minute pentru trei conturi paralele (bani virtuali, fără apeluri AI):
 # P26 geamănul lui P24, P27 trend crypto 15m, P28 revenire crypto 5m. Contul oficial NU e atins.
@@ -118,15 +118,15 @@ jobs:
           deadline=$(( $(date +%s) + 340*60 )); n=0; day=""
           while [ "$(date +%s)" -lt "$deadline" ]; do
             start=$(date +%s)
-            [ $((n % 6)) -eq 0 ] && refresh_p24
+            refresh_p24
             today=$(date -u +%F)
             if [ "$today" != "$day" ]; then refresh_daily; day=$today; fi
             args=(--dir st --daily-dir daily)
             [ -f p24/paper.sqlite ] && args+=(--p24 p24/paper.sqlite)
             py -m src.bnd.intraday_live cycle "${args[@]}" || echo "::warning::ciclul intraday de la $(date -u +%H:%M) a avut erori"
             n=$((n + 1))
-            { [ "$n" -eq 1 ] || [ $((n % 6)) -eq 0 ]; } && publish   # prima dată imediat, apoi o dată pe oră
-            left=$(( 600 - ($(date +%s) - start) ))
+            publish   # o dată pe oră (bucla e la 60 de minute din 9.11.2026)
+            left=$(( 3600 - ($(date +%s) - start) ))   # rărit la 60 de minute pe 9.11.2026
             [ "$left" -gt 0 ] && sleep "$left"
           done
           publish
