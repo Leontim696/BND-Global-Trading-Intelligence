@@ -1,46 +1,46 @@
 {
   "incomplete_excluded": 0,
   "stale_excluded": 1,
-  "settled": 62,
+  "settled": 111,
   "enough_data": true,
   "note": null,
   "agents": {
     "gpt": {
-      "calls": 34,
-      "hit_rate": 0.8529411764705882,
-      "mean_net_return_pct": 5.401522926080594,
-      "holds": 28,
-      "hold_correct_rate": 0.14285714285714285,
-      "minority_calls": 14,
-      "minority_right": 13,
-      "calibration_gap": 0.2552941176470589,
+      "calls": 60,
+      "hit_rate": 0.9,
+      "mean_net_return_pct": 7.4130532459345115,
+      "holds": 51,
+      "hold_correct_rate": 0.0784313725490196,
+      "minority_calls": 23,
+      "minority_right": 21,
+      "calibration_gap": 0.30183333333333334,
       "calibration": [
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 10,
-          "hit_rate": 0.8,
-          "declared": 0.583
+          "calls": 18,
+          "hit_rate": 0.8333333333333334,
+          "declared": 0.5855555555555555
         },
         {
           "confidence_bucket": "0.6-0.7",
-          "calls": 24,
-          "hit_rate": 0.875,
-          "declared": 0.6037499999999999
+          "calls": 42,
+          "hit_rate": 0.9285714285714286,
+          "declared": 0.6035714285714286
         }
       ],
-      "overconfidence": -0.2552941176470588,
-      "mean_brier": 0.1896823529411765,
+      "overconfidence": -0.30183333333333295,
+      "mean_brier": 0.17991500000000016,
       "by_class": {
         "forex": {
           "calls": 1,
           "hit_rate": 0.0
         },
         "crypto": {
-          "calls": 28,
-          "hit_rate": 0.8571428571428571
+          "calls": 50,
+          "hit_rate": 0.9
         },
         "memecoin": {
-          "calls": 5,
+          "calls": 9,
           "hit_rate": 1.0
         }
       },
@@ -62,11 +62,11 @@
           "hit_rate": 0.0
         },
         "DOGE": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ADA": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "AVAX": {
@@ -78,19 +78,19 @@
           "hit_rate": 1.0
         },
         "SHIB": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "LTC": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "DOT": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "HBAR": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "AAVE": {
@@ -102,31 +102,31 @@
           "hit_rate": 1.0
         },
         "ETC": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "APT": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ONDO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ATOM": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ARB": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 0.0
         },
         "ALGO": {
-          "calls": 1,
-          "hit_rate": 0.0
+          "calls": 2,
+          "hit_rate": 0.5
         },
         "VET": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "OP": {
@@ -134,19 +134,19 @@
           "hit_rate": 1.0
         },
         "RENDER": {
-          "calls": 1,
-          "hit_rate": 0.0
+          "calls": 2,
+          "hit_rate": 0.5
         },
         "TAO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "FET": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "SEI": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "BONK": {
@@ -154,7 +154,7 @@
           "hit_rate": 1.0
         },
         "WIF": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "TRUMP": {
@@ -162,32 +162,48 @@
           "hit_rate": 1.0
         },
         "WLD": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "JUP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "LDO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "CRV": {
+          "calls": 2,
+          "hit_rate": 1.0
+        },
+        "LINK": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "XLM": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "PENGU": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "ENA": {
           "calls": 1,
           "hit_rate": 1.0
         }
       }
     },
     "claude": {
-      "calls": 3,
+      "calls": 6,
       "hit_rate": 1.0,
-      "mean_net_return_pct": 11.102136286777494,
-      "holds": 59,
-      "hold_correct_rate": 0.11864406779661017,
+      "mean_net_return_pct": 10.380571435823311,
+      "holds": 105,
+      "hold_correct_rate": 0.06666666666666667,
       "minority_calls": 0,
       "minority_right": 0,
-      "calibration_gap": 0.5,
+      "calibration_gap": 0.47500000000000003,
       "calibration": [
         {
           "confidence_bucket": "0.4-0.5",
@@ -197,22 +213,26 @@
         },
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 2,
+          "calls": 5,
           "hit_rate": 1.0,
           "declared": 0.55
         }
       ],
-      "overconfidence": -0.5,
-      "mean_brier": 0.25499999999999995,
+      "overconfidence": -0.4750000000000001,
+      "mean_brier": 0.22874999999999993,
       "by_class": {
         "memecoin": {
-          "calls": 3,
+          "calls": 5,
+          "hit_rate": 1.0
+        },
+        "crypto": {
+          "calls": 1,
           "hit_rate": 1.0
         }
       },
       "by_market": {
         "DOGE": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "BONK": {
@@ -220,58 +240,6 @@
           "hit_rate": 1.0
         },
         "TRUMP": {
-          "calls": 1,
-          "hit_rate": 1.0
-        }
-      }
-    },
-    "gemini": {
-      "calls": 19,
-      "hit_rate": 0.8421052631578947,
-      "mean_net_return_pct": 5.8640119360559915,
-      "holds": 43,
-      "hold_correct_rate": 0.13953488372093023,
-      "minority_calls": 5,
-      "minority_right": 3,
-      "calibration_gap": 0.19210526315789456,
-      "calibration": [
-        {
-          "confidence_bucket": "0.6-0.7",
-          "calls": 19,
-          "hit_rate": 0.8421052631578947,
-          "declared": 0.6500000000000001
-        }
-      ],
-      "overconfidence": -0.19210526315789456,
-      "mean_brier": 0.1698684210526316,
-      "by_class": {
-        "bond": {
-          "calls": 1,
-          "hit_rate": 0.0
-        },
-        "crypto": {
-          "calls": 11,
-          "hit_rate": 0.8181818181818182
-        },
-        "memecoin": {
-          "calls": 7,
-          "hit_rate": 1.0
-        }
-      },
-      "by_market": {
-        "US10Y_NOTE": {
-          "calls": 1,
-          "hit_rate": 0.0
-        },
-        "BNB": {
-          "calls": 2,
-          "hit_rate": 1.0
-        },
-        "XRP": {
-          "calls": 2,
-          "hit_rate": 1.0
-        },
-        "DOGE": {
           "calls": 1,
           "hit_rate": 1.0
         },
@@ -282,13 +250,73 @@
         "SHIB": {
           "calls": 1,
           "hit_rate": 1.0
+        }
+      }
+    },
+    "gemini": {
+      "calls": 38,
+      "hit_rate": 0.868421052631579,
+      "mean_net_return_pct": 7.339501904440976,
+      "holds": 73,
+      "hold_correct_rate": 0.0821917808219178,
+      "minority_calls": 9,
+      "minority_right": 5,
+      "calibration_gap": 0.21921052631578986,
+      "calibration": [
+        {
+          "confidence_bucket": "0.6-0.7",
+          "calls": 38,
+          "hit_rate": 0.868421052631579,
+          "declared": 0.6492105263157891
+        }
+      ],
+      "overconfidence": -0.21921052631578986,
+      "mean_brier": 0.1625499999999999,
+      "by_class": {
+        "bond": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "crypto": {
+          "calls": 24,
+          "hit_rate": 0.8333333333333334
+        },
+        "memecoin": {
+          "calls": 13,
+          "hit_rate": 1.0
+        }
+      },
+      "by_market": {
+        "US10Y_NOTE": {
+          "calls": 1,
+          "hit_rate": 0.0
+        },
+        "BNB": {
+          "calls": 3,
+          "hit_rate": 1.0
+        },
+        "XRP": {
+          "calls": 3,
+          "hit_rate": 1.0
+        },
+        "DOGE": {
+          "calls": 2,
+          "hit_rate": 1.0
+        },
+        "XLM": {
+          "calls": 2,
+          "hit_rate": 1.0
+        },
+        "SHIB": {
+          "calls": 2,
+          "hit_rate": 1.0
         },
         "ETC": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ONDO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ARB": {
@@ -296,19 +324,19 @@
           "hit_rate": 0.0
         },
         "VET": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "BONK": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "WIF": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "FLOKI": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "TRUMP": {
@@ -316,71 +344,91 @@
           "hit_rate": 1.0
         },
         "PENGU": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "JUP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "TIA": {
+          "calls": 2,
+          "hit_rate": 0.0
+        },
+        "TRX": {
           "calls": 1,
           "hit_rate": 0.0
+        },
+        "LINK": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "LTC": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "WLD": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "LDO": {
+          "calls": 1,
+          "hit_rate": 1.0
         }
       }
     },
     "grok": {
-      "calls": 26,
-      "hit_rate": 0.8076923076923077,
-      "mean_net_return_pct": 5.386112188643394,
-      "holds": 36,
-      "hold_correct_rate": 0.1388888888888889,
-      "minority_calls": 6,
-      "minority_right": 5,
-      "calibration_gap": 0.2538461538461539,
+      "calls": 46,
+      "hit_rate": 0.8913043478260869,
+      "mean_net_return_pct": 7.441006047144513,
+      "holds": 65,
+      "hold_correct_rate": 0.07692307692307693,
+      "minority_calls": 11,
+      "minority_right": 10,
+      "calibration_gap": 0.3278260869565219,
       "calibration": [
         {
           "confidence_bucket": "0.4-0.5",
-          "calls": 6,
-          "hit_rate": 0.8333333333333334,
-          "declared": 0.4433333333333333
+          "calls": 7,
+          "hit_rate": 0.8571428571428571,
+          "declared": 0.43999999999999995
         },
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 16,
-          "hit_rate": 0.75,
-          "declared": 0.57875
+          "calls": 32,
+          "hit_rate": 0.875,
+          "declared": 0.5781249999999998
         },
         {
           "confidence_bucket": "0.6-0.7",
-          "calls": 4,
+          "calls": 7,
           "hit_rate": 1.0,
           "declared": 0.62
         }
       ],
-      "overconfidence": -0.25384615384615394,
-      "mean_brier": 0.2246153846153847,
+      "overconfidence": -0.32782608695652216,
+      "mean_brier": 0.20579130434782603,
       "by_class": {
         "crypto": {
-          "calls": 22,
-          "hit_rate": 0.7727272727272727
+          "calls": 39,
+          "hit_rate": 0.8717948717948718
         },
         "memecoin": {
-          "calls": 4,
+          "calls": 7,
           "hit_rate": 1.0
         }
       },
       "by_market": {
         "BITCOIN": {
-          "calls": 2,
+          "calls": 3,
           "hit_rate": 1.0
         },
         "BNB": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "XRP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "TRX": {
@@ -388,11 +436,11 @@
           "hit_rate": 0.0
         },
         "DOGE": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "XLM": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "SUI": {
@@ -412,19 +460,19 @@
           "hit_rate": 0.0
         },
         "ETC": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "APT": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ONDO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ATOM": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ARB": {
@@ -436,7 +484,7 @@
           "hit_rate": 0.0
         },
         "VET": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "OP": {
@@ -444,8 +492,8 @@
           "hit_rate": 1.0
         },
         "RENDER": {
-          "calls": 1,
-          "hit_rate": 0.0
+          "calls": 2,
+          "hit_rate": 0.5
         },
         "TAO": {
           "calls": 1,
@@ -460,50 +508,78 @@
           "hit_rate": 1.0
         },
         "ENA": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "JUP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "LDO": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "ETHEREUM": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "LINK": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "HBAR": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "AAVE": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "BONK": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "PENGU": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "WLD": {
           "calls": 1,
           "hit_rate": 1.0
         }
       }
     },
     "deepseek": {
-      "calls": 50,
-      "hit_rate": 0.74,
-      "mean_net_return_pct": 4.350545856803463,
-      "holds": 12,
-      "hold_correct_rate": 0.25,
-      "minority_calls": 28,
-      "minority_right": 19,
-      "calibration_gap": 0.14100000000000015,
+      "calls": 83,
+      "hit_rate": 0.8192771084337349,
+      "mean_net_return_pct": 6.659631455619203,
+      "holds": 28,
+      "hold_correct_rate": 0.10714285714285714,
+      "minority_calls": 42,
+      "minority_right": 31,
+      "calibration_gap": 0.17807228915662648,
       "calibration": [
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 4,
-          "hit_rate": 0.25,
-          "declared": 0.55
+          "calls": 7,
+          "hit_rate": 0.5714285714285714,
+          "declared": 0.5514285714285714
         },
         {
           "confidence_bucket": "0.6-0.7",
-          "calls": 27,
-          "hit_rate": 0.7777777777777778,
-          "declared": 0.6222222222222221
+          "calls": 51,
+          "hit_rate": 0.8431372549019608,
+          "declared": 0.6237254901960786
         },
         {
           "confidence_bucket": "0.7-0.8",
-          "calls": 19,
-          "hit_rate": 0.7894736842105263,
-          "declared": 0.7026315789473682
+          "calls": 25,
+          "hit_rate": 0.84,
+          "declared": 0.7019999999999997
         }
       ],
-      "overconfidence": -0.09300000000000008,
-      "mean_brier": 0.19525000000000003,
+      "overconfidence": -0.17807228915662654,
+      "mean_brier": 0.17736626506024095,
       "by_class": {
         "commodity": {
           "calls": 2,
@@ -514,8 +590,8 @@
           "hit_rate": 0.0
         },
         "crypto": {
-          "calls": 37,
-          "hit_rate": 0.7837837837837838
+          "calls": 63,
+          "hit_rate": 0.8412698412698413
         },
         "forex": {
           "calls": 1,
@@ -526,8 +602,8 @@
           "hit_rate": 0.0
         },
         "memecoin": {
-          "calls": 8,
-          "hit_rate": 0.875
+          "calls": 15,
+          "hit_rate": 0.9333333333333333
         }
       },
       "by_market": {
@@ -544,7 +620,7 @@
           "hit_rate": 1.0
         },
         "BITCOIN": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "EURUSD": {
@@ -564,15 +640,15 @@
           "hit_rate": 1.0
         },
         "XRP": {
-          "calls": 2,
+          "calls": 3,
           "hit_rate": 1.0
         },
         "TRX": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 0.0
         },
         "DOGE": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ADA": {
@@ -580,27 +656,27 @@
           "hit_rate": 1.0
         },
         "XLM": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "SUI": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "SHIB": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "LTC": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "DOT": {
-          "calls": 1,
-          "hit_rate": 0.0
+          "calls": 2,
+          "hit_rate": 0.5
         },
         "HBAR": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "UNI": {
@@ -612,7 +688,7 @@
           "hit_rate": 0.0
         },
         "AAVE": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "NEAR": {
@@ -624,7 +700,7 @@
           "hit_rate": 1.0
         },
         "ETC": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "APT": {
@@ -632,19 +708,19 @@
           "hit_rate": 1.0
         },
         "ONDO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ATOM": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "POL": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ARB": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 0.0
         },
         "ALGO": {
@@ -652,23 +728,23 @@
           "hit_rate": 0.0
         },
         "VET": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "OP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "INJ": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "RENDER": {
-          "calls": 1,
-          "hit_rate": 0.0
+          "calls": 2,
+          "hit_rate": 0.5
         },
         "TAO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "FET": {
@@ -680,39 +756,39 @@
           "hit_rate": 1.0
         },
         "BONK": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "WIF": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "FLOKI": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "TRUMP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "PENGU": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "ENA": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "WLD": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "JUP": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "LDO": {
-          "calls": 1,
+          "calls": 2,
           "hit_rate": 1.0
         },
         "CRV": {
@@ -722,20 +798,32 @@
         "TIA": {
           "calls": 1,
           "hit_rate": 0.0
+        },
+        "ETHEREUM": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "LINK": {
+          "calls": 1,
+          "hit_rate": 1.0
+        },
+        "SEI": {
+          "calls": 1,
+          "hit_rate": 1.0
         }
       }
     }
   },
   "disagreement": {
     "scazut": {
-      "decisions": 31,
-      "mean_abs_move_pct": 6.6232417841575595,
-      "share_big_moves": 0.7741935483870968
+      "decisions": 60,
+      "mean_abs_move_pct": 8.815576495134023,
+      "share_big_moves": 0.8666666666666667
     },
     "mediu": {
-      "decisions": 30,
-      "mean_abs_move_pct": 5.446163885101435,
-      "share_big_moves": 0.6333333333333333
+      "decisions": 50,
+      "mean_abs_move_pct": 6.579823255748665,
+      "share_big_moves": 0.74
     },
     "ridicat": {
       "decisions": 1,
@@ -745,39 +833,39 @@
   },
   "strategies": {
     "bot": {
-      "calls": 61,
-      "hit_rate": 0.7377049180327869,
-      "mean_return_pct": 3.4498342470671166
+      "calls": 110,
+      "hit_rate": 0.8090909090909091,
+      "mean_return_pct": 5.697246663588605
     },
     "council": {
-      "calls": 21,
-      "hit_rate": 0.8571428571428571,
-      "mean_return_pct": 5.561125555184813
+      "calls": 40,
+      "hit_rate": 0.925,
+      "mean_return_pct": 8.158724599290975
     },
     "lean": {
-      "calls": 52,
-      "hit_rate": 0.7884615384615384,
-      "mean_return_pct": 4.57457177837558
+      "calls": 92,
+      "hit_rate": 0.8478260869565217,
+      "mean_return_pct": 6.61855842095344
     },
     "hybrid": {
-      "calls": 50,
-      "hit_rate": 0.78,
-      "mean_return_pct": 4.198624188960479
+      "calls": 90,
+      "hit_rate": 0.8444444444444444,
+      "mean_return_pct": 6.4551205744467826
     }
   },
   "vs_rule": {
-    "comparable": 61,
-    "same": 21,
+    "comparable": 110,
+    "same": 40,
     "opposite": 0,
-    "abstain": 40,
-    "agreement_rate": 0.3442622950819672,
+    "abstain": 70,
+    "agreement_rate": 0.36363636363636365,
     "opposite_council_wins": 0,
     "opposite_rule_wins": 0,
     "opposite_council_mean_pct": null,
     "opposite_sign_test_p": null,
-    "abstain_rule_mean_pct": 2.3414063103053264,
-    "differ_mean_pct": -2.3414063103053264,
-    "differ_calls": 40,
+    "abstain_rule_mean_pct": 4.290687843187251,
+    "differ_mean_pct": -4.290687843187251,
+    "differ_calls": 70,
     "council_only_calls": 0,
     "council_only_mean_pct": null,
     "verdict": "Abaterile consiliului de la regulă nu au adus bani în această perioadă."
@@ -791,65 +879,65 @@
         "gpt",
         "grok"
       ],
-      "calls": 52,
-      "hit_rate": 0.7884615384615384,
-      "mean_return_pct": 4.57457177837558,
+      "calls": 92,
+      "hit_rate": 0.8478260869565217,
+      "mean_return_pct": 6.61855842095344,
       "cost_per_decision_usd": 0.0
     },
     "primii 3": {
       "agents": [
         "claude",
         "gpt",
-        "gemini"
+        "grok"
       ],
-      "calls": 40,
-      "hit_rate": 0.85,
-      "mean_return_pct": 5.2575544954974935,
+      "calls": 70,
+      "hit_rate": 0.9142857142857143,
+      "mean_return_pct": 7.340673067458861,
       "cost_per_decision_usd": 0.0
     },
     "doar claude": {
       "agents": [
         "claude"
       ],
-      "calls": 3,
+      "calls": 6,
       "hit_rate": 1.0,
-      "mean_return_pct": 11.102136286777494,
+      "mean_return_pct": 10.380571435823311,
       "cost_per_decision_usd": 0.0
     },
     "doar deepseek": {
       "agents": [
         "deepseek"
       ],
-      "calls": 49,
-      "hit_rate": 0.7551020408163265,
-      "mean_return_pct": 4.439332506942309,
+      "calls": 82,
+      "hit_rate": 0.8292682926829268,
+      "mean_return_pct": 6.740846473370657,
       "cost_per_decision_usd": 0.0
     },
     "doar gemini": {
       "agents": [
         "gemini"
       ],
-      "calls": 19,
-      "hit_rate": 0.8421052631578947,
-      "mean_return_pct": 5.864011936055993,
+      "calls": 38,
+      "hit_rate": 0.868421052631579,
+      "mean_return_pct": 7.339501904440976,
       "cost_per_decision_usd": 0.0
     },
     "doar gpt": {
       "agents": [
         "gpt"
       ],
-      "calls": 33,
-      "hit_rate": 0.8787878787878788,
-      "mean_return_pct": 5.565205438992127,
+      "calls": 59,
+      "hit_rate": 0.9152542372881356,
+      "mean_return_pct": 7.538698216204589,
       "cost_per_decision_usd": 0.0
     },
     "doar grok": {
       "agents": [
         "grok"
       ],
-      "calls": 25,
-      "hit_rate": 0.84,
-      "mean_return_pct": 5.601556676189128,
+      "calls": 45,
+      "hit_rate": 0.9111111111111111,
+      "mean_return_pct": 7.606361737081056,
       "cost_per_decision_usd": 0.0
     }
   },
@@ -859,6 +947,26 @@
         "calls": 49,
         "hit_rate": 0.7551020408163265,
         "reliable": true
+      },
+      "urcare calmă": {
+        "calls": 11,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere calmă": {
+        "calls": 18,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere agitată": {
+        "calls": 2,
+        "hit_rate": 0.5,
+        "reliable": false
+      },
+      "urcare agitată": {
+        "calls": 2,
+        "hit_rate": 0.5,
+        "reliable": false
       }
     },
     "grok": {
@@ -866,6 +974,21 @@
         "calls": 25,
         "hit_rate": 0.84,
         "reliable": true
+      },
+      "urcare calmă": {
+        "calls": 8,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere calmă": {
+        "calls": 11,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere agitată": {
+        "calls": 1,
+        "hit_rate": 1.0,
+        "reliable": false
       }
     },
     "gpt": {
@@ -873,12 +996,52 @@
         "calls": 33,
         "hit_rate": 0.8787878787878788,
         "reliable": true
+      },
+      "scădere calmă": {
+        "calls": 18,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "urcare calmă": {
+        "calls": 6,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere agitată": {
+        "calls": 1,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "urcare agitată": {
+        "calls": 1,
+        "hit_rate": 0.0,
+        "reliable": false
       }
     },
     "gemini": {
       "necunoscut": {
         "calls": 19,
         "hit_rate": 0.8421052631578947,
+        "reliable": false
+      },
+      "urcare calmă": {
+        "calls": 5,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere calmă": {
+        "calls": 12,
+        "hit_rate": 1.0,
+        "reliable": false
+      },
+      "scădere agitată": {
+        "calls": 1,
+        "hit_rate": 0.0,
+        "reliable": false
+      },
+      "urcare agitată": {
+        "calls": 1,
+        "hit_rate": 0.0,
         "reliable": false
       }
     },
@@ -887,40 +1050,45 @@
         "calls": 3,
         "hit_rate": 1.0,
         "reliable": false
+      },
+      "scădere calmă": {
+        "calls": 3,
+        "hit_rate": 1.0,
+        "reliable": false
       }
     }
   },
   "by_horizon": {
     "5 zile": {
-      "calls": 52,
-      "hit_rate": 0.7884615384615384,
-      "mean_return_pct": 4.57457177837558,
+      "calls": 92,
+      "hit_rate": 0.8478260869565217,
+      "mean_return_pct": 6.618558420953441,
       "reliable": true
     }
   },
   "alpha": {
     "raw": {
-      "calls": 53,
-      "hit_rate": 0.7735849056603774,
-      "mean_return_pct": 4.488259103311889,
+      "calls": 93,
+      "hit_rate": 0.8387096774193549,
+      "mean_return_pct": 6.547391126104478,
       "reliable": true
     },
     "entry_next": {
-      "calls": 53,
-      "hit_rate": 0.6792452830188679,
-      "mean_return_pct": 2.7145377739837158,
+      "calls": 93,
+      "hit_rate": 0.7849462365591398,
+      "mean_return_pct": 4.669417856048302,
       "reliable": true
     },
     "alpha_next": {
-      "calls": 51,
-      "hit_rate": 0.5882352941176471,
-      "mean_return_pct": 1.6304391179628905,
+      "calls": 90,
+      "hit_rate": 0.6777777777777778,
+      "mean_return_pct": 2.722843421661343,
       "reliable": true
     },
     "alpha_raw": {
-      "calls": 51,
-      "hit_rate": 0.7058823529411765,
-      "mean_return_pct": 2.4561920875213232,
+      "calls": 90,
+      "hit_rate": 0.7444444444444445,
+      "mean_return_pct": 3.231768154180154,
       "reliable": true
     },
     "note": null
@@ -933,14 +1101,14 @@
   },
   "before_after": {
     "initial": {
-      "calls": 52,
-      "hit_rate": 0.7884615384615384,
-      "mean_return_pct": 4.57457177837558
+      "calls": 92,
+      "hit_rate": 0.8478260869565217,
+      "mean_return_pct": 6.61855842095344
     },
     "final": {
-      "calls": 52,
-      "hit_rate": 0.7884615384615384,
-      "mean_return_pct": 4.57457177837558
+      "calls": 92,
+      "hit_rate": 0.8478260869565217,
+      "mean_return_pct": 6.61855842095344
     },
     "lean_changed": 0,
     "improved": 0,
@@ -949,23 +1117,23 @@
   },
   "weights": {
     "base": {
-      "gpt": 0.19445657770995034,
-      "claude": 0.24096861199113415,
-      "gemini": 0.22865449805015134,
-      "grok": 0.15993290262457255,
-      "deepseek": 0.17598740962419163
+      "gpt": 0.19368725610460585,
+      "claude": 0.22729206599481075,
+      "gemini": 0.2258089515197608,
+      "grok": 0.1598613655407841,
+      "deepseek": 0.19335036084003857
     },
     "penalized": {
-      "gpt": 0.19445657770995034,
-      "claude": 0.24096861199113415,
-      "gemini": 0.22865449805015134,
-      "grok": 0.15993290262457255,
-      "deepseek": 0.17598740962419163
+      "gpt": 0.19368725610460585,
+      "claude": 0.22729206599481075,
+      "gemini": 0.2258089515197608,
+      "grok": 0.1598613655407841,
+      "deepseek": 0.19335036084003857
     }
   },
   "out_of_sample": {
     "evaluated": false,
-    "days": 2,
-    "note": "Doar 2 zile cu decizii încheiate (minim 8): nu se poate testa ponderarea pe date nevăzute."
+    "days": 3,
+    "note": "Doar 3 zile cu decizii încheiate (minim 8): nu se poate testa ponderarea pe date nevăzute."
   }
 }
