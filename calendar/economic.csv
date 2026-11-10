@@ -132,6 +132,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-09T09:03+00:00|CNY|M2 Money Supply y/y,2026-11-09T09:03+00:00,CNY,M2 Money Supply y/y,Low,7.3%,7.2%
 2026-11-09T09:03+00:00|CNY|New Loans,2026-11-09T09:03+00:00,CNY,New Loans,Low,80B,1080B
 2026-11-09T09:30+00:00|EUR|Sentix Investor Confidence,2026-11-09T09:30+00:00,EUR,Sentix Investor Confidence,Low,2.1,2.7
+2026-11-09T09:45+00:00|All|G7 Meetings,2026-11-09T09:45+00:00,All,G7 Meetings,Low,,
 2026-11-09T10:15+00:00|EUR|ECOFIN Meetings,2026-11-09T10:15+00:00,EUR,ECOFIN Meetings,Low,,
 2026-11-09T10:15+00:00|EUR|Eurogroup Meetings,2026-11-09T10:15+00:00,EUR,Eurogroup Meetings,Low,,
 2026-11-09T13:40+00:00|USD|FOMC Member Bowman Speaks,2026-11-09T13:40+00:00,USD,FOMC Member Bowman Speaks,Low,,
@@ -146,13 +147,16 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-09T23:50+00:00|JPY|Current Account,2026-11-09T23:50+00:00,JPY,Current Account,Low,2.81T,2.98T
 2026-11-10T00:01+00:00|GBP|BRC Retail Sales Monitor y/y,2026-11-10T00:01+00:00,GBP,BRC Retail Sales Monitor y/y,Low,1.2%,1.0%
 2026-11-10T00:30+00:00|AUD|NAB Business Confidence,2026-11-10T00:30+00:00,AUD,NAB Business Confidence,Low,,-13
-2026-11-10T03:03+00:00|CNY|Trade Balance,2026-11-10T03:03+00:00,CNY,Trade Balance,Low,859B,906B
+2026-11-10T03:03+00:00|CNY|Trade Balance,2026-11-10T03:03+00:00,CNY,Trade Balance,Low,855B,906B
 2026-11-10T03:04+00:00|CNY|USD-Denominated Trade Balance,2026-11-10T03:04+00:00,CNY,USD-Denominated Trade Balance,Low,126.5B,133.5B
 2026-11-10T03:35+00:00|JPY|30-y Bond Auction,2026-11-10T03:35+00:00,JPY,30-y Bond Auction,Low,,4.11|3.9
-2026-11-10T05:00+00:00|JPY|Economy Watchers Sentiment,2026-11-10T05:00+00:00,JPY,Economy Watchers Sentiment,Low,46.9,47.0
+2026-11-10T05:00+00:00|JPY|Economy Watchers Sentiment,2026-11-10T05:00+00:00,JPY,Economy Watchers Sentiment,Low,47.1,47.0
 2026-11-10T08:30+00:00|GBP|MPC Member Breeden Speaks,2026-11-10T08:30+00:00,GBP,MPC Member Breeden Speaks,Low,,
 2026-11-10T09:00+00:00|USD|FOMC Member Waller Speaks,2026-11-10T09:00+00:00,USD,FOMC Member Waller Speaks,Medium,,
-2026-11-10T11:00+00:00|USD|NFIB Small Business Index,2026-11-10T11:00+00:00,USD,NFIB Small Business Index,Low,97.7,97.9
+2026-11-10T09:03+00:00|CNY|M2 Money Supply y/y,2026-11-10T09:03+00:00,CNY,M2 Money Supply y/y,Low,7.2%,7.2%
+2026-11-10T09:03+00:00|CNY|New Loans,2026-11-10T09:03+00:00,CNY,New Loans,Low,80B,1080B
+2026-11-10T09:45+00:00|All|G7 Meetings,2026-11-10T09:45+00:00,All,G7 Meetings,Low,,
+2026-11-10T11:00+00:00|USD|NFIB Small Business Index,2026-11-10T11:00+00:00,USD,NFIB Small Business Index,Low,98.0,97.9
 2026-11-10T11:32+00:00|GBP|30-y Bond Auction,2026-11-10T11:32+00:00,GBP,30-y Bond Auction,Low,,5.52|3.8
 2026-11-10T12:30+00:00|GBP|MPC Member Lombardelli Speaks,2026-11-10T12:30+00:00,GBP,MPC Member Lombardelli Speaks,Low,,
 2026-11-10T13:15+00:00|USD|ADP Weekly Employment Change,2026-11-10T13:15+00:00,USD,ADP Weekly Employment Change,Low,,
@@ -172,45 +176,50 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-11T06:00+00:00|JPY|Prelim Machine Tool Orders y/y,2026-11-11T06:00+00:00,JPY,Prelim Machine Tool Orders y/y,Low,,60.4%
 2026-11-11T07:00+00:00|EUR|German Final CPI m/m,2026-11-11T07:00+00:00,EUR,German Final CPI m/m,Low,-0.2%,-0.2%
 2026-11-11T07:01+00:00|EUR|French Bank Holiday,2026-11-11T07:01+00:00,EUR,French Bank Holiday,Holiday,,
+2026-11-11T08:15+00:00|EUR|German Buba President Nagel Speaks,2026-11-11T08:15+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-11T08:20+00:00|EUR|German Buba President Nagel Speaks,2026-11-11T08:20+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-11T09:00+00:00|EUR|Italian Industrial Production m/m,2026-11-11T09:00+00:00,EUR,Italian Industrial Production m/m,Low,0.7%,-1.3%
+2026-11-11T09:45+00:00|EUR|ECB President Lagarde Speaks,2026-11-11T09:45+00:00,EUR,ECB President Lagarde Speaks,Medium,,
 2026-11-11T10:34+00:00|EUR|German 30-y Bond Auction,2026-11-11T10:34+00:00,EUR,German 30-y Bond Auction,Low,,3.80|1.4
 2026-11-11T13:00+00:00|CAD|Bank Holiday,2026-11-11T13:00+00:00,CAD,Bank Holiday,Holiday,,
 2026-11-11T13:00+00:00|USD|Bank Holiday,2026-11-11T13:00+00:00,USD,Bank Holiday,Holiday,,
 2026-11-11T21:45+00:00|NZD|Visitor Arrivals m/m,2026-11-11T21:45+00:00,NZD,Visitor Arrivals m/m,Low,,2.8%
 2026-11-11T23:50+00:00|JPY|PPI y/y,2026-11-11T23:50+00:00,JPY,PPI y/y,Low,6.5%,6.8%
 2026-11-12T00:00+00:00|AUD|MI Inflation Expectations,2026-11-12T00:00+00:00,AUD,MI Inflation Expectations,Low,,5.3%
-2026-11-12T00:01+00:00|GBP|RICS House Price Balance,2026-11-12T00:01+00:00,GBP,RICS House Price Balance,Low,-32%,-32%
+2026-11-12T00:01+00:00|GBP|RICS House Price Balance,2026-11-12T00:01+00:00,GBP,RICS House Price Balance,Low,-33%,-32%
 2026-11-12T07:00+00:00|GBP|Construction Output m/m,2026-11-12T07:00+00:00,GBP,Construction Output m/m,Low,0.0%,-0.2%
 2026-11-12T07:00+00:00|GBP|GDP m/m,2026-11-12T07:00+00:00,GBP,GDP m/m,High,0.0%,0.1%
 2026-11-12T07:00+00:00|GBP|Goods Trade Balance,2026-11-12T07:00+00:00,GBP,Goods Trade Balance,Low,-19.2B,-18.0B
 2026-11-12T07:00+00:00|GBP|Index of Services 3m/3m,2026-11-12T07:00+00:00,GBP,Index of Services 3m/3m,Low,0.9%,0.9%
 2026-11-12T07:00+00:00|GBP|Industrial Production m/m,2026-11-12T07:00+00:00,GBP,Industrial Production m/m,Low,-0.4%,0.8%
 2026-11-12T07:00+00:00|GBP|Manufacturing Production m/m,2026-11-12T07:00+00:00,GBP,Manufacturing Production m/m,Low,-0.5%,1.2%
-2026-11-12T07:00+00:00|GBP|Prelim Business Investment q/q,2026-11-12T07:00+00:00,GBP,Prelim Business Investment q/q,Low,-0.3%,1.7%
+2026-11-12T07:00+00:00|GBP|Prelim Business Investment q/q,2026-11-12T07:00+00:00,GBP,Prelim Business Investment q/q,Low,0.4%,1.7%
 2026-11-12T07:00+00:00|GBP|Prelim GDP q/q,2026-11-12T07:00+00:00,GBP,Prelim GDP q/q,Medium,0.7%,0.5%
 2026-11-12T09:00+00:00|EUR|ECB Economic Bulletin,2026-11-12T09:00+00:00,EUR,ECB Economic Bulletin,Low,,
 2026-11-12T10:00+00:00|EUR|EU Economic Forecasts,2026-11-12T10:00+00:00,EUR,EU Economic Forecasts,Low,,
-2026-11-12T13:30+00:00|CAD|Building Permits m/m,2026-11-12T13:30+00:00,CAD,Building Permits m/m,Low,-3.9%,8.8%
+2026-11-12T13:30+00:00|CAD|Building Permits m/m,2026-11-12T13:30+00:00,CAD,Building Permits m/m,Low,-4.0%,8.8%
+2026-11-12T13:30+00:00|USD|FOMC Member Hammack Speaks,2026-11-12T13:30+00:00,USD,FOMC Member Hammack Speaks,Low,,
 2026-11-12T13:30+00:00|USD|Unemployment Claims,2026-11-12T13:30+00:00,USD,Unemployment Claims,Medium,194K,189K
 2026-11-12T14:00+00:00|USD|FOMC Member Hammack Speaks,2026-11-12T14:00+00:00,USD,FOMC Member Hammack Speaks,Low,,
-2026-11-12T15:00+00:00|USD|Existing Home Sales,2026-11-12T15:00+00:00,USD,Existing Home Sales,Low,3.86M,3.99M
+2026-11-12T15:00+00:00|USD|Existing Home Sales,2026-11-12T15:00+00:00,USD,Existing Home Sales,Low,3.89M,3.99M
 2026-11-12T15:00+00:00|USD|FOMC Member Barr Speaks,2026-11-12T15:00+00:00,USD,FOMC Member Barr Speaks,Low,,
 2026-11-12T15:00+00:00|USD|Mortgage Delinquencies,2026-11-12T15:00+00:00,USD,Mortgage Delinquencies,Low,,4.37%
 2026-11-12T15:30+00:00|AUD|CB Leading Index m/m,2026-11-12T15:30+00:00,AUD,CB Leading Index m/m,Low,,-0.3%
+2026-11-12T16:15+00:00|USD|FOMC Member Goolsbee Speaks,2026-11-12T16:15+00:00,USD,FOMC Member Goolsbee Speaks,Low,,
 2026-11-12T16:30+00:00|USD|FOMC Member Goolsbee Speaks,2026-11-12T16:30+00:00,USD,FOMC Member Goolsbee Speaks,Low,,
 2026-11-12T17:00+00:00|USD|Crude Oil Inventories,2026-11-12T17:00+00:00,USD,Crude Oil Inventories,Low,,-0.9M
+2026-11-12T17:30+00:00|EUR|German Buba President Nagel Speaks,2026-11-12T17:30+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-12T18:01+00:00|USD|30-y Bond Auction,2026-11-12T18:01+00:00,USD,30-y Bond Auction,Low,,5.62|2.5
 2026-11-12T18:10+00:00|USD|FOMC Member Daly Speaks,2026-11-12T18:10+00:00,USD,FOMC Member Daly Speaks,Low,,
 2026-11-12T18:30+00:00|USD|FOMC Member Schmid Speaks,2026-11-12T18:30+00:00,USD,FOMC Member Schmid Speaks,Low,,
-2026-11-12T19:00+00:00|USD|Federal Budget Balance,2026-11-12T19:00+00:00,USD,Federal Budget Balance,Low,,-26.9B
+2026-11-12T19:00+00:00|USD|Federal Budget Balance,2026-11-12T19:00+00:00,USD,Federal Budget Balance,Low,-286.3B,-26.9B
 2026-11-12T19:30+00:00|EUR|ECB President Lagarde Speaks,2026-11-12T19:30+00:00,EUR,ECB President Lagarde Speaks,Medium,,
 2026-11-12T21:30+00:00|NZD|BusinessNZ Manufacturing Index,2026-11-12T21:30+00:00,NZD,BusinessNZ Manufacturing Index,Low,,56.5
 2026-11-12T23:30+00:00|USD|FOMC Member Williams Speaks,2026-11-12T23:30+00:00,USD,FOMC Member Williams Speaks,Low,,
 2026-11-13T07:00+00:00|EUR|German WPI m/m,2026-11-13T07:00+00:00,EUR,German WPI m/m,Low,0.4%,1.9%
 2026-11-13T07:30+00:00|CHF|PPI m/m,2026-11-13T07:30+00:00,CHF,PPI m/m,Low,0.2%,0.3%
 2026-11-13T07:45+00:00|EUR|French Final CPI m/m,2026-11-13T07:45+00:00,EUR,French Final CPI m/m,Low,0.4%,0.4%
-2026-11-13T09:00+00:00|EUR|Italian Trade Balance,2026-11-13T09:00+00:00,EUR,Italian Trade Balance,Low,1.85B,1.77B
+2026-11-13T09:00+00:00|EUR|Italian Trade Balance,2026-11-13T09:00+00:00,EUR,Italian Trade Balance,Low,2.84B,1.77B
 2026-11-13T10:00+00:00|EUR|Flash Employment Change q/q,2026-11-13T10:00+00:00,EUR,Flash Employment Change q/q,Low,0.2%,0.1%
 2026-11-13T10:00+00:00|EUR|Flash GDP q/q,2026-11-13T10:00+00:00,EUR,Flash GDP q/q,Low,0.4%,0.4%
 2026-11-13T10:00+00:00|EUR|Trade Balance,2026-11-13T10:00+00:00,EUR,Trade Balance,Low,-4.5B,-6.8B
@@ -222,6 +231,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-13T14:30+00:00|GBP|CB Leading Index m/m,2026-11-13T14:30+00:00,GBP,CB Leading Index m/m,Low,,-0.1%
 2026-11-13T15:30+00:00|USD|Natural Gas Storage,2026-11-13T15:30+00:00,USD,Natural Gas Storage,Low,,77B
 2026-11-13T15:50+00:00|USD|FOMC Member Bowman Speaks,2026-11-13T15:50+00:00,USD,FOMC Member Bowman Speaks,Low,,
+2026-11-13T16:00+00:00|EUR|German Buba President Nagel Speaks,2026-11-13T16:00+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-13T17:00+00:00|USD|FOMC Member Daly Speaks,2026-11-13T17:00+00:00,USD,FOMC Member Daly Speaks,Low,,
 2026-11-14T00:00+00:00|USD|FOMC Member Jefferson Speaks,2026-11-14T00:00+00:00,USD,FOMC Member Jefferson Speaks,Low,,
 2026-11-14T11:00+00:00|GBP|MPC Member Greene Speaks,2026-11-14T11:00+00:00,GBP,MPC Member Greene Speaks,Low,,
