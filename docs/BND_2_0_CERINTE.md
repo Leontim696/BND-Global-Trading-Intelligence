@@ -154,3 +154,49 @@ MAE/MFE nu se înregistrează încă.
     profit net mediu pe tranzacție, profit factor, drawdown, pierderi extreme, expunere, costuri, stabilitate; rata de
     câștig e secundară. Livrabile: inventarul componentelor refolosite, implementare modulară, teste, raport comparativ,
     limitări, dezactivare separată a fiecărei funcții. Modul real urmează criteriile de lansare din C.15.
+
+## E. Numerar, risc agregat, contabilitate, control de pe telefon, prima versiune reală (primită pe 11.11.2026)
+
+Implementare după 1.12.2026, cu refolosirea componentelor existente și fără dublarea lor. Ce există deja (verificat pe
+11.11.2026): `paper_engine.py` are kill switch persistent, repornire manuală cu confirmare și ordine `reduce_only` care trec
+și cu kill switch activ; `exposure.py` grupează pozițiile pe clustere de corelație (doar citire, cu avertismente);
+`reconcile.py` verifică contul; `audit_log.py` jurnalizează; `notify.py` trimite alerte pe telefon prin ntfy, **doar în
+sens unic** (subiectul ntfy nu e autentificare, deci nu poate primi comenzi).
+
+1. **Numerarul e o alocare validă**: fără număr minim de tranzacții și fără procent obligatoriu de capital investit; botul
+   poate sta în numerar mai multe zile. Motivul neparticipării se înregistrează: avantaj insuficient, costuri, risc, date
+   lipsă, condiții nefavorabile (se leagă de D.1, D.2 și de registrul oportunităților respinse, D.8).
+2. **Risc agregat între conturi și platforme**: prima lansare are un singur cont și o singură platformă. Interfețele pentru
+   solduri, poziții și ordine se pregătesc pentru mai multe platforme. Înainte de a doua platformă: limite agregate și
+   expuneri comune pe activ, sector, monedă și factor de risc. Instrumentele diferite **nu** sunt riscuri independente
+   implicit. (Se extinde `exposure.py`: azi doar corelații; lipsesc sectorul, moneda, factorii și limitele care blochează.)
+3. **Expunerea față de platformă**: plafon de capital și expunere pe fiecare broker/exchange; monitorizarea conectivității,
+   respingerilor, latenței și neconcordanțelor de cont; la incident se blochează intrările noi după procedura stabilită.
+   Fără mutarea automată a fondurilor între platforme; cheile API ale botului **nu** au drept de retragere (C.7).
+4. **Evidență și export contabil**: ordine și execuții (inclusiv parțiale); comisioane, funding, dobânzi și alte costuri;
+   depuneri, retrageri, transferuri; conversii valutare cu cursul și momentul folosit; profit realizat și nerealizat
+   separat; extrasele și documentele originale ale platformei. Exporturile se reconciliază cu evidența brokerului.
+   Calculul fiscal se tratează separat: profitul contabil nu e presupus egal cu venitul impozabil.
+5. **Control de pe telefon**, comenzi distincte: oprește intrările noi; anulează ordinele de intrare în așteptare;
+   solicită închiderea pozițiilor; afișează starea și motivele opririi. Autentificare și jurnalizare pentru fiecare
+   comandă; închiderea manuală a tuturor pozițiilor cere confirmare explicită în interfață. Oprirea intrărilor **nu**
+   anulează ordinele de protecție (stop, take profit). Se afișează separat comanda trimisă și rezultatul confirmat de
+   broker: o cerere trimisă nu e o acțiune finalizată. (Canalul ntfy rămâne doar pentru alerte.)
+6. **Explicația alocării** pe dashboard, pentru fiecare decizie: de ce instrumentul; de ce suma; ce limite au redus sau
+   blocat alocarea; ce date și rapoarte au susținut decizia; ce condiții impun reducerea sau ieșirea; diferența dintre plan
+   și execuție. Explicația se construiește **doar** din decizia și verificările înregistrate la momentul respectiv
+   (contractul de decizie din C și jurnalul de audit), fără justificări scrise ulterior.
+7. **Delimitarea primei versiuni reale**:
+
+   | Categorie | Conținut |
+   |---|---|
+   | Obligatoriu înainte de LIVE | Mandat, adaptor broker, risc determinist, dimensionare, administrarea ordinelor, protecții, reconciliere, recuperare, monitorizare și intervenție manuală (E.5). |
+   | Necesită validare înainte de utilizare | Strategia selectată și orice filtru, sursă de date sau politică de ieșire care îi influențează deciziile (D.11). |
+   | Extensii ulterioare | Mai multe platforme (E.2), strategii suplimentare, module experimentale nenecesare primei versiuni. |
+
+   O funcție experimentală poate rămâne dezactivată. Cerințele primei lansări **nu** se extind continuu.
+8. **Livrabil final înainte de activare**, un raport compact: cerințele obligatorii și dovezile verificării; problemele
+   deschise; rezultatele strategiei după costuri și limitele validării; platforma, contul și capitalul propus pentru etapa
+   inițială; configurația exactă a mandatului; procedurile de oprire și recuperare; recomandarea motivată (pregătit /
+   nepregătit). **Activarea LIVE o face explicit proprietarul.** După activare, tranzacțiile eligibile rulează autonom
+   în mandat, fără confirmare individuală; modificarea limitelor și majorarea capitalului rămân decizii separate.
