@@ -2,73 +2,73 @@
   "markets": {
     "SP500": {
       "symbol": "SPY",
-      "rows": 10,
+      "rows": 8,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "NASDAQ100": {
       "symbol": "QQQ",
-      "rows": 10,
+      "rows": 8,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "GOLD": {
       "symbol": "GLD",
-      "rows": 10,
+      "rows": 8,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "SILVER": {
       "symbol": "SLV",
-      "rows": 10,
+      "rows": 8,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "CRUDE_OIL": {
       "symbol": "USO",
-      "rows": 10,
+      "rows": 8,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "BITCOIN": {
       "symbol": "BTC-USD",
@@ -81,8 +81,8 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-08T00:00:00+00:00"
+      "first": "2023-11-11T00:00:00+00:00",
+      "last": "2026-11-09T00:00:00+00:00"
     },
     "ETHEREUM": {
       "symbol": "ETH-USD",
@@ -95,50 +95,50 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-08T00:00:00+00:00"
+      "first": "2023-11-11T00:00:00+00:00",
+      "last": "2026-11-09T00:00:00+00:00"
     },
     "EURUSD": {
       "symbol": "EURUSD=X",
-      "rows": 11,
+      "rows": 9,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 2,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "USDJPY": {
       "symbol": "JPY=X",
-      "rows": 11,
+      "rows": 9,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "US10Y_NOTE": {
       "symbol": "IEF",
-      "rows": 10,
+      "rows": 8,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
-      "candles": 10,
+      "candles": 8,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-09T00:00:00+00:00"
+      "first": "2023-11-13T00:00:00+00:00",
+      "last": "2026-11-10T00:00:00+00:00"
     },
     "SOLANA": {
       "symbol": "SOL-USD",
@@ -151,22 +151,22 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-08T00:00:00+00:00"
+      "first": "2023-11-11T00:00:00+00:00",
+      "last": "2026-11-09T00:00:00+00:00"
     },
     "BNB": {
       "symbol": "BNB-USD",
       "rows": 14,
       "dropped_missing": 1,
       "dropped_non_positive": 0,
-      "repaired_high_low": 0,
+      "repaired_high_low": 1,
       "duplicate_days": 0,
       "adjusted_for_dividends_and_splits": true,
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-08T00:00:00+00:00"
+      "first": "2023-11-11T00:00:00+00:00",
+      "last": "2026-11-09T00:00:00+00:00"
     },
     "XRP": {
       "symbol": "XRP-USD",
@@ -179,8 +179,8 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-10T00:00:00+00:00",
-      "last": "2026-11-08T00:00:00+00:00"
+      "first": "2023-11-11T00:00:00+00:00",
+      "last": "2026-11-09T00:00:00+00:00"
     }
   },
   "failures": {}
