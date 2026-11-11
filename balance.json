@@ -1,11 +1,11 @@
 {
-  "time": "2026-11-11T22:28+00:00",
+  "time": "2026-11-11T23:24+00:00",
   "ok": true,
   "key_limit": null,
-  "key_usage": 25.488265104,
+  "key_usage": 27.83252037,
   "key_remaining": null,
   "credits_total": 90.0,
-  "credits_used": 25.488265104,
-  "credits_remaining": 64.51173489600001,
-  "effective_remaining": 64.5117
+  "credits_used": 27.83252037,
+  "credits_remaining": 62.16747963,
+  "effective_remaining": 62.1675
 }
