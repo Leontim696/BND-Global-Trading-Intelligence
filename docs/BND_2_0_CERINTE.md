@@ -108,3 +108,49 @@ fără mandat explicit.
     rulare în paralel cu piața reală, fără ordine → activare explicită cu capital real limitat, după criterii stabilite
     dinainte. Livrabile: inventarul diferențelor, arhitectură, cod, teste, configurația mandatului, proceduri de operare și
     recuperare, raport de validare, criterii concrete pentru activarea modului real. La cod extern: licență și atribuire.
+
+## D. Selecție, ieșiri și pierderi (primită pe 11.11.2026)
+
+Obiectiv: profit net mai mare, pierderi mai rare și mai mici, prin selecție, dimensionare și ieșiri validate. Nu se
+optimizează doar rata de câștig și nu se presupune că pierderile pot fi eliminate. Prioritate: **filtrul de selecție →
+colectarea MAE/MFE → compararea politicilor de ieșire → calibrare și degradare**.
+
+Ce există deja (verificat pe 11.11.2026): componenta „Trade Selectivity” nu există încă sub acest nume (se construiește peste
+Time Machine din B.4); scorul Brier pe agenți există în `decision_registry.py` (folosit de raportul consiliului);
+MAE/MFE nu se înregistrează încă.
+
+1. **Filtru de avantaj insuficient** (Trade Selectivity): rezultat așteptat după comisioane, spread, slippage, finanțare;
+   incertitudinea și scenariile nefavorabile; respinge avantajul insuficient sau datele insuficiente; „nu tranzacționez”
+   fără cote de activitate; praguri alese pe datele de dezvoltare și verificate pe date separate. Încrederea declarată
+   de AI nu e o probabilitate validă fără calibrare.
+2. **Detector de condiții nefavorabile**: spread/costuri neobișnuite, lichiditate slabă, volatilitate extremă sau schimbare
+   de regim, evenimente, date întârziate, condiții diferite de cele de validare. Condițiile de suspendare și reluare
+   sunt fixate dinainte; regulile nu se schimbă după fiecare pierdere.
+3. **Invalidarea explicită a tranzacției**: motivul intrării, orizontul, condițiile observabile de invalidare, stopul,
+   expirarea semnalului și durata maximă. Ieșire anticipată la invalidare — păstrată doar dacă bate ieșirea standard.
+4. **Optimizator de ieșire**: compară stop/țintă fixe, pe volatilitate, trailing, închidere parțială, stop la pragul de
+   rentabilitate (cu costuri), ieșire după timp, ieșire la invalidare. Alegere pe strategie și regim, cu suport statistic;
+   nu se combină totul automat; politica e fixată înainte de tranzacție, cu adaptările permise definite explicit.
+   (Conturile paralele P12–P15, P24–P26 testează deja câteva variante de take profit/stop și reciclare.)
+5. **MAE/MFE** pentru fiecare tranzacție: mișcarea maximă contra și pentru poziție, timpul până la ele, profitul net final
+   și diferența față de MFE, motivul și costul ieșirii. Doar pentru analiză retrospectivă, niciodată ca date la decizie.
+6. **Calibrare** (AI și Time Machine): probabilități estimate vs. frecvențe realizate, pe strategie, orizont și regim unde
+   există eșantion; mărimea eșantionului și incertitudinea; Brier și diagrame de fiabilitate; miza nu crește automat pe
+   rezultate recente insuficiente. Se refolosește infrastructura existentă a consiliului.
+7. **Detector de degradare**: rezultat net mediu pe tranzacție, costuri și slippage, drawdown și pierderi extreme,
+   calibrare, schimbarea pieței; praguri, eșantion minim, reguli de reluare. Reducerea riscului poate fi automată
+   (în mandat); schimbarea strategiei trece printr-o nouă validare.
+8. **Registrul oportunităților respinse**: motivul, datele de atunci, planul ipotetic și ieșirea, rezultatul simulat
+   cu costuri realiste (fără presupunerea execuției integrale la prețul dorit); pierderi evitate vs. profit ratat.
+9. **Împotriva rezultatelor înșelătoare**: pierderile nerealizate și costurile intră în evaluare; pierderile nu se amână
+   ca să protejeze rata de câștig; fără lărgirea stopurilor și fără martingale; statisticile nu se resetează după
+   perioade slabe; intrările și ieșirile parțiale se evaluează împreună (fără „câștiguri” umflate artificial).
+10. **„Sub 5%” definit corect** (în configurație și rapoarte, separat): proporția tranzacțiilor pe pierdere, pierderea
+    procentuală a poziției, pierderea raportată la capital, drawdown-ul portofoliului. **Nu** se introduce un obiectiv
+    obligatoriu de 95% tranzacții câștigătoare. Pierderea planificată la stop nu garantează pierderea maximă reală.
+11. **Validare**: ipoteze, variante și criterii scrise înainte; fiecare componentă comparată separat cu aceeași bază;
+    testare cronologică în afara datelor de dezvoltare și walk-forward; corecție pentru numărul variantelor încercate;
+    scenarii cu costuri mari, gap-uri, lichiditate slabă; confirmare prin forward paper trading. Metrici principale:
+    profit net mediu pe tranzacție, profit factor, drawdown, pierderi extreme, expunere, costuri, stabilitate; rata de
+    câștig e secundară. Livrabile: inventarul componentelor refolosite, implementare modulară, teste, raport comparativ,
+    limitări, dezactivare separată a fiecărei funcții. Modul real urmează criteriile de lansare din C.15.
