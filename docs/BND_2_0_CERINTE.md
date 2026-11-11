@@ -55,3 +55,56 @@ date expirate sau invalide nu pot autoriza o tranzacție. Fiecare funcție se po
    apoi cu combinația; profit net, drawdown, risc, costuri, latență, consum AI, oportunități respinse; teste de
    look-ahead, întreruperi de surse, gap-uri, reproductibilitate. O funcție se promovează doar cu câștig susținut
    în afara datelor de dezvoltare. La cod extern: licența versiunii preluate și atribuirea.
+
+## C. Bot autonom: mandat, portofoliu, broker (primită pe 11.11.2026)
+
+Obiectiv: un bot care analizează oportunitățile, alocă bugetul și gestionează tranzacțiile autonom, **în limitele stabilite
+de proprietar**. Implementarea începe după 1.12.2026. Trecerea la bani reali se face **după validarea componentelor**, nu la
+o dată fixă; brokerul/exchange-ul și capitalul real nu sunt stabilite — nu se presupun valori și nu se activează nimic real
+fără mandat explicit.
+
+1. **Audit al componentelor** (implementat / parțial / absent; existența unui modul nu dovedește că e legat în flux):
+   `strategies.py`, `intraday_live.py`, `universe.py`, `council_context.py`, `signal_pipeline.py`, `trade_coordinator.py`,
+   `portfolio.py`, `exposure.py`, `risk_engine.py`, `backtester.py`, `robustness.py`, `scenarios.py`, `paper_engine.py`,
+   `reconcile.py`, `audit_log.py`, `safety.py` (azi permite doar MOCK/PAPER). Toate există pe 11.11.2026.
+2. **Mandat explicit, versionat**: conturi și capital, piețe/instrumente/tipuri de ordine permise, long/short/leverage,
+   limite pe tranzacție, instrument, sector, clasă și portofoliu, pierdere zilnică și drawdown maxim, rezervă de lichiditate,
+   condiții de oprire și reluare. În interiorul mandatului botul decide singur; majorarea limitelor, capitalul suplimentar și
+   activarea modului real sunt decizii ale proprietarului; AI-ul nu își poate modifica mandatul.
+3. **Chart Screener** (ref. `trader-scanner/scan.py`) — ca la B.2.
+4. **News Agent** (ref. `trader-news/news.py`) — ca la B.3, plus marcarea informațiilor lipsă, contradictorii sau expirate.
+5. **Time Machine** (ref. `trader-timemachine/timemachine.py`) — ca la B.4.
+6. **Administrator de portofoliu**: compară oportunitățile cu pozițiile existente; decide ce e eligibil, ce se păstrează,
+   reduce sau închide, unde merge capitalul nou, cât numerar rămâne și dacă realocarea merită costurile; „nu tranzacționez”
+   e o decizie validă; praguri de realocare și intervale de reevaluare fixate dinainte (fără tranzacționare excesivă).
+7. **Alocator și dimensionare**: AI-ul propune ponderi și priorități; motorul determinist calculează cantitățile și aplică
+   limitele, ținând cont de avantajul net și incertitudinea lui, distanța la stop și riscul de execuție peste stop,
+   volatilitate, lichiditate, spread, corelații, marjă, finanțare, pierderi recente și bugetul de risc rămas.
+   Încrederea declarată de AI nu mărește singură poziția — doar calibrarea validată independent.
+8. **Contract unic de decizie**: ID, versiunea mandatului, instrument, direcție, acțiune, orizont, alocare și cantitate finală,
+   intrare/stop/țintă/invalidare, expirarea deciziei, sursele și momentul datelor, costuri estimate, motive, opinii divergente,
+   rezultatul verificării de risc. Ordinul final legat de planul verificat; orice schimbare materială → reverificare.
+9. **Risc la nivel de portofoliu**: expuneri corelate și factori comuni, riscul pozițiilor + ordinelor în așteptare,
+   rezervare atomică a capitalului, stres pe portofoliul rezultat, verificare imediat înainte de trimitere. Riscul poate
+   reduce sau respinge propunerea AI; consensul modelelor nu poate depăși limitele.
+10. **Adaptor broker/exchange**, separat de motorul paper: solduri, poziții, ordine, execuții, comisioane, reguli de cantitate,
+    pas de preț, valoare minimă, program, conversii valutare; chei API minime, **fără retrageri**; credențiale de test separate
+    strict de cele reale. Blocarea LIVE nu se șterge — se adaugă un mecanism explicit și verificabil de activare.
+11. **Ciclul ordinului**: creat → verificat → trimis → confirmat → executat parțial/total, anulat sau respins; ID-uri stabile,
+    fără duplicate; după timeout se verifică ordinul existent înainte de retrimitere; anulare și execuție aproape simultane;
+    protecții actualizate după cantitatea executată; ordine de protecție la broker unde există; reevaluare la expirarea
+    orizontului sau invalidarea motivului. Stopul nu se lărgește ca să amâne o pierdere.
+12. **Reconciliere și recuperare**: numerar, marjă, poziții, ordine, costuri comparate cu brokerul; pornire numai după
+    recuperarea stării; diferențele neexplicate blochează intrările noi; un singur executor activ pe cont; copii de siguranță.
+13. **Supraveghere**: vechimea datelor, disponibilitatea surselor, latență, erori și costuri AI, ordine fără protecție,
+    neconcordanțe, limite atinse. Oprirea intrărilor, anularea ordinelor și închiderea pozițiilor sunt trei acțiuni distincte.
+    Dashboard: modul PAPER/LIVE, capital, expunere, profit net, costuri, decizii și motivul unei opriri.
+14. **Idei în plus**: valabilitatea oportunității (reevaluare dacă analiza durează sau prețul a fugit); atribuirea rezultatului
+    (semnal, știri, alocare, execuție); evaluarea execuției (preț estimat vs. realizat); mod degradat (fără știri sau fără un AI,
+    protecțiile merg în continuare); AI-ul nu își schimbă singur codul, modelele sau limitele; teste de incidente
+    (deconectări, execuții parțiale, date greșite, rate limits, restart, ordine cu stare necunoscută).
+15. **Ordinea de lansare**: audit și mandat → portofoliu, alocator, risc comun → știri, scanner, Time Machine → adaptor broker
+    și ciclul ordinelor → teste de integrare/recuperare/reconciliere → paper trading cu aceeași logică de ordine ca la real →
+    rulare în paralel cu piața reală, fără ordine → activare explicită cu capital real limitat, după criterii stabilite
+    dinainte. Livrabile: inventarul diferențelor, arhitectură, cod, teste, configurația mandatului, proceduri de operare și
+    recuperare, raport de validare, criterii concrete pentru activarea modului real. La cod extern: licență și atribuire.
