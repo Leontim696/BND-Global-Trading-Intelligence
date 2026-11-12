@@ -1,101 +1,101 @@
 {
- "decizii": 970,
- "incheiate": 361,
+ "decizii": 1057,
+ "incheiate": 448,
  "hold_pct": {
-  "gpt": 66.8,
-  "grok": 72.1,
-  "claude": 95.3,
-  "gemini": 72.2,
-  "deepseek": 28.1
+  "gpt": 65.9,
+  "grok": 71.8,
+  "claude": 95.0,
+  "gemini": 72.1,
+  "deepseek": 28.2
  },
  "perechi": {
   "gpt-grok": {
-   "acord": 0.809,
+   "acord": 0.807,
    "kappa": 0.553,
-   "corelatie": 0.56
+   "corelatie": 0.562
   },
   "gpt-claude": {
-   "acord": 0.705,
-   "kappa": 0.156,
-   "corelatie": 0.29
+   "acord": 0.696,
+   "kappa": 0.152,
+   "corelatie": 0.284
   },
   "gpt-gemini": {
-   "acord": 0.674,
-   "kappa": 0.264,
-   "corelatie": 0.359
+   "acord": 0.668,
+   "kappa": 0.259,
+   "corelatie": 0.361
   },
   "gpt-deepseek": {
-   "acord": 0.536,
-   "kappa": 0.252,
-   "corelatie": 0.41
+   "acord": 0.54,
+   "kappa": 0.257,
+   "corelatie": 0.423
   },
   "grok-claude": {
-   "acord": 0.745,
-   "kappa": 0.156,
-   "corelatie": 0.262
+   "acord": 0.742,
+   "kappa": 0.154,
+   "corelatie": 0.257
   },
   "grok-gemini": {
-   "acord": 0.743,
-   "kappa": 0.384,
-   "corelatie": 0.455
+   "acord": 0.746,
+   "kappa": 0.393,
+   "corelatie": 0.468
   },
   "grok-deepseek": {
    "acord": 0.528,
-   "kappa": 0.258,
-   "corelatie": 0.425
+   "kappa": 0.259,
+   "corelatie": 0.431
   },
   "claude-gemini": {
-   "acord": 0.748,
-   "kappa": 0.169,
-   "corelatie": 0.284
+   "acord": 0.752,
+   "kappa": 0.187,
+   "corelatie": 0.306
   },
   "claude-deepseek": {
-   "acord": 0.327,
-   "kappa": 0.047,
-   "corelatie": 0.188
+   "acord": 0.33,
+   "kappa": 0.051,
+   "corelatie": 0.197
   },
   "gemini-deepseek": {
-   "acord": 0.52,
-   "kappa": 0.27,
-   "corelatie": 0.473
+   "acord": 0.524,
+   "kappa": 0.279,
+   "corelatie": 0.485
   }
  },
- "ai_independente_efectiv": 2.01,
+ "ai_independente_efectiv": 1.99,
  "contributie": {
   "toti_5": {
-   "semnale": 269,
+   "semnale": 324,
    "corecte_pct": 74.7,
-   "medie_pct": 4.89
+   "medie_pct": 5.054
   },
   "fara_gpt": {
-   "semnale": 259,
-   "corecte_pct": 73.7,
-   "medie_pct": 4.791,
+   "semnale": 313,
+   "corecte_pct": 73.8,
+   "medie_pct": 4.957,
    "directie_schimbata_pct": 3.0
   },
   "fara_grok": {
-   "semnale": 265,
-   "corecte_pct": 74.3,
-   "medie_pct": 4.867,
+   "semnale": 321,
+   "corecte_pct": 74.5,
+   "medie_pct": 5.027,
    "directie_schimbata_pct": 0.5
   },
   "fara_claude": {
-   "semnale": 269,
+   "semnale": 324,
    "corecte_pct": 74.7,
-   "medie_pct": 4.89,
+   "medie_pct": 5.054,
    "directie_schimbata_pct": 0.0
   },
   "fara_gemini": {
-   "semnale": 268,
-   "corecte_pct": 75.7,
-   "medie_pct": 5.144,
-   "directie_schimbata_pct": 2.1
+   "semnale": 323,
+   "corecte_pct": 75.9,
+   "medie_pct": 5.311,
+   "directie_schimbata_pct": 1.9
   },
   "fara_deepseek": {
-   "semnale": 196,
-   "corecte_pct": 79.6,
-   "medie_pct": 4.555,
-   "directie_schimbata_pct": 27.9
+   "semnale": 220,
+   "corecte_pct": 77.7,
+   "medie_pct": 4.361,
+   "directie_schimbata_pct": 27.4
   }
  },
  "alfa_negativ": {
@@ -103,8 +103,8 @@
   "agenti": {
    "gpt": {
     "prima": {
-     "voturi": 109,
-     "medie_pct": 5.729
+     "voturi": 120,
+     "medie_pct": 6.011
     },
     "a_doua": {
      "voturi": 0,
@@ -115,8 +115,8 @@
    },
    "grok": {
     "prima": {
-     "voturi": 100,
-     "medie_pct": 5.984
+     "voturi": 109,
+     "medie_pct": 6.145
     },
     "a_doua": {
      "voturi": 0,
@@ -127,8 +127,8 @@
    },
    "claude": {
     "prima": {
-     "voturi": 13,
-     "medie_pct": 9.528
+     "voturi": 15,
+     "medie_pct": 7.77
     },
     "a_doua": {
      "voturi": 0,
@@ -139,8 +139,8 @@
    },
    "gemini": {
     "prima": {
-     "voturi": 115,
-     "medie_pct": 4.765
+     "voturi": 127,
+     "medie_pct": 4.189
     },
     "a_doua": {
      "voturi": 0,
@@ -151,8 +151,8 @@
    },
    "deepseek": {
     "prima": {
-     "voturi": 249,
-     "medie_pct": 5.078
+     "voturi": 304,
+     "medie_pct": 5.234
     },
     "a_doua": {
      "voturi": 0,
