@@ -1,9 +1,9 @@
 {
   "outcome": "partial",
   "tokens_checked": 100,
-  "wallets_with_hits": 56,
-  "candidates": 56,
-  "validated": 1,
+  "wallets_with_hits": 85,
+  "candidates": 85,
+  "validated": 0,
   "insufficient": 0,
   "rate_limited": 2,
   "aborted": false,
