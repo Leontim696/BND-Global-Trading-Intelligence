@@ -232,6 +232,8 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-13T10:00+00:00|EUR|Flash Employment Change q/q,2026-11-13T10:00+00:00,EUR,Flash Employment Change q/q,Low,0.2%,0.1%
 2026-11-13T10:00+00:00|EUR|Flash GDP q/q,2026-11-13T10:00+00:00,EUR,Flash GDP q/q,Low,0.4%,0.4%
 2026-11-13T10:00+00:00|EUR|Trade Balance,2026-11-13T10:00+00:00,EUR,Trade Balance,Low,-4.5B,-6.8B
+2026-11-13T10:03+00:00|CNY|M2 Money Supply y/y,2026-11-13T10:03+00:00,CNY,M2 Money Supply y/y,Low,7.2%,7.2%
+2026-11-13T10:03+00:00|CNY|New Loans,2026-11-13T10:03+00:00,CNY,New Loans,Low,80B,1080B
 2026-11-13T13:30+00:00|CAD|Manufacturing Sales m/m,2026-11-13T13:30+00:00,CAD,Manufacturing Sales m/m,Low,0.1%,1.5%
 2026-11-13T13:30+00:00|CAD|Wholesale Sales m/m,2026-11-13T13:30+00:00,CAD,Wholesale Sales m/m,Low,0.5%,-1.6%
 2026-11-13T13:30+00:00|USD|Core PPI m/m,2026-11-13T13:30+00:00,USD,Core PPI m/m,High,0.3%,0.7%
@@ -239,6 +241,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-13T14:10+00:00|USD|FOMC Member Collins Speaks,2026-11-13T14:10+00:00,USD,FOMC Member Collins Speaks,Low,,
 2026-11-13T14:30+00:00|GBP|CB Leading Index m/m,2026-11-13T14:30+00:00,GBP,CB Leading Index m/m,Low,,-0.1%
 2026-11-13T14:40+00:00|USD|FOMC Member Logan Speaks,2026-11-13T14:40+00:00,USD,FOMC Member Logan Speaks,Low,,
+2026-11-13T15:15+00:00|USD|Mortgage Delinquencies,2026-11-13T15:15+00:00,USD,Mortgage Delinquencies,Low,,4.37%
 2026-11-13T15:30+00:00|USD|Natural Gas Storage,2026-11-13T15:30+00:00,USD,Natural Gas Storage,Low,65B,77B
 2026-11-13T15:50+00:00|USD|FOMC Member Bowman Speaks,2026-11-13T15:50+00:00,USD,FOMC Member Bowman Speaks,Low,,
 2026-11-13T16:00+00:00|EUR|German Buba President Nagel Speaks,2026-11-13T16:00+00:00,EUR,German Buba President Nagel Speaks,Low,,
