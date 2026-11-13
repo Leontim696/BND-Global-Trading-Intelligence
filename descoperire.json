@@ -1,12 +1,19 @@
 {
   "outcome": "partial",
-  "tokens_checked": 100,
-  "wallets_with_hits": 85,
-  "candidates": 85,
+  "tokens_checked": 74,
+  "wallets_with_hits": 17,
+  "candidates": 17,
   "validated": 0,
   "insufficient": 0,
-  "rate_limited": 2,
-  "aborted": false,
-  "errors": [],
-  "added": 30
+  "rate_limited": 0,
+  "aborted": true,
+  "errors": [
+    "first-buyers: HTTP 403",
+    "first-buyers: HTTP 403",
+    "first-buyers: HTTP 403",
+    "first-buyers: HTTP 403",
+    "first-buyers: HTTP 403",
+    "oprit după 5 erori la rând (nu epuizăm limita API-ului)"
+  ],
+  "added": 0
 }
