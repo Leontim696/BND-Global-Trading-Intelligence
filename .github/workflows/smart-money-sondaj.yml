@@ -2,11 +2,13 @@ name: Smart-Money descoperire de walleturi
 
 # Caută walleturi care au câștigat mult cu sume mici: monede în trend -> primii cumpărători -> câștigători repetați,
 # apoi le verifică cu filtrele. Salvează descoperite.csv și descoperire.json pe ramura smart-money. Zilnic (istoricul se adună și arată
-# cine apare repetat în zile diferite) sau manual; doar citire.
+# cine apare repetat în zile diferite) de două ori pe zi (dimineața și seara, alte monede în trend) sau manual; doar citire.
+# Două rulări × ~135 de cereri rămân sub limita cheii gratuite.
 
 on:
   schedule:
     - cron: '40 6 * * *'
+    - cron: '40 18 * * *'
   workflow_dispatch:
 
 permissions:
