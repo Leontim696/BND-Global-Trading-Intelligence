@@ -1,51 +1,19 @@
 {
-  "time": "2026-11-13T14:59+00:00",
+  "time": "2026-11-14T13:49+00:00",
   "leaderboard": {
-    "ok": true,
-    "wallets": 25,
-    "enriched": 21
+    "ok": false,
+    "error": "https://data.solanatracker.io/top-traders/all a răspuns HTTP 403"
   },
   "manual": 4,
   "errors": [
-    "detalii suqh5s…: https://data.solanatracker.io/pnl/suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK nu răspunde: JSONDecodeError",
-    "detalii CyaE1V…: https://data.solanatracker.io/pnl/CyaE1VxvBrahnPWkqm5VsdCvyS2QmNht2UFrKJHga54o nu răspunde: JSONDecodeError",
-    "detalii BCagck…: https://data.solanatracker.io/pnl/BCagckXeMChUKrHEd6fKFA1uiWDtcmCXMsqaheLiUPJd nu răspunde: JSONDecodeError",
-    "detalii BTf4A2…: https://data.solanatracker.io/pnl/BTf4A2exGK9BCVDNzy65b9dUzXgMqB4weVkvTMFQsadd nu răspunde: JSONDecodeError"
+    "https://data.solanatracker.io/top-traders/all a răspuns HTTP 403",
+    "B1qUC1…: https://data.solanatracker.io/pnl/B1qUC1Moz5Eat1XRjco84VFQeRYVFfuMKnPhRL2QYXXb a răspuns HTTP 403",
+    "7EQ2fs…: https://data.solanatracker.io/pnl/7EQ2fs9ajnpTRcrEjPsdVj7BqUUW2V4isSEewDv5MJP1 a răspuns HTTP 403",
+    "7rJHqZ…: https://data.solanatracker.io/pnl/7rJHqZUYDGjJ2ZyT9GpJfFvv9e3o54gzYUgtV83bNQ25 a răspuns HTTP 403",
+    "5MVneC…: https://data.solanatracker.io/pnl/5MVneCfDge5vtf4C7QZmczCJbBB8vfvDbMqvopvkBLJm a răspuns HTTP 403"
   ],
-  "sample_keys": {
-    "clasament": [
-      "summary",
-      "wallet",
-      "summary.averageBuyAmount",
-      "summary.lossPercentage",
-      "summary.neutralPercentage",
-      "summary.realized",
-      "summary.total",
-      "summary.totalInvested",
-      "summary.totalLosses",
-      "summary.totalWins",
-      "summary.unrealized",
-      "summary.winPercentage"
-    ],
-    "detalii": [
-      "pnl_since",
-      "summary",
-      "tokens",
-      "summary.averageBuyAmount",
-      "summary.lossPercentage",
-      "summary.neutralPercentage",
-      "summary.realized",
-      "summary.total",
-      "summary.totalInvested",
-      "summary.totalLosses",
-      "summary.totalWins",
-      "summary.unrealized",
-      "summary.winPercentage"
-    ]
-  },
-  "rate_limited": 2,
-  "outcome": "partial",
-  "written": 29,
-  "passing": 1,
+  "outcome": "failed",
+  "written": 0,
+  "passing": 0,
   "insider_pattern": 0
 }
