@@ -1,9 +1,9 @@
-# Raport bot virtual, 2026-11-14 10:04 UTC
+# Raport bot virtual, 2026-11-14 11:04 UTC
 
 **Ziua 14 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 677.93 USD** (+4,43% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 695.83 USD** (+4,59% față de start, 11 183.00 USD)
 - La ultima închidere: 11 594.90 USD; bani liberi: 14 557.20 USD
 - Poziții deschise: 76; ordine pregătite pentru mâine: 24
 - Piețe deschise acum: crypto
@@ -33,65 +33,65 @@
 | CVX | 222.74 USD | -0.19 USD | +0,00% | 201.52 |
 | scurt NASDAQ100 | -201.78 USD | 0.11 USD | -0,00% | 739.59 |
 | scurt JNJ | -201.72 USD | -9.72 USD | +0,00% | 293.32 |
-| scurt SHIB | -201.44 USD | 24.30 USD | -2,11% | 0.00 |
+| scurt SHIB | -199.99 USD | 25.75 USD | -2,82% | 0.00 |
 | XOM | 194.91 USD | -0.60 USD | +0,00% | 155.56 |
-| scurt ETC | -182.24 USD | 22.07 USD | -1,86% | 8.27 |
-| scurt XRP | -180.84 USD | 47.86 USD | -4,67% | 1.42 |
-| scurt DOGE | -176.05 USD | 34.48 USD | -2,17% | 0.09 |
+| scurt ETC | -181.38 USD | 22.93 USD | -2,33% | 8.27 |
+| scurt XRP | -180.60 USD | 48.10 USD | -4,79% | 1.42 |
+| scurt DOGE | -175.41 USD | 35.12 USD | -2,53% | 0.09 |
 | scurt NVDA | -174.70 USD | 30.24 USD | -0,00% | 203.63 |
-| scurt XLM | -165.54 USD | 28.41 USD | -1,09% | 0.20 |
-| scurt ETHEREUM | -143.34 USD | 24.65 USD | -5,24% | 2506.20 |
+| scurt XLM | -164.51 USD | 29.44 USD | -1,71% | 0.20 |
+| scurt ETHEREUM | -142.99 USD | 25.00 USD | -5,47% | 2506.20 |
 | UNH | 138.66 USD | 0.77 USD | +0,00% | 368.71 |
 | LOCKHEED | 135.40 USD | -0.41 USD | +0,00% | 543.89 |
 | scurt GOOGL | -135.16 USD | -6.12 USD | +0,00% | 311.06 |
-| scurt VET | -134.06 USD | 25.12 USD | -2,66% | 0.01 |
-| scurt PENGU | -124.84 USD | 29.27 USD | -3,33% | 0.01 |
-| scurt HBAR | -116.52 USD | 22.04 USD | -1,82% | 0.09 |
-| scurt WIF | -115.12 USD | 24.66 USD | -2,49% | 0.22 |
-| scurt LTC | -110.57 USD | 7.01 USD | -1,74% | 60.70 |
+| scurt VET | -132.67 USD | 26.50 USD | -3,67% | 0.01 |
+| scurt PENGU | -123.31 USD | 30.79 USD | -4,52% | 0.01 |
+| scurt HBAR | -116.16 USD | 22.41 USD | -2,13% | 0.09 |
+| scurt WIF | -114.24 USD | 25.53 USD | -3,23% | 0.22 |
+| scurt LTC | -110.03 USD | 7.55 USD | -2,23% | 60.70 |
 | SP500 | 109.17 USD | 0.05 USD | +0,00% | 726.63 |
 | HENSOLDT | 103.11 USD | -2.06 USD | +1,21% | 72.25 |
-| scurt SOLANA | -99.94 USD | 26.72 USD | -7,08% | 108.83 |
-| scurt LINK | -98.68 USD | 15.16 USD | -2,20% | 13.22 |
-| scurt ATOM | -84.43 USD | -2.67 USD | -1,97% | 1.60 |
-| BNB | 81.06 USD | -8.05 USD | -5,73% | 619.18 |
+| scurt SOLANA | -99.66 USD | 27.00 USD | -7,34% | 108.83 |
+| scurt LINK | -98.28 USD | 15.56 USD | -2,60% | 13.22 |
+| scurt ATOM | -83.74 USD | -1.98 USD | -2,77% | 1.60 |
+| BNB | 80.97 USD | -8.13 USD | -5,83% | 619.18 |
 | WMT | 80.60 USD | 2.49 USD | +0,00% | 116.24 |
-| scurt FLOKI | -80.32 USD | 5.18 USD | -2,12% | 0.00 |
 | scurt JPM | -80.07 USD | -0.06 USD | -0,00% | 366.00 |
 | scurt GOLD | -79.87 USD | 5.09 USD | -0,00% | 392.34 |
-| scurt ADA | -78.99 USD | 13.82 USD | -2,67% | 0.23 |
+| scurt FLOKI | -79.87 USD | 5.63 USD | -2,68% | 0.00 |
+| scurt ADA | -78.70 USD | 14.11 USD | -3,02% | 0.23 |
 | RHEINMETALL | 76.39 USD | -3.97 USD | -0,92% | 672.77 |
-| scurt DOT | -75.92 USD | 7.18 USD | -3,79% | 1.06 |
-| scurt TRUMP | -73.75 USD | 8.67 USD | -3,38% | 1.62 |
+| scurt DOT | -75.63 USD | 7.47 USD | -4,15% | 1.06 |
 | RTX | 73.29 USD | 0.87 USD | -0,00% | 179.93 |
+| scurt TRUMP | -73.12 USD | 9.30 USD | -4,20% | 1.62 |
 | scurt AAPL | -72.63 USD | 0.29 USD | +0,00% | 381.60 |
-| scurt ALGO | -71.35 USD | 5.86 USD | -2,23% | 0.11 |
+| scurt ALGO | -70.66 USD | 6.55 USD | -3,17% | 0.11 |
 | scurt ITA | -68.90 USD | 0.83 USD | -0,00% | 77.92 |
 | THALES | 68.80 USD | -1.38 USD | -0,13% | 212.77 |
-| scurt AAVE | -68.28 USD | 10.04 USD | -3,61% | 151.98 |
-| scurt FET | -61.76 USD | 8.92 USD | -4,59% | 0.20 |
+| scurt AAVE | -67.89 USD | 10.42 USD | -4,16% | 151.98 |
+| scurt FET | -60.80 USD | 9.88 USD | -6,07% | 0.20 |
 | scurt CAT | -58.49 USD | 2.89 USD | -0,00% | 713.69 |
-| scurt SEI | -55.33 USD | 5.16 USD | -3,67% | 0.06 |
-| scurt APT | -53.86 USD | 5.33 USD | -3,92% | 0.72 |
+| scurt SEI | -54.77 USD | 5.72 USD | -4,66% | 0.06 |
+| scurt APT | -53.31 USD | 5.87 USD | -4,89% | 0.72 |
 | AMZN | 51.55 USD | -0.26 USD | -0,00% | 237.81 |
-| scurt WLD | -51.54 USD | 6.76 USD | -4,54% | 0.43 |
+| scurt WLD | -50.91 USD | 7.38 USD | -5,69% | 0.43 |
 | SAAB | 50.74 USD | -1.69 USD | +0,35% | 575.66 |
-| scurt TAO | -50.13 USD | 6.15 USD | -2,93% | 281.54 |
 | LEONARDO | 50.02 USD | -2.06 USD | +0,47% | 46.88 |
-| scurt CRV | -49.11 USD | 4.42 USD | -1,99% | 0.32 |
+| scurt TAO | -49.60 USD | 6.68 USD | -3,96% | 281.54 |
+| scurt CRV | -48.59 USD | 4.94 USD | -3,03% | 0.32 |
 | CRUDE_OIL | 46.71 USD | 0.96 USD | -0,00% | 131.66 |
-| scurt POL | -45.12 USD | 2.01 USD | -1,53% | 0.10 |
-| AVAX | 33.76 USD | -1.95 USD | -2,19% | 6.81 |
-| scurt OP | -33.09 USD | 7.91 USD | -3,89% | 0.14 |
-| scurt ICP | -28.10 USD | 2.00 USD | -3,44% | 3.12 |
-| scurt ARB | -24.58 USD | 3.58 USD | -3,45% | 0.20 |
-| scurt BONK | -23.81 USD | 3.88 USD | -3,33% | 0.00 |
-| NEAR | 21.01 USD | -1.44 USD | -2,55% | 2.43 |
-| JUP | 17.06 USD | 0.49 USD | -1,81% | 0.19 |
-| scurt FIL | -15.80 USD | 2.91 USD | -2,82% | 1.04 |
-| scurt STX | -15.47 USD | 3.24 USD | -2,24% | 0.44 |
-| scurt INJ | -14.73 USD | 0.04 USD | -1,02% | 9.94 |
-| scurt TIA | -10.54 USD | 1.66 USD | -4,39% | 0.58 |
+| scurt POL | -45.01 USD | 2.12 USD | -1,78% | 0.10 |
+| AVAX | 33.56 USD | -2.16 USD | -2,78% | 6.81 |
+| scurt OP | -32.83 USD | 8.17 USD | -4,65% | 0.14 |
+| scurt ICP | -27.84 USD | 2.27 USD | -4,36% | 3.12 |
+| scurt ARB | -24.56 USD | 3.60 USD | -3,51% | 0.20 |
+| scurt BONK | -23.53 USD | 4.15 USD | -4,44% | 0.00 |
+| NEAR | 20.82 USD | -1.64 USD | -3,45% | 2.43 |
+| JUP | 16.90 USD | 0.33 USD | -2,71% | 0.19 |
+| scurt FIL | -15.68 USD | 3.03 USD | -3,56% | 1.04 |
+| scurt STX | -15.37 USD | 3.34 USD | -2,91% | 0.44 |
+| scurt INJ | -14.56 USD | 0.21 USD | -2,16% | 9.94 |
+| scurt TIA | -10.43 USD | 1.77 USD | -5,38% | 0.58 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
 
