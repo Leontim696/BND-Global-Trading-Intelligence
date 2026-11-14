@@ -1,9 +1,9 @@
-# Raport bot virtual, 2026-11-14 14:24 UTC
+# Raport bot virtual, 2026-11-14 14:54 UTC
 
 **Ziua 14 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 751.71 USD** (+5,09% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 767.39 USD** (+5,23% față de start, 11 183.00 USD)
 - La ultima închidere: 11 594.90 USD; bani liberi: 14 557.20 USD
 - Poziții deschise: 76; ordine pregătite pentru mâine: 24
 - Piețe deschise acum: crypto
@@ -33,65 +33,65 @@
 | CVX | 222.74 USD | -0.19 USD | +0,00% | 201.52 |
 | scurt NASDAQ100 | -201.78 USD | 0.11 USD | -0,00% | 739.59 |
 | scurt JNJ | -201.72 USD | -9.72 USD | +0,00% | 293.32 |
-| scurt SHIB | -197.58 USD | 28.16 USD | -3,99% | 0.00 |
+| scurt SHIB | -195.16 USD | 30.58 USD | -5,16% | 0.00 |
 | XOM | 194.91 USD | -0.60 USD | +0,00% | 155.56 |
-| scurt XRP | -179.67 USD | 49.03 USD | -5,28% | 1.42 |
-| scurt ETC | -178.79 USD | 25.52 USD | -3,72% | 8.27 |
+| scurt XRP | -179.08 USD | 49.61 USD | -5,59% | 1.42 |
+| scurt ETC | -177.64 USD | 26.67 USD | -4,34% | 8.27 |
 | scurt NVDA | -174.70 USD | 30.24 USD | -0,00% | 203.63 |
-| scurt DOGE | -172.20 USD | 38.33 USD | -4,31% | 0.09 |
-| scurt XLM | -161.42 USD | 32.53 USD | -3,56% | 0.20 |
-| scurt ETHEREUM | -139.82 USD | 28.18 USD | -7,57% | 2506.20 |
+| scurt DOGE | -171.22 USD | 39.30 USD | -4,85% | 0.09 |
+| scurt XLM | -160.50 USD | 33.45 USD | -4,10% | 0.20 |
+| scurt ETHEREUM | -138.82 USD | 29.17 USD | -8,22% | 2506.20 |
 | UNH | 138.66 USD | 0.77 USD | +0,00% | 368.71 |
 | LOCKHEED | 135.40 USD | -0.41 USD | +0,00% | 543.89 |
 | scurt GOOGL | -135.16 USD | -6.12 USD | +0,00% | 311.06 |
-| scurt VET | -130.50 USD | 28.68 USD | -5,24% | 0.01 |
-| scurt HBAR | -115.06 USD | 23.51 USD | -3,06% | 0.09 |
-| scurt PENGU | -113.13 USD | 40.97 USD | -12,40% | 0.01 |
-| scurt WIF | -111.30 USD | 28.47 USD | -5,72% | 0.22 |
+| scurt VET | -129.93 USD | 29.25 USD | -5,66% | 0.01 |
+| scurt HBAR | -114.03 USD | 24.53 USD | -3,92% | 0.09 |
+| scurt PENGU | -113.43 USD | 40.67 USD | -12,17% | 0.01 |
+| scurt WIF | -111.15 USD | 28.63 USD | -5,85% | 0.22 |
 | SP500 | 109.17 USD | 0.05 USD | +0,00% | 726.63 |
-| scurt LTC | -106.70 USD | 10.88 USD | -5,18% | 60.70 |
+| scurt LTC | -106.06 USD | 11.52 USD | -5,75% | 60.70 |
 | HENSOLDT | 103.11 USD | -2.06 USD | +1,21% | 72.25 |
-| scurt SOLANA | -98.44 USD | 28.23 USD | -8,47% | 108.83 |
-| scurt LINK | -96.38 USD | 17.47 USD | -4,48% | 13.22 |
-| scurt ATOM | -83.12 USD | -1.36 USD | -3,49% | 1.60 |
+| scurt SOLANA | -97.60 USD | 29.07 USD | -9,26% | 108.83 |
+| scurt LINK | -95.33 USD | 18.52 USD | -5,53% | 13.22 |
+| scurt ATOM | -82.74 USD | -0.98 USD | -3,93% | 1.60 |
 | WMT | 80.60 USD | 2.49 USD | +0,00% | 116.24 |
 | scurt JPM | -80.07 USD | -0.06 USD | -0,00% | 366.00 |
 | scurt GOLD | -79.87 USD | 5.09 USD | -0,00% | 392.34 |
-| BNB | 79.13 USD | -9.98 USD | -7,98% | 619.18 |
-| scurt FLOKI | -77.88 USD | 7.62 USD | -5,10% | 0.00 |
-| scurt ADA | -76.58 USD | 16.22 USD | -5,63% | 0.23 |
+| BNB | 78.49 USD | -10.62 USD | -8,72% | 619.18 |
+| scurt FLOKI | -77.84 USD | 7.66 USD | -5,15% | 0.00 |
 | RHEINMETALL | 76.39 USD | -3.97 USD | -0,92% | 672.77 |
-| scurt DOT | -74.28 USD | 8.82 USD | -5,86% | 1.06 |
+| scurt ADA | -76.00 USD | 16.80 USD | -6,35% | 0.23 |
+| scurt DOT | -73.99 USD | 9.11 USD | -6,23% | 1.06 |
 | RTX | 73.29 USD | 0.87 USD | -0,00% | 179.93 |
 | scurt AAPL | -72.63 USD | 0.29 USD | +0,00% | 381.60 |
-| scurt TRUMP | -70.82 USD | 11.60 USD | -7,22% | 1.62 |
-| scurt ALGO | -69.72 USD | 7.49 USD | -4,45% | 0.11 |
+| scurt TRUMP | -70.89 USD | 11.53 USD | -7,13% | 1.62 |
+| scurt ALGO | -69.29 USD | 7.92 USD | -5,04% | 0.11 |
 | scurt ITA | -68.90 USD | 0.83 USD | -0,00% | 77.92 |
 | THALES | 68.80 USD | -1.38 USD | -0,13% | 212.77 |
-| scurt AAVE | -66.39 USD | 11.93 USD | -6,28% | 151.98 |
-| scurt FET | -59.75 USD | 10.93 USD | -7,69% | 0.20 |
+| scurt AAVE | -66.04 USD | 12.28 USD | -6,78% | 151.98 |
+| scurt FET | -59.14 USD | 11.54 USD | -8,64% | 0.20 |
 | scurt CAT | -58.49 USD | 2.89 USD | -0,00% | 713.69 |
-| scurt SEI | -53.83 USD | 6.66 USD | -6,29% | 0.06 |
-| scurt APT | -52.15 USD | 7.03 USD | -6,96% | 0.72 |
+| scurt SEI | -53.72 USD | 6.77 USD | -6,48% | 0.06 |
 | AMZN | 51.55 USD | -0.26 USD | -0,00% | 237.81 |
+| scurt APT | -51.04 USD | 8.14 USD | -8,94% | 0.72 |
 | SAAB | 50.74 USD | -1.69 USD | +0,35% | 575.66 |
 | LEONARDO | 50.02 USD | -2.06 USD | +0,47% | 46.88 |
 | scurt WLD | -49.80 USD | 8.50 USD | -7,76% | 0.43 |
-| scurt TAO | -48.38 USD | 7.91 USD | -6,33% | 281.54 |
-| scurt CRV | -47.78 USD | 5.74 USD | -4,63% | 0.32 |
+| scurt TAO | -47.80 USD | 8.48 USD | -7,45% | 281.54 |
+| scurt CRV | -47.46 USD | 6.06 USD | -5,28% | 0.32 |
 | CRUDE_OIL | 46.71 USD | 0.96 USD | -0,00% | 131.66 |
-| scurt POL | -44.30 USD | 2.82 USD | -3,31% | 0.10 |
-| AVAX | 32.71 USD | -3.01 USD | -5,23% | 6.81 |
-| scurt OP | -32.13 USD | 8.88 USD | -6,70% | 0.14 |
-| scurt ICP | -27.43 USD | 2.67 USD | -5,76% | 3.12 |
-| scurt ARB | -24.30 USD | 3.86 USD | -4,55% | 0.20 |
-| scurt BONK | -22.81 USD | 4.88 USD | -7,41% | 0.00 |
-| NEAR | 20.31 USD | -2.15 USD | -5,81% | 2.43 |
-| JUP | 16.86 USD | 0.29 USD | -2,98% | 0.19 |
-| scurt FIL | -15.52 USD | 3.19 USD | -4,55% | 1.04 |
-| scurt STX | -15.16 USD | 3.55 USD | -4,20% | 0.44 |
-| scurt INJ | -13.99 USD | 0.78 USD | -5,99% | 9.94 |
-| scurt TIA | -10.44 USD | 1.77 USD | -5,35% | 0.58 |
+| scurt POL | -44.15 USD | 2.98 USD | -3,66% | 0.10 |
+| AVAX | 32.12 USD | -3.59 USD | -6,93% | 6.81 |
+| scurt OP | -31.87 USD | 9.14 USD | -7,46% | 0.14 |
+| scurt ICP | -27.19 USD | 2.92 USD | -6,60% | 3.12 |
+| scurt ARB | -24.12 USD | 4.04 USD | -5,24% | 0.20 |
+| scurt BONK | -22.62 USD | 5.07 USD | -8,15% | 0.00 |
+| NEAR | 20.16 USD | -2.30 USD | -6,50% | 2.43 |
+| JUP | 16.90 USD | 0.33 USD | -2,71% | 0.19 |
+| scurt FIL | -15.28 USD | 3.44 USD | -6,03% | 1.04 |
+| scurt STX | -15.17 USD | 3.53 USD | -4,13% | 0.44 |
+| scurt INJ | -14.03 USD | 0.74 USD | -5,72% | 9.94 |
+| scurt TIA | -10.39 USD | 1.81 USD | -5,77% | 0.58 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
 
