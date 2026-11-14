@@ -1,10 +1,10 @@
 {
-  "generated": "2026-11-13T22:06+00:00",
+  "generated": "2026-11-14T02:39+00:00",
   "ok": true,
   "alerts": [],
   "events": [
-    "Cont unic: s-au executat primele ordine (79 poziții deschise)",
-    "Consiliul AI 2026-11-12: 87 piețe votate, cost azi 0.00 $, rămas 59.88 $"
+    "Cont unic: s-au executat primele ordine (76 poziții deschise)",
+    "Consiliul AI 2026-11-14: 87 piețe votate, cost azi 2.26 $, rămas 57.62 $"
   ],
   "accounts": {
     "paper": {
@@ -48,16 +48,16 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 11649.12,
+      "equity": 11605.81,
       "currency": "USD",
-      "return_pct": 4.168,
+      "return_pct": 3.781,
       "drawdown_pct": 0.0,
-      "positions": 79,
-      "orders": 22,
+      "positions": 76,
+      "orders": 24,
       "kill_switch": false,
       "reconciled": true
     }
   },
-  "ai_balance_usd": 59.8784,
-  "ai_spent_today_usd": 0.0
+  "ai_balance_usd": 57.6214,
+  "ai_spent_today_usd": 2.2569325583565
 }
