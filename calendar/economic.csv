@@ -228,6 +228,8 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-13T07:00+00:00|EUR|German WPI m/m,2026-11-13T07:00+00:00,EUR,German WPI m/m,Low,0.4%,1.9%
 2026-11-13T07:30+00:00|CHF|PPI m/m,2026-11-13T07:30+00:00,CHF,PPI m/m,Low,0.2%,0.3%
 2026-11-13T07:45+00:00|EUR|French Final CPI m/m,2026-11-13T07:45+00:00,EUR,French Final CPI m/m,Low,0.4%,0.4%
+2026-11-13T09:00+00:00|CNY|M2 Money Supply y/y,2026-11-13T09:00+00:00,CNY,M2 Money Supply y/y,Low,7.2%,7.2%
+2026-11-13T09:00+00:00|CNY|New Loans,2026-11-13T09:00+00:00,CNY,New Loans,Low,80B,1080B
 2026-11-13T09:00+00:00|EUR|Italian Trade Balance,2026-11-13T09:00+00:00,EUR,Italian Trade Balance,Low,2.84B,1.77B
 2026-11-13T10:00+00:00|EUR|Flash Employment Change q/q,2026-11-13T10:00+00:00,EUR,Flash Employment Change q/q,Low,0.2%,0.1%
 2026-11-13T10:00+00:00|EUR|Flash GDP q/q,2026-11-13T10:00+00:00,EUR,Flash GDP q/q,Low,0.4%,0.4%
@@ -246,5 +248,6 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-13T15:50+00:00|USD|FOMC Member Bowman Speaks,2026-11-13T15:50+00:00,USD,FOMC Member Bowman Speaks,Low,,
 2026-11-13T16:00+00:00|EUR|German Buba President Nagel Speaks,2026-11-13T16:00+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-13T17:00+00:00|USD|FOMC Member Daly Speaks,2026-11-13T17:00+00:00,USD,FOMC Member Daly Speaks,Low,,
+2026-11-13T21:00+00:00|USD|FOMC Financial Stability Report,2026-11-13T21:00+00:00,USD,FOMC Financial Stability Report,Low,,
 2026-11-14T00:00+00:00|USD|FOMC Member Jefferson Speaks,2026-11-14T00:00+00:00,USD,FOMC Member Jefferson Speaks,Low,,
 2026-11-14T11:00+00:00|GBP|MPC Member Greene Speaks,2026-11-14T11:00+00:00,GBP,MPC Member Greene Speaks,Low,,
