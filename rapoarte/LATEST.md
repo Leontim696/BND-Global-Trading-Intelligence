@@ -1,9 +1,9 @@
-# Raport bot virtual, 2026-11-15 03:15 UTC
+# Raport bot virtual, 2026-11-15 05:51 UTC
 
 **Ziua 14 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 872.32 USD** (+6,16% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 888.90 USD** (+6,31% față de start, 11 183.00 USD)
 - La ultima închidere: 11 891.20 USD; bani liberi: 17 474.66 USD
 - Poziții deschise: 77; ordine pregătite pentru mâine: 21
 - Piețe deschise acum: crypto
@@ -36,63 +36,63 @@
 | scurt NASDAQ100 | -201.78 USD | 0.11 USD | -0,00% | 739.59 |
 | scurt JNJ | -201.72 USD | -9.72 USD | +0,00% | 293.32 |
 | XOM | 194.91 USD | -0.60 USD | +0,00% | 155.56 |
-| scurt SHIB | -189.36 USD | 36.37 USD | +2,08% | 0.00 |
-| scurt XRP | -175.62 USD | 53.08 USD | -4,62% | 1.42 |
+| scurt SHIB | -188.40 USD | 37.34 USD | +1,56% | 0.00 |
+| scurt XRP | -175.35 USD | 53.35 USD | -4,77% | 1.42 |
 | scurt NVDA | -174.70 USD | 30.24 USD | -0,00% | 203.63 |
-| scurt ETC | -170.73 USD | 33.58 USD | +2,07% | 8.27 |
-| scurt DOGE | -164.45 USD | 46.08 USD | +2,81% | 0.09 |
-| scurt XLM | -158.33 USD | 35.62 USD | +2,07% | 0.20 |
-| scurt BITCOIN | -149.39 USD | 14.06 USD | -4,51% | 78151.36 |
+| scurt ETC | -170.15 USD | 34.16 USD | +1,72% | 8.27 |
+| scurt DOGE | -162.47 USD | 48.06 USD | +1,57% | 0.09 |
+| scurt XLM | -158.10 USD | 35.85 USD | +1,92% | 0.20 |
+| scurt BITCOIN | -148.40 USD | 15.05 USD | -5,14% | 78151.36 |
 | UNH | 138.66 USD | 0.77 USD | +0,00% | 368.71 |
-| scurt ETHEREUM | -136.69 USD | 31.31 USD | -5,45% | 2506.20 |
+| scurt ETHEREUM | -135.41 USD | 32.58 USD | -6,33% | 2506.20 |
 | LOCKHEED | 135.40 USD | -0.41 USD | +0,00% | 543.89 |
 | scurt GOOGL | -135.16 USD | -6.12 USD | +0,00% | 311.06 |
-| scurt VET | -128.54 USD | 30.63 USD | +2,87% | 0.01 |
-| scurt HBAR | -112.05 USD | 26.52 USD | +3,18% | 0.09 |
+| scurt VET | -128.00 USD | 31.17 USD | +2,43% | 0.01 |
+| scurt HBAR | -110.97 USD | 27.60 USD | +2,19% | 0.09 |
 | SP500 | 109.17 USD | 0.05 USD | +0,00% | 726.63 |
-| scurt PENGU | -106.03 USD | 48.08 USD | +2,33% | 0.01 |
-| scurt WIF | -105.11 USD | 34.67 USD | +2,32% | 0.22 |
+| scurt WIF | -104.95 USD | 34.83 USD | +2,17% | 0.22 |
+| scurt PENGU | -104.18 USD | 49.92 USD | +0,55% | 0.01 |
 | HENSOLDT | 103.11 USD | -2.06 USD | +0,00% | 72.25 |
-| scurt LTC | -102.44 USD | 15.14 USD | +0,99% | 60.70 |
-| scurt SOLANA | -94.53 USD | 32.14 USD | -8,10% | 108.83 |
-| scurt LINK | -93.51 USD | 20.33 USD | +2,82% | 13.22 |
-| scurt ATOM | -81.24 USD | 0.52 USD | +2,78% | 1.60 |
+| scurt LTC | -101.82 USD | 15.76 USD | +0,38% | 60.70 |
+| scurt SOLANA | -93.58 USD | 33.09 USD | -9,02% | 108.83 |
+| scurt LINK | -93.54 USD | 20.30 USD | +2,86% | 13.22 |
 | WMT | 80.60 USD | 2.49 USD | +0,00% | 116.24 |
+| scurt ATOM | -80.48 USD | 1.28 USD | +1,82% | 1.60 |
 | scurt JPM | -80.07 USD | -0.06 USD | -0,00% | 366.00 |
 | scurt GOLD | -79.87 USD | 5.09 USD | -0,00% | 392.34 |
 | RHEINMETALL | 76.39 USD | -3.97 USD | +0,00% | 672.77 |
-| scurt FLOKI | -75.97 USD | 9.53 USD | +2,29% | 0.00 |
+| scurt FLOKI | -75.56 USD | 9.94 USD | +1,73% | 0.00 |
 | RTX | 73.29 USD | 0.87 USD | -0,00% | 179.93 |
-| scurt ADA | -72.88 USD | 19.93 USD | +2,44% | 0.23 |
 | scurt AAPL | -72.63 USD | 0.29 USD | +0,00% | 381.60 |
-| scurt DOT | -69.46 USD | 13.64 USD | +1,98% | 1.06 |
+| scurt ADA | -72.44 USD | 20.36 USD | +1,83% | 0.23 |
+| scurt DOT | -69.17 USD | 13.93 USD | +1,56% | 1.06 |
 | scurt ITA | -68.90 USD | 0.83 USD | -0,00% | 77.92 |
-| scurt ALGO | -67.67 USD | 9.54 USD | +1,93% | 0.11 |
-| scurt TRUMP | -67.26 USD | 15.16 USD | +2,01% | 1.62 |
-| scurt AAVE | -65.77 USD | 12.55 USD | +3,09% | 151.98 |
+| scurt ALGO | -66.90 USD | 10.31 USD | +0,77% | 0.11 |
+| scurt AAVE | -66.89 USD | 11.43 USD | +4,85% | 151.98 |
+| scurt TRUMP | -66.43 USD | 15.99 USD | +0,74% | 1.62 |
 | scurt CAT | -58.49 USD | 2.89 USD | -0,00% | 713.69 |
-| scurt FET | -57.26 USD | 13.42 USD | +2,90% | 0.20 |
-| scurt LDO | -54.50 USD | 6.10 USD | +1,91% | 0.38 |
-| scurt SEI | -52.09 USD | 8.40 USD | +2,92% | 0.06 |
+| scurt FET | -56.74 USD | 13.94 USD | +1,96% | 0.20 |
+| scurt LDO | -54.52 USD | 6.08 USD | +1,94% | 0.38 |
+| scurt SEI | -51.93 USD | 8.56 USD | +2,60% | 0.06 |
 | AMZN | 51.55 USD | -0.26 USD | -0,00% | 237.81 |
-| scurt WLD | -48.26 USD | 10.03 USD | +3,29% | 0.43 |
-| scurt APT | -48.03 USD | 11.15 USD | +2,14% | 0.72 |
+| scurt WLD | -48.15 USD | 10.14 USD | +3,05% | 0.43 |
+| scurt APT | -47.61 USD | 11.57 USD | +1,25% | 0.72 |
 | CRUDE_OIL | 46.71 USD | 0.96 USD | -0,00% | 131.66 |
-| scurt TAO | -45.95 USD | 10.33 USD | +3,97% | 281.54 |
-| scurt CRV | -45.18 USD | 8.34 USD | +2,41% | 0.32 |
-| scurt POL | -43.42 USD | 3.71 USD | +2,03% | 0.10 |
-| scurt ONDO | -38.83 USD | 4.53 USD | +1,85% | 0.43 |
-| BCH | 32.33 USD | -2.17 USD | +3,13% | 176.30 |
-| scurt OP | -30.49 USD | 10.51 USD | +2,50% | 0.14 |
-| AVAX | 29.89 USD | -5.83 USD | +0,39% | 6.81 |
-| scurt ICP | -25.73 USD | 4.37 USD | +1,84% | 3.12 |
-| ENA | 21.91 USD | -2.99 USD | +2,87% | 0.08 |
+| scurt TAO | -45.56 USD | 10.72 USD | +3,10% | 281.54 |
+| scurt CRV | -44.90 USD | 8.62 USD | +1,77% | 0.32 |
+| scurt POL | -43.36 USD | 3.77 USD | +1,91% | 0.10 |
+| scurt ONDO | -38.64 USD | 4.73 USD | +1,34% | 0.43 |
+| BCH | 32.10 USD | -2.40 USD | +2,38% | 176.30 |
+| scurt OP | -30.45 USD | 10.55 USD | +2,38% | 0.14 |
+| AVAX | 30.41 USD | -5.31 USD | +2,13% | 6.81 |
+| scurt ICP | -25.52 USD | 4.58 USD | +1,01% | 3.12 |
+| ENA | 22.00 USD | -2.90 USD | +3,30% | 0.08 |
 | scurt BONK | -21.53 USD | 6.16 USD | +2,16% | 0.00 |
-| NEAR | 19.69 USD | -2.76 USD | +3,83% | 2.43 |
-| RENDER | 17.09 USD | -1.74 USD | +2,35% | 1.19 |
-| JUP | 17.03 USD | 0.46 USD | +4,71% | 0.19 |
-| scurt FIL | -14.22 USD | 4.50 USD | +0,53% | 1.04 |
-| scurt TIA | -10.02 USD | 2.19 USD | +1,27% | 0.58 |
+| NEAR | 19.56 USD | -2.90 USD | +3,14% | 2.43 |
+| JUP | 17.23 USD | 0.66 USD | +5,96% | 0.19 |
+| RENDER | 16.94 USD | -1.89 USD | +1,47% | 1.19 |
+| scurt FIL | -14.14 USD | 4.57 USD | -0,02% | 1.04 |
+| scurt TIA | -9.98 USD | 2.22 USD | +0,90% | 0.58 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
 
