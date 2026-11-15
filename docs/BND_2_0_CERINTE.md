@@ -200,3 +200,8 @@ sens unic** (subiectul ntfy nu e autentificare, deci nu poate primi comenzi).
    inițială; configurația exactă a mandatului; procedurile de oprire și recuperare; recomandarea motivată (pregătit /
    nepregătit). **Activarea LIVE o face explicit proprietarul.** După activare, tranzacțiile eligibile rulează autonom
    în mandat, fără confirmare individuală; modificarea limitelor și majorarea capitalului rămân decizii separate.
+
+## F. Componente din daily_stock_analysis (primită pe 15.11.2026)
+
+Analiza completă (ce există deja, diferențe, fișiere afectate, ordinea implementării) e în
+[`ANALIZA_DAILY_STOCK_ANALYSIS.md`](ANALIZA_DAILY_STOCK_ANALYSIS.md). Implementare după 1.12.2026.
