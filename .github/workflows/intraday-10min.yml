@@ -115,7 +115,7 @@ jobs:
           }
           mkdir -p st
           if gitr fetch -q --depth=1 origin intraday 2>/dev/null; then git archive FETCH_HEAD | tar -x -C st; fi
-          deadline=$(( $(date +%s) + 340*60 )); n=0; day=""
+          deadline=$(( $(date +%s) + 290*60 ))   # 16.11.2026: ultimul ciclu de 60 min se termină înainte de limita de 355 min; n=0; day=""
           while [ "$(date +%s)" -lt "$deadline" ]; do
             start=$(date +%s)
             refresh_p24
