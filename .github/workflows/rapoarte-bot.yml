@@ -8,8 +8,9 @@ name: Raport bot virtual (prețuri la 30 de minute)
 
 on:
   schedule:
-    # Every hour, on the hour: full report (saved + posted). GitHub may delay a run by a few minutes.
-    - cron: '0 * * * *'
+    # Rezervă la 3 ore, pe un minut liber (GitHub sare des rulările de la ora fixă). Raportul orar îl pornește
+    # bucla din preturi-live.yml (16.11.2026).
+    - cron: '23 */3 * * *'
     # Prețurile la 10 minute vin din preturi-live.yml (buclă); aici rămâne raportul complet orar.
   workflow_dispatch:
 

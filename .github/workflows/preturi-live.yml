@@ -77,7 +77,9 @@ jobs:
             done
             echo "::warning::push pe $1 nereușit"; return 1
           }
-          deadline=$(( $(date +%s) + 340*60 ))
+          # 16.11.2026: cu ciclu de 60 min, ultimul ciclu începea înainte de 340 min și se termina după limita jobului (355 min):
+          # jobul era anulat și repornirea de la final nu mai rula. Acum ultimul ciclu se termină sigur până la ~350 min.
+          deadline=$(( $(date +%s) + 290*60 ))
           while [ "$(date +%s)" -lt "$deadline" ]; do
             start=$(date +%s); stamp=$(date -u +%H:%M)
             rm -rf out; mkdir -p out/p out/c out/a out/k out/r out/u out/ctl out/f out/ch out/cr site/rapoarte page
@@ -104,6 +106,10 @@ jobs:
               if [ -f out/u/paper.sqlite ] && py -m src.bnd.report_card --state out/u/paper.sqlite --quotes out/quotes.json \
                    --out site/rapoarte/LATEST.md > /dev/null; then :; fi
               publish paper-trading site "Prețuri live $stamp UTC" || echo "::warning::prețurile de la $stamp nu s-au salvat"
+              # 16.11.2026: GitHub sare multe rulări programate (raportul orar a ieșit de 3-8 ori pe zi din 12.11).
+              # Bucla pornește ea raportul complet la fiecare ciclu; programul din rapoarte-bot.yml rămâne rezervă.
+              gh api -X POST "repos/$REPO/actions/workflows/rapoarte-bot.yml/dispatches" -f ref=main \
+                || echo "::warning::raportul orar nu s-a putut porni la $stamp"
               args=(--paper out/p --crypto out/c --ai out/a --rls out/r --unic out/u --control out/ctl --formations out/f --intraday out/i --council out/k
                     --quotes out/quotes.json --runs out/runs.json --template src/bnd/dashboard_template.html --out page/index.html)
               [ -f out/balance.json ] && args+=(--balance out/balance.json)
