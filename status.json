@@ -1,14 +1,13 @@
 {
-  "generated": "2026-11-15T22:02+00:00",
+  "generated": "2026-11-16T02:21+00:00",
   "ok": false,
   "alerts": [
     "Ultima rulare programată a descoperirii smart-money a eșuat (failure)",
     "Ultima rulare programată a colectorului smart-money a eșuat (failure)"
   ],
   "events": [
-    "Cont unic: s-au executat primele ordine (77 poziții deschise)",
-    "Cont unic: variație zilnică +2.6% (valoare 11,891 USD) la 2026-11-15",
-    "Consiliul AI 2026-11-15: 87 piețe votate, cost azi 2.22 $, rămas 55.40 $"
+    "Cont unic: s-au executat primele ordine (75 poziții deschise)",
+    "Consiliul AI 2026-11-16: 87 piețe votate, cost azi 2.32 $, rămas 53.08 $"
   ],
   "accounts": {
     "paper": {
@@ -52,16 +51,16 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 11858.04,
+      "equity": 11820.74,
       "currency": "USD",
-      "return_pct": 6.036,
-      "drawdown_pct": 0.279,
-      "positions": 77,
-      "orders": 21,
+      "return_pct": 5.703,
+      "drawdown_pct": 0.977,
+      "positions": 75,
+      "orders": 17,
       "kill_switch": false,
       "reconciled": true
     }
   },
-  "ai_balance_usd": 55.4027,
-  "ai_spent_today_usd": 2.21826574225
+  "ai_balance_usd": 53.0784,
+  "ai_spent_today_usd": 2.3243402462
 }
