@@ -1,43 +1,43 @@
 {
   "incomplete_excluded": 0,
   "stale_excluded": 1,
-  "settled": 715,
+  "settled": 720,
   "enough_data": true,
   "note": null,
   "agents": {
     "gpt": {
-      "calls": 254,
-      "hit_rate": 0.8740157480314961,
-      "mean_net_return_pct": 7.789542053427124,
-      "holds": 461,
-      "hold_correct_rate": 0.11062906724511931,
+      "calls": 257,
+      "hit_rate": 0.8754863813229572,
+      "mean_net_return_pct": 7.849113110898894,
+      "holds": 463,
+      "hold_correct_rate": 0.1101511879049676,
       "minority_calls": 82,
       "minority_right": 66,
-      "calibration_gap": 0.27468503937007954,
+      "calibration_gap": 0.27614785992217994,
       "calibration": [
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 67,
-          "hit_rate": 0.8507462686567164,
-          "declared": 0.5849253731343285
+          "calls": 68,
+          "hit_rate": 0.8529411764705882,
+          "declared": 0.5850000000000001
         },
         {
           "confidence_bucket": "0.6-0.7",
-          "calls": 187,
-          "hit_rate": 0.8823529411764706,
-          "declared": 0.6044919786096244
+          "calls": 189,
+          "hit_rate": 0.8835978835978836,
+          "declared": 0.6044973544973532
         }
       ],
-      "overconfidence": -0.27468503937007893,
-      "mean_brier": 0.1852185039370073,
+      "overconfidence": -0.27614785992217905,
+      "mean_brier": 0.18492490272373482,
       "by_class": {
         "forex": {
           "calls": 3,
           "hit_rate": 0.6666666666666666
         },
         "crypto": {
-          "calls": 194,
-          "hit_rate": 0.8814432989690721
+          "calls": 197,
+          "hit_rate": 0.883248730964467
         },
         "memecoin": {
           "calls": 45,
@@ -70,7 +70,7 @@
           "hit_rate": 1.0
         },
         "BITCOIN": {
-          "calls": 2,
+          "calls": 3,
           "hit_rate": 1.0
         },
         "TRX": {
@@ -218,11 +218,11 @@
           "hit_rate": 0.0
         },
         "ETHEREUM": {
-          "calls": 2,
+          "calls": 3,
           "hit_rate": 1.0
         },
         "BNB": {
-          "calls": 3,
+          "calls": 4,
           "hit_rate": 1.0
         },
         "POL": {
@@ -283,8 +283,8 @@
       "calls": 38,
       "hit_rate": 0.9210526315789473,
       "mean_net_return_pct": 9.880518605827115,
-      "holds": 677,
-      "hold_correct_rate": 0.09601181683899557,
+      "holds": 682,
+      "hold_correct_rate": 0.09530791788856305,
       "minority_calls": 3,
       "minority_right": 1,
       "calibration_gap": 0.3921052631578944,
@@ -402,20 +402,20 @@
       }
     },
     "gemini": {
-      "calls": 211,
-      "hit_rate": 0.8151658767772512,
-      "mean_net_return_pct": 5.949346484276777,
-      "holds": 504,
-      "hold_correct_rate": 0.10119047619047619,
+      "calls": 213,
+      "hit_rate": 0.8169014084507042,
+      "mean_net_return_pct": 6.016661091831971,
+      "holds": 507,
+      "hold_correct_rate": 0.10059171597633136,
       "minority_calls": 78,
       "minority_right": 48,
-      "calibration_gap": 0.16388625592416814,
+      "calibration_gap": 0.16563380281689882,
       "calibration": [
         {
           "confidence_bucket": "0.6-0.7",
-          "calls": 207,
-          "hit_rate": 0.8115942028985508,
-          "declared": 0.6499516908212586
+          "calls": 209,
+          "hit_rate": 0.8133971291866029,
+          "declared": 0.6499521531100505
         },
         {
           "confidence_bucket": "0.7-0.8",
@@ -424,16 +424,16 @@
           "declared": 0.72
         }
       ],
-      "overconfidence": -0.16388625592416806,
-      "mean_brier": 0.17545118483412334,
+      "overconfidence": -0.16563380281689888,
+      "mean_brier": 0.17495399061032876,
       "by_class": {
         "bond": {
           "calls": 4,
           "hit_rate": 0.0
         },
         "crypto": {
-          "calls": 107,
-          "hit_rate": 0.8037383177570093
+          "calls": 109,
+          "hit_rate": 0.8073394495412844
         },
         "memecoin": {
           "calls": 47,
@@ -462,7 +462,7 @@
           "hit_rate": 0.0
         },
         "BNB": {
-          "calls": 6,
+          "calls": 7,
           "hit_rate": 1.0
         },
         "XRP": {
@@ -630,8 +630,8 @@
           "hit_rate": 1.0
         },
         "ETHEREUM": {
-          "calls": 2,
-          "hit_rate": 0.5
+          "calls": 3,
+          "hit_rate": 0.6666666666666666
         },
         "SOLANA": {
           "calls": 2,
@@ -724,14 +724,14 @@
       }
     },
     "grok": {
-      "calls": 219,
-      "hit_rate": 0.8812785388127854,
-      "mean_net_return_pct": 7.939472301410429,
-      "holds": 496,
-      "hold_correct_rate": 0.11290322580645161,
+      "calls": 221,
+      "hit_rate": 0.8823529411764706,
+      "mean_net_return_pct": 7.984824284756498,
+      "holds": 499,
+      "hold_correct_rate": 0.11222444889779559,
       "minority_calls": 38,
       "minority_right": 32,
-      "calibration_gap": 0.3051141552511424,
+      "calibration_gap": 0.306153846153847,
       "calibration": [
         {
           "confidence_bucket": "0.4-0.5",
@@ -741,9 +741,9 @@
         },
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 167,
-          "hit_rate": 0.8682634730538922,
-          "declared": 0.5779640718562863
+          "calls": 169,
+          "hit_rate": 0.8698224852071006,
+          "declared": 0.5779881656804723
         },
         {
           "confidence_bucket": "0.6-0.7",
@@ -752,12 +752,12 @@
           "declared": 0.6200000000000001
         }
       ],
-      "overconfidence": -0.30511415525114205,
-      "mean_brier": 0.1999214611872147,
+      "overconfidence": -0.30615384615384666,
+      "mean_brier": 0.19970859728506798,
       "by_class": {
         "crypto": {
-          "calls": 147,
-          "hit_rate": 0.8979591836734694
+          "calls": 149,
+          "hit_rate": 0.8993288590604027
         },
         "memecoin": {
           "calls": 41,
@@ -786,7 +786,7 @@
       },
       "by_market": {
         "BITCOIN": {
-          "calls": 5,
+          "calls": 6,
           "hit_rate": 1.0
         },
         "BNB": {
@@ -902,7 +902,7 @@
           "hit_rate": 0.5
         },
         "ETHEREUM": {
-          "calls": 2,
+          "calls": 3,
           "hit_rate": 1.0
         },
         "LINK": {
@@ -1032,14 +1032,14 @@
       }
     },
     "deepseek": {
-      "calls": 516,
-      "hit_rate": 0.7616279069767442,
-      "mean_net_return_pct": 5.905514171757441,
-      "holds": 199,
-      "hold_correct_rate": 0.10552763819095477,
-      "minority_calls": 318,
-      "minority_right": 215,
-      "calibration_gap": 0.12244186046511582,
+      "calls": 520,
+      "hit_rate": 0.7634615384615384,
+      "mean_net_return_pct": 5.96471401632736,
+      "holds": 200,
+      "hold_correct_rate": 0.105,
+      "minority_calls": 319,
+      "minority_right": 216,
+      "calibration_gap": 0.12457692307692264,
       "calibration": [
         {
           "confidence_bucket": "0.3-0.4",
@@ -1055,15 +1055,15 @@
         },
         {
           "confidence_bucket": "0.5-0.6",
-          "calls": 29,
-          "hit_rate": 0.6896551724137931,
-          "declared": 0.5541379310344831
+          "calls": 30,
+          "hit_rate": 0.7,
+          "declared": 0.5540000000000003
         },
         {
           "confidence_bucket": "0.6-0.7",
-          "calls": 299,
-          "hit_rate": 0.7290969899665551,
-          "declared": 0.6214046822742472
+          "calls": 302,
+          "hit_rate": 0.7317880794701986,
+          "declared": 0.6213576158940394
         },
         {
           "confidence_bucket": "0.7-0.8",
@@ -1078,8 +1078,8 @@
           "declared": 0.80625
         }
       ],
-      "overconfidence": -0.11856589147287044,
-      "mean_brier": 0.1902434108527135,
+      "overconfidence": -0.1207307692307713,
+      "mean_brier": 0.19002038461538492,
       "by_class": {
         "commodity": {
           "calls": 18,
@@ -1090,8 +1090,8 @@
           "hit_rate": 0.18181818181818182
         },
         "crypto": {
-          "calls": 278,
-          "hit_rate": 0.8381294964028777
+          "calls": 282,
+          "hit_rate": 0.8404255319148937
         },
         "forex": {
           "calls": 11,
@@ -1128,8 +1128,8 @@
           "hit_rate": 0.6
         },
         "BITCOIN": {
-          "calls": 6,
-          "hit_rate": 0.8333333333333334
+          "calls": 7,
+          "hit_rate": 0.8571428571428571
         },
         "EURUSD": {
           "calls": 8,
@@ -1140,11 +1140,11 @@
           "hit_rate": 0.2857142857142857
         },
         "SOLANA": {
-          "calls": 4,
+          "calls": 5,
           "hit_rate": 1.0
         },
         "BNB": {
-          "calls": 8,
+          "calls": 9,
           "hit_rate": 1.0
         },
         "XRP": {
@@ -1388,7 +1388,7 @@
           "hit_rate": 0.5714285714285714
         },
         "ETHEREUM": {
-          "calls": 6,
+          "calls": 7,
           "hit_rate": 1.0
         },
         "LINK": {
@@ -1468,14 +1468,14 @@
   },
   "disagreement": {
     "scazut": {
-      "decisions": 459,
-      "mean_abs_move_pct": 7.999171554217654,
-      "share_big_moves": 0.7167755991285403
+      "decisions": 462,
+      "mean_abs_move_pct": 8.036885319092185,
+      "share_big_moves": 0.7186147186147186
     },
     "mediu": {
-      "decisions": 255,
-      "mean_abs_move_pct": 7.0988806087274225,
-      "share_big_moves": 0.6862745098039216
+      "decisions": 257,
+      "mean_abs_move_pct": 7.141762232632038,
+      "share_big_moves": 0.688715953307393
     },
     "ridicat": {
       "decisions": 1,
@@ -1485,39 +1485,39 @@
   },
   "strategies": {
     "bot": {
-      "calls": 713,
-      "hit_rate": 0.758765778401122,
-      "mean_return_pct": 5.437226791405579
+      "calls": 718,
+      "hit_rate": 0.7604456824512534,
+      "mean_return_pct": 5.49217592599973
     },
     "council": {
-      "calls": 197,
-      "hit_rate": 0.9035532994923858,
-      "mean_return_pct": 8.447445885841297
+      "calls": 200,
+      "hit_rate": 0.905,
+      "mean_return_pct": 8.514126137206311
     },
     "lean": {
-      "calls": 544,
-      "hit_rate": 0.7702205882352942,
-      "mean_return_pct": 5.900741982035756
+      "calls": 548,
+      "hit_rate": 0.7718978102189781,
+      "mean_return_pct": 5.956951850530728
     },
     "hybrid": {
-      "calls": 504,
-      "hit_rate": 0.7976190476190477,
-      "mean_return_pct": 6.410092837250619
+      "calls": 508,
+      "hit_rate": 0.7992125984251969,
+      "mean_return_pct": 6.466718042987598
     }
   },
   "vs_rule": {
-    "comparable": 713,
-    "same": 196,
+    "comparable": 718,
+    "same": 199,
     "opposite": 1,
-    "abstain": 516,
-    "agreement_rate": 0.27489481065918653,
+    "abstain": 518,
+    "agreement_rate": 0.27715877437325903,
     "opposite_council_wins": 1,
     "opposite_rule_wins": 0,
     "opposite_council_mean_pct": 2.702888678772397,
     "opposite_sign_test_p": 1.0,
-    "abstain_rule_mean_pct": 4.298452790928269,
-    "differ_mean_pct": -4.284910544371788,
-    "differ_calls": 517,
+    "abstain_rule_mean_pct": 4.335835646301329,
+    "differ_mean_pct": -4.322273557042998,
+    "differ_calls": 519,
     "council_only_calls": 0,
     "council_only_mean_pct": null,
     "verdict": "Abaterile consiliului de la regulă nu au adus bani în această perioadă."
@@ -1531,9 +1531,9 @@
         "gpt",
         "grok"
       ],
-      "calls": 544,
-      "hit_rate": 0.7702205882352942,
-      "mean_return_pct": 5.900741982035756,
+      "calls": 548,
+      "hit_rate": 0.7718978102189781,
+      "mean_return_pct": 5.956951850530728,
       "cost_per_decision_usd": 0.0
     },
     "primii 3": {
@@ -1542,9 +1542,9 @@
         "grok",
         "gpt"
       ],
-      "calls": 309,
-      "hit_rate": 0.8673139158576052,
-      "mean_return_pct": 7.506642726234292,
+      "calls": 312,
+      "hit_rate": 0.8685897435897436,
+      "mean_return_pct": 7.5584326613362895,
       "cost_per_decision_usd": 0.0
     },
     "doar claude": {
@@ -1560,36 +1560,36 @@
       "agents": [
         "deepseek"
       ],
-      "calls": 514,
-      "hit_rate": 0.7645914396887159,
-      "mean_return_pct": 5.92849282612225,
+      "calls": 518,
+      "hit_rate": 0.7664092664092664,
+      "mean_return_pct": 5.987743800174178,
       "cost_per_decision_usd": 0.0
     },
     "doar gemini": {
       "agents": [
         "gemini"
       ],
-      "calls": 211,
-      "hit_rate": 0.8151658767772512,
-      "mean_return_pct": 5.949346484276778,
+      "calls": 213,
+      "hit_rate": 0.8169014084507042,
+      "mean_return_pct": 6.016661091831972,
       "cost_per_decision_usd": 0.0
     },
     "doar gpt": {
       "agents": [
         "gpt"
       ],
-      "calls": 253,
-      "hit_rate": 0.8774703557312253,
-      "mean_return_pct": 7.820330757195603,
+      "calls": 256,
+      "hit_rate": 0.87890625,
+      "mean_return_pct": 7.8797737089883375,
       "cost_per_decision_usd": 0.0
     },
     "doar grok": {
       "agents": [
         "grok"
       ],
-      "calls": 218,
-      "hit_rate": 0.8853211009174312,
-      "mean_return_pct": 7.975891899123327,
+      "calls": 220,
+      "hit_rate": 0.8863636363636364,
+      "mean_return_pct": 8.021118940596304,
       "cost_per_decision_usd": 0.0
     }
   },
@@ -1606,13 +1606,13 @@
         "reliable": true
       },
       "scădere calmă": {
-        "calls": 192,
-        "hit_rate": 0.8645833333333334,
+        "calls": 194,
+        "hit_rate": 0.865979381443299,
         "reliable": true
       },
       "urcare agitată": {
-        "calls": 83,
-        "hit_rate": 0.7590361445783133,
+        "calls": 85,
+        "hit_rate": 0.7647058823529411,
         "reliable": true
       },
       "scădere agitată": {
@@ -1628,8 +1628,8 @@
         "reliable": true
       },
       "urcare agitată": {
-        "calls": 28,
-        "hit_rate": 0.9642857142857143,
+        "calls": 29,
+        "hit_rate": 0.9655172413793104,
         "reliable": true
       },
       "scădere agitată": {
@@ -1643,8 +1643,8 @@
         "reliable": true
       },
       "scădere calmă": {
-        "calls": 104,
-        "hit_rate": 0.9134615384615384,
+        "calls": 105,
+        "hit_rate": 0.9142857142857143,
         "reliable": true
       }
     },
@@ -1660,8 +1660,8 @@
         "reliable": true
       },
       "scădere calmă": {
-        "calls": 133,
-        "hit_rate": 0.9097744360902256,
+        "calls": 134,
+        "hit_rate": 0.9104477611940298,
         "reliable": true
       },
       "urcare calmă": {
@@ -1670,9 +1670,9 @@
         "reliable": true
       },
       "urcare agitată": {
-        "calls": 18,
-        "hit_rate": 0.8888888888888888,
-        "reliable": false
+        "calls": 20,
+        "hit_rate": 0.9,
+        "reliable": true
       }
     },
     "gemini": {
@@ -1687,13 +1687,13 @@
         "reliable": true
       },
       "scădere calmă": {
-        "calls": 92,
-        "hit_rate": 0.8695652173913043,
+        "calls": 93,
+        "hit_rate": 0.8709677419354839,
         "reliable": true
       },
       "urcare agitată": {
-        "calls": 29,
-        "hit_rate": 0.8275862068965517,
+        "calls": 30,
+        "hit_rate": 0.8333333333333334,
         "reliable": true
       },
       "scădere agitată": {
@@ -1732,35 +1732,35 @@
   },
   "by_horizon": {
     "5 zile": {
-      "calls": 544,
-      "hit_rate": 0.7702205882352942,
-      "mean_return_pct": 5.900741982035761,
+      "calls": 548,
+      "hit_rate": 0.7718978102189781,
+      "mean_return_pct": 5.956951850530736,
       "reliable": true
     }
   },
   "alpha": {
     "raw": {
-      "calls": 546,
-      "hit_rate": 0.7673992673992674,
-      "mean_return_pct": 5.879127542541119,
+      "calls": 550,
+      "hit_rate": 0.769090909090909,
+      "mean_return_pct": 5.935290207437888,
       "reliable": true
     },
     "entry_next": {
-      "calls": 546,
-      "hit_rate": 0.7509157509157509,
-      "mean_return_pct": 4.480088638619554,
+      "calls": 550,
+      "hit_rate": 0.7527272727272727,
+      "mean_return_pct": 4.532773387078476,
       "reliable": true
     },
     "alpha_next": {
-      "calls": 415,
-      "hit_rate": 0.6,
-      "mean_return_pct": 1.2978813708435604,
+      "calls": 418,
+      "hit_rate": 0.6004784688995215,
+      "mean_return_pct": 1.291526937169643,
       "reliable": true
     },
     "alpha_raw": {
-      "calls": 415,
-      "hit_rate": 0.5975903614457831,
-      "mean_return_pct": 1.672803225170887,
+      "calls": 418,
+      "hit_rate": 0.6004784688995215,
+      "mean_return_pct": 1.6703491957512873,
       "reliable": true
     },
     "note": null
@@ -1773,14 +1773,14 @@
   },
   "before_after": {
     "initial": {
-      "calls": 544,
-      "hit_rate": 0.7702205882352942,
-      "mean_return_pct": 5.900741982035756
+      "calls": 548,
+      "hit_rate": 0.7718978102189781,
+      "mean_return_pct": 5.956951850530728
     },
     "final": {
-      "calls": 544,
-      "hit_rate": 0.7702205882352942,
-      "mean_return_pct": 5.900741982035756
+      "calls": 548,
+      "hit_rate": 0.7718978102189781,
+      "mean_return_pct": 5.956951850530728
     },
     "lean_changed": 0,
     "improved": 0,
@@ -1789,18 +1789,18 @@
   },
   "weights": {
     "base": {
-      "gpt": 0.2072227999391262,
-      "claude": 0.18557777017107066,
-      "gemini": 0.23432350716291497,
-      "grok": 0.18557777017107066,
-      "deepseek": 0.18729815255581755
+      "gpt": 0.20736382894460254,
+      "claude": 0.18512327916275384,
+      "gemini": 0.23498484399434652,
+      "grok": 0.18512327916275384,
+      "deepseek": 0.1874047687355433
     },
     "penalized": {
-      "gpt": 0.2072227999391262,
-      "claude": 0.18557777017107066,
-      "gemini": 0.23432350716291497,
-      "grok": 0.18557777017107066,
-      "deepseek": 0.18729815255581755
+      "gpt": 0.20736382894460254,
+      "claude": 0.18512327916275384,
+      "gemini": 0.23498484399434652,
+      "grok": 0.18512327916275384,
+      "deepseek": 0.1874047687355433
     }
   },
   "out_of_sample": {
