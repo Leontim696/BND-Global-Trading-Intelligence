@@ -169,3 +169,9 @@ Aceeași mărime a semnalului ca oficialul (50% regula + 50% toți 5 AI), dar î
 long), cu setările dublate ale lui P34. Comparat cu P34 (aceleași sume, direcțiile oficialului) arată dacă profitul vine
 din alegerea direcției sau doar din faptul că piața a scăzut. Atenție: short pe tot înseamnă pierderi mari într-o zi de
 creștere generală; siguranța de −5% pe zi poate opri contul.
+
+### P36 / P37: semnalele oficialului, doar long / doar short (cerute pe 16.11.2026)
+Aceleași semnale (50% regula + 50% toți 5 AI) și aceleași sume ca oficialul (setări standard). P36 păstrează doar
+pozițiile long, P37 doar pozițiile short; partea cealaltă rămâne în numerar. Împreună refac semnalele oficialului, deci
+arată separat cât a câștigat sau pierdut fiecare direcție. Pornesc de la zero pe 16.11, deci au doar ~2 săptămâni până
+pe 30.11: un indiciu, nu o dovadă. Contul oficial nu e atins; costă 0 $ (aceleași voturi, fără apeluri AI în plus).
