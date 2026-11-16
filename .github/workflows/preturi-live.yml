@@ -127,6 +127,16 @@ jobs:
             else
               echo "::warning::prețurile nu s-au putut citi la $stamp"
             fi
+            # 16.11.2026: GitHub întârzie cu ore rulările programate; bucla pornește rulările zilnice întârziate (src/bnd/catchup.py).
+            rm -rf out/cu; mkdir -p out/cu
+            for wf in $(py -m src.bnd.catchup --list); do
+              gh run list -R "$REPO" -w "$wf" -L 10 --json createdAt,status,conclusion > "out/cu/$wf.json" 2>/dev/null || rm -f "out/cu/$wf.json"
+            done
+            py -m src.bnd.catchup --runs-dir out/cu | while read -r wf fields; do
+              # shellcheck disable=SC2086
+              gh api -X POST "repos/$REPO/actions/workflows/$wf/dispatches" -f ref=main $fields \
+                && echo "Pornit (întârziat de GitHub): $wf" || echo "::warning::nu am putut porni $wf"
+            done
             left=$(( 3600 - ($(date +%s) - start) ))   # rărit la 60 de minute pe 9.11.2026 (după suspendarea contului GitHub)
             [ "$left" -gt 0 ] && sleep "$left"
           done

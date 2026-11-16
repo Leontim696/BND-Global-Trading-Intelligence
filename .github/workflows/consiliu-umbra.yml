@@ -14,10 +14,10 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'mock = agenți simulați (gratis); live = agenți reali (plătit, cere confirmarea)'
+        description: 'mock = agenți simulați (gratis); live = agenți reali (plătit, cere confirmarea); daily = rularea zilnică (ca programul)'
         default: 'mock'
         type: choice
-        options: [mock, live]
+        options: [mock, live, daily]
       paid_test_confirmation:
         description: 'Doar pentru live: scrie RUN-PAID-TEST (șterge NO)'
         default: 'NO'
@@ -57,7 +57,12 @@ jobs:
         run: |
           mkdir -p state data
           run=true; live=false
-          if [ "$EVENT" = schedule ]; then
+          if [ "$EVENT" = schedule ] && [ "$(date -u +%H)" -lt 20 ]; then
+            # 16.11.2026: GitHub pornea programul de la 21:40 abia a doua zi pe la 01:20 UTC. Acum rularea zilnică o pornește
+            # bucla de prețuri (mode=daily); un program care vine atât de târziu nu mai votează pe date vechi.
+            run=false
+            echo "Programul a pornit cu ore de întârziere (după miezul nopții UTC): sărit, rularea zilnică o pornește bucla de prețuri." >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$EVENT" = schedule ] || [ "$MODE_INPUT" = daily ]; then
             # The test was extended to 30 days (owner, 2.11): it ends on 2026-11-30; a forgotten switch must not keep spending.
             if [ "$(date -u +%Y-%m-%d)" \> "2026-11-30" ]; then
               run=false
