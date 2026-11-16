@@ -45,6 +45,8 @@ def test_intraday_loop_runs_every_60_minutes():
     loop = Path(".github/workflows/intraday-10min.yml").read_text(encoding="utf-8")
     assert "left=$(( 3600 - " in loop and "left=$(( 600 - " not in loop
     assert "deadline=$(( $(date +%s) + 290*60 ))" in loop
+    # 16.11.2026: un comentariu pus pe aceeași linie a acoperit «n=0; day=""» și bucla a căzut cu «day: unbound variable».
+    assert 'deadline=$(( $(date +%s) + 290*60 )); n=0; day=""' in loop
 
 
 def _limit_and_deadline(text):
