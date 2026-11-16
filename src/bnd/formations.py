@@ -150,6 +150,15 @@ def _formations() -> list[dict]:
                 "strategy": "ai_council", "title": "Aceleași piețe ca oficialul, totul pe short, sume dublate (×2)",
                 "settings": "--max-leverage 4 --max-weight 0.5 --max-sector 120 --portfolio-vol 30 --financing 5"
                             " --engine-leverage 4.5"})
+    # P36–P37 (cerute pe 16.11): semnalele oficialului (50% regula + 50% toți 5 AI) și sumele lui (STANDARD),
+    # dar P36 păstrează DOAR pozițiile long, iar P37 DOAR pozițiile short (cealaltă parte rămâne în numerar).
+    # Împreună arată, separat și cu bani virtuali, cât a adus fiecare direcție a contului oficial.
+    out.append({"key": "p36-doar-long", "point": 36, "members": AGENTS, "rules": True, "kind": "doar_long",
+                "strategy": "ai_council", "title": "Semnalele oficialului, doar pozițiile long (short-urile rămân numerar)",
+                "settings": STANDARD})
+    out.append({"key": "p37-doar-short", "point": 37, "members": AGENTS, "rules": True, "kind": "doar_short",
+                "strategy": "ai_council", "title": "Semnalele oficialului, doar pozițiile short (long-urile rămân numerar)",
+                "settings": STANDARD})
     return out
 
 
@@ -425,6 +434,15 @@ def signals_for(f: dict, votes: dict, weights: dict, rules: dict | None = None,
                 continue
             s = 0.5 * r + 0.5 * formation_signal(votes[c], AGENTS) if c in votes else r
             out[c] = -min(1.0, abs(s))
+        return out
+    if f["kind"] in ("doar_long", "doar_short"):
+        keep = max if f["kind"] == "doar_long" else min
+        out = {}
+        for c, r in (rules or {}).items():
+            if r is None:
+                continue
+            s = 0.5 * r + 0.5 * formation_signal(votes[c], AGENTS) if c in votes else r
+            out[c] = keep(0.0, max(-1.0, min(1.0, s)))
         return out
     if f["kind"] == "surse":
         out = {}

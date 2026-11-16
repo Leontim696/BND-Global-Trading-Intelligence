@@ -88,3 +88,19 @@ def test_p35_totul_pe_short():
     out = fm.signals_for(f, votes, {}, {"BITCOIN": 1.0, "GOLD": -0.5, "SP500": 0.0, "EURUSD": 0.4})
     assert out == {"BITCOIN": -1.0, "GOLD": -0.75, "SP500": -0.0, "EURUSD": -0.4}
     assert all(v <= 0 for v in out.values())
+
+
+def test_p36_doar_long_si_p37_doar_short():
+    by = {f["key"]: f for f in fm.FORMATIONS}
+    votes = {"BITCOIN": {a: "BUY" for a in fm.AGENTS}, "GOLD": {a: "SELL" for a in fm.AGENTS}}
+    rules = {"BITCOIN": 1.0, "GOLD": -0.5, "SP500": 0.0, "EURUSD": 0.4, "AAPL": None}
+    longs = fm.signals_for(by["p36-doar-long"], votes, {}, rules)
+    shorts = fm.signals_for(by["p37-doar-short"], votes, {}, rules)
+    assert longs == {"BITCOIN": 1.0, "GOLD": 0.0, "SP500": 0.0, "EURUSD": 0.4}
+    assert shorts == {"BITCOIN": 0.0, "GOLD": -0.75, "SP500": 0.0, "EURUSD": 0.0}
+    for key in ("p36-doar-long", "p37-doar-short"):
+        assert by[key]["settings"] == fm.STANDARD                 # aceleași sume ca oficialul
+    # împreună refac exact semnalele oficialului (aceeași formulă ca P35, fără inversare)
+    for c in longs:
+        assert longs[c] + shorts[c] == max(-1.0, min(1.0, 0.5 * rules[c] + 0.5 * fm.formation_signal(votes[c], fm.AGENTS)
+                                                   if c in votes else rules[c]))
