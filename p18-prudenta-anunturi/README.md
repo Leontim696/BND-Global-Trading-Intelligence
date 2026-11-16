@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:09.095454+00:00 | strategy `hibrid`
-- Equity: 11,639.71 USD (start 11,183.00, +4.08%)
-- Gross leverage: 1.06x | candles processed: 49
+- Run: 2026-11-16T23:51:08.056872+00:00 | strategy `hibrid`
+- Equity: 11,618.85 USD (start 11,183.00, +3.90%)
+- Gross leverage: 1.07x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -17,12 +17,12 @@
 | AMZN | 0.0957 | 268.0004 | 266.6600 | 25.53 | +0.2% | -0.13 | 237.8121 |
 | APT | -103.7930 | 0.5658 | 0.4580 | -47.54 | -0.4% | +11.19 | 0.7242 |
 | ARB | -418.1939 | 0.1279 | 0.1348 | -56.37 | -0.5% | -2.87 | 0.1726 |
-| ATOM | -31.0584 | 1.3043 | 1.3110 | -40.72 | -0.3% | -0.21 | 1.5951 |
+| ATOM | -31.0584 | 1.3043 | 1.3110 | -40.72 | -0.4% | -0.21 | 1.5951 |
 | AUDUSD | 1497.7375 | 0.6921 | 0.6774 | 1,014.59 | +8.7% | -22.02 | 0.6695 |
 | AVAX | -10.6676 | 7.0984 | 7.3110 | -77.99 | -0.7% | -2.27 | 8.9698 |
 | BCH | -0.0803 | 201.1994 | 210.8000 | -16.94 | -0.1% | -0.77 | 248.9221 |
-| BITCOIN | -0.0023 | 71307.2973 | 64128.0508 | -145.12 | -1.2% | +16.25 | 78151.3596 |
-| BNB | 0.0613 | 629.7481 | 581.3782 | 35.65 | +0.3% | -2.97 | 564.2555 |
+| BITCOIN | -0.0023 | 71307.2973 | 65305.0625 | -147.79 | -1.3% | +13.58 | 78151.3596 |
+| BNB | -0.1231 | 581.0875 | 595.9890 | -73.36 | -0.6% | -1.83 | 654.8482 |
 | BROAD_COMMODITIES | 11.7316 | 30.4491 | 30.7900 | 361.22 | +3.1% | +4.00 | 29.3443 |
 | CAT | -0.3650 | 609.2672 | 600.2000 | -219.10 | -1.9% | +3.31 | 709.8934 |
 | COPPER | 8.7130 | 37.5613 | 36.5300 | 318.29 | +2.7% | -8.99 | 35.2560 |
@@ -34,7 +34,7 @@
 | EMERGING | -6.7891 | 61.6838 | 60.9200 | -413.59 | -3.6% | +5.19 | 64.4381 |
 | ENA | -300.2878 | 0.1150 | 0.1214 | -36.45 | -0.3% | -1.91 | 0.1679 |
 | ETC | -18.4179 | 7.0565 | 6.0200 | -110.88 | -1.0% | +19.09 | 8.1167 |
-| ETHEREUM | -0.0985 | 2271.5895 | 1769.1205 | -174.34 | -1.5% | +49.52 | 2509.3080 |
+| ETHEREUM | -0.0985 | 2271.5895 | 1835.4952 | -180.88 | -1.6% | +42.97 | 2509.3080 |
 | EURUSD | -297.2827 | 1.1213 | 1.1050 | -328.50 | -2.8% | +4.83 | 1.1381 |
 | FET | -216.5682 | 0.1618 | 0.1326 | -28.72 | -0.2% | +6.33 | 0.2048 |
 | FIL | -22.7450 | 0.8172 | 0.6135 | -13.95 | -0.1% | +4.63 | 1.0429 |
@@ -68,7 +68,7 @@
 | SEI | -1335.8381 | 0.0450 | 0.0397 | -53.03 | -0.5% | +7.09 | 0.0572 |
 | SHIB | -31249374.8297 | 0.0000 | 0.0000 | -123.75 | -1.1% | +20.72 | 0.0000 |
 | SILVER | -1.2022 | 46.7660 | 44.1300 | -53.05 | -0.5% | +3.17 | 49.5309 |
-| SOLANA | -0.8735 | 92.8726 | 70.1769 | -61.30 | -0.5% | +19.83 | 104.5737 |
+| SOLANA | -0.8735 | 92.8726 | 72.6789 | -63.49 | -0.5% | +17.64 | 104.5737 |
 | SP500 | 0.0717 | 754.0554 | 754.3700 | 54.06 | +0.5% | +0.02 | 726.6285 |
 | TAO | -0.1192 | 234.0829 | 195.0000 | -23.25 | -0.2% | +4.66 | 281.5406 |
 | TRUMP | -69.3539 | 1.1812 | 0.9490 | -65.82 | -0.6% | +16.11 | 1.6155 |
@@ -82,39 +82,39 @@
 | WMT | 0.5664 | 127.0381 | 128.0900 | 72.55 | +0.6% | +0.60 | 117.0385 |
 | XLM | -764.2256 | 0.1622 | 0.1416 | -108.21 | -0.9% | +15.76 | 0.1873 |
 | XOM | 1.3730 | 163.8692 | 170.5900 | 234.22 | +2.0% | +9.23 | 151.6502 |
-| XRP | -119.7097 | 1.2767 | 0.9130 | -109.30 | -0.9% | +43.53 | 1.4178 |
+| XRP | -119.7097 | 1.2767 | 0.9746 | -116.67 | -1.0% | +36.16 | 1.4178 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
 | EURUSD | BUY | -2.8% -> +0.0% | PENDING |  |
-| GBPUSD | BUY | +0.0% -> +10.6% | PENDING |  |
-| USDJPY | SELL | +0.0% -> -3.4% | PENDING |  |
-| BNB | SELL | +0.3% -> -0.6% | PENDING |  |
+| GBPUSD | BUY | +0.0% -> +5.3% | PENDING |  |
+| USDJPY | SELL | +0.0% -> -1.7% | PENDING |  |
+| USDCAD | BUY | -12.4% -> -6.2% | FILLED |  |
 | AAPL | BUY | -0.3% -> +0.0% | PENDING |  |
-| JNJ | SELL | +0.0% -> -0.5% | PENDING |  |
+| JNJ | SELL | +0.0% -> -0.3% | PENDING |  |
 | JPM | BUY | -0.3% -> +0.0% | PENDING |  |
-| GS | SELL | +0.0% -> -0.4% | PENDING |  |
-| BA | BUY | +0.0% -> +0.4% | PENDING |  |
-| BAE | BUY | +0.0% -> +0.5% | PENDING |  |
-| NORTHROP | BUY | +0.0% -> +0.5% | PENDING |  |
-| L3HARRIS | BUY | -2.8% -> +1.4% | PENDING |  |
-| UNI | BUY | +0.0% -> +0.2% | PENDING |  |
+| GS | SELL | +0.0% -> -0.2% | PENDING |  |
+| BA | BUY | +0.0% -> +0.2% | PENDING |  |
+| BAE | BUY | +0.0% -> +0.2% | PENDING |  |
+| NORTHROP | BUY | +0.0% -> +0.2% | PENDING |  |
+| L3HARRIS | BUY | -2.8% -> +0.7% | PENDING |  |
+| UNI | BUY | +0.0% -> +0.1% | PENDING |  |
 | INJ | SELL | +0.0% -> -0.1% | PENDING |  |
-| STX | BUY | +0.0% -> +0.3% | PENDING |  |
+| STX | BUY | +0.0% -> +0.1% | PENDING |  |
 | JUP | BUY | +0.0% -> +0.1% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Sharp dollar rally | -0.2% | AUDUSD | no |
-| One-day crash like October 1987 | +6.0% | AUDUSD | no |
-| Covid crash, Feb-Mar 2020 | +8.4% | AUDUSD | no |
-| Global financial crisis, Sep-Nov 2008 | +8.5% | USDCAD | no |
-| Crypto collapse within a week | +10.5% | PEPE | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +14.8% | AUDUSD | no |
+| Sharp dollar rally | -0.0% | AUDUSD | no |
+| One-day crash like October 1987 | +6.3% | AUDUSD | no |
+| Covid crash, Feb-Mar 2020 | +8.9% | AUDUSD | no |
+| Global financial crisis, Sep-Nov 2008 | +9.2% | USDCAD | no |
+| Crypto collapse within a week | +11.1% | PEPE | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +15.6% | AUDUSD | no |
 
 ## Equity, last runs
 
@@ -133,5 +133,6 @@
 | 2026-11-14 | 11,447.05 |
 | 2026-11-15 | 11,678.10 |
 | 2026-11-16 | 11,639.71 |
+| 2026-11-16 | 11,618.85 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:04.416451+00:00 | strategy `hibrid`
-- Equity: 11,594.06 USD (start 11,183.00, +3.68%)
-- Gross leverage: 0.71x | candles processed: 49
+- Run: 2026-11-16T23:51:01.961492+00:00 | strategy `hibrid`
+- Equity: 11,592.10 USD (start 11,183.00, +3.66%)
+- Gross leverage: 0.72x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -16,7 +16,7 @@
 | AUDUSD | 1327.9618 | 0.6869 | 0.6774 | 899.58 | +7.8% | -12.60 | 0.6742 |
 | AVAX | -12.7356 | 7.0984 | 7.3110 | -93.11 | -0.8% | -2.71 | 8.9698 |
 | BCH | -0.0798 | 201.1994 | 210.8000 | -16.83 | -0.1% | -0.77 | 248.9221 |
-| BNB | 0.0609 | 629.7481 | 581.3782 | 35.43 | +0.3% | -2.95 | 564.2555 |
+| BNB | -0.1226 | 581.0875 | 595.9890 | -73.07 | -0.6% | -1.83 | 654.8482 |
 | CAT | -0.2027 | 569.5791 | 600.2000 | -121.66 | -1.0% | -6.21 | 689.8439 |
 | COPPER | 8.7503 | 37.5613 | 36.5300 | 319.65 | +2.8% | -9.02 | 35.2560 |
 | CRUDE_OIL | 0.3205 | 142.5928 | 145.5800 | 46.66 | +0.4% | +0.96 | 131.6633 |
@@ -55,7 +55,6 @@
 | EURUSD | BUY | -2.9% -> +0.0% | PENDING |  |
 | GBPUSD | BUY | +0.0% -> +10.6% | PENDING |  |
 | USDJPY | SELL | +0.0% -> -3.4% | PENDING |  |
-| BNB | SELL | +0.3% -> -0.6% | PENDING |  |
 | AAPL | BUY | -0.6% -> +0.0% | PENDING |  |
 | NVDA | SELL | +0.0% -> -0.9% | PENDING |  |
 | JPM | BUY | -0.7% -> +0.0% | PENDING |  |
@@ -77,12 +76,12 @@
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Global financial crisis, Sep-Nov 2008 | -5.1% | USDCAD | no |
-| Inflation and rate hikes, Jan-Oct 2022 | -3.3% | USDCAD | no |
-| Sharp dollar rally | -2.0% | USDCAD | no |
-| Covid crash, Feb-Mar 2020 | -1.9% | USDCAD | no |
-| One-day crash like October 1987 | -0.5% | AUDUSD | no |
-| Crypto collapse within a week | +0.3% | PEPE | no |
+| Global financial crisis, Sep-Nov 2008 | -4.5% | USDCAD | no |
+| Inflation and rate hikes, Jan-Oct 2022 | -2.6% | USDCAD | no |
+| Sharp dollar rally | -1.9% | USDCAD | no |
+| Covid crash, Feb-Mar 2020 | -1.5% | USDCAD | no |
+| One-day crash like October 1987 | -0.2% | AUDUSD | no |
+| Crypto collapse within a week | +0.8% | PEPE | no |
 
 ## Equity, last runs
 
@@ -101,5 +100,6 @@
 | 2026-11-14 | 11,531.63 |
 | 2026-11-15 | 11,605.84 |
 | 2026-11-16 | 11,594.06 |
+| 2026-11-16 | 11,592.10 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

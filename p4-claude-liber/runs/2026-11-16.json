@@ -1,7 +1,7 @@
 {
-  "time": "2026-11-16T02:26:51.668808+00:00",
+  "time": "2026-11-16T23:50:42.978033+00:00",
   "strategy": "ai_council",
-  "candles_processed": 49,
+  "candles_processed": 5,
   "splits": {},
   "kill_switch": false,
   "kill_reason": null,

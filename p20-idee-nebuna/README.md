@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:11.671848+00:00 | strategy `ai_council`
-- Equity: 11,736.39 USD (start 11,183.00, +4.95%)
-- Gross leverage: 0.33x | candles processed: 49
+- Run: 2026-11-16T23:51:11.565376+00:00 | strategy `ai_council`
+- Equity: 11,736.32 USD (start 11,183.00, +4.95%)
+- Gross leverage: 0.33x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -14,7 +14,6 @@
 | ARB | -464.8565 | 0.1279 | 0.1348 | -62.66 | -0.5% | -3.19 | 0.1726 |
 | AVAX | -11.7631 | 7.0984 | 7.3110 | -86.00 | -0.7% | -2.50 | 8.9698 |
 | BCH | -0.0893 | 201.1994 | 210.8000 | -18.83 | -0.2% | -0.86 | 248.9221 |
-| BNB | 0.0682 | 629.7481 | 581.3782 | 39.63 | +0.3% | -3.30 | 564.2555 |
 | CAT | -0.2153 | 569.5791 | 600.2000 | -129.20 | -1.1% | -6.59 | 689.8439 |
 | CRUDE_OIL | 0.3519 | 142.5928 | 145.5800 | 51.23 | +0.4% | +1.05 | 131.6633 |
 | CVX | 0.6894 | 212.3837 | 219.8900 | 151.59 | +1.3% | +5.17 | 195.1599 |
@@ -42,37 +41,37 @@
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| NASDAQ100 | SELL | +0.0% -> -2.0% | PENDING |  |
+| NASDAQ100 | SELL | +0.0% -> -1.0% | PENDING |  |
 | EURUSD | BUY | -9.7% -> +0.0% | PENDING |  |
-| USDJPY | SELL | +0.0% -> -20.8% | PENDING |  |
-| BNB | SELL | +0.3% -> +0.0% | PENDING |  |
+| USDJPY | SELL | +0.0% -> -10.2% | PENDING |  |
+| BNB | SELL | +0.0% -> -0.4% | PENDING |  |
 | AAPL | BUY | -0.3% -> +0.0% | PENDING |  |
-| NVDA | SELL | +0.0% -> -1.1% | PENDING |  |
+| NVDA | SELL | +0.0% -> -0.5% | PENDING |  |
 | JPM | BUY | -0.4% -> +0.0% | PENDING |  |
-| GS | SELL | +0.0% -> -0.5% | PENDING |  |
-| BA | BUY | +0.0% -> +0.4% | PENDING |  |
-| RHEINMETALL | BUY | +0.0% -> +0.3% | PENDING |  |
-| HENSOLDT | BUY | +0.0% -> +0.8% | PENDING |  |
-| BAE | BUY | +0.0% -> +0.6% | PENDING |  |
-| NORTHROP | BUY | +0.0% -> +0.6% | PENDING |  |
-| L3HARRIS | BUY | -0.5% -> +1.7% | PENDING |  |
-| DOGE | SELL | +0.0% -> -0.7% | PENDING |  |
-| UNI | BUY | +0.0% -> +0.3% | PENDING |  |
-| OP | SELL | +0.0% -> -0.5% | PENDING |  |
-| STX | BUY | +0.0% -> +0.3% | PENDING |  |
-| WLD | SELL | +0.0% -> -0.4% | PENDING |  |
-| JUP | BUY | +0.0% -> +0.2% | PENDING |  |
+| GS | SELL | +0.0% -> -0.3% | PENDING |  |
+| BA | BUY | +0.0% -> +0.2% | PENDING |  |
+| RHEINMETALL | BUY | +0.0% -> +0.1% | PENDING |  |
+| HENSOLDT | BUY | +0.0% -> +0.4% | PENDING |  |
+| BAE | BUY | +0.0% -> +0.3% | PENDING |  |
+| NORTHROP | BUY | +0.0% -> +0.3% | PENDING |  |
+| L3HARRIS | BUY | -0.5% -> +0.8% | PENDING |  |
+| DOGE | SELL | +0.0% -> -0.3% | PENDING |  |
+| UNI | BUY | +0.0% -> +0.1% | PENDING |  |
+| OP | SELL | +0.0% -> -0.2% | PENDING |  |
+| STX | BUY | +0.0% -> +0.2% | PENDING |  |
+| WLD | SELL | +0.0% -> -0.2% | PENDING |  |
+| JUP | BUY | +0.0% -> +0.1% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Covid crash, Feb-Mar 2020 | -1.8% | PG | no |
-| One-day crash like October 1987 | -1.2% | PG | no |
-| Global financial crisis, Sep-Nov 2008 | -0.6% | PG | no |
-| Crypto collapse within a week | +0.2% | PEPE | no |
+| Covid crash, Feb-Mar 2020 | -1.6% | PG | no |
+| One-day crash like October 1987 | -1.1% | PG | no |
+| Global financial crisis, Sep-Nov 2008 | -0.3% | PG | no |
+| Crypto collapse within a week | +0.3% | PEPE | no |
 | Sharp dollar rally | +0.7% | PG | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +0.8% | PG | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +1.1% | PG | no |
 
 ## Equity, last runs
 
@@ -91,5 +90,6 @@
 | 2026-11-14 | 11,665.92 |
 | 2026-11-15 | 11,748.30 |
 | 2026-11-16 | 11,736.39 |
+| 2026-11-16 | 11,736.32 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

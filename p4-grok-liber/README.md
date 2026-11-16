@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:26:50.896070+00:00 | strategy `ai_council`
+- Run: 2026-11-16T23:50:41.910493+00:00 | strategy `ai_council`
 - Equity: 11,613.66 USD (start 11,183.00, +3.85%)
-- Gross leverage: 0.29x | candles processed: 49
+- Gross leverage: 0.29x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -72,6 +72,7 @@
 | 2026-11-12 | 11,357.68 |
 | 2026-11-14 | 11,465.78 |
 | 2026-11-15 | 11,668.63 |
+| 2026-11-16 | 11,613.66 |
 | 2026-11-16 | 11,613.66 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:08.201230+00:00 | strategy `ai_council`
-- Equity: 11,733.77 USD (start 11,183.00, +4.93%)
-- Gross leverage: 0.69x | candles processed: 49
+- Run: 2026-11-16T23:51:06.993397+00:00 | strategy `ai_council`
+- Equity: 11,733.15 USD (start 11,183.00, +4.92%)
+- Gross leverage: 0.66x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -19,8 +19,6 @@
 | ATOM | -68.2697 | 1.3043 | 1.3110 | -89.50 | -0.8% | -0.45 | 1.5951 |
 | AVAX | -13.9435 | 7.0984 | 7.3110 | -101.94 | -0.9% | -2.96 | 8.9698 |
 | BCH | -0.0899 | 201.1994 | 210.8000 | -18.95 | -0.2% | -0.86 | 248.9221 |
-| BITCOIN | -0.0024 | 71307.2973 | 64128.0508 | -154.45 | -1.3% | +17.29 | 78151.3596 |
-| BNB | 0.0686 | 629.7481 | 581.3782 | 39.88 | +0.3% | -3.32 | 564.2555 |
 | CAT | -0.5190 | 609.2672 | 600.2000 | -311.52 | -2.7% | +4.71 | 709.8934 |
 | CRUDE_OIL | 0.3473 | 142.5928 | 145.5800 | 50.55 | +0.4% | +1.04 | 131.6633 |
 | CRV | -230.0790 | 0.2470 | 0.2067 | -47.56 | -0.4% | +9.27 | 0.3156 |
@@ -71,7 +69,6 @@
 | WMT | 0.8053 | 127.0381 | 128.0900 | 103.15 | +0.9% | +0.85 | 117.0385 |
 | XLM | -1086.5736 | 0.1622 | 0.1416 | -153.86 | -1.3% | +22.40 | 0.1873 |
 | XOM | 1.4964 | 163.8692 | 170.5900 | 255.27 | +2.2% | +10.06 | 151.6502 |
-| XRP | -170.2029 | 1.2767 | 0.9130 | -155.40 | -1.3% | +61.90 | 1.4178 |
 
 ## Orders for the next open
 
@@ -79,17 +76,15 @@
 |---|---|---|---|---|
 | EURUSD | BUY | -3.0% -> +0.0% | PENDING |  |
 | USDJPY | SELL | +0.0% -> -4.0% | PENDING |  |
-| BITCOIN | BUY | -1.3% -> +0.0% | PENDING |  |
-| BNB | SELL | +0.3% -> +0.0% | PENDING |  |
-| XRP | BUY | -1.3% -> +0.0% | PENDING |  |
+| BNB | SELL | +0.0% -> -0.7% | PENDING |  |
 | AAPL | BUY | -0.6% -> +0.0% | PENDING |  |
-| JNJ | SELL | +0.0% -> -0.7% | PENDING |  |
+| JNJ | SELL | +0.0% -> -0.6% | PENDING |  |
 | JPM | BUY | -0.7% -> +0.0% | PENDING |  |
 | GS | SELL | +0.0% -> -0.5% | PENDING |  |
 | BA | BUY | +0.0% -> +0.4% | PENDING |  |
-| BAE | BUY | +0.0% -> +0.6% | PENDING |  |
+| BAE | BUY | +0.0% -> +0.5% | PENDING |  |
 | NORTHROP | BUY | +0.0% -> +0.6% | PENDING |  |
-| L3HARRIS | BUY | -4.0% -> +1.7% | PENDING |  |
+| L3HARRIS | BUY | -4.0% -> +1.6% | PENDING |  |
 | UNI | BUY | +0.0% -> +0.3% | PENDING |  |
 | INJ | SELL | +0.0% -> -0.1% | PENDING |  |
 | STX | BUY | +0.0% -> +0.3% | PENDING |  |
@@ -99,12 +94,12 @@
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Sharp dollar rally | +2.8% | KO | no |
-| One-day crash like October 1987 | +7.0% | KO | no |
-| Covid crash, Feb-Mar 2020 | +11.6% | KO | no |
-| Crypto collapse within a week | +12.6% | PEPE | no |
-| Global financial crisis, Sep-Nov 2008 | +17.2% | KO | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +18.4% | KO | no |
+| Sharp dollar rally | +2.6% | KO | no |
+| One-day crash like October 1987 | +6.3% | KO | no |
+| Covid crash, Feb-Mar 2020 | +10.5% | KO | no |
+| Crypto collapse within a week | +11.5% | PEPE | no |
+| Global financial crisis, Sep-Nov 2008 | +15.6% | KO | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +16.8% | KO | no |
 
 ## Equity, last runs
 
@@ -123,5 +118,6 @@
 | 2026-11-14 | 11,486.97 |
 | 2026-11-15 | 11,823.71 |
 | 2026-11-16 | 11,733.77 |
+| 2026-11-16 | 11,733.15 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

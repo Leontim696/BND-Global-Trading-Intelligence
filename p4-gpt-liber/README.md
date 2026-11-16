@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:26:50.055634+00:00 | strategy `ai_council`
-- Equity: 11,414.58 USD (start 11,183.00, +2.07%)
-- Gross leverage: 0.39x | candles processed: 49
+- Run: 2026-11-16T23:50:40.972984+00:00 | strategy `ai_council`
+- Equity: 11,410.52 USD (start 11,183.00, +2.03%)
+- Gross leverage: 0.37x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -15,15 +15,13 @@
 | ARB | -349.2617 | 0.1517 | 0.1348 | -47.08 | -0.4% | +5.91 | 0.1965 |
 | ATOM | -54.0383 | 1.3913 | 1.3110 | -70.84 | -0.6% | +4.34 | 1.6673 |
 | AVAX | -7.4588 | 7.0984 | 7.3110 | -54.53 | -0.5% | -1.59 | 8.9698 |
-| BITCOIN | -0.0031 | 71307.2973 | 64128.0508 | -197.80 | -1.7% | +22.14 | 78151.3596 |
-| BNB | -0.2129 | 629.1186 | 581.3782 | -123.79 | -1.1% | +10.17 | 694.6112 |
+| BITCOIN | -0.0031 | 71307.2973 | 65305.0625 | -201.43 | -1.8% | +18.51 | 78151.3596 |
 | BONK | -23985265.2780 | 0.0000 | 0.0000 | -56.61 | -0.5% | -1.52 | 0.0000 |
 | CRV | -280.1072 | 0.2412 | 0.2067 | -57.90 | -0.5% | +9.66 | 0.3085 |
 | DOGE | -1413.6651 | 0.0674 | 0.0599 | -84.64 | -0.7% | +10.64 | 0.0784 |
 | DOT | -86.6475 | 0.7056 | 0.7370 | -63.86 | -0.6% | -2.72 | 0.9023 |
 | ENA | -250.4552 | 0.1747 | 0.1214 | -30.41 | -0.3% | +13.35 | 0.2361 |
 | ETC | -12.1348 | 6.8566 | 6.0200 | -73.05 | -0.6% | +10.15 | 8.0493 |
-| ETHEREUM | -0.0511 | 2119.9197 | 1769.1205 | -90.40 | -0.8% | +17.93 | 2407.0414 |
 | EURUSD | -1122.3313 | 1.1096 | 1.1050 | -1,240.20 | -10.9% | +5.11 | 1.1396 |
 | FET | -356.8687 | 0.1273 | 0.1326 | -47.32 | -0.4% | -1.88 | 0.1680 |
 | FIL | -76.1315 | 0.7883 | 0.6135 | -46.71 | -0.4% | +13.31 | 1.0087 |
@@ -57,9 +55,7 @@
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| EURUSD | SELL | -10.9% -> -18.0% | PENDING |  |
-| ETHEREUM | BUY | -0.8% -> +0.0% | PENDING |  |
-| BNB | BUY | -1.1% -> +0.0% | PENDING |  |
+| EURUSD | SELL | -10.9% -> -17.9% | PENDING |  |
 | RENK | BUY | -1.3% -> +0.0% | PENDING |  |
 | DOGE | BUY | -0.7% -> +0.0% | PENDING |  |
 | ADA | BUY | -0.6% -> +0.0% | PENDING |  |
@@ -83,12 +79,12 @@
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Sharp dollar rally | +3.9% | - | no |
-| One-day crash like October 1987 | +7.6% | - | no |
-| Crypto collapse within a week | +12.1% | - | no |
-| Covid crash, Feb-Mar 2020 | +13.2% | - | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +19.3% | - | no |
-| Global financial crisis, Sep-Nov 2008 | +20.3% | - | no |
+| Sharp dollar rally | +3.7% | - | no |
+| One-day crash like October 1987 | +7.1% | - | no |
+| Crypto collapse within a week | +11.1% | - | no |
+| Covid crash, Feb-Mar 2020 | +12.2% | - | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +18.0% | - | no |
+| Global financial crisis, Sep-Nov 2008 | +19.0% | - | no |
 
 ## Equity, last runs
 
@@ -107,5 +103,6 @@
 | 2026-11-14 | 11,292.23 |
 | 2026-11-15 | 11,463.39 |
 | 2026-11-16 | 11,414.58 |
+| 2026-11-16 | 11,410.52 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

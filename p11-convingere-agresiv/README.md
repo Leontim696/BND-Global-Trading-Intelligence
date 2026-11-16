@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:00.901898+00:00 | strategy `ai_council`
-- Equity: 11,791.13 USD (start 11,183.00, +5.44%)
-- Gross leverage: 0.91x | candles processed: 49
+- Run: 2026-11-16T23:50:54.760779+00:00 | strategy `ai_council`
+- Equity: 11,781.17 USD (start 11,183.00, +5.35%)
+- Gross leverage: 0.93x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -14,11 +14,11 @@
 | ARB | -1164.5624 | 0.1279 | 0.1348 | -156.98 | -1.3% | -7.99 | 0.1726 |
 | ATOM | -114.2852 | 1.3913 | 1.3110 | -149.83 | -1.3% | +9.18 | 1.6673 |
 | AVAX | -47.8521 | 7.0984 | 7.3110 | -349.85 | -3.0% | -10.17 | 8.9698 |
+| BITCOIN | -0.0075 | 64095.9868 | 65305.0625 | -489.93 | -4.2% | -9.07 | 71831.5284 |
 | CRV | -592.3970 | 0.2412 | 0.2067 | -122.45 | -1.0% | +20.43 | 0.3085 |
 | DOGE | -2989.7515 | 0.0674 | 0.0599 | -179.00 | -1.5% | +22.51 | 0.0784 |
 | ETC | -54.2317 | 6.8566 | 6.0200 | -326.48 | -2.8% | +45.37 | 8.0493 |
-| ETHEREUM | -0.1302 | 2054.8483 | 1769.1205 | -230.34 | -2.0% | +37.20 | 2338.4021 |
-| EURUSD | -2373.6114 | 1.1096 | 1.1050 | -2,622.89 | -22.2% | +10.81 | 1.1396 |
+| EURUSD | -2373.6114 | 1.1096 | 1.1050 | -2,622.89 | -22.3% | +10.81 | 1.1396 |
 | FLOKI | -11826091.9762 | 0.0000 | 0.0000 | -221.86 | -1.9% | -10.37 | 0.0000 |
 | GOLD | -1.3788 | 357.4927 | 355.4500 | -490.08 | -4.2% | +2.82 | 385.7472 |
 | ICP | -174.8761 | 2.1689 | 2.2350 | -390.85 | -3.3% | -11.56 | 2.7278 |
@@ -41,9 +41,7 @@
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
 | CRUDE_OIL | BUY | +0.0% -> +3.8% | PENDING |  |
-| EURUSD | BUY | -22.2% -> +0.0% | PENDING |  |
-| BITCOIN | SELL | +0.0% -> -4.1% | PENDING |  |
-| ETHEREUM | BUY | -2.0% -> +0.0% | PENDING |  |
+| EURUSD | BUY | -22.3% -> +0.0% | PENDING |  |
 | GOOGL | SELL | +0.0% -> -4.6% | PENDING |  |
 | KO | SELL | +6.3% -> +0.0% | PENDING |  |
 | PG | SELL | +5.2% -> +0.0% | PENDING |  |
@@ -62,12 +60,12 @@
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| One-day crash like October 1987 | +4.5% | KO | no |
-| Sharp dollar rally | +4.8% | KO | no |
-| Covid crash, Feb-Mar 2020 | +9.5% | KO | no |
-| Crypto collapse within a week | +15.5% | KO | no |
-| Global financial crisis, Sep-Nov 2008 | +18.1% | KO | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +20.4% | KO | no |
+| Sharp dollar rally | +5.0% | KO | no |
+| One-day crash like October 1987 | +5.2% | KO | no |
+| Covid crash, Feb-Mar 2020 | +10.4% | KO | no |
+| Crypto collapse within a week | +16.4% | KO | no |
+| Global financial crisis, Sep-Nov 2008 | +19.6% | KO | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +21.9% | KO | no |
 
 ## Equity, last runs
 
@@ -86,5 +84,6 @@
 | 2026-11-14 | 11,531.58 |
 | 2026-11-15 | 11,921.59 |
 | 2026-11-16 | 11,791.13 |
+| 2026-11-16 | 11,781.17 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

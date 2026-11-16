@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:16.364444+00:00 | strategy `hibrid`
-- Equity: 11,567.55 USD (start 11,183.00, +3.44%)
-- Gross leverage: 0.76x | candles processed: 49
+- Run: 2026-11-16T23:51:20.663271+00:00 | strategy `hibrid`
+- Equity: 11,560.31 USD (start 11,183.00, +3.37%)
+- Gross leverage: 0.75x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -18,7 +18,6 @@
 | CRUDE_OIL | 0.5068 | 142.7028 | 145.5800 | 73.79 | +0.6% | +1.46 | 138.6210 |
 | CVX | 0.6310 | 212.3837 | 219.8900 | 138.75 | +1.2% | +4.74 | 206.9956 |
 | EMERGING | -7.1830 | 60.5639 | 60.9200 | -437.59 | -3.8% | -2.56 | 62.8524 |
-| ETHEREUM | -0.0642 | 1926.6251 | 1769.1205 | -113.52 | -1.0% | +10.11 | 1966.1406 |
 | EURUSD | -296.6336 | 1.1237 | 1.1050 | -327.79 | -2.8% | +5.53 | 1.1431 |
 | ITA | -0.9540 | 72.3683 | 71.5100 | -68.22 | -0.6% | +0.82 | 73.7970 |
 | JAPAN | -3.5799 | 90.6809 | 91.7600 | -328.49 | -2.8% | -3.86 | 93.3096 |
@@ -30,7 +29,6 @@
 | NATURAL_GAS | 17.7615 | 10.2131 | 10.1500 | 180.28 | +1.6% | -1.12 | 9.8784 |
 | PG | 1.7767 | 166.0498 | 169.8000 | 301.69 | +2.6% | +6.66 | 162.0920 |
 | RTX | 0.3669 | 196.2189 | 198.5800 | 72.86 | +0.6% | +0.87 | 192.3838 |
-| SOLANA | -1.0384 | 78.0570 | 70.1769 | -72.87 | -0.6% | +8.18 | 79.6580 |
 | SP500 | 0.1429 | 754.0554 | 754.3700 | 107.78 | +0.9% | +0.04 | 744.6138 |
 | UNH | 0.3360 | 405.2015 | 407.4600 | 136.89 | +1.2% | +0.76 | 394.8812 |
 | US10Y_NOTE | -2.8036 | 92.0008 | 90.0400 | -252.44 | -2.2% | +5.50 | 93.6972 |
@@ -50,6 +48,8 @@
 | GBPUSD | BUY | +0.0% -> +10.6% | PENDING |  |
 | USDJPY | SELL | +0.0% -> -3.4% | PENDING |  |
 | BITCOIN | SELL | +0.0% -> -1.3% | PENDING |  |
+| ETHEREUM | SELL | +0.0% -> -0.8% | PENDING |  |
+| SOLANA | SELL | +0.0% -> -0.7% | PENDING |  |
 | BNB | SELL | +0.0% -> -0.6% | PENDING |  |
 | XRP | SELL | +0.0% -> -0.7% | PENDING |  |
 | AAPL | BUY | -0.6% -> +0.0% | PENDING |  |
@@ -108,12 +108,12 @@
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Global financial crisis, Sep-Nov 2008 | -4.7% | USDCAD | no |
-| Covid crash, Feb-Mar 2020 | -2.1% | KO | no |
-| Sharp dollar rally | -1.9% | USDCAD | no |
-| Inflation and rate hikes, Jan-Oct 2022 | -0.7% | USDCAD | no |
-| One-day crash like October 1987 | -0.5% | KO | no |
-| Crypto collapse within a week | +0.8% | KO | no |
+| Global financial crisis, Sep-Nov 2008 | -5.8% | USDCAD | no |
+| Covid crash, Feb-Mar 2020 | -3.0% | KO | no |
+| Sharp dollar rally | -2.1% | USDCAD | no |
+| Inflation and rate hikes, Jan-Oct 2022 | -1.9% | USDCAD | no |
+| One-day crash like October 1987 | -1.0% | KO | no |
+| Crypto collapse within a week | -0.1% | KO | no |
 
 ## Equity, last runs
 
@@ -131,5 +131,6 @@
 | 2026-11-14 | 11,399.02 |
 | 2026-11-15 | 11,564.54 |
 | 2026-11-16 | 11,567.55 |
+| 2026-11-16 | 11,560.31 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

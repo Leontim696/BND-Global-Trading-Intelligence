@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T02:27:17.735881+00:00 | strategy `hibrid`
-- Equity: 11,572.09 USD (start 11,183.00, +3.48%)
-- Gross leverage: 0.86x | candles processed: 49
+- Run: 2026-11-16T23:51:22.499958+00:00 | strategy `hibrid`
+- Equity: 11,564.50 USD (start 11,183.00, +3.41%)
+- Gross leverage: 0.86x | candles processed: 5
 - Kill switch: off
 
 ## Positions
@@ -13,13 +13,13 @@
 | AGRICULTURE | -29.3854 | 26.4921 | 26.5500 | -780.18 | -6.7% | -1.70 | 27.2435 |
 | AMZN | 0.1912 | 268.0004 | 266.6600 | 50.98 | +0.4% | -0.26 | 258.1849 |
 | AUDUSD | 1316.1957 | 0.6869 | 0.6774 | 891.61 | +7.7% | -12.49 | 0.6714 |
+| BNB | -0.1224 | 581.0875 | 595.9890 | -72.93 | -0.6% | -1.82 | 598.8196 |
 | BROAD_COMMODITIES | 15.4484 | 31.6195 | 30.7900 | 475.66 | +4.1% | -12.81 | 30.3513 |
 | CAT | -0.1896 | 592.7321 | 600.2000 | -113.78 | -1.0% | -1.42 | 619.6583 |
 | COPPER | 8.7665 | 37.5613 | 36.5300 | 320.24 | +2.8% | -9.04 | 36.2392 |
 | CRUDE_OIL | 0.2787 | 138.7216 | 145.5800 | 40.57 | +0.4% | +1.91 | 138.3802 |
 | CVX | 0.6311 | 212.3837 | 219.8900 | 138.76 | +1.2% | +4.74 | 204.8834 |
 | EMERGING | -7.1830 | 60.5639 | 60.9200 | -437.59 | -3.8% | -2.56 | 63.4686 |
-| ETHEREUM | -0.0643 | 1926.6251 | 1769.1205 | -113.70 | -1.0% | +10.12 | 1985.4165 |
 | EURUSD | -296.6648 | 1.1237 | 1.1050 | -327.82 | -2.8% | +5.53 | 1.1543 |
 | FIL | -70.9911 | 0.6173 | 0.6135 | -43.55 | -0.4% | +0.27 | 0.6361 |
 | GOLD | -0.2242 | 378.0866 | 355.4500 | -79.70 | -0.7% | +5.08 | 383.6956 |
@@ -37,7 +37,6 @@
 | PG | 1.7877 | 166.0498 | 169.8000 | 303.56 | +2.6% | +6.70 | 160.4380 |
 | RTX | 0.3666 | 196.2189 | 198.5800 | 72.81 | +0.6% | +0.87 | 190.4207 |
 | SILVER | -4.7155 | 47.7257 | 44.1300 | -208.09 | -1.8% | +16.96 | 48.5748 |
-| SOLANA | -1.0401 | 78.0570 | 70.1769 | -72.99 | -0.6% | +8.20 | 80.4390 |
 | SP500 | 0.1431 | 754.0554 | 754.3700 | 107.95 | +0.9% | +0.05 | 737.0157 |
 | UNH | 0.3365 | 405.2015 | 407.4600 | 137.11 | +1.2% | +0.76 | 390.8518 |
 | US10Y_NOTE | -2.8039 | 92.0008 | 90.0400 | -252.46 | -2.2% | +5.50 | 94.6158 |
@@ -54,7 +53,8 @@
 | GBPUSD | BUY | +0.0% -> +10.6% | PENDING |  |
 | USDJPY | SELL | +0.0% -> -3.4% | PENDING |  |
 | BITCOIN | SELL | +0.0% -> -1.3% | PENDING |  |
-| BNB | SELL | +0.0% -> -0.6% | PENDING |  |
+| ETHEREUM | SELL | +0.0% -> -0.8% | PENDING |  |
+| SOLANA | SELL | +0.0% -> -0.7% | PENDING |  |
 | XRP | SELL | +0.0% -> -0.7% | PENDING |  |
 | AAPL | BUY | -0.6% -> +0.0% | PENDING |  |
 | GOOGL | SELL | +0.0% -> -1.5% | PENDING |  |
@@ -107,12 +107,12 @@
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Global financial crisis, Sep-Nov 2008 | -5.9% | USDCAD | no |
-| Covid crash, Feb-Mar 2020 | -2.5% | KO | no |
-| Sharp dollar rally | -2.0% | USDCAD | no |
-| One-day crash like October 1987 | -0.8% | KO | no |
-| Inflation and rate hikes, Jan-Oct 2022 | -0.6% | KO | no |
-| Crypto collapse within a week | +1.2% | KO | no |
+| Global financial crisis, Sep-Nov 2008 | -6.6% | USDCAD | no |
+| Covid crash, Feb-Mar 2020 | -3.1% | KO | no |
+| Sharp dollar rally | -2.1% | USDCAD | no |
+| Inflation and rate hikes, Jan-Oct 2022 | -1.3% | KO | no |
+| One-day crash like October 1987 | -1.1% | KO | no |
+| Crypto collapse within a week | +0.6% | KO | no |
 
 ## Equity, last runs
 
@@ -130,5 +130,6 @@
 | 2026-11-14 | 11,431.06 |
 | 2026-11-15 | 11,582.68 |
 | 2026-11-16 | 11,572.09 |
+| 2026-11-16 | 11,564.50 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
