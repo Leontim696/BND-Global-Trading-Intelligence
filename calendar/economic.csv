@@ -251,3 +251,123 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-13T21:00+00:00|USD|FOMC Financial Stability Report,2026-11-13T21:00+00:00,USD,FOMC Financial Stability Report,Low,,
 2026-11-14T00:00+00:00|USD|FOMC Member Jefferson Speaks,2026-11-14T00:00+00:00,USD,FOMC Member Jefferson Speaks,Low,,
 2026-11-14T11:00+00:00|GBP|MPC Member Greene Speaks,2026-11-14T11:00+00:00,GBP,MPC Member Greene Speaks,Low,,
+2026-11-15T21:30+00:00|NZD|BusinessNZ Services Index,2026-11-15T21:30+00:00,NZD,BusinessNZ Services Index,Low,,50.9
+2026-11-15T23:50+00:00|JPY|Prelim GDP Price Index y/y,2026-11-15T23:50+00:00,JPY,Prelim GDP Price Index y/y,Low,2.6%,2.6%
+2026-11-15T23:50+00:00|JPY|Prelim GDP q/q,2026-11-15T23:50+00:00,JPY,Prelim GDP q/q,Low,0.1%,0.3%
+2026-11-16T00:01+00:00|GBP|Rightmove HPI m/m,2026-11-16T00:01+00:00,GBP,Rightmove HPI m/m,Low,,1.0%
+2026-11-16T01:30+00:00|CNY|New Home Prices m/m,2026-11-16T01:30+00:00,CNY,New Home Prices m/m,Low,,-0.14%
+2026-11-16T02:00+00:00|CNY|Fixed Asset Investment ytd/y,2026-11-16T02:00+00:00,CNY,Fixed Asset Investment ytd/y,Low,-7.0%,-7.2%
+2026-11-16T02:00+00:00|CNY|Industrial Production y/y,2026-11-16T02:00+00:00,CNY,Industrial Production y/y,Low,5.3%,5.5%
+2026-11-16T02:00+00:00|CNY|NBS Press Conference,2026-11-16T02:00+00:00,CNY,NBS Press Conference,Low,,
+2026-11-16T02:00+00:00|CNY|Retail Sales y/y,2026-11-16T02:00+00:00,CNY,Retail Sales y/y,Low,0.8%,1.1%
+2026-11-16T02:00+00:00|CNY|Unemployment Rate,2026-11-16T02:00+00:00,CNY,Unemployment Rate,Low,5.2%,5.2%
+2026-11-16T04:30+00:00|JPY|Revised Industrial Production m/m,2026-11-16T04:30+00:00,JPY,Revised Industrial Production m/m,Low,2.2%,2.2%
+2026-11-16T10:00+00:00|EUR|Industrial Production m/m,2026-11-16T10:00+00:00,EUR,Industrial Production m/m,Low,0.3%,-0.5%
+2026-11-16T10:00+00:00|USD|FOMC Member Barr Speaks,2026-11-16T10:00+00:00,USD,FOMC Member Barr Speaks,Low,,
+2026-11-16T13:30+00:00|CAD|CPI m/m,2026-11-16T13:30+00:00,CAD,CPI m/m,High,0.3%,0.1%
+2026-11-16T13:30+00:00|CAD|Common CPI y/y,2026-11-16T13:30+00:00,CAD,Common CPI y/y,Medium,2.5%,2.4%
+2026-11-16T13:30+00:00|CAD|Core CPI m/m,2026-11-16T13:30+00:00,CAD,Core CPI m/m,Low,0.2%,0.0%
+2026-11-16T13:30+00:00|CAD|Median CPI y/y,2026-11-16T13:30+00:00,CAD,Median CPI y/y,High,2.0%,1.9%
+2026-11-16T13:30+00:00|CAD|Trimmed CPI y/y,2026-11-16T13:30+00:00,CAD,Trimmed CPI y/y,High,1.9%,1.8%
+2026-11-16T13:30+00:00|USD|Empire State Manufacturing Index,2026-11-16T13:30+00:00,USD,Empire State Manufacturing Index,Low,17.6,25.5
+2026-11-16T14:05+00:00|USD|FOMC Member Williams Speaks,2026-11-16T14:05+00:00,USD,FOMC Member Williams Speaks,Low,,
+2026-11-16T14:48+00:00|USD|Cleveland Fed Inflation Expectations,2026-11-16T14:48+00:00,USD,Cleveland Fed Inflation Expectations,Low,,3.3%
+2026-11-16T17:00+00:00|USD|Fed Chairman Warsh Speaks,2026-11-16T17:00+00:00,USD,Fed Chairman Warsh Speaks,High,,
+2026-11-16T19:15+00:00|USD|FOMC Member Hammack Speaks,2026-11-16T19:15+00:00,USD,FOMC Member Hammack Speaks,Low,,
+2026-11-16T20:00+00:00|NZD|RBNZ Financial Stability Report,2026-11-16T20:00+00:00,NZD,RBNZ Financial Stability Report,Low,,
+2026-11-16T21:45+00:00|NZD|FPI m/m,2026-11-16T21:45+00:00,NZD,FPI m/m,Low,,0.0%
+2026-11-16T22:50+00:00|AUD|RBA Gov Bullock Speaks,2026-11-16T22:50+00:00,AUD,RBA Gov Bullock Speaks,High,,
+2026-11-17T00:30+00:00|AUD|Monetary Policy Meeting Minutes,2026-11-17T00:30+00:00,AUD,Monetary Policy Meeting Minutes,Low,,
+2026-11-17T02:00+00:00|NZD|Inflation Expectations q/q,2026-11-17T02:00+00:00,NZD,Inflation Expectations q/q,High,,2.34%
+2026-11-17T04:30+00:00|JPY|Tertiary Industry Activity m/m,2026-11-17T04:30+00:00,JPY,Tertiary Industry Activity m/m,Low,0.0%,-0.1%
+2026-11-17T07:00+00:00|GBP|Average Earnings Index 3m/y,2026-11-17T07:00+00:00,GBP,Average Earnings Index 3m/y,Medium,3.5%,3.7%
+2026-11-17T07:00+00:00|GBP|Claimant Count Change,2026-11-17T07:00+00:00,GBP,Claimant Count Change,Low,28.1K,30.3K
+2026-11-17T07:00+00:00|GBP|Unemployment Rate,2026-11-17T07:00+00:00,GBP,Unemployment Rate,Low,4.7%,4.7%
+2026-11-17T10:00+00:00|EUR|EU Economic Forecasts,2026-11-17T10:00+00:00,EUR,EU Economic Forecasts,Low,,
+2026-11-17T10:00+00:00|EUR|German ZEW Economic Sentiment,2026-11-17T10:00+00:00,EUR,German ZEW Economic Sentiment,Low,28.3,28.1
+2026-11-17T10:00+00:00|EUR|ZEW Economic Sentiment,2026-11-17T10:00+00:00,EUR,ZEW Economic Sentiment,Low,18.3,18.5
+2026-11-17T12:30+00:00|USD|FOMC Member Musalem Speaks,2026-11-17T12:30+00:00,USD,FOMC Member Musalem Speaks,Low,,
+2026-11-17T13:15+00:00|CAD|Housing Starts,2026-11-17T13:15+00:00,CAD,Housing Starts,Low,243K,249K
+2026-11-17T13:15+00:00|USD|ADP Weekly Employment Change,2026-11-17T13:15+00:00,USD,ADP Weekly Employment Change,Low,,19.8K
+2026-11-17T13:30+00:00|CAD|Foreign Securities Purchases,2026-11-17T13:30+00:00,CAD,Foreign Securities Purchases,Low,14.85B,-17.31B
+2026-11-17T13:30+00:00|USD|Core Retail Sales m/m,2026-11-17T13:30+00:00,USD,Core Retail Sales m/m,High,0.4%,0.9%
+2026-11-17T13:30+00:00|USD|Import Prices m/m,2026-11-17T13:30+00:00,USD,Import Prices m/m,Low,0.7%,1.1%
+2026-11-17T13:30+00:00|USD|Retail Sales m/m,2026-11-17T13:30+00:00,USD,Retail Sales m/m,High,0.2%,0.8%
+2026-11-17T14:10+00:00|USD|FOMC Member Waller Speaks,2026-11-17T14:10+00:00,USD,FOMC Member Waller Speaks,Low,,
+2026-11-17T14:15+00:00|USD|Capacity Utilization Rate,2026-11-17T14:15+00:00,USD,Capacity Utilization Rate,Low,76.8%,76.9%
+2026-11-17T14:15+00:00|USD|Industrial Production m/m,2026-11-17T14:15+00:00,USD,Industrial Production m/m,Low,0.1%,0.7%
+2026-11-17T14:30+00:00|USD|FOMC Member Hammack Speaks,2026-11-17T14:30+00:00,USD,FOMC Member Hammack Speaks,Low,,
+2026-11-17T15:00+00:00|USD|Business Inventories m/m,2026-11-17T15:00+00:00,USD,Business Inventories m/m,Low,0.5%,0.4%
+2026-11-17T15:00+00:00|USD|NAHB Housing Market Index,2026-11-17T15:00+00:00,USD,NAHB Housing Market Index,Low,29,29
+2026-11-17T15:50+00:00|NZD|GDT Price Index,2026-11-17T15:50+00:00,NZD,GDT Price Index,Low,,3.0%
+2026-11-17T19:25+00:00|USD|FOMC Member Williams Speaks,2026-11-17T19:25+00:00,USD,FOMC Member Williams Speaks,Low,,
+2026-11-17T21:30+00:00|USD|API Weekly Statistical Bulletin,2026-11-17T21:30+00:00,USD,API Weekly Statistical Bulletin,Low,,
+2026-11-17T21:45+00:00|NZD|PPI Input q/q,2026-11-17T21:45+00:00,NZD,PPI Input q/q,Low,1.5%,2.9%
+2026-11-17T21:45+00:00|NZD|PPI Output q/q,2026-11-17T21:45+00:00,NZD,PPI Output q/q,Low,1.1%,1.6%
+2026-11-17T23:30+00:00|AUD|MI Leading Index m/m,2026-11-17T23:30+00:00,AUD,MI Leading Index m/m,Low,,-0.1%
+2026-11-17T23:50+00:00|JPY|Trade Balance,2026-11-17T23:50+00:00,JPY,Trade Balance,Low,-0.88T,-0.70T
+2026-11-18T00:30+00:00|AUD|Wage Price Index q/q,2026-11-18T00:30+00:00,AUD,Wage Price Index q/q,Medium,0.9%,0.8%
+2026-11-18T02:45+00:00|EUR|German Buba President Nagel Speaks,2026-11-18T02:45+00:00,EUR,German Buba President Nagel Speaks,Low,,
+2026-11-18T07:00+00:00|GBP|CPI y/y,2026-11-18T07:00+00:00,GBP,CPI y/y,High,3.6%,3.5%
+2026-11-18T07:00+00:00|GBP|Core CPI y/y,2026-11-18T07:00+00:00,GBP,Core CPI y/y,Low,2.8%,2.8%
+2026-11-18T07:00+00:00|GBP|PPI Input m/m,2026-11-18T07:00+00:00,GBP,PPI Input m/m,Low,0.8%,1.5%
+2026-11-18T07:00+00:00|GBP|PPI Output m/m,2026-11-18T07:00+00:00,GBP,PPI Output m/m,Low,0.6%,0.8%
+2026-11-18T07:00+00:00|GBP|RPI y/y,2026-11-18T07:00+00:00,GBP,RPI y/y,Low,4.1%,3.9%
+2026-11-18T07:02+00:00|CNY|Foreign Direct Investment ytd/y,2026-11-18T07:02+00:00,CNY,Foreign Direct Investment ytd/y,Low,,-4.3%
+2026-11-18T07:30+00:00|GBP|BOE Gov Bailey Speaks,2026-11-18T07:30+00:00,GBP,BOE Gov Bailey Speaks,Medium,,
+2026-11-18T09:00+00:00|EUR|ECB Financial Stability Review,2026-11-18T09:00+00:00,EUR,ECB Financial Stability Review,Medium,,
+2026-11-18T09:30+00:00|GBP|HPI y/y,2026-11-18T09:30+00:00,GBP,HPI y/y,Low,0.7%,0.9%
+2026-11-18T10:00+00:00|EUR|Final CPI y/y,2026-11-18T10:00+00:00,EUR,Final CPI y/y,Low,4.0%,4.0%
+2026-11-18T10:00+00:00|EUR|Final Core CPI y/y,2026-11-18T10:00+00:00,EUR,Final Core CPI y/y,Low,2.5%,2.5%
+2026-11-18T13:30+00:00|CAD|NHPI m/m,2026-11-18T13:30+00:00,CAD,NHPI m/m,Low,0.1%,-0.2%
+2026-11-18T13:30+00:00|USD|Building Permits,2026-11-18T13:30+00:00,USD,Building Permits,Low,1.38M,1.40M
+2026-11-18T13:30+00:00|USD|Housing Starts,2026-11-18T13:30+00:00,USD,Housing Starts,Low,1.25M,1.22M
+2026-11-18T14:25+00:00|EUR|ECB President Lagarde Speaks,2026-11-18T14:25+00:00,EUR,ECB President Lagarde Speaks,Medium,,
+2026-11-18T15:00+00:00|GBP|BOE Gov Bailey Speaks,2026-11-18T15:00+00:00,GBP,BOE Gov Bailey Speaks,High,,
+2026-11-18T15:00+00:00|USD|Pending Home Sales m/m,2026-11-18T15:00+00:00,USD,Pending Home Sales m/m,Low,-2.3%,-7.3%
+2026-11-18T15:30+00:00|USD|Crude Oil Inventories,2026-11-18T15:30+00:00,USD,Crude Oil Inventories,Low,,4.7M
+2026-11-18T17:30+00:00|CAD|Gov Council Member Gravelle Speaks,2026-11-18T17:30+00:00,CAD,Gov Council Member Gravelle Speaks,Low,,
+2026-11-18T18:00+00:00|NZD|RBNZ Gov Breman Speaks,2026-11-18T18:00+00:00,NZD,RBNZ Gov Breman Speaks,Medium,,
+2026-11-18T18:35+00:00|USD|FOMC Member Barr Speaks,2026-11-18T18:35+00:00,USD,FOMC Member Barr Speaks,Low,,
+2026-11-18T19:00+00:00|USD|FOMC Meeting Minutes,2026-11-18T19:00+00:00,USD,FOMC Meeting Minutes,High,,
+2026-11-18T19:30+00:00|USD|FOMC Member Williams Speaks,2026-11-18T19:30+00:00,USD,FOMC Member Williams Speaks,Low,,
+2026-11-18T21:00+00:00|USD|TIC Long-Term Purchases,2026-11-18T21:00+00:00,USD,TIC Long-Term Purchases,Low,160.7B,279.2B
+2026-11-18T21:15+00:00|USD|FOMC Member Kashkari Speaks,2026-11-18T21:15+00:00,USD,FOMC Member Kashkari Speaks,Low,,
+2026-11-18T21:45+00:00|NZD|Trade Balance,2026-11-18T21:45+00:00,NZD,Trade Balance,Low,-1650M,-1971M
+2026-11-18T23:50+00:00|JPY|Core Machinery Orders m/m,2026-11-18T23:50+00:00,JPY,Core Machinery Orders m/m,Low,1.4%,5.2%
+2026-11-19T00:30+00:00|AUD|Employment Change,2026-11-19T00:30+00:00,AUD,Employment Change,High,25.2K,-39.3K
+2026-11-19T00:30+00:00|AUD|Unemployment Rate,2026-11-19T00:30+00:00,AUD,Unemployment Rate,High,4.7%,4.7%
+2026-11-19T09:00+00:00|EUR|Current Account,2026-11-19T09:00+00:00,EUR,Current Account,Low,16.6B,8.7B
+2026-11-19T11:00+00:00|EUR|German Buba Monthly Report,2026-11-19T11:00+00:00,EUR,German Buba Monthly Report,Low,,
+2026-11-19T11:00+00:00|GBP|CBI Industrial Order Expectations,2026-11-19T11:00+00:00,GBP,CBI Industrial Order Expectations,Low,-29,-32
+2026-11-19T12:15+00:00|GBP|MPC Member Dhingra Speaks,2026-11-19T12:15+00:00,GBP,MPC Member Dhingra Speaks,Low,,
+2026-11-19T13:30+00:00|CAD|IPPI m/m,2026-11-19T13:30+00:00,CAD,IPPI m/m,Low,1.2%,2.0%
+2026-11-19T13:30+00:00|CAD|RMPI m/m,2026-11-19T13:30+00:00,CAD,RMPI m/m,Low,2.0%,4.8%
+2026-11-19T13:30+00:00|EUR|ECB President Lagarde Speaks,2026-11-19T13:30+00:00,EUR,ECB President Lagarde Speaks,Medium,,
+2026-11-19T13:30+00:00|USD|Philly Fed Manufacturing Index,2026-11-19T13:30+00:00,USD,Philly Fed Manufacturing Index,Medium,19.2,20.9
+2026-11-19T13:30+00:00|USD|Unemployment Claims,2026-11-19T13:30+00:00,USD,Unemployment Claims,Medium,199K,200K
+2026-11-19T13:50+00:00|USD|FOMC Member Hammack Speaks,2026-11-19T13:50+00:00,USD,FOMC Member Hammack Speaks,Low,,
+2026-11-19T15:00+00:00|USD|CB Leading Index m/m,2026-11-19T15:00+00:00,USD,CB Leading Index m/m,Low,0.0%,0.0%
+2026-11-19T15:15+00:00|USD|Mortgage Delinquencies,2026-11-19T15:15+00:00,USD,Mortgage Delinquencies,Low,,4.37%
+2026-11-19T15:30+00:00|USD|Natural Gas Storage,2026-11-19T15:30+00:00,USD,Natural Gas Storage,Low,,
+2026-11-19T17:30+00:00|USD|FOMC Member Goolsbee Speaks,2026-11-19T17:30+00:00,USD,FOMC Member Goolsbee Speaks,Low,,
+2026-11-19T19:15+00:00|USD|FOMC Member Barr Speaks,2026-11-19T19:15+00:00,USD,FOMC Member Barr Speaks,Low,,
+2026-11-19T21:00+00:00|USD|FOMC Member Barkin Speaks,2026-11-19T21:00+00:00,USD,FOMC Member Barkin Speaks,Low,,
+2026-11-19T23:30+00:00|JPY|National Core CPI y/y,2026-11-19T23:30+00:00,JPY,National Core CPI y/y,Low,2.3%,2.1%
+2026-11-19T23:30+00:00|USD|FOMC Member Paulson Speaks,2026-11-19T23:30+00:00,USD,FOMC Member Paulson Speaks,Low,,
+2026-11-20T00:01+00:00|GBP|GfK Consumer Confidence,2026-11-20T00:01+00:00,GBP,GfK Consumer Confidence,Low,-22,-24
+2026-11-20T01:00+00:00|CNY|1-y Loan Prime Rate,2026-11-20T01:00+00:00,CNY,1-y Loan Prime Rate,Low,3.00%,3.00%
+2026-11-20T01:00+00:00|CNY|5-y Loan Prime Rate,2026-11-20T01:00+00:00,CNY,5-y Loan Prime Rate,Low,3.50%,3.50%
+2026-11-20T02:00+00:00|NZD|Credit Card Spending y/y,2026-11-20T02:00+00:00,NZD,Credit Card Spending y/y,Low,,6.9%
+2026-11-20T07:00+00:00|EUR|German PPI m/m,2026-11-20T07:00+00:00,EUR,German PPI m/m,Low,0.9%,1.9%
+2026-11-20T07:00+00:00|GBP|Public Sector Net Borrowing,2026-11-20T07:00+00:00,GBP,Public Sector Net Borrowing,Low,18.0B,24.5B
+2026-11-20T07:00+00:00|GBP|Retail Sales m/m,2026-11-20T07:00+00:00,GBP,Retail Sales m/m,Medium,0.0%,-0.4%
+2026-11-20T08:15+00:00|EUR|ECB President Lagarde Speaks,2026-11-20T08:15+00:00,EUR,ECB President Lagarde Speaks,Medium,,
+2026-11-20T13:00+00:00|EUR|German Buba President Nagel Speaks,2026-11-20T13:00+00:00,EUR,German Buba President Nagel Speaks,Low,,
+2026-11-20T13:25+00:00|USD|FOMC Member Waller Speaks,2026-11-20T13:25+00:00,USD,FOMC Member Waller Speaks,Low,,
+2026-11-20T13:30+00:00|CAD|Core Retail Sales m/m,2026-11-20T13:30+00:00,CAD,Core Retail Sales m/m,Low,0.7%,1.2%
+2026-11-20T13:30+00:00|CAD|Retail Sales m/m,2026-11-20T13:30+00:00,CAD,Retail Sales m/m,Low,0.7%,1.2%
+2026-11-20T15:00+00:00|EUR|Consumer Confidence,2026-11-20T15:00+00:00,EUR,Consumer Confidence,Low,-18,-18
+2026-11-20T15:00+00:00|USD|Revised UoM Consumer Sentiment,2026-11-20T15:00+00:00,USD,Revised UoM Consumer Sentiment,Medium,52.1,51.0
+2026-11-20T15:00+00:00|USD|Revised UoM Inflation Expectations,2026-11-20T15:00+00:00,USD,Revised UoM Inflation Expectations,Medium,,4.3%
+2026-11-20T17:15+00:00|USD|FOMC Member Cook Speaks,2026-11-20T17:15+00:00,USD,FOMC Member Cook Speaks,Low,,
