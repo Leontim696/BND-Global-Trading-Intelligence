@@ -36,8 +36,11 @@ def _ro(path):
     return sqlite3.connect(f"file:{path}?mode=ro", uri=True)
 
 
-def account(path) -> dict:
-    """Curba de capital din rulările zilnice, execuțiile și pozițiile deschise."""
+def account(path, end: date | None = None) -> dict:
+    """Curba de capital din rulările zilnice, execuțiile și pozițiile deschise.
+
+    ``end``: ultima zi (UTC) a ferestrei; rulările și execuțiile de după ea nu intră (17.11.2026: raportul preliminar
+    pe 31.10–16.11 includea și rularea din dimineața zilei de 17.11)."""
     db = _ro(path)
     try:
         acc = db.execute("SELECT initial_capital, currency, kill_switch, kill_reason FROM account").fetchone()
@@ -47,6 +50,10 @@ def account(path) -> dict:
         positions = db.execute("SELECT symbol, quantity, avg_price FROM positions ORDER BY symbol").fetchall()
     finally:
         db.close()
+    if end is not None:
+        last = end.isoformat()
+        runs = [r for r in runs if r["time"][:10] <= last]
+        fills = [f for f in fills if str(f[4])[:10] <= last]
     by_day = {}
     for r in runs:                       # ultima rulare a zilei câștigă
         by_day[r["time"][:10]] = r["equity"]
@@ -282,14 +289,14 @@ def main(argv=None) -> int:
     p.add_argument("--end", default=None, help="ultima zi a ferestrei (implicit 2026-11-30, sau 2026-11-16 cu --preliminar)")
     p.add_argument("--out", required=True, help="prefixul fișierelor (.md și .html)")
     args = p.parse_args(argv)
+    end = date.fromisoformat(args.end) if args.end else (PRELIMINARY_END if args.preliminar else TEST_END)
     try:
-        acc = account(args.unic)
+        acc = account(args.unic, end)
         council = council_analytics.analyse(args.registry)
-        ctrl = account(args.control) if args.control and Path(args.control).exists() else None
+        ctrl = account(args.control, end) if args.control and Path(args.control).exists() else None
     except (sqlite3.Error, OSError, KeyError, ValueError) as exc:
         print(f"Raportul nu se poate genera: {exc}", file=sys.stderr)
         return 1
-    end = date.fromisoformat(args.end) if args.end else (PRELIMINARY_END if args.preliminar else TEST_END)
     bench = benchmark(args.benchmark, TEST_START, end) if args.benchmark else None
     sections = build(acc, bench, council, ai_cost(args.costs), datetime.now(timezone.utc), end, args.preliminar,
                      control_comparison(acc, ctrl))
