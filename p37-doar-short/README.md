@@ -1,67 +1,94 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-16T23:51:33.507478+00:00 | strategy `ai_council`
-- Equity: 11,183.00 USD (start 11,183.00, +0.00%)
-- Gross leverage: 0.00x | candles processed: 100
+- Run: 2026-11-17T04:51:53.507754+00:00 | strategy `ai_council`
+- Equity: 11,216.63 USD (start 11,183.00, +0.30%)
+- Gross leverage: 0.31x | candles processed: 87
 - Kill switch: off
 
 ## Positions
 
-No open positions.
+| Market | Quantity | Avg price | Last | Value | Weight | P&L | Stop |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| AAVE | -0.4779 | 109.6751 | 108.5200 | -51.87 | -0.5% | +0.55 | 139.2409 |
+| ADA | -126.3798 | 0.1554 | 0.1532 | -19.36 | -0.2% | +0.28 | 0.1926 |
+| ALGO | -914.9818 | 0.0801 | 0.0796 | -72.83 | -0.6% | +0.42 | 0.0999 |
+| APT | -87.9596 | 0.4577 | 0.4532 | -39.86 | -0.4% | +0.39 | 0.6135 |
+| ARB | -411.6905 | 0.1347 | 0.1313 | -54.05 | -0.5% | +1.41 | 0.1792 |
+| ATOM | -56.0059 | 1.3103 | 1.3340 | -74.71 | -0.7% | -1.32 | 1.5978 |
+| AVAX | -8.4731 | 7.3063 | 7.1200 | -60.33 | -0.5% | +1.58 | 9.1728 |
+| BCH | -0.1549 | 210.5947 | 208.6000 | -32.32 | -0.3% | +0.31 | 258.5277 |
+| CAT | -0.1790 | 587.8236 | 570.4900 | -102.14 | -0.9% | +3.10 | 687.4344 |
+| CRV | -322.8448 | 0.2066 | 0.2064 | -66.64 | -0.6% | +0.06 | 0.2720 |
+| DOGE | -1112.5910 | 0.0598 | 0.0589 | -65.56 | -0.6% | +0.96 | 0.0721 |
+| DOT | -49.4956 | 0.7366 | 0.7330 | -36.28 | -0.3% | +0.18 | 0.9314 |
+| ENA | -289.7499 | 0.1212 | 0.1148 | -33.26 | -0.3% | +1.87 | 0.1729 |
+| ETC | -15.3010 | 6.0270 | 5.8700 | -89.82 | -0.8% | +2.40 | 7.1894 |
+| FET | -401.4656 | 0.1325 | 0.1323 | -53.11 | -0.5% | +0.09 | 0.1729 |
+| FIL | -73.1583 | 0.6133 | 0.6066 | -44.38 | -0.4% | +0.49 | 0.8108 |
+| FLOKI | -3058051.8764 | 0.0000 | 0.0000 | -56.45 | -0.5% | +0.83 | 0.0000 |
+| GOLD | -0.3522 | 354.0238 | 352.9300 | -124.31 | -1.1% | +0.39 | 376.2556 |
+| GOOGL | -0.5690 | 293.7219 | 283.7200 | -161.43 | -1.4% | +5.69 | 326.6452 |
+| GS | -0.0543 | 906.2180 | 891.5400 | -48.39 | -0.4% | +0.80 | 998.3849 |
+| HBAR | -761.5558 | 0.0593 | 0.0574 | -43.71 | -0.4% | +1.43 | 0.0719 |
+| ICP | -31.0112 | 2.2349 | 2.4940 | -77.34 | -0.7% | -8.04 | 2.7904 |
+| INJ | -1.9721 | 6.9875 | 6.9020 | -13.61 | -0.1% | +0.17 | 9.2293 |
+| ITA | -1.9759 | 70.8187 | 69.7500 | -137.82 | -1.2% | +2.11 | 76.8998 |
+| JNJ | -0.2201 | 288.9033 | 282.5500 | -62.19 | -0.6% | +1.40 | 306.1928 |
+| LDO | -155.8803 | 0.2801 | 0.2777 | -43.29 | -0.4% | +0.37 | 0.3590 |
+| LINK | -4.3782 | 9.2924 | 9.1420 | -40.03 | -0.4% | +0.66 | 11.3999 |
+| LTC | -1.8886 | 45.5372 | 44.5000 | -84.04 | -0.7% | +1.96 | 54.4413 |
+| NASDAQ100 | -0.2782 | 670.9729 | 661.7500 | -184.13 | -1.6% | +2.57 | 728.9125 |
+| NVDA | -0.6421 | 158.9723 | 156.1400 | -100.26 | -0.9% | +1.82 | 192.7910 |
+| ONDO | -177.6927 | 0.3116 | 0.3074 | -54.62 | -0.5% | +0.75 | 0.4041 |
+| OP | -583.3060 | 0.0819 | 0.0794 | -46.31 | -0.4% | +1.43 | 0.1100 |
+| PENGU | -8858.0255 | 0.0050 | 0.0049 | -43.02 | -0.4% | +0.88 | 0.0066 |
+| SEI | -1528.3940 | 0.0397 | 0.0391 | -59.78 | -0.5% | +0.84 | 0.0507 |
+| SHIB | -18708403.5037 | 0.0000 | 0.0000 | -72.03 | -0.6% | +1.95 | 0.0000 |
+| SILVER | -3.4446 | 42.5772 | 42.3900 | -146.02 | -1.3% | +0.64 | 48.7167 |
+| TAO | -0.3294 | 194.8026 | 191.9000 | -63.21 | -0.6% | +0.96 | 245.9774 |
+| TRUMP | -50.3817 | 0.9476 | 0.9470 | -47.71 | -0.4% | +0.03 | 1.2909 |
+| US10Y_NOTE | -2.7432 | 90.2010 | 90.2400 | -247.55 | -2.2% | -0.11 | 91.5062 |
+| USDJPY | -2.4304 | 159.7620 | 159.7800 | -388.33 | -3.5% | -0.04 | 162.9246 |
+| VET | -15003.4908 | 0.0049 | 0.0049 | -73.02 | -0.7% | +0.77 | 0.0062 |
+| WIF | -231.1706 | 0.1334 | 0.1350 | -31.21 | -0.3% | -0.37 | 0.1700 |
+| WLD | -136.5735 | 0.2713 | 0.2623 | -35.82 | -0.3% | +1.22 | 0.3736 |
+| XLM | -475.4931 | 0.1414 | 0.1379 | -65.57 | -0.6% | +1.68 | 0.1699 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| GOLD | SELL | +0.0% -> -1.1% | PENDING |  |
-| SILVER | SELL | +0.0% -> -1.4% | PENDING |  |
-| NASDAQ100 | SELL | +0.0% -> -1.7% | PENDING |  |
-| US10Y_NOTE | SELL | +0.0% -> -2.2% | PENDING |  |
-| USDJPY | SELL | +0.0% -> -3.5% | PENDING |  |
-| BITCOIN | SELL | +0.0% -> -1.3% | PENDING |  |
+| GOLD | BUY | -1.1% -> +0.0% | PENDING |  |
+| BITCOIN | SELL | +0.0% -> -1.0% | PENDING |  |
 | ETHEREUM | SELL | +0.0% -> -0.8% | PENDING |  |
 | SOLANA | SELL | +0.0% -> -0.7% | PENDING |  |
-| BNB | SELL | +0.0% -> -0.6% | PENDING |  |
+| BNB | SELL | +0.0% -> -1.0% | PENDING |  |
 | XRP | SELL | +0.0% -> -0.7% | PENDING |  |
-| NVDA | SELL | +0.0% -> -0.9% | PENDING |  |
-| GOOGL | SELL | +0.0% -> -1.5% | PENDING |  |
-| JNJ | SELL | +0.0% -> -0.6% | PENDING |  |
-| GS | SELL | +0.0% -> -0.4% | PENDING |  |
-| CAT | SELL | +0.0% -> -1.0% | PENDING |  |
-| KONGSBERG | SELL | +0.0% -> -0.3% | PENDING |  |
-| ITA | SELL | +0.0% -> -1.3% | PENDING |  |
-| DOGE | SELL | +0.0% -> -0.6% | PENDING |  |
-| ADA | SELL | +0.0% -> -0.2% | PENDING |  |
-| LINK | SELL | +0.0% -> -0.4% | PENDING |  |
-| AVAX | SELL | +0.0% -> -0.6% | PENDING |  |
-| XLM | SELL | +0.0% -> -0.6% | PENDING |  |
-| SHIB | SELL | +0.0% -> -0.7% | PENDING |  |
-| BCH | SELL | +0.0% -> -0.3% | PENDING |  |
-| LTC | SELL | +0.0% -> -0.8% | PENDING |  |
-| DOT | SELL | +0.0% -> -0.3% | PENDING |  |
-| HBAR | SELL | +0.0% -> -0.4% | PENDING |  |
-| AAVE | SELL | +0.0% -> -0.5% | PENDING |  |
-| ICP | SELL | +0.0% -> -0.6% | PENDING |  |
-| ETC | SELL | +0.0% -> -0.8% | PENDING |  |
-| APT | SELL | +0.0% -> -0.4% | PENDING |  |
-| ONDO | SELL | +0.0% -> -0.5% | PENDING |  |
-| ATOM | SELL | +0.0% -> -0.7% | PENDING |  |
-| ARB | SELL | +0.0% -> -0.5% | PENDING |  |
-| FIL | SELL | +0.0% -> -0.4% | PENDING |  |
-| ALGO | SELL | +0.0% -> -0.7% | PENDING |  |
-| VET | SELL | +0.0% -> -0.7% | PENDING |  |
-| OP | SELL | +0.0% -> -0.4% | PENDING |  |
-| INJ | SELL | +0.0% -> -0.1% | PENDING |  |
-| TAO | SELL | +0.0% -> -0.6% | PENDING |  |
-| FET | SELL | +0.0% -> -0.5% | PENDING |  |
-| SEI | SELL | +0.0% -> -0.5% | PENDING |  |
-| WIF | SELL | +0.0% -> -0.3% | PENDING |  |
-| FLOKI | SELL | +0.0% -> -0.5% | PENDING |  |
-| TRUMP | SELL | +0.0% -> -0.4% | PENDING |  |
-| PENGU | SELL | +0.0% -> -0.4% | PENDING |  |
-| ENA | SELL | +0.0% -> -0.3% | PENDING |  |
-| WLD | SELL | +0.0% -> -0.3% | PENDING |  |
-| LDO | SELL | +0.0% -> -0.4% | PENDING |  |
-| CRV | SELL | +0.0% -> -0.6% | PENDING |  |
+| AAPL | SELL | +0.0% -> -2.0% | PENDING |  |
+| GS | BUY | -0.4% -> +0.0% | PENDING |  |
+| KONGSBERG | SELL | +0.0% -> -1.1% | PENDING |  |
+| GENERAL_DYNAMICS | SELL | +0.0% -> -2.1% | PENDING |  |
+| ITA | BUY | -1.2% -> +0.0% | PENDING |  |
+| SUI | SELL | +0.0% -> -0.4% | PENDING |  |
+| INJ | BUY | -0.1% -> +0.0% | PENDING |  |
+| RENDER | SELL | +0.0% -> -0.5% | PENDING |  |
+
+## Stress scenarios (instant shock to current positions)
+
+| Scenario | Equity change | Biggest loser | Kill switch |
+|---|---:|---|---|
+| Sharp dollar rally | +1.9% | USDJPY | no |
+| One-day crash like October 1987 | +6.5% | US10Y_NOTE | no |
+| Crypto collapse within a week | +8.0% | - | no |
+| Covid crash, Feb-Mar 2020 | +10.5% | US10Y_NOTE | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +12.7% | USDJPY | no |
+| Global financial crisis, Sep-Nov 2008 | +15.3% | US10Y_NOTE | no |
+
+## Equity, last runs
+
+| Run | Equity |
+|---|---:|
+| 2026-11-16 | 11,183.00 |
+| 2026-11-17 | 11,216.63 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
