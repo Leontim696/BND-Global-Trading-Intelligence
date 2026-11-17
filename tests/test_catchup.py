@@ -77,3 +77,11 @@ def test_workflows_wire_the_safety_net():
     assert '[ "$EVENT" = schedule ] && [ "$(date -u +%H)" -lt 20 ]' in council
     for name in cu.files():
         assert "workflow_dispatch:" in Path(".github/workflows/" + name).read_text(encoding="utf-8"), name
+
+
+def test_late_account_schedules_are_skipped():
+    # 17.11.2026: programul de 22:25 UTC a pornit contul unic abia la 04:37 UTC a doua zi.
+    for name in ("cont-unic.yml", "cont-control.yml", "formatii-ai.yml"):
+        text = Path(".github/workflows/" + name).read_text(encoding="utf-8")
+        assert '[ "$EVENT" = schedule ] && [ "$(date -u +%H)" -lt 20 ]' in text, name
+        assert "needs: gate" in text and "if: needs.gate.outputs.run == 'true'" in text, name
