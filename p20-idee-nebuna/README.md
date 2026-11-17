@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T04:51:32.929996+00:00 | strategy `ai_council`
-- Equity: 11,737.08 USD (start 11,183.00, +4.95%)
-- Gross leverage: 0.65x | candles processed: 87
+- Run: 2026-11-17T23:52:41.716019+00:00 | strategy `ai_council`
+- Equity: 11,737.05 USD (start 11,183.00, +4.95%)
+- Gross leverage: 0.68x | candles processed: 13
 - Kill switch: off
 
 ## Positions
@@ -13,16 +13,19 @@
 | ARB | -464.8565 | 0.1279 | 0.1313 | -61.04 | -0.5% | -1.56 | 0.1726 |
 | AVAX | -11.7631 | 7.0984 | 7.1200 | -83.75 | -0.7% | -0.25 | 8.9698 |
 | BA | 0.3057 | 170.2711 | 165.2200 | 50.52 | +0.4% | -1.54 | 155.7362 |
+| BAE | 0.0311 | 1911.0731 | 1909.0000 | 59.41 | +0.5% | -0.06 | 1709.6216 |
 | BCH | -0.0893 | 201.1994 | 208.6000 | -18.63 | -0.2% | -0.66 | 248.9221 |
+| BNB | -0.0705 | 595.6910 | 590.6913 | -41.64 | -0.4% | +0.35 | 671.0131 |
 | CRUDE_OIL | 0.3519 | 142.5928 | 140.0300 | 49.28 | +0.4% | -0.90 | 131.6633 |
 | CVX | 0.6894 | 212.3837 | 217.1400 | 149.69 | +1.3% | +3.28 | 195.1599 |
 | DOGE | -1354.2875 | 0.0598 | 0.0589 | -79.81 | -0.7% | +1.16 | 0.0721 |
 | ENA | -333.7943 | 0.1150 | 0.1148 | -38.32 | -0.3% | +0.08 | 0.1679 |
 | GOOGL | -0.6145 | 283.4250 | 283.7200 | -174.35 | -1.5% | -0.18 | 309.5242 |
 | GS | -0.0590 | 906.2180 | 891.5400 | -52.64 | -0.4% | +0.87 | 998.3849 |
+| HENSOLDT | 1.1273 | 80.8642 | 81.0600 | 91.38 | +0.8% | +0.22 | 68.6177 |
 | ITA | -1.0422 | 72.3683 | 69.7500 | -72.70 | -0.6% | +2.73 | 77.9185 |
 | JUP | 68.6049 | 0.2666 | 0.2411 | 16.54 | +0.1% | -1.75 | 0.2024 |
-| KONGSBERG | -0.2665 | 348.3955 | 339.6000 | -90.50 | -0.8% | +2.34 | 385.0881 |
+| KONGSBERG | -0.2665 | 348.3955 | 342.5000 | -91.27 | -0.8% | +1.57 | 385.0881 |
 | L3HARRIS | 0.4299 | 264.3593 | 261.7500 | 112.52 | +1.0% | -1.12 | 249.9435 |
 | LOCKHEED | 0.2457 | 597.8493 | 585.2100 | 143.81 | +1.2% | -3.11 | 543.8914 |
 | NASDAQ100 | -0.3387 | 670.9729 | 661.7500 | -224.13 | -1.9% | +3.12 | 728.9125 |
@@ -32,6 +35,7 @@
 | OP | -710.0219 | 0.0819 | 0.0794 | -56.38 | -0.5% | +1.75 | 0.1100 |
 | PEPE | 11825413.0599 | 0.0000 | 0.0000 | 46.24 | +0.4% | +0.17 | 0.0000 |
 | PG | 1.5875 | 169.2307 | 173.0200 | 274.67 | +2.3% | +6.02 | 158.2012 |
+| RHEINMETALL | 0.0821 | 765.7296 | 769.7000 | 63.19 | +0.5% | +0.33 | 624.8936 |
 | SP500 | 0.0764 | 754.0554 | 739.9500 | 56.53 | +0.5% | -1.08 | 726.6285 |
 | STX | 133.8678 | 0.2718 | 0.2633 | 35.25 | +0.3% | -1.14 | 0.1837 |
 | UNH | 0.1796 | 405.2015 | 412.0200 | 74.01 | +0.6% | +1.22 | 368.7094 |
@@ -46,51 +50,50 @@
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| EURUSD | BUY | +0.0% -> +13.7% | PENDING |  |
-| USDJPY | BUY | -22.2% -> -3.6% | PENDING |  |
-| BNB | SELL | +0.0% -> -0.6% | PENDING |  |
-| AAPL | SELL | +0.0% -> -1.3% | PENDING |  |
+| GOLD | SELL | +0.0% -> -0.5% | PENDING |  |
+| SP500 | SELL | +0.5% -> +0.0% | PENDING |  |
+| USDJPY | BUY | -22.2% -> -6.4% | PENDING |  |
+| BITCOIN | SELL | +0.0% -> -0.6% | PENDING |  |
+| AAPL | SELL | +0.0% -> -0.3% | PENDING |  |
+| MSFT | SELL | +0.0% -> -0.2% | PENDING |  |
 | AMZN | SELL | +0.2% -> +0.0% | PENDING |  |
-| WMT | SELL | +20.2% -> +1.2% | PENDING |  |
-| JNJ | SELL | +0.0% -> -1.2% | PENDING |  |
-| UNH | SELL | +0.6% -> +0.0% | PENDING |  |
+| WMT | SELL | +20.2% -> +0.5% | PENDING |  |
+| JNJ | SELL | +0.0% -> -0.5% | PENDING |  |
 | CVX | SELL | +1.3% -> +0.0% | PENDING |  |
-| GS | BUY | -0.4% -> +0.0% | PENDING |  |
-| RHEINMETALL | BUY | +0.0% -> +0.5% | PENDING |  |
-| HENSOLDT | BUY | +0.0% -> +0.7% | PENDING |  |
-| RENK | BUY | +0.0% -> +0.7% | REJECTED | Stale market data for RENK |
+| JPM | SELL | +0.0% -> -0.3% | PENDING |  |
+| BA | SELL | +0.4% -> +0.0% | PENDING |  |
 | NORTHROP | SELL | +0.5% -> +0.0% | PENDING |  |
-| GENERAL_DYNAMICS | SELL | +0.0% -> -1.4% | PENDING |  |
-| L3HARRIS | SELL | +1.0% -> +0.0% | PENDING |  |
-| ITA | BUY | -0.6% -> +0.0% | PENDING |  |
-| TRX | BUY | +0.0% -> +0.8% | PENDING |  |
-| ADA | SELL | +0.0% -> -0.4% | PENDING |  |
-| SUI | SELL | +0.0% -> -0.3% | PENDING |  |
+| GENERAL_DYNAMICS | SELL | +0.0% -> -0.3% | PENDING |  |
+| L3HARRIS | SELL | +1.0% -> -0.2% | PENDING |  |
+| TRX | BUY | +0.0% -> +0.2% | PENDING |  |
+| ADA | SELL | +0.0% -> -0.3% | PENDING |  |
+| SUI | SELL | +0.0% -> -0.2% | PENDING |  |
 | LTC | SELL | +0.0% -> -0.4% | PENDING |  |
-| DOT | SELL | +0.0% -> -0.3% | PENDING |  |
+| DOT | SELL | +0.0% -> -0.2% | PENDING |  |
 | AAVE | SELL | +0.0% -> -0.3% | PENDING |  |
-| APT | SELL | +0.0% -> -0.3% | PENDING |  |
-| POL | BUY | +0.0% -> +0.4% | PENDING |  |
+| NEAR | SELL | +0.2% -> +0.0% | PENDING |  |
+| APT | SELL | +0.0% -> -0.2% | PENDING |  |
 | ALGO | SELL | +0.0% -> -0.3% | PENDING |  |
+| INJ | SELL | +0.0% -> -0.1% | PENDING |  |
 | RENDER | SELL | +0.0% -> -0.3% | PENDING |  |
 | TAO | SELL | +0.0% -> -0.3% | PENDING |  |
-| BONK | BUY | +0.0% -> +0.3% | PENDING |  |
-| WIF | SELL | +0.0% -> -0.3% | PENDING |  |
-| FLOKI | SELL | +0.0% -> -0.4% | PENDING |  |
-| PENGU | SELL | +0.0% -> -0.3% | PENDING |  |
+| STX | SELL | +0.3% -> +0.0% | PENDING |  |
+| WIF | SELL | +0.0% -> -0.2% | PENDING |  |
+| FLOKI | SELL | +0.0% -> -0.3% | PENDING |  |
+| PENGU | SELL | +0.0% -> -0.2% | PENDING |  |
+| JUP | SELL | +0.1% -> +0.0% | PENDING |  |
 | CRV | SELL | +0.0% -> -0.3% | PENDING |  |
-| TIA | BUY | +0.0% -> +0.2% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Inflation and rate hikes, Jan-Oct 2022 | -11.4% | USDJPY | no |
-| Covid crash, Feb-Mar 2020 | -8.0% | WMT | no |
-| Global financial crisis, Sep-Nov 2008 | -5.6% | WMT | no |
-| One-day crash like October 1987 | -3.7% | WMT | no |
-| Sharp dollar rally | -3.5% | USDJPY | no |
-| Crypto collapse within a week | +0.0% | WMT | no |
+| Inflation and rate hikes, Jan-Oct 2022 | -11.7% | USDJPY | no |
+| Covid crash, Feb-Mar 2020 | -8.4% | WMT | no |
+| Global financial crisis, Sep-Nov 2008 | -6.1% | WMT | no |
+| One-day crash like October 1987 | -4.0% | WMT | no |
+| Sharp dollar rally | -3.6% | USDJPY | no |
+| Crypto collapse within a week | +0.1% | WMT | no |
 
 ## Equity, last runs
 
@@ -111,5 +114,6 @@
 | 2026-11-16 | 11,736.39 |
 | 2026-11-16 | 11,736.32 |
 | 2026-11-17 | 11,737.08 |
+| 2026-11-17 | 11,737.05 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

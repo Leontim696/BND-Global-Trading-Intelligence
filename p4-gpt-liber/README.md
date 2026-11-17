@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T04:51:03.517130+00:00 | strategy `ai_council`
-- Equity: 11,430.59 USD (start 11,183.00, +2.21%)
-- Gross leverage: 0.36x | candles processed: 87
+- Run: 2026-11-17T23:52:12.705361+00:00 | strategy `ai_council`
+- Equity: 11,430.42 USD (start 11,183.00, +2.21%)
+- Gross leverage: 0.35x | candles processed: 13
 - Kill switch: off
 
 ## Positions
@@ -13,7 +13,7 @@
 | ARB | -349.2617 | 0.1517 | 0.1313 | -45.86 | -0.4% | +7.13 | 0.1965 |
 | ATOM | -54.0383 | 1.3913 | 1.3340 | -72.09 | -0.6% | +3.10 | 1.6673 |
 | AVAX | -7.4588 | 7.0984 | 7.1200 | -53.11 | -0.5% | -0.16 | 8.9698 |
-| BITCOIN | -0.0031 | 71307.2973 | 65305.0625 | -201.43 | -1.8% | +18.51 | 78151.3596 |
+| BITCOIN | -0.0031 | 71307.2973 | 64855.8438 | -200.04 | -1.8% | +19.90 | 78151.3596 |
 | BONK | -23985265.2780 | 0.0000 | 0.0000 | -56.13 | -0.5% | -1.04 | 0.0000 |
 | CRV | -280.1072 | 0.2412 | 0.2064 | -57.81 | -0.5% | +9.74 | 0.3085 |
 | ETC | -12.1348 | 6.8566 | 5.8700 | -71.23 | -0.6% | +11.97 | 8.0493 |
@@ -27,7 +27,7 @@
 | OP | -512.1040 | 0.0798 | 0.0794 | -40.66 | -0.4% | +0.18 | 0.1088 |
 | POL | -1163.5991 | 0.0882 | 0.0793 | -92.22 | -0.8% | +10.43 | 0.1048 |
 | RENDER | -44.0805 | 1.3603 | 1.3780 | -60.74 | -0.5% | -0.78 | 1.7310 |
-| RENK | -4.3902 | 34.6696 | 32.7600 | -143.82 | -1.3% | +8.38 | 39.0655 |
+| RHEINMETALL | -0.1282 | 765.2704 | 769.7000 | -98.69 | -0.9% | -0.57 | 906.1064 |
 | SEI | -1491.2298 | 0.0457 | 0.0391 | -58.32 | -0.5% | +9.82 | 0.0571 |
 | SILVER | -3.1064 | 45.4664 | 42.3900 | -131.68 | -1.2% | +9.56 | 51.2534 |
 | TAO | -0.3022 | 183.7081 | 191.9000 | -58.00 | -0.5% | -2.48 | 234.6834 |
@@ -38,18 +38,47 @@
 
 ## Orders for the next open
 
-No changes.
+| Market | Side | Weight now -> target | Status | Note |
+|---|---|---|---|---|
+| NASDAQ100 | SELL | +0.0% -> -1.7% | PENDING |  |
+| EURUSD | BUY | -15.9% -> -9.2% | PENDING |  |
+| ETHEREUM | SELL | +0.0% -> -0.8% | PENDING |  |
+| SOLANA | SELL | +0.0% -> -0.7% | PENDING |  |
+| BNB | SELL | +0.0% -> -1.0% | PENDING |  |
+| XRP | SELL | +0.0% -> -0.7% | PENDING |  |
+| GOOGL | SELL | +0.0% -> -1.2% | PENDING |  |
+| CAT | SELL | +0.0% -> -1.0% | PENDING |  |
+| RHEINMETALL | BUY | -0.9% -> +0.0% | PENDING |  |
+| RENK | SELL | +0.0% -> -1.1% | PENDING |  |
+| TRX | BUY | -2.1% -> +0.0% | PENDING |  |
+| DOGE | SELL | +0.0% -> -0.6% | PENDING |  |
+| ADA | SELL | +0.0% -> -0.5% | PENDING |  |
+| SUI | SELL | +0.0% -> -0.4% | PENDING |  |
+| BCH | SELL | +0.0% -> -0.5% | PENDING |  |
+| HBAR | SELL | +0.0% -> -0.4% | PENDING |  |
+| UNI | SELL | +0.0% -> -0.4% | PENDING |  |
+| AAVE | SELL | +0.0% -> -0.5% | PENDING |  |
+| NEAR | SELL | +0.0% -> -0.3% | PENDING |  |
+| ICP | BUY | -0.6% -> +0.0% | PENDING |  |
+| STX | SELL | +0.0% -> -0.4% | PENDING |  |
+| WIF | SELL | +0.0% -> -0.4% | PENDING |  |
+| FLOKI | SELL | +0.0% -> -0.5% | PENDING |  |
+| TRUMP | SELL | +0.0% -> -0.4% | PENDING |  |
+| PENGU | SELL | +0.0% -> -0.4% | PENDING |  |
+| ENA | SELL | +0.0% -> -0.3% | PENDING |  |
+| WLD | SELL | +0.0% -> -0.3% | PENDING |  |
+| LDO | SELL | +0.0% -> -0.4% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
 | Sharp dollar rally | +3.5% | - | no |
-| One-day crash like October 1987 | +5.0% | - | no |
+| One-day crash like October 1987 | +4.9% | - | no |
 | Crypto collapse within a week | +7.7% | - | no |
-| Covid crash, Feb-Mar 2020 | +9.0% | - | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +14.0% | - | no |
-| Global financial crisis, Sep-Nov 2008 | +15.3% | - | no |
+| Covid crash, Feb-Mar 2020 | +8.9% | - | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +13.8% | - | no |
+| Global financial crisis, Sep-Nov 2008 | +15.1% | - | no |
 
 ## Equity, last runs
 
@@ -70,5 +99,6 @@ No changes.
 | 2026-11-16 | 11,414.58 |
 | 2026-11-16 | 11,410.52 |
 | 2026-11-17 | 11,430.59 |
+| 2026-11-17 | 11,430.42 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

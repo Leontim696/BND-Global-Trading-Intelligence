@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T04:51:28.104347+00:00 | strategy `ai_council`
-- Equity: 11,812.09 USD (start 11,183.00, +5.63%)
-- Gross leverage: 0.65x | candles processed: 87
+- Run: 2026-11-17T23:52:37.158610+00:00 | strategy `ai_council`
+- Equity: 11,811.43 USD (start 11,183.00, +5.62%)
+- Gross leverage: 0.66x | candles processed: 13
 - Kill switch: off
 
 ## Positions
@@ -18,7 +18,9 @@
 | ATOM | -68.2697 | 1.3043 | 1.3340 | -91.07 | -0.8% | -2.02 | 1.5951 |
 | AVAX | -13.9435 | 7.0984 | 7.1200 | -99.28 | -0.8% | -0.30 | 8.9698 |
 | BA | 0.3057 | 170.2711 | 165.2200 | 50.50 | +0.4% | -1.54 | 155.7362 |
+| BAE | 0.0313 | 1911.0731 | 1909.0000 | 59.80 | +0.5% | -0.06 | 1709.6216 |
 | BCH | -0.0899 | 201.1994 | 208.6000 | -18.75 | -0.2% | -0.67 | 248.9221 |
+| BNB | -0.1409 | 595.6910 | 590.6913 | -83.25 | -0.7% | +0.70 | 671.0131 |
 | CAT | -0.5190 | 609.2672 | 570.4900 | -296.10 | -2.5% | +20.13 | 709.8934 |
 | CRUDE_OIL | 0.3473 | 142.5928 | 140.0300 | 48.63 | +0.4% | -0.89 | 131.6633 |
 | CRV | -230.0790 | 0.2470 | 0.2064 | -47.49 | -0.4% | +9.34 | 0.3156 |
@@ -34,14 +36,14 @@
 | GOOGL | -0.6145 | 283.4250 | 283.7200 | -174.35 | -1.5% | -0.18 | 309.5242 |
 | GS | -0.0581 | 906.2180 | 891.5400 | -51.83 | -0.4% | +0.85 | 998.3849 |
 | HBAR | -1804.6351 | 0.0695 | 0.0574 | -103.59 | -0.9% | +21.92 | 0.0827 |
-| HENSOLDT | 1.3972 | 82.0246 | 80.4200 | 112.36 | +1.0% | -2.24 | 72.2517 |
+| HENSOLDT | 1.3972 | 82.0246 | 81.0600 | 113.25 | +1.0% | -1.35 | 72.2517 |
 | ICP | -28.1992 | 2.4997 | 2.4940 | -70.33 | -0.6% | +0.16 | 3.0198 |
 | INJ | -2.3999 | 6.9875 | 6.9020 | -16.56 | -0.1% | +0.21 | 9.2293 |
 | ITA | -1.0229 | 72.3683 | 69.7500 | -71.35 | -0.6% | +2.68 | 77.9185 |
 | JNJ | -0.2358 | 288.9033 | 282.5500 | -66.62 | -0.6% | +1.50 | 306.1928 |
 | JUP | 68.5895 | 0.2666 | 0.2411 | 16.54 | +0.1% | -1.75 | 0.2024 |
 | KO | 4.9912 | 96.7671 | 99.4800 | 496.53 | +4.2% | +13.54 | 89.8127 |
-| KONGSBERG | -0.8785 | 357.3928 | 339.6000 | -298.32 | -2.5% | +15.63 | 392.4235 |
+| KONGSBERG | -0.8785 | 357.3928 | 342.5000 | -300.87 | -2.5% | +13.08 | 392.4235 |
 | L3HARRIS | 0.4233 | 264.3593 | 261.7500 | 110.79 | +0.9% | -1.10 | 249.9435 |
 | LDO | -209.9759 | 0.3032 | 0.2777 | -58.31 | -0.5% | +5.36 | 0.3781 |
 | LINK | -14.9266 | 11.0225 | 9.1420 | -136.46 | -1.2% | +28.07 | 13.0367 |
@@ -51,12 +53,12 @@
 | NEAR | 6.6448 | 3.5878 | 3.1600 | 21.00 | +0.2% | -2.84 | 2.4275 |
 | NORTHROP | 0.1076 | 554.1462 | 545.6500 | 58.72 | +0.5% | -0.91 | 505.0224 |
 | NVDA | -1.1690 | 191.0427 | 156.1400 | -182.52 | -1.5% | +40.80 | 203.6286 |
-| ONDO | -134.4879 | 0.3388 | 0.3074 | -41.34 | -0.3% | +4.23 | 0.4268 |
+| ONDO | -134.4879 | 0.3388 | 0.3074 | -41.34 | -0.4% | +4.23 | 0.4268 |
 | OP | -441.4149 | 0.1092 | 0.0794 | -35.05 | -0.3% | +13.17 | 0.1415 |
 | PENGU | -19652.7633 | 0.0071 | 0.0049 | -95.45 | -0.8% | +44.03 | 0.0088 |
 | PEPE | 11901320.6747 | 0.0000 | 0.0000 | 46.53 | +0.4% | +0.17 | 0.0000 |
 | PG | 1.9391 | 167.5942 | 173.0200 | 335.50 | +2.8% | +10.52 | 153.2453 |
-| RHEINMETALL | 0.1080 | 805.2415 | 765.5000 | 82.68 | +0.7% | -4.29 | 672.7653 |
+| RHEINMETALL | 0.1080 | 805.2415 | 769.7000 | 83.14 | +0.7% | -3.84 | 672.7653 |
 | SEI | -1464.4616 | 0.0450 | 0.0391 | -57.28 | -0.5% | +8.64 | 0.0572 |
 | SHIB | -44430264.2237 | 0.0000 | 0.0000 | -171.06 | -1.4% | +34.35 | 0.0000 |
 | SILVER | -1.7093 | 46.7660 | 42.3900 | -72.46 | -0.6% | +7.48 | 49.5309 |
@@ -79,38 +81,35 @@
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| GOLD | BUY | -0.7% -> +0.0% | PENDING |  |
-| US10Y_NOTE | SELL | -2.3% -> -9.2% | PENDING |  |
-| EURUSD | BUY | +0.0% -> +12.2% | PENDING |  |
-| BNB | SELL | +0.0% -> -1.3% | PENDING |  |
-| AAPL | SELL | +0.0% -> -2.6% | PENDING |  |
+| SP500 | SELL | +0.9% -> +0.0% | PENDING |  |
+| BITCOIN | SELL | +0.0% -> -1.2% | PENDING |  |
+| AAPL | SELL | +0.0% -> -0.6% | PENDING |  |
+| MSFT | SELL | +0.0% -> -0.5% | PENDING |  |
 | AMZN | SELL | +0.4% -> +0.0% | PENDING |  |
-| UNH | SELL | +1.2% -> +0.0% | PENDING |  |
+| KO | SELL | +4.2% -> +0.0% | PENDING |  |
 | CVX | SELL | +2.4% -> +0.0% | PENDING |  |
-| GS | BUY | -0.4% -> +0.0% | PENDING |  |
-| RENK | BUY | +0.0% -> +1.4% | REJECTED | Stale market data for RENK |
+| JPM | SELL | +0.0% -> -0.6% | PENDING |  |
+| BA | SELL | +0.4% -> +0.0% | PENDING |  |
 | NORTHROP | SELL | +0.5% -> +0.0% | PENDING |  |
-| GENERAL_DYNAMICS | SELL | +0.0% -> -2.8% | PENDING |  |
-| L3HARRIS | SELL | +0.9% -> +0.0% | PENDING |  |
-| ITA | BUY | -0.6% -> +0.0% | PENDING |  |
-| TRX | BUY | +0.0% -> +1.7% | PENDING |  |
-| SUI | SELL | +0.0% -> -0.6% | PENDING |  |
-| POL | BUY | +0.0% -> +0.8% | PENDING |  |
-| INJ | BUY | -0.1% -> +0.0% | PENDING |  |
-| RENDER | SELL | +0.0% -> -0.7% | PENDING |  |
-| BONK | BUY | +0.0% -> +0.6% | PENDING |  |
-| TIA | BUY | +0.0% -> +0.4% | PENDING |  |
+| GENERAL_DYNAMICS | SELL | +0.0% -> -0.6% | PENDING |  |
+| L3HARRIS | SELL | +0.9% -> -0.4% | PENDING |  |
+| TRX | BUY | +0.0% -> +0.4% | PENDING |  |
+| SUI | SELL | +0.0% -> -0.5% | PENDING |  |
+| NEAR | SELL | +0.2% -> +0.0% | PENDING |  |
+| RENDER | SELL | +0.0% -> -0.6% | PENDING |  |
+| STX | SELL | +0.3% -> +0.0% | PENDING |  |
+| JUP | SELL | +0.1% -> +0.0% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
 | Sharp dollar rally | +1.3% | USDJPY | no |
-| One-day crash like October 1987 | +5.0% | KO | no |
-| Covid crash, Feb-Mar 2020 | +7.9% | KO | no |
-| Crypto collapse within a week | +10.7% | PEPE | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +12.4% | USDJPY | no |
-| Global financial crisis, Sep-Nov 2008 | +12.7% | KO | no |
+| One-day crash like October 1987 | +5.1% | KO | no |
+| Covid crash, Feb-Mar 2020 | +8.0% | KO | no |
+| Crypto collapse within a week | +11.1% | PEPE | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +12.8% | USDJPY | no |
+| Global financial crisis, Sep-Nov 2008 | +13.0% | KO | no |
 
 ## Equity, last runs
 
@@ -131,5 +130,6 @@
 | 2026-11-16 | 11,733.77 |
 | 2026-11-16 | 11,733.15 |
 | 2026-11-17 | 11,812.09 |
+| 2026-11-17 | 11,811.43 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

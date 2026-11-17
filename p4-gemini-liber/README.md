@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T04:51:06.566323+00:00 | strategy `ai_council`
+- Run: 2026-11-17T23:52:15.592140+00:00 | strategy `ai_council`
 - Equity: 11,306.40 USD (start 11,183.00, +1.10%)
-- Gross leverage: 0.87x | candles processed: 87
+- Gross leverage: 0.87x | candles processed: 13
 - Kill switch: off
 
 ## Positions
@@ -30,7 +30,35 @@
 
 ## Orders for the next open
 
-No changes.
+| Market | Side | Weight now -> target | Status | Note |
+|---|---|---|---|---|
+| GOLD | BUY | -9.6% -> +0.0% | PENDING |  |
+| CRUDE_OIL | SELL | +2.7% -> +0.0% | PENDING |  |
+| SP500 | SELL | +0.0% -> -6.8% | PENDING |  |
+| AAPL | SELL | +9.9% -> +0.0% | PENDING |  |
+| GOOGL | BUY | -3.3% -> +0.0% | PENDING |  |
+| WMT | SELL | +10.1% -> +0.0% | PENDING |  |
+| KO | SELL | +0.0% -> -6.1% | PENDING |  |
+| UNH | SELL | +10.0% -> +4.4% | PENDING |  |
+| XOM | SELL | +4.6% -> +0.0% | PENDING |  |
+| GS | SELL | +0.0% -> -3.5% | PENDING |  |
+| BA | SELL | +0.0% -> -2.9% | PENDING |  |
+| GENERAL_DYNAMICS | SELL | +11.3% -> +0.0% | PENDING |  |
+| TRX | BUY | -3.1% -> +0.0% | PENDING |  |
+| AVAX | SELL | +0.0% -> -1.1% | PENDING |  |
+| SUI | SELL | +0.0% -> -1.0% | PENDING |  |
+| AAVE | SELL | +0.0% -> -1.2% | PENDING |  |
+| NEAR | SELL | +1.5% -> +0.0% | PENDING |  |
+| ICP | BUY | -3.1% -> +0.0% | PENDING |  |
+| ETC | BUY | -3.3% -> +0.0% | PENDING |  |
+| ARB | SELL | +0.0% -> -1.0% | PENDING |  |
+| VET | SELL | +0.0% -> -1.3% | PENDING |  |
+| INJ | SELL | +0.0% -> -0.9% | PENDING |  |
+| TAO | SELL | +0.0% -> -1.1% | PENDING |  |
+| FET | SELL | +0.0% -> -0.9% | PENDING |  |
+| SEI | SELL | +0.0% -> -1.0% | PENDING |  |
+| BONK | SELL | +0.0% -> -1.1% | PENDING |  |
+| JUP | SELL | +0.0% -> -1.0% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
@@ -61,6 +89,7 @@ No changes.
 | 2026-11-15 | 11,351.58 |
 | 2026-11-16 | 11,313.26 |
 | 2026-11-16 | 11,313.26 |
+| 2026-11-17 | 11,306.40 |
 | 2026-11-17 | 11,306.40 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T04:51:04.597888+00:00 | strategy `ai_council`
-- Equity: 11,640.68 USD (start 11,183.00, +4.09%)
-- Gross leverage: 0.58x | candles processed: 87
+- Run: 2026-11-17T23:52:13.715662+00:00 | strategy `ai_council`
+- Equity: 11,641.17 USD (start 11,183.00, +4.10%)
+- Gross leverage: 0.58x | candles processed: 13
 - Kill switch: off
 
 ## Positions
@@ -23,7 +23,7 @@
 | L3HARRIS | 1.6853 | 264.3593 | 261.7500 | 441.13 | +3.8% | -4.40 | 249.9435 |
 | POL | -1601.2597 | 0.0873 | 0.0793 | -126.90 | -1.1% | +12.88 | 0.1036 |
 | RENDER | -109.9247 | 1.3603 | 1.3780 | -151.48 | -1.3% | -1.94 | 1.7310 |
-| RENK | -6.9491 | 34.6696 | 32.7600 | -227.65 | -2.0% | +13.27 | 39.0655 |
+| RENK | -6.9491 | 34.6696 | 32.6900 | -227.17 | -2.0% | +13.76 | 39.0655 |
 | SEI | -2242.6976 | 0.0469 | 0.0391 | -87.71 | -0.8% | +17.37 | 0.0587 |
 | SILVER | -4.9170 | 45.4664 | 42.3900 | -208.43 | -1.8% | +15.13 | 51.2534 |
 | SUI | -87.8234 | 0.8412 | 0.7199 | -63.22 | -0.5% | +10.65 | 1.0360 |
@@ -32,7 +32,37 @@
 
 ## Orders for the next open
 
-No changes.
+| Market | Side | Weight now -> target | Status | Note |
+|---|---|---|---|---|
+| SILVER | BUY | -1.8% -> +0.0% | PENDING |  |
+| SP500 | SELL | +0.0% -> -4.1% | PENDING |  |
+| NASDAQ100 | SELL | +0.0% -> -2.5% | PENDING |  |
+| EURUSD | BUY | -21.2% -> -13.4% | PENDING |  |
+| BNB | SELL | +0.0% -> -1.4% | PENDING |  |
+| WMT | SELL | +4.8% -> +0.0% | PENDING |  |
+| KO | SELL | +0.0% -> -3.6% | PENDING |  |
+| CAT | BUY | -2.5% -> +0.0% | PENDING |  |
+| BA | SELL | +0.0% -> -1.7% | PENDING |  |
+| L3HARRIS | SELL | +3.8% -> +0.0% | PENDING |  |
+| ITA | SELL | +0.0% -> -2.8% | PENDING |  |
+| TRX | BUY | -2.3% -> +0.0% | PENDING |  |
+| ADA | SELL | +0.0% -> -0.8% | PENDING |  |
+| LINK | SELL | +0.0% -> -0.8% | PENDING |  |
+| XLM | SELL | +0.0% -> -0.9% | PENDING |  |
+| HBAR | SELL | +0.0% -> -0.6% | PENDING |  |
+| AAVE | SELL | +0.0% -> -0.7% | PENDING |  |
+| ICP | BUY | -1.5% -> +0.0% | PENDING |  |
+| ONDO | SELL | +0.0% -> -0.6% | PENDING |  |
+| ARB | SELL | +0.0% -> -0.6% | PENDING |  |
+| VET | SELL | +0.0% -> -0.8% | PENDING |  |
+| INJ | SELL | +0.0% -> -0.6% | PENDING |  |
+| TAO | SELL | +0.0% -> -0.7% | PENDING |  |
+| FET | SELL | +0.0% -> -0.6% | PENDING |  |
+| STX | SELL | +0.0% -> -0.6% | PENDING |  |
+| FLOKI | SELL | +0.0% -> -0.8% | PENDING |  |
+| JUP | SELL | +0.0% -> -0.6% | PENDING |  |
+| LDO | SELL | +0.0% -> -0.6% | PENDING |  |
+| TIA | SELL | +0.0% -> -0.5% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
@@ -64,5 +94,6 @@ No changes.
 | 2026-11-16 | 11,613.66 |
 | 2026-11-16 | 11,613.66 |
 | 2026-11-17 | 11,640.68 |
+| 2026-11-17 | 11,641.17 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

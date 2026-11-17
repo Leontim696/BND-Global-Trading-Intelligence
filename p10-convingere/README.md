@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T04:51:16.870248+00:00 | strategy `ai_council`
-- Equity: 11,390.71 USD (start 11,183.00, +1.86%)
-- Gross leverage: 0.35x | candles processed: 87
+- Run: 2026-11-17T23:52:26.603375+00:00 | strategy `ai_council`
+- Equity: 11,392.27 USD (start 11,183.00, +1.87%)
+- Gross leverage: 0.35x | candles processed: 13
 - Kill switch: off
 
 ## Positions
@@ -13,7 +13,7 @@
 | ARB | -558.0878 | 0.1279 | 0.1313 | -73.28 | -0.6% | -1.88 | 0.1726 |
 | ATOM | -56.1653 | 1.3913 | 1.3340 | -74.92 | -0.7% | +3.22 | 1.6673 |
 | AVAX | -22.9319 | 7.0984 | 7.1200 | -163.28 | -1.4% | -0.49 | 8.9698 |
-| BITCOIN | -0.0036 | 64095.9868 | 65305.0625 | -236.07 | -2.1% | -4.37 | 71831.5284 |
+| BITCOIN | -0.0036 | 64095.9868 | 64855.8438 | -234.45 | -2.1% | -2.75 | 71831.5284 |
 | CAT | -0.3138 | 587.8236 | 570.4900 | -179.02 | -1.6% | +5.44 | 687.4344 |
 | CRUDE_OIL | 1.2702 | 142.7328 | 140.0300 | 177.86 | +1.6% | -3.43 | 129.6002 |
 | CRV | -291.1326 | 0.2412 | 0.2064 | -60.09 | -0.5% | +10.13 | 0.3085 |
@@ -37,7 +37,33 @@
 
 ## Orders for the next open
 
-No changes.
+| Market | Side | Weight now -> target | Status | Note |
+|---|---|---|---|---|
+| CRUDE_OIL | SELL | +1.6% -> +0.0% | PENDING |  |
+| ETHEREUM | SELL | +0.0% -> -0.8% | PENDING |  |
+| SOLANA | SELL | +0.0% -> -0.7% | PENDING |  |
+| BNB | SELL | +0.0% -> -0.9% | PENDING |  |
+| XRP | SELL | +0.0% -> -0.7% | PENDING |  |
+| WMT | SELL | +1.8% -> +0.0% | PENDING |  |
+| UNH | SELL | +2.3% -> +0.0% | PENDING |  |
+| XOM | SELL | +2.6% -> +0.0% | PENDING |  |
+| GS | SELL | +0.0% -> -1.3% | PENDING |  |
+| CAT | BUY | -1.6% -> +0.0% | PENDING |  |
+| ITA | SELL | +0.0% -> -1.8% | PENDING |  |
+| ADA | SELL | +0.0% -> -0.5% | PENDING |  |
+| LINK | SELL | +0.0% -> -0.5% | PENDING |  |
+| XLM | SELL | +0.0% -> -0.6% | PENDING |  |
+| SUI | SELL | +0.0% -> -0.8% | PENDING |  |
+| HBAR | SELL | +0.0% -> -0.4% | PENDING |  |
+| AAVE | SELL | +0.0% -> -0.9% | PENDING |  |
+| NEAR | SELL | +0.6% -> +0.0% | PENDING |  |
+| ICP | BUY | -1.8% -> +0.0% | PENDING |  |
+| INJ | SELL | +0.0% -> -0.4% | PENDING |  |
+| RENDER | SELL | +0.0% -> -0.9% | PENDING |  |
+| FLOKI | SELL | +0.0% -> -0.5% | PENDING |  |
+| TRUMP | SELL | +0.0% -> -0.4% | PENDING |  |
+| ENA | SELL | +0.0% -> -0.3% | PENDING |  |
+| LDO | SELL | +0.0% -> -0.4% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
@@ -69,5 +95,6 @@ No changes.
 | 2026-11-16 | 11,363.13 |
 | 2026-11-16 | 11,358.33 |
 | 2026-11-17 | 11,390.71 |
+| 2026-11-17 | 11,392.27 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
