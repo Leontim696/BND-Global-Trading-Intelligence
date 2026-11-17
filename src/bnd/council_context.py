@@ -49,7 +49,11 @@ def _volatility(candles: Sequence[Candle], days: int) -> float | None:
         return None
     window = candles[-days - 1:]
     returns = [log(b.close / a.close) for a, b in zip(window, window[1:])]
-    return 100 * stdev(returns) * sqrt(365)
+    # Anualizare după ritmul real al datelor: cripto ~365 de zile pe an, acțiuni/ETF/forex ~252-260.
+    # Înainte era mereu sqrt(365), ceea ce umfla volatilitatea pieței de acțiuni cu ~20%.
+    span = (window[-1].open_time - window[0].open_time).days
+    per_year = 365 * days / span if span > 0 else 365
+    return 100 * stdev(returns) * sqrt(per_year)
 
 
 def _sma(candles: Sequence[Candle], days: int) -> float | None:
