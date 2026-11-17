@@ -29,7 +29,27 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # 17.11.2026: GitHub pornea programul de seară abia a doua zi dimineață (04:37 UTC). Rularea zilnică o pornește bucla de
+  # prețuri (src/bnd/catchup.py) după votul consiliului; un program venit după miezul nopții UTC e sărit.
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.g.outputs.run }}
+    steps:
+      - id: g
+        env:
+          EVENT: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT" = schedule ] && [ "$(date -u +%H)" -lt 20 ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Programul a pornit cu ore de întârziere (după miezul nopții UTC): sărit; rularea zilnică o pornește bucla de prețuri." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
   step:
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     outputs:
