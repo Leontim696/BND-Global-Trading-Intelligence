@@ -19,6 +19,14 @@ def make_account(tmp_path, equities):
     return path
 
 
+def test_account_stops_at_the_end_of_the_window(tmp_path):
+    # 17.11.2026: rularea din dimineața de 17.11 intra în raportul preliminar pe 31.10–16.11.
+    path = make_account(tmp_path, [10_100, 9_595, 10_200])          # 1.11, 2.11, 3.11
+    acc = fr.account(path, date(2026, 11, 2))
+    assert acc["days"] == 2 and acc["final"] == 9_595
+    assert fr.account(path)["final"] == 10_200
+
+
 def test_account_curve_return_and_drawdown(tmp_path):
     acc = fr.account(make_account(tmp_path, [10_100, 9_595, 10_200]))
 
