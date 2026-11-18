@@ -1,14 +1,21 @@
 {
-  "time": "2026-11-17T16:12+00:00",
+  "time": "2026-11-18T06:50+00:00",
   "sources": {
     "polymarket": {
       "ok": true,
-      "markets": 17,
-      "added": 17
+      "markets": 14,
+      "added": 14
     },
     "fred": {
       "ok": true,
-      "rows": 1137
+      "rows": 1139
+    },
+    "edgar": {
+      "ok": true,
+      "tickers": 21,
+      "missing": [
+        "ITA"
+      ]
     }
   }
 }
