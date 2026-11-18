@@ -1,140 +1,140 @@
 {
- "time": "2026-11-17T05:15+00:00",
+ "time": "2026-11-18T04:44+00:00",
  "sources": {
   "deribit_dvol_BTC": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "deribit_optiuni_BTC": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "deribit_dvol_ETH": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "deribit_optiuni_ETH": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "pozitionare_BITCOIN": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-16"
+   "last": "2026-11-17"
   },
   "pozitionare_ETHEREUM": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-16"
+   "last": "2026-11-17"
   },
   "pozitionare_SOLANA": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-16"
+   "last": "2026-11-17"
   },
   "pozitionare_XRP": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-16"
+   "last": "2026-11-17"
   },
   "pozitionare_BNB": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-16"
+   "last": "2026-11-17"
   },
   "pozitionare_DOGE": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-16"
+   "last": "2026-11-17"
   },
   "cot_GOLD": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_SILVER": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_CRUDE_OIL": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_NATURAL_GAS": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_COPPER": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_SP500": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_NASDAQ100": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_EURUSD": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_GBPUSD": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_USDJPY": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_AUDUSD": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_USDCHF": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_USDCAD": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_US10Y_NOTE": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "cot_BITCOIN": {
    "ok": true,
-   "added": 1,
+   "added": 0,
    "last": "2026-11-10"
   },
   "defi_stablecoins": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "defi_tvl": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   }
  }
 }

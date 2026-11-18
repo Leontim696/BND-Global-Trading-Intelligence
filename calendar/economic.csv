@@ -300,6 +300,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-17T14:10+00:00|USD|FOMC Member Waller Speaks,2026-11-17T14:10+00:00,USD,FOMC Member Waller Speaks,Low,,
 2026-11-17T14:15+00:00|USD|Capacity Utilization Rate,2026-11-17T14:15+00:00,USD,Capacity Utilization Rate,Low,76.8%,76.9%
 2026-11-17T14:15+00:00|USD|Industrial Production m/m,2026-11-17T14:15+00:00,USD,Industrial Production m/m,Low,0.0%,0.7%
+2026-11-17T14:29+00:00|NZD|GDT Price Index,2026-11-17T14:29+00:00,NZD,GDT Price Index,Low,,3.0%
 2026-11-17T14:30+00:00|USD|FOMC Member Hammack Speaks,2026-11-17T14:30+00:00,USD,FOMC Member Hammack Speaks,Low,,
 2026-11-17T15:00+00:00|USD|Business Inventories m/m,2026-11-17T15:00+00:00,USD,Business Inventories m/m,Low,0.5%,0.4%
 2026-11-17T15:00+00:00|USD|NAHB Housing Market Index,2026-11-17T15:00+00:00,USD,NAHB Housing Market Index,Low,29,29
@@ -309,6 +310,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-17T21:45+00:00|NZD|PPI Input q/q,2026-11-17T21:45+00:00,NZD,PPI Input q/q,Low,1.5%,2.9%
 2026-11-17T21:45+00:00|NZD|PPI Output q/q,2026-11-17T21:45+00:00,NZD,PPI Output q/q,Low,1.1%,1.6%
 2026-11-17T23:30+00:00|AUD|MI Leading Index m/m,2026-11-17T23:30+00:00,AUD,MI Leading Index m/m,Low,,-0.1%
+2026-11-17T23:39+00:00|AUD|MI Leading Index m/m,2026-11-17T23:39+00:00,AUD,MI Leading Index m/m,Low,,-0.1%
 2026-11-17T23:50+00:00|JPY|Trade Balance,2026-11-17T23:50+00:00,JPY,Trade Balance,Low,-0.90T,-0.70T
 2026-11-18T00:30+00:00|AUD|Wage Price Index q/q,2026-11-18T00:30+00:00,AUD,Wage Price Index q/q,Medium,1.0%,0.8%
 2026-11-18T02:45+00:00|EUR|German Buba President Nagel Speaks,2026-11-18T02:45+00:00,EUR,German Buba President Nagel Speaks,Low,,
@@ -328,8 +330,8 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-18T13:30+00:00|USD|Housing Starts,2026-11-18T13:30+00:00,USD,Housing Starts,Low,1.25M,1.22M
 2026-11-18T14:25+00:00|EUR|ECB President Lagarde Speaks,2026-11-18T14:25+00:00,EUR,ECB President Lagarde Speaks,Medium,,
 2026-11-18T15:00+00:00|GBP|BOE Gov Bailey Speaks,2026-11-18T15:00+00:00,GBP,BOE Gov Bailey Speaks,High,,
-2026-11-18T15:00+00:00|USD|Pending Home Sales m/m,2026-11-18T15:00+00:00,USD,Pending Home Sales m/m,Low,-2.1%,-7.3%
-2026-11-18T15:30+00:00|USD|Crude Oil Inventories,2026-11-18T15:30+00:00,USD,Crude Oil Inventories,Low,,4.7M
+2026-11-18T15:00+00:00|USD|Pending Home Sales m/m,2026-11-18T15:00+00:00,USD,Pending Home Sales m/m,Low,-2.0%,-7.3%
+2026-11-18T15:30+00:00|USD|Crude Oil Inventories,2026-11-18T15:30+00:00,USD,Crude Oil Inventories,Low,0.4M,4.7M
 2026-11-18T17:15+00:00|USD|FOMC Member Daly Speaks,2026-11-18T17:15+00:00,USD,FOMC Member Daly Speaks,Low,,
 2026-11-18T17:30+00:00|CAD|Gov Council Member Gravelle Speaks,2026-11-18T17:30+00:00,CAD,Gov Council Member Gravelle Speaks,Low,,
 2026-11-18T18:00+00:00|NZD|RBNZ Gov Breman Speaks,2026-11-18T18:00+00:00,NZD,RBNZ Gov Breman Speaks,Medium,,
@@ -346,16 +348,16 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-19T11:00+00:00|EUR|German Buba Monthly Report,2026-11-19T11:00+00:00,EUR,German Buba Monthly Report,Low,,
 2026-11-19T11:00+00:00|GBP|CBI Industrial Order Expectations,2026-11-19T11:00+00:00,GBP,CBI Industrial Order Expectations,Low,-29,-32
 2026-11-19T12:15+00:00|GBP|MPC Member Dhingra Speaks,2026-11-19T12:15+00:00,GBP,MPC Member Dhingra Speaks,Low,,
-2026-11-19T13:30+00:00|CAD|IPPI m/m,2026-11-19T13:30+00:00,CAD,IPPI m/m,Low,1.2%,2.0%
-2026-11-19T13:30+00:00|CAD|RMPI m/m,2026-11-19T13:30+00:00,CAD,RMPI m/m,Low,2.0%,4.8%
+2026-11-19T13:30+00:00|CAD|IPPI m/m,2026-11-19T13:30+00:00,CAD,IPPI m/m,Low,0.4%,2.0%
+2026-11-19T13:30+00:00|CAD|RMPI m/m,2026-11-19T13:30+00:00,CAD,RMPI m/m,Low,0.9%,4.8%
 2026-11-19T13:30+00:00|EUR|ECB President Lagarde Speaks,2026-11-19T13:30+00:00,EUR,ECB President Lagarde Speaks,Medium,,
-2026-11-19T13:30+00:00|USD|Philly Fed Manufacturing Index,2026-11-19T13:30+00:00,USD,Philly Fed Manufacturing Index,Medium,19.2,20.9
-2026-11-19T13:30+00:00|USD|Unemployment Claims,2026-11-19T13:30+00:00,USD,Unemployment Claims,Medium,199K,200K
+2026-11-19T13:30+00:00|USD|Philly Fed Manufacturing Index,2026-11-19T13:30+00:00,USD,Philly Fed Manufacturing Index,Medium,20.6,20.9
+2026-11-19T13:30+00:00|USD|Unemployment Claims,2026-11-19T13:30+00:00,USD,Unemployment Claims,Medium,198K,200K
 2026-11-19T13:50+00:00|USD|FOMC Member Hammack Speaks,2026-11-19T13:50+00:00,USD,FOMC Member Hammack Speaks,Low,,
 2026-11-19T14:25+00:00|USD|FOMC Member Jefferson Speaks,2026-11-19T14:25+00:00,USD,FOMC Member Jefferson Speaks,Low,,
 2026-11-19T15:00+00:00|USD|CB Leading Index m/m,2026-11-19T15:00+00:00,USD,CB Leading Index m/m,Low,0.0%,0.0%
 2026-11-19T15:15+00:00|USD|Mortgage Delinquencies,2026-11-19T15:15+00:00,USD,Mortgage Delinquencies,Low,,4.37%
-2026-11-19T15:30+00:00|USD|Natural Gas Storage,2026-11-19T15:30+00:00,USD,Natural Gas Storage,Low,,61B
+2026-11-19T15:30+00:00|USD|Natural Gas Storage,2026-11-19T15:30+00:00,USD,Natural Gas Storage,Low,25B,61B
 2026-11-19T17:30+00:00|USD|FOMC Member Goolsbee Speaks,2026-11-19T17:30+00:00,USD,FOMC Member Goolsbee Speaks,Low,,
 2026-11-19T19:15+00:00|USD|FOMC Member Barr Speaks,2026-11-19T19:15+00:00,USD,FOMC Member Barr Speaks,Low,,
 2026-11-19T21:00+00:00|USD|FOMC Member Barkin Speaks,2026-11-19T21:00+00:00,USD,FOMC Member Barkin Speaks,Low,,
@@ -374,6 +376,6 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-20T13:30+00:00|CAD|Core Retail Sales m/m,2026-11-20T13:30+00:00,CAD,Core Retail Sales m/m,Low,0.7%,1.2%
 2026-11-20T13:30+00:00|CAD|Retail Sales m/m,2026-11-20T13:30+00:00,CAD,Retail Sales m/m,Low,0.7%,1.2%
 2026-11-20T15:00+00:00|EUR|Consumer Confidence,2026-11-20T15:00+00:00,EUR,Consumer Confidence,Low,-18,-18
-2026-11-20T15:00+00:00|USD|Revised UoM Consumer Sentiment,2026-11-20T15:00+00:00,USD,Revised UoM Consumer Sentiment,Medium,52.1,51.0
+2026-11-20T15:00+00:00|USD|Revised UoM Consumer Sentiment,2026-11-20T15:00+00:00,USD,Revised UoM Consumer Sentiment,Medium,51.7,51.0
 2026-11-20T15:00+00:00|USD|Revised UoM Inflation Expectations,2026-11-20T15:00+00:00,USD,Revised UoM Inflation Expectations,Medium,,4.3%
 2026-11-20T17:15+00:00|USD|FOMC Member Cook Speaks,2026-11-20T17:15+00:00,USD,FOMC Member Cook Speaks,Low,,
