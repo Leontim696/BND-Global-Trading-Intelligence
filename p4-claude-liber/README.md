@@ -1,41 +1,40 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-17T23:52:14.703421+00:00 | strategy `ai_council`
-- Equity: 11,288.14 USD (start 11,183.00, +0.94%)
-- Gross leverage: 0.85x | candles processed: 13
+- Run: 2026-11-18T23:53:10.910666+00:00 | strategy `ai_council`
+- Equity: 11,204.13 USD (start 11,183.00, +0.19%)
+- Gross leverage: 0.43x | candles processed: 100
 - Kill switch: off
 
 ## Positions
 
 | Market | Quantity | Avg price | Last | Value | Weight | P&L | Stop |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| EURUSD | -2501.0635 | 1.1096 | 1.1025 | -2,757.39 | -24.4% | +17.73 | 1.1396 |
-| GENERAL_DYNAMICS | 7.7738 | 364.5693 | 359.6900 | 2,796.17 | +24.8% | -37.93 | 338.9294 |
-| GOLD | -7.2598 | 354.0238 | 352.9300 | -2,562.19 | -22.7% | +7.94 | 376.2556 |
-| SILVER | -35.4990 | 42.5772 | 42.3900 | -1,504.80 | -13.3% | +6.65 | 48.7167 |
+| BONK | -204302828.5723 | 0.0000 | 0.0000 | -492.37 | -4.4% | -15.02 | 0.0000 |
+| ETC | -115.2803 | 5.8671 | 6.0300 | -695.14 | -6.2% | -18.78 | 7.0030 |
+| EURUSD | -2501.0635 | 1.1096 | 1.0998 | -2,750.72 | -24.6% | +24.40 | 1.1396 |
+| TIA | -937.1856 | 0.3546 | 0.3595 | -336.92 | -3.0% | -4.57 | 0.5047 |
+| VET | -111952.3529 | 0.0049 | 0.0050 | -556.40 | -5.0% | -11.92 | 0.0061 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| GOLD | BUY | -22.7% -> +0.0% | PENDING |  |
-| SILVER | BUY | -13.3% -> +0.0% | PENDING |  |
-| GENERAL_DYNAMICS | SELL | +24.8% -> +0.0% | PENDING |  |
-| ETC | SELL | +0.0% -> -6.0% | PENDING |  |
-| VET | SELL | +0.0% -> -4.8% | PENDING |  |
-| BONK | SELL | +0.0% -> -4.2% | PENDING |  |
-| TIA | SELL | +0.0% -> -2.9% | PENDING |  |
+| GOLD | SELL | +0.0% -> -25.0% | PENDING |  |
+| ETC | BUY | -6.2% -> +0.0% | PENDING |  |
+| VET | BUY | -5.0% -> +0.0% | PENDING |  |
+| BONK | BUY | -4.4% -> +0.0% | PENDING |  |
+| TIA | BUY | -3.0% -> +0.0% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| One-day crash like October 1987 | -3.4% | GENERAL_DYNAMICS | no |
-| Covid crash, Feb-Mar 2020 | -2.8% | GENERAL_DYNAMICS | no |
-| Crypto collapse within a week | -1.0% | GENERAL_DYNAMICS | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +2.8% | GENERAL_DYNAMICS | no |
-| Global financial crisis, Sep-Nov 2008 | +3.1% | GENERAL_DYNAMICS | no |
-| Sharp dollar rally | +4.4% | GENERAL_DYNAMICS | no |
+| Sharp dollar rally | +4.3% | - | no |
+| One-day crash like October 1987 | +5.6% | - | no |
+| Crypto collapse within a week | +9.3% | - | no |
+| Covid crash, Feb-Mar 2020 | +10.0% | - | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +16.7% | - | no |
+| Global financial crisis, Sep-Nov 2008 | +17.9% | - | no |
 
 ## Equity, last runs
 
@@ -57,5 +56,6 @@
 | 2026-11-16 | 11,299.21 |
 | 2026-11-17 | 11,288.14 |
 | 2026-11-17 | 11,288.14 |
+| 2026-11-18 | 11,204.13 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
