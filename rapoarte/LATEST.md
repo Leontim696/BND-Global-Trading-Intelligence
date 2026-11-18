@@ -3,7 +3,7 @@
 **Ziua 17 din 30** de test în timp real, cu bani virtuali.
 
 ## Pe scurt
-- Valoarea contului acum: **11 878.76 USD** (+6,22% față de start, 11 183.00 USD)
+- Valoarea contului acum: **11 878.20 USD** (+6,22% față de start, 11 183.00 USD)
 - La ultima închidere: 11 894.82 USD; bani liberi: 15 500.41 USD
 - Poziții deschise: 81; ordine pregătite pentru mâine: 28
 - Piețe deschise acum: bursa din Tokyo, forex, crypto
@@ -16,11 +16,11 @@
 
 | Piață | Valoare | Câștig/pierdere | Azi | Stop |
 |---|---:|---:|---:|---:|
-| scurt USDCAD | -1 460.74 USD | -3.75 USD | +0,25% | 1.45 |
-| GBPUSD | 1 234.43 USD | -1.63 USD | -0,12% | 1.30 |
+| scurt USDCAD | -1 461.15 USD | -4.16 USD | +0,28% | 1.45 |
+| GBPUSD | 1 234.34 USD | -1.72 USD | -0,12% | 1.30 |
 | scurt USDCHF | -1 077.24 USD | -3.13 USD | +0,18% | 0.86 |
-| AUDUSD | 894.12 USD | -18.88 USD | -0,77% | 0.67 |
-| scurt USDJPY | -592.32 USD | 1.45 USD | -0,26% | 162.92 |
+| AUDUSD | 894.26 USD | -18.75 USD | -0,75% | 0.67 |
+| scurt USDJPY | -592.33 USD | 1.45 USD | -0,25% | 162.92 |
 | KO | 556.62 USD | 25.25 USD | -0,69% | 89.21 |
 | scurt AGRICULTURE | -543.06 USD | 10.54 USD | -0,04% | 27.64 |
 | scurt JAPAN | -414.55 USD | 6.64 USD | -1,29% | 92.90 |
@@ -37,66 +37,66 @@
 | scurt NASDAQ100 | -194.98 USD | 6.92 USD | -0,73% | 739.59 |
 | XOM | 191.05 USD | -4.46 USD | +0,20% | 155.56 |
 | scurt SHIB | -186.46 USD | 39.27 USD | +0,26% | 0.00 |
-| scurt XRP | -178.52 USD | 50.18 USD | +2,52% | 1.42 |
+| scurt XRP | -178.57 USD | 50.12 USD | +2,55% | 1.42 |
 | scurt ETC | -171.30 USD | 33.01 USD | +1,36% | 8.27 |
 | scurt NVDA | -166.77 USD | 38.17 USD | -0,44% | 203.63 |
-| scurt DOGE | -165.79 USD | 44.74 USD | +0,90% | 0.09 |
-| scurt XLM | -161.07 USD | 32.87 USD | +2,03% | 0.20 |
-| scurt BITCOIN | -147.69 USD | 15.76 USD | -0,65% | 78151.36 |
-| scurt ETHEREUM | -135.36 USD | 32.64 USD | -0,80% | 2506.20 |
+| scurt DOGE | -165.84 USD | 44.69 USD | +0,93% | 0.09 |
+| scurt XLM | -161.19 USD | 32.76 USD | +2,10% | 0.20 |
+| scurt BITCOIN | -147.72 USD | 15.73 USD | -0,64% | 78151.36 |
+| scurt ETHEREUM | -135.34 USD | 32.65 USD | -0,81% | 2506.20 |
 | LOCKHEED | 134.10 USD | -1.71 USD | +0,88% | 543.89 |
 | UNH | 132.61 USD | -5.28 USD | -5,42% | 368.71 |
 | scurt VET | -132.48 USD | 26.69 USD | +0,25% | 0.01 |
 | scurt GOOGL | -128.05 USD | 0.99 USD | -1,24% | 311.06 |
-| scurt HBAR | -111.02 USD | 27.54 USD | +0,24% | 0.09 |
+| scurt HBAR | -111.06 USD | 27.50 USD | +0,28% | 0.09 |
 | scurt WIF | -106.94 USD | 32.84 USD | -0,30% | 0.22 |
 | SP500 | 106.00 USD | -3.13 USD | -1,01% | 726.63 |
 | L3HARRIS | 105.04 USD | -1.46 USD | -0,39% | 249.94 |
 | scurt LTC | -102.03 USD | 15.55 USD | +0,61% | 60.70 |
 | HENSOLDT | 101.81 USD | -3.37 USD | -2,05% | 72.25 |
-| scurt PENGU | -100.77 USD | 53.33 USD | -2,16% | 0.01 |
+| scurt PENGU | -100.73 USD | 53.38 USD | -2,20% | 0.01 |
 | scurt SOLANA | -98.58 USD | 28.08 USD | +4,68% | 108.83 |
-| scurt LINK | -94.56 USD | 19.29 USD | +1,05% | 13.22 |
-| scurt AVAX | -92.68 USD | -0.82 USD | +0,59% | 8.97 |
+| scurt LINK | -94.53 USD | 19.32 USD | +1,02% | 13.22 |
+| scurt AVAX | -92.69 USD | -0.84 USD | +0,60% | 8.97 |
 | scurt ATOM | -82.43 USD | -0.67 USD | -1,42% | 1.60 |
 | WMT | 80.25 USD | 2.13 USD | -0,69% | 116.24 |
 | scurt GOLD | -79.21 USD | 5.75 USD | -0,13% | 392.34 |
 | RHEINMETALL | 75.93 USD | -4.43 USD | -1,14% | 672.77 |
 | scurt FLOKI | -74.65 USD | 10.86 USD | -2,44% | 0.00 |
 | scurt BNB | -74.04 USD | -1.31 USD | +0,14% | 654.85 |
-| scurt ADA | -73.98 USD | 18.82 USD | +0,33% | 0.23 |
+| scurt ADA | -74.03 USD | 18.77 USD | +0,39% | 0.23 |
 | scurt DOT | -70.81 USD | 12.29 USD | +0,27% | 1.06 |
-| scurt AAVE | -70.69 USD | 7.62 USD | +2,78% | 151.98 |
+| scurt AAVE | -70.66 USD | 7.66 USD | +2,73% | 151.98 |
 | scurt ALGO | -67.84 USD | 9.37 USD | -0,38% | 0.11 |
 | scurt TRUMP | -67.26 USD | 15.16 USD | +1,80% | 1.62 |
 | scurt ITA | -67.06 USD | 2.67 USD | -0,22% | 77.92 |
-| scurt FET | -57.44 USD | 13.24 USD | -0,60% | 0.20 |
+| scurt FET | -57.30 USD | 13.37 USD | -0,83% | 0.20 |
 | NORTHROP | 56.67 USD | -0.09 USD | +1,39% | 505.02 |
 | scurt ARB | -55.91 USD | -1.43 USD | +0,00% | 0.17 |
 | scurt CAT | -55.63 USD | 5.75 USD | +0,05% | 713.69 |
 | scurt LDO | -54.80 USD | 5.80 USD | -1,26% | 0.38 |
-| scurt SEI | -53.30 USD | 7.19 USD | +1,41% | 0.06 |
+| scurt SEI | -53.29 USD | 7.20 USD | +1,38% | 0.06 |
 | BAE | 53.04 USD | -1.44 USD | -2,54% | 1709.62 |
 | AMZN | 49.86 USD | -1.95 USD | +0,05% | 237.81 |
-| scurt WLD | -48.57 USD | 9.72 USD | +1,22% | 0.43 |
+| scurt WLD | -48.59 USD | 9.70 USD | +1,26% | 0.43 |
 | scurt GS | -48.56 USD | 1.59 USD | -1,57% | 998.38 |
-| scurt TAO | -47.32 USD | 8.96 USD | +2,55% | 281.54 |
-| scurt APT | -46.46 USD | 12.72 USD | -1,99% | 0.72 |
+| scurt TAO | -47.29 USD | 8.99 USD | +2,50% | 281.54 |
+| scurt APT | -46.43 USD | 12.75 USD | -2,05% | 0.72 |
 | CRUDE_OIL | 45.00 USD | -0.75 USD | +0,15% | 131.66 |
 | scurt CRV | -44.88 USD | 8.64 USD | +0,34% | 0.32 |
 | BA | 42.41 USD | -1.65 USD | -0,79% | 155.74 |
-| PEPE | 41.27 USD | -0.93 USD | -2,56% | 0.00 |
+| PEPE | 41.16 USD | -1.04 USD | -2,81% | 0.00 |
 | scurt ONDO | -39.41 USD | 3.96 USD | +0,16% | 0.43 |
 | scurt ENA | -35.01 USD | 0.17 USD | -0,26% | 0.17 |
 | STX | 31.33 USD | 0.53 USD | +5,01% | 0.18 |
 | scurt OP | -28.92 USD | 12.08 USD | -2,14% | 0.14 |
-| UNI | 27.65 USD | 0.17 USD | +0,95% | 3.38 |
-| scurt ICP | -26.35 USD | 3.76 USD | -9,22% | 3.12 |
-| NEAR | 21.27 USD | -1.18 USD | +7,56% | 2.43 |
-| scurt BCH | -17.10 USD | -0.64 USD | +0,19% | 248.92 |
+| UNI | 27.64 USD | 0.16 USD | +0,91% | 3.38 |
+| scurt ICP | -26.36 USD | 3.74 USD | -9,18% | 3.12 |
+| NEAR | 21.27 USD | -1.19 USD | +7,53% | 2.43 |
+| scurt BCH | -17.11 USD | -0.65 USD | +0,24% | 248.92 |
 | JUP | 15.20 USD | -0.29 USD | +8,54% | 0.20 |
-| scurt INJ | -14.91 USD | -0.71 USD | +6,32% | 9.23 |
-| scurt FIL | -13.75 USD | 4.97 USD | -1,06% | 1.04 |
+| scurt INJ | -14.90 USD | -0.70 USD | +6,23% | 9.23 |
+| scurt FIL | -13.75 USD | 4.97 USD | -1,04% | 1.04 |
 
 ## Ordine pregătite (se execută la deschiderea următoare)
 
