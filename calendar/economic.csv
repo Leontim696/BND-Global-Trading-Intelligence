@@ -370,6 +370,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-20T07:00+00:00|EUR|German PPI m/m,2026-11-20T07:00+00:00,EUR,German PPI m/m,Low,0.9%,1.9%
 2026-11-20T07:00+00:00|GBP|Public Sector Net Borrowing,2026-11-20T07:00+00:00,GBP,Public Sector Net Borrowing,Low,18.0B,24.5B
 2026-11-20T07:00+00:00|GBP|Retail Sales m/m,2026-11-20T07:00+00:00,GBP,Retail Sales m/m,Medium,0.0%,-0.4%
+2026-11-20T07:02+00:00|CNY|Foreign Direct Investment ytd/y,2026-11-20T07:02+00:00,CNY,Foreign Direct Investment ytd/y,Low,,-4.3%
 2026-11-20T08:15+00:00|EUR|ECB President Lagarde Speaks,2026-11-20T08:15+00:00,EUR,ECB President Lagarde Speaks,Medium,,
 2026-11-20T13:00+00:00|EUR|German Buba President Nagel Speaks,2026-11-20T13:00+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-20T13:25+00:00|USD|FOMC Member Waller Speaks,2026-11-20T13:25+00:00,USD,FOMC Member Waller Speaks,Low,,

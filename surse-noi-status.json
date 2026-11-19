@@ -1,55 +1,55 @@
 {
- "time": "2026-11-18T04:44+00:00",
+ "time": "2026-11-19T04:31+00:00",
  "sources": {
   "deribit_dvol_BTC": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-18"
+   "last": "2026-11-19"
   },
   "deribit_optiuni_BTC": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-18"
+   "last": "2026-11-19"
   },
   "deribit_dvol_ETH": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-18"
+   "last": "2026-11-19"
   },
   "deribit_optiuni_ETH": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-18"
+   "last": "2026-11-19"
   },
   "pozitionare_BITCOIN": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "pozitionare_ETHEREUM": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "pozitionare_SOLANA": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "pozitionare_XRP": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "pozitionare_BNB": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "pozitionare_DOGE": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-17"
+   "last": "2026-11-18"
   },
   "cot_GOLD": {
    "ok": true,
@@ -129,12 +129,12 @@
   "defi_stablecoins": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-18"
+   "last": "2026-11-19"
   },
   "defi_tvl": {
    "ok": true,
    "added": 1,
-   "last": "2026-11-18"
+   "last": "2026-11-19"
   }
  }
 }
