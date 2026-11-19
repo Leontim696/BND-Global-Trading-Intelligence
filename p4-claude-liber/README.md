@@ -1,40 +1,33 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-18T23:53:10.910666+00:00 | strategy `ai_council`
-- Equity: 11,204.13 USD (start 11,183.00, +0.19%)
-- Gross leverage: 0.43x | candles processed: 100
+- Run: 2026-11-19T23:54:13.533243+00:00 | strategy `ai_council`
+- Equity: 11,243.11 USD (start 11,183.00, +0.54%)
+- Gross leverage: 0.49x | candles processed: 100
 - Kill switch: off
 
 ## Positions
 
 | Market | Quantity | Avg price | Last | Value | Weight | P&L | Stop |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| BONK | -204302828.5723 | 0.0000 | 0.0000 | -492.37 | -4.4% | -15.02 | 0.0000 |
-| ETC | -115.2803 | 5.8671 | 6.0300 | -695.14 | -6.2% | -18.78 | 7.0030 |
-| EURUSD | -2501.0635 | 1.1096 | 1.0998 | -2,750.72 | -24.6% | +24.40 | 1.1396 |
-| TIA | -937.1856 | 0.3546 | 0.3595 | -336.92 | -3.0% | -4.57 | 0.5047 |
-| VET | -111952.3529 | 0.0049 | 0.0050 | -556.40 | -5.0% | -11.92 | 0.0061 |
+| EURUSD | -2501.0635 | 1.1096 | 1.0993 | -2,749.39 | -24.5% | +25.73 | 1.1396 |
+| GOLD | -7.9466 | 346.2061 | 341.1900 | -2,711.31 | -24.1% | +39.86 | 372.2497 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| GOLD | SELL | +0.0% -> -25.0% | PENDING |  |
-| ETC | BUY | -6.2% -> +0.0% | PENDING |  |
-| VET | BUY | -5.0% -> +0.0% | PENDING |  |
-| BONK | BUY | -4.4% -> +0.0% | PENDING |  |
-| TIA | BUY | -3.0% -> +0.0% | PENDING |  |
+| RENDER | SELL | +0.0% -> -8.7% | PENDING | capped by risk at the stop |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Sharp dollar rally | +4.3% | - | no |
-| One-day crash like October 1987 | +5.6% | - | no |
-| Crypto collapse within a week | +9.3% | - | no |
-| Covid crash, Feb-Mar 2020 | +10.0% | - | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +16.7% | - | no |
-| Global financial crisis, Sep-Nov 2008 | +17.9% | - | no |
+| Crypto collapse within a week | +0.0% | - | no |
+| One-day crash like October 1987 | +0.7% | - | no |
+| Covid crash, Feb-Mar 2020 | +1.9% | - | no |
+| Sharp dollar rally | +4.4% | - | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +7.3% | - | no |
+| Global financial crisis, Sep-Nov 2008 | +8.5% | - | no |
 
 ## Equity, last runs
 
@@ -57,5 +50,6 @@
 | 2026-11-17 | 11,288.14 |
 | 2026-11-17 | 11,288.14 |
 | 2026-11-18 | 11,204.13 |
+| 2026-11-19 | 11,243.11 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
