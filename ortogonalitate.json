@@ -1,66 +1,66 @@
 {
- "decizii": 1579,
+ "decizii": 1666,
  "incheiate": 1057,
  "hold_pct": {
-  "gpt": 64.1,
-  "grok": 71.5,
-  "claude": 95.5,
-  "gemini": 74.9,
-  "deepseek": 27.0
+  "gpt": 64.9,
+  "grok": 71.9,
+  "claude": 95.7,
+  "gemini": 75.3,
+  "deepseek": 27.3
  },
  "perechi": {
   "gpt-grok": {
-   "acord": 0.789,
-   "kappa": 0.522,
-   "corelatie": 0.536
+   "acord": 0.792,
+   "kappa": 0.523,
+   "corelatie": 0.535
   },
   "gpt-claude": {
-   "acord": 0.676,
+   "acord": 0.682,
    "kappa": 0.131,
    "corelatie": 0.264
   },
   "gpt-gemini": {
-   "acord": 0.661,
-   "kappa": 0.244,
-   "corelatie": 0.357
+   "acord": 0.667,
+   "kappa": 0.248,
+   "corelatie": 0.358
   },
   "gpt-deepseek": {
-   "acord": 0.536,
-   "kappa": 0.253,
-   "corelatie": 0.411
+   "acord": 0.534,
+   "kappa": 0.251,
+   "corelatie": 0.405
   },
   "grok-claude": {
-   "acord": 0.738,
-   "kappa": 0.144,
-   "corelatie": 0.25
+   "acord": 0.742,
+   "kappa": 0.143,
+   "corelatie": 0.249
   },
   "grok-gemini": {
-   "acord": 0.763,
-   "kappa": 0.419,
-   "corelatie": 0.495
+   "acord": 0.769,
+   "kappa": 0.427,
+   "corelatie": 0.502
   },
   "grok-deepseek": {
    "acord": 0.523,
-   "kappa": 0.261,
-   "corelatie": 0.439
+   "kappa": 0.26,
+   "corelatie": 0.437
   },
   "claude-gemini": {
-   "acord": 0.769,
-   "kappa": 0.163,
-   "corelatie": 0.268
+   "acord": 0.773,
+   "kappa": 0.161,
+   "corelatie": 0.267
   },
   "claude-deepseek": {
-   "acord": 0.313,
-   "kappa": 0.044,
-   "corelatie": 0.184
+   "acord": 0.315,
+   "kappa": 0.043,
+   "corelatie": 0.181
   },
   "gemini-deepseek": {
    "acord": 0.494,
    "kappa": 0.25,
-   "corelatie": 0.47
+   "corelatie": 0.469
   }
  },
- "ai_independente_efectiv": 2.02,
+ "ai_independente_efectiv": 2.03,
  "contributie": {
   "toti_5": {
    "semnale": 806,
@@ -77,7 +77,7 @@
    "semnale": 803,
    "corecte_pct": 78.1,
    "medie_pct": 6.286,
-   "directie_schimbata_pct": 0.6
+   "directie_schimbata_pct": 0.7
   },
   "fara_claude": {
    "semnale": 806,
@@ -89,74 +89,74 @@
    "semnale": 800,
    "corecte_pct": 78.8,
    "medie_pct": 6.43,
-   "directie_schimbata_pct": 1.4
+   "directie_schimbata_pct": 1.3
   },
   "fara_deepseek": {
    "semnale": 540,
    "corecte_pct": 83.7,
    "medie_pct": 7.35,
-   "directie_schimbata_pct": 28.9
+   "directie_schimbata_pct": 29.4
   }
  },
  "alfa_negativ": {
-  "taiere": "2026-11-09",
+  "taiere": "2026-11-10",
   "agenti": {
    "gpt": {
     "prima": {
-     "voturi": 217,
-     "medie_pct": 7.311
+     "voturi": 259,
+     "medie_pct": 7.772
     },
     "a_doua": {
-     "voturi": 143,
-     "medie_pct": 12.161
+     "voturi": 101,
+     "medie_pct": 12.997
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
    },
    "grok": {
     "prima": {
-     "voturi": 193,
-     "medie_pct": 7.347
+     "voturi": 226,
+     "medie_pct": 7.839
     },
     "a_doua": {
-     "voturi": 105,
-     "medie_pct": 11.739
+     "voturi": 72,
+     "medie_pct": 12.209
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
    },
    "claude": {
     "prima": {
-     "voturi": 29,
-     "medie_pct": 9.485
+     "voturi": 38,
+     "medie_pct": 9.881
     },
     "a_doua": {
-     "voturi": 24,
-     "medie_pct": 11.296
+     "voturi": 15,
+     "medie_pct": 11.381
     },
     "candidat_inversare": false,
     "motiv": "prea puține voturi"
    },
    "gemini": {
     "prima": {
-     "voturi": 196,
-     "medie_pct": 5.239
+     "voturi": 223,
+     "medie_pct": 5.772
     },
     "a_doua": {
-     "voturi": 99,
-     "medie_pct": 9.537
+     "voturi": 72,
+     "medie_pct": 9.499
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
    },
    "deepseek": {
     "prima": {
-     "voturi": 501,
-     "medie_pct": 5.472
+     "voturi": 570,
+     "medie_pct": 5.622
     },
     "a_doua": {
-     "voturi": 258,
-     "medie_pct": 7.55
+     "voturi": 189,
+     "medie_pct": 7.857
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
