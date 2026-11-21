@@ -1,45 +1,45 @@
 {
-  "time": "2026-11-20T04:19+00:00",
+  "time": "2026-11-21T04:18+00:00",
   "sources": {
     "fear_greed": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-20"
+      "last": "2026-11-21"
     },
     "funding_BITCOIN": {
       "ok": true,
       "binance_error": "Binance nu răspunde pentru funding",
       "source": "okx",
       "added": 3,
-      "last": "2026-11-20T00:00:00+00:00"
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "funding_ETHEREUM": {
       "ok": true,
       "binance_error": "Binance nu răspunde pentru funding",
       "source": "okx",
       "added": 3,
-      "last": "2026-11-20T00:00:00+00:00"
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "funding_SOLANA": {
       "ok": true,
       "binance_error": "Binance nu răspunde pentru funding",
       "source": "okx",
       "added": 3,
-      "last": "2026-11-20T00:00:00+00:00"
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "funding_BNB": {
       "ok": true,
       "binance_error": "Binance nu răspunde pentru funding",
       "source": "okx",
       "added": 3,
-      "last": "2026-11-20T00:00:00+00:00"
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "funding_XRP": {
       "ok": true,
       "binance_error": "Binance nu răspunde pentru funding",
       "source": "okx",
       "added": 3,
-      "last": "2026-11-20T00:00:00+00:00"
+      "last": "2026-11-21T00:00:00+00:00"
     }
   }
 }

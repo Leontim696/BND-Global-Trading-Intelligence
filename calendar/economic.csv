@@ -286,6 +286,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-17T04:30+00:00|JPY|Tertiary Industry Activity m/m,2026-11-17T04:30+00:00,JPY,Tertiary Industry Activity m/m,Low,0.1%,-0.1%
 2026-11-17T07:00+00:00|GBP|Average Earnings Index 3m/y,2026-11-17T07:00+00:00,GBP,Average Earnings Index 3m/y,Medium,3.5%,3.7%
 2026-11-17T07:00+00:00|GBP|Claimant Count Change,2026-11-17T07:00+00:00,GBP,Claimant Count Change,Low,25.4K,30.3K
+2026-11-17T07:00+00:00|GBP|HMRC Payrolls Change,2026-11-17T07:00+00:00,GBP,HMRC Payrolls Change,Low,9K,13K
 2026-11-17T07:00+00:00|GBP|Unemployment Rate,2026-11-17T07:00+00:00,GBP,Unemployment Rate,Low,4.7%,4.7%
 2026-11-17T10:00+00:00|EUR|EU Economic Forecasts,2026-11-17T10:00+00:00,EUR,EU Economic Forecasts,Low,,
 2026-11-17T10:00+00:00|EUR|German ZEW Economic Sentiment,2026-11-17T10:00+00:00,EUR,German ZEW Economic Sentiment,Low,28.8,28.1
@@ -380,4 +381,5 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-20T15:00+00:00|EUR|Consumer Confidence,2026-11-20T15:00+00:00,EUR,Consumer Confidence,Low,-18,-18
 2026-11-20T15:00+00:00|USD|Revised UoM Consumer Sentiment,2026-11-20T15:00+00:00,USD,Revised UoM Consumer Sentiment,Medium,51.7,51.0
 2026-11-20T15:00+00:00|USD|Revised UoM Inflation Expectations,2026-11-20T15:00+00:00,USD,Revised UoM Inflation Expectations,Medium,,4.3%
+2026-11-20T17:00+00:00|USD|President Trump Speaks,2026-11-20T17:00+00:00,USD,President Trump Speaks,Medium,,
 2026-11-20T17:15+00:00|USD|FOMC Member Cook Speaks,2026-11-20T17:15+00:00,USD,FOMC Member Cook Speaks,Low,,
