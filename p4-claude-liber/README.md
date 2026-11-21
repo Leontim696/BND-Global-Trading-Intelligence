@@ -1,35 +1,35 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-20T23:54:42.361566+00:00 | strategy `ai_council`
-- Equity: 11,299.08 USD (start 11,183.00, +1.04%)
-- Gross leverage: 0.55x | candles processed: 100
+- Run: 2026-11-21T23:55:26.169785+00:00 | strategy `ai_council`
+- Equity: 11,394.42 USD (start 11,183.00, +1.89%)
+- Gross leverage: 0.23x | candles processed: 100
 - Kill switch: off
 
 ## Positions
 
 | Market | Quantity | Avg price | Last | Value | Weight | P&L | Stop |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| EURUSD | -2501.0635 | 1.1096 | 1.0972 | -2,744.17 | -24.3% | +30.95 | 1.1396 |
-| GOLD | -7.9466 | 346.2061 | 335.1800 | -2,663.55 | -23.6% | +87.62 | 372.2497 |
-| RENDER | -607.6999 | 1.3893 | 1.3830 | -840.45 | -7.4% | +3.83 | 1.7556 |
+| GOLD | -7.9466 | 346.2061 | 322.8700 | -2,565.73 | -22.5% | +185.44 | 372.2497 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| EURUSD | BUY | -24.3% -> +0.0% | PENDING |  |
-| RENDER | BUY | -7.4% -> +0.0% | PENDING |  |
+| GOLD | BUY | -22.5% -> +0.0% | PENDING |  |
+| US10Y_NOTE | BUY | +0.0% -> +25.0% | PENDING |  |
+| PG | BUY | +0.0% -> +25.0% | PENDING |  |
+| ATOM | SELL | +0.0% -> -8.6% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| One-day crash like October 1987 | +2.9% | - | no |
-| Crypto collapse within a week | +3.7% | - | no |
-| Sharp dollar rally | +5.1% | - | no |
-| Covid crash, Feb-Mar 2020 | +5.6% | - | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +12.4% | - | no |
-| Global financial crisis, Sep-Nov 2008 | +13.6% | - | no |
+| Crypto collapse within a week | +0.0% | - | no |
+| One-day crash like October 1987 | +0.7% | - | no |
+| Covid crash, Feb-Mar 2020 | +1.1% | - | no |
+| Sharp dollar rally | +1.8% | - | no |
+| Global financial crisis, Sep-Nov 2008 | +3.4% | - | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +3.4% | - | no |
 
 ## Equity, last runs
 
@@ -54,5 +54,6 @@
 | 2026-11-18 | 11,204.13 |
 | 2026-11-19 | 11,243.11 |
 | 2026-11-20 | 11,299.08 |
+| 2026-11-21 | 11,394.42 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._

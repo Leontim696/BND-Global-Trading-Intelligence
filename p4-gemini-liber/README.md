@@ -1,7 +1,7 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-20T23:54:43.492803+00:00 | strategy `ai_council`
-- Equity: 11,377.54 USD (start 11,183.00, +1.74%)
+- Run: 2026-11-21T23:55:27.362224+00:00 | strategy `ai_council`
+- Equity: 11,747.15 USD (start 11,183.00, +5.04%)
 - Gross leverage: 0.96x | candles processed: 100
 - Kill switch: off
 
@@ -9,45 +9,50 @@
 
 | Market | Quantity | Avg price | Last | Value | Weight | P&L | Stop |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| ATOM | -127.2625 | 1.3723 | 1.2630 | -160.73 | -1.4% | +13.91 | 1.6443 |
-| GOLD | -3.5321 | 342.7320 | 335.1800 | -1,183.88 | -10.4% | +26.67 | 372.2497 |
-| GOOGL | -2.8289 | 294.2117 | 272.6600 | -771.32 | -6.8% | +60.97 | 311.7790 |
-| GS | -1.1376 | 886.2620 | 847.5300 | -964.15 | -8.5% | +44.06 | 974.5531 |
-| ICP | -64.7898 | 2.2988 | 2.1750 | -140.92 | -1.2% | +8.02 | 2.9145 |
-| INJ | -43.6080 | 6.9885 | 7.1010 | -309.66 | -2.7% | -4.91 | 9.1655 |
-| RENDER | -242.7866 | 1.3893 | 1.3830 | -335.77 | -3.0% | +1.53 | 1.7556 |
-| TIA | -512.0728 | 0.3612 | 0.3450 | -176.67 | -1.6% | +8.31 | 0.5189 |
-| US10Y_NOTE | 30.9650 | 90.5218 | 90.8200 | 2,812.24 | +24.7% | +9.23 | 88.9903 |
-| USDJPY | 17.6020 | 159.4523 | 159.3810 | 2,805.43 | +24.7% | -1.26 | 156.5948 |
-| WMT | 10.1981 | 123.6771 | 126.0400 | 1,285.36 | +11.3% | +24.10 | 119.3444 |
+| ATOM | -127.2625 | 1.3723 | 1.2270 | -156.15 | -1.3% | +18.49 | 1.6443 |
+| AVAX | -35.1059 | 6.9885 | 6.5210 | -228.93 | -1.9% | +16.41 | 8.6467 |
+| BA | -3.2658 | 160.9517 | 155.8900 | -509.11 | -4.3% | +16.53 | 175.9930 |
+| CVX | 3.6572 | 206.5019 | 208.3700 | 762.04 | +6.5% | +6.83 | 191.7679 |
+| FET | -1358.2374 | 0.1253 | 0.1143 | -155.25 | -1.3% | +14.99 | 0.1608 |
+| GOLD | -3.5321 | 342.7320 | 322.8700 | -1,140.40 | -9.7% | +70.15 | 372.2497 |
+| GOOGL | -2.8289 | 294.2117 | 265.2900 | -750.48 | -6.4% | +81.82 | 311.7790 |
+| GS | -1.1376 | 886.2620 | 790.6900 | -899.49 | -7.7% | +108.72 | 974.5531 |
+| ICP | -64.7898 | 2.2988 | 2.0260 | -131.26 | -1.1% | +17.68 | 2.9145 |
+| JPM | -2.7247 | 319.7940 | 310.5300 | -846.10 | -7.2% | +25.24 | 343.1039 |
+| NASDAQ100 | -1.1657 | 638.7761 | 608.4500 | -709.24 | -6.0% | +35.35 | 696.7354 |
+| RENDER | -242.7866 | 1.3893 | 1.2750 | -309.55 | -2.6% | +27.75 | 1.7556 |
+| SP500 | -1.6486 | 713.4886 | 689.8100 | -1,137.19 | -9.7% | +39.04 | 752.5064 |
+| US10Y_NOTE | 30.9650 | 90.5218 | 91.6500 | 2,837.94 | +24.2% | +34.94 | 88.9903 |
+| XOM | 4.3141 | 158.8777 | 159.9900 | 690.22 | +5.9% | +4.80 | 146.0593 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| SP500 | SELL | +0.0% -> -10.4% | PENDING |  |
-| NASDAQ100 | SELL | +0.0% -> -6.6% | PENDING |  |
-| USDJPY | SELL | +24.7% -> +0.0% | PENDING |  |
-| WMT | SELL | +11.3% -> +0.0% | PENDING |  |
-| XOM | BUY | +0.0% -> +6.0% | PENDING |  |
-| CVX | BUY | +0.0% -> +6.6% | PENDING |  |
-| JPM | SELL | +0.0% -> -7.7% | PENDING |  |
-| BA | SELL | +0.0% -> -4.6% | PENDING |  |
-| AVAX | SELL | +0.0% -> -2.2% | PENDING |  |
-| INJ | BUY | -2.7% -> +0.0% | PENDING |  |
-| FET | SELL | +0.0% -> -1.5% | PENDING |  |
-| TIA | BUY | -1.6% -> +0.0% | PENDING |  |
+| GOLD | BUY | -9.7% -> +0.0% | PENDING |  |
+| SP500 | BUY | -9.7% -> +0.0% | PENDING |  |
+| NASDAQ100 | BUY | -6.0% -> +0.0% | PENDING |  |
+| XOM | SELL | +5.9% -> +0.0% | PENDING |  |
+| CVX | BUY | +6.5% -> +13.8% | PENDING |  |
+| JPM | BUY | -7.2% -> +0.0% | PENDING |  |
+| GS | BUY | -7.7% -> +0.0% | PENDING |  |
+| BA | BUY | -4.3% -> +0.0% | PENDING |  |
+| LOCKHEED | BUY | +0.0% -> +10.3% | PENDING |  |
+| AVAX | BUY | -1.9% -> +0.0% | PENDING |  |
+| RENDER | BUY | -2.6% -> +0.0% | PENDING |  |
+| FET | BUY | -1.3% -> +0.0% | PENDING |  |
+| JUP | SELL | +0.0% -> -3.4% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| One-day crash like October 1987 | +3.7% | WMT | no |
-| Sharp dollar rally | +4.5% | WMT | no |
-| Crypto collapse within a week | +5.1% | WMT | no |
-| Global financial crisis, Sep-Nov 2008 | +7.3% | WMT | no |
-| Covid crash, Feb-Mar 2020 | +8.1% | WMT | no |
-| Inflation and rate hikes, Jan-Oct 2022 | +13.3% | US10Y_NOTE | no |
+| Sharp dollar rally | +3.2% | CVX | no |
+| Crypto collapse within a week | +5.2% | CVX | no |
+| One-day crash like October 1987 | +9.6% | CVX | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +11.9% | US10Y_NOTE | no |
+| Covid crash, Feb-Mar 2020 | +15.4% | CVX | no |
+| Global financial crisis, Sep-Nov 2008 | +21.5% | CVX | no |
 
 ## Equity, last runs
 
@@ -72,5 +77,6 @@
 | 2026-11-18 | 11,178.68 |
 | 2026-11-19 | 11,230.38 |
 | 2026-11-20 | 11,377.54 |
+| 2026-11-21 | 11,747.15 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
