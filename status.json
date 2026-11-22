@@ -1,7 +1,9 @@
 {
-  "generated": "2026-11-22T12:54+00:00",
-  "ok": true,
-  "alerts": [],
+  "generated": "2026-11-22T14:54+00:00",
+  "ok": false,
+  "alerts": [
+    "Ultima rulare programată a descoperirii smart-money a eșuat (failure)"
+  ],
   "events": [
     "Cont unic: s-au executat primele ordine (82 poziții deschise)",
     "Cont unic: variație zilnică +2.3% (valoare 12,241 USD) la 2026-11-21",
@@ -49,10 +51,10 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 12197.44,
+      "equity": 12207.37,
       "currency": "USD",
-      "return_pct": 9.071,
-      "drawdown_pct": 0.356,
+      "return_pct": 9.16,
+      "drawdown_pct": 0.275,
       "positions": 82,
       "orders": 19,
       "kill_switch": false,
