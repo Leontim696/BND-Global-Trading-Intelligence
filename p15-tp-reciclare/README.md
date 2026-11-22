@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-21T23:55:49.993247+00:00 | strategy `hibrid`
-- Equity: 11,689.86 USD (start 11,183.00, +4.53%)
-- Gross leverage: 0.84x | candles processed: 100
+- Run: 2026-11-22T23:56:50.528789+00:00 | strategy `hibrid`
+- Equity: 11,690.88 USD (start 11,183.00, +4.54%)
+- Gross leverage: 0.80x | candles processed: 49
 - Kill switch: off
 
 ## Positions
@@ -12,32 +12,23 @@
 | AAPL | -0.7077 | 352.7241 | 342.5600 | -242.44 | -2.1% | +7.19 | 376.9024 |
 | AGRICULTURE | -27.1569 | 26.5120 | 26.1500 | -710.15 | -6.1% | +9.83 | 27.2803 |
 | BAE | 0.0278 | 1911.0731 | 1814.0000 | 50.49 | +0.4% | -2.70 | 1709.6216 |
-| BONK | 6257289.6402 | 0.0000 | 0.0000 | 13.14 | +0.1% | -1.59 | 0.0000 |
+| BONK | -6556974.2946 | 0.0000 | 0.0000 | -13.31 | -0.1% | +0.44 | 0.0000 |
 | BROAD_COMMODITIES | -9.3986 | 29.7411 | 29.3200 | -275.57 | -2.4% | +3.96 | 31.0408 |
 | COPPER | -5.9626 | 34.0598 | 32.9200 | -196.29 | -1.7% | +6.80 | 36.4056 |
 | CRUDE_OIL | 0.3205 | 142.5928 | 139.6300 | 44.75 | +0.4% | -0.95 | 131.6633 |
 | CVX | 0.5595 | 206.5019 | 208.3700 | 116.58 | +1.0% | +1.05 | 191.7679 |
-| ETC | -12.0323 | 5.8071 | 5.4700 | -65.82 | -0.6% | +4.06 | 6.9451 |
 | GBPUSD | 1278.2048 | 1.3213 | 1.3086 | 1,672.71 | +14.3% | -16.12 | 1.2955 |
 | GENERAL_DYNAMICS | 0.1827 | 348.5245 | 341.5000 | 62.40 | +0.5% | -1.28 | 324.9797 |
 | GERMANY | 7.7416 | 39.8540 | 39.1700 | 303.24 | +2.6% | -5.30 | 38.0764 |
-| HBAR | -1079.4728 | 0.0538 | 0.0516 | -55.71 | -0.5% | +2.31 | 0.0654 |
 | HENSOLDT | 0.9349 | 80.8642 | 75.1200 | 70.23 | +0.6% | -5.37 | 68.6177 |
-| LDO | -163.9652 | 0.2597 | 0.2403 | -39.40 | -0.3% | +3.18 | 0.3299 |
 | LEONARDO | 0.9505 | 48.2745 | 47.8300 | 45.46 | +0.4% | -0.42 | 44.2071 |
-| LINK | -6.6281 | 9.0005 | 8.5450 | -56.64 | -0.5% | +3.02 | 10.8933 |
 | LOCKHEED | 0.2269 | 597.8493 | 565.5000 | 128.29 | +1.1% | -7.34 | 543.8914 |
-| ONDO | -136.1430 | 0.2979 | 0.2820 | -38.39 | -0.3% | +2.16 | 0.3791 |
-| PEPE | 10575224.1231 | 0.0000 | 0.0000 | 36.80 | +0.3% | -4.40 | 0.0000 |
+| PEPE | 10575224.1231 | 0.0000 | 0.0000 | 36.17 | +0.3% | -5.03 | 0.0000 |
 | PG | 1.4949 | 169.2307 | 169.3700 | 253.19 | +2.2% | +0.21 | 158.2012 |
-| POL | 541.7424 | 0.0799 | 0.0760 | 41.19 | +0.4% | -2.09 | 0.0646 |
 | RENK | 2.1022 | 32.2497 | 30.5350 | 64.19 | +0.5% | -3.60 | 27.3391 |
 | RHEINMETALL | 0.0674 | 746.6239 | 693.4000 | 46.71 | +0.4% | -3.59 | 613.1567 |
 | SAAB | 0.0685 | 607.6822 | 591.5000 | 40.52 | +0.3% | -1.11 | 536.8864 |
-| SEI | -1178.8297 | 0.0381 | 0.0352 | -41.55 | -0.4% | +3.30 | 0.0477 |
-| SHIB | -19134259.8640 | 0.0000 | 0.0000 | -68.50 | -0.6% | +4.10 | 0.0000 |
-| TRUMP | -32.0719 | 0.9506 | 0.8610 | -27.61 | -0.2% | +2.87 | 1.2437 |
-| TRX | 532.9949 | 0.3054 | 0.3022 | 161.07 | +1.4% | -1.68 | 0.2868 |
+| TRX | 532.9949 | 0.3054 | 0.3054 | 162.78 | +1.4% | +0.03 | 0.2868 |
 | UK | 7.3650 | 46.0946 | 44.7400 | 329.51 | +2.8% | -9.98 | 44.1323 |
 | UNH | 0.3338 | 351.2353 | 339.8500 | 113.44 | +1.0% | -3.80 | 307.4105 |
 | USDCAD | -1897.6840 | 1.4268 | 1.4344 | -2,721.94 | -23.3% | -14.27 | 1.4493 |
@@ -50,37 +41,39 @@
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| SILVER | SELL | +0.0% -> -1.0% | PENDING |  |
-| SP500 | SELL | +0.0% -> -1.8% | PENDING |  |
-| GBPUSD | BUY | +14.3% -> +22.8% | PENDING |  |
+| SILVER | SELL | +0.0% -> -0.7% | PENDING |  |
+| CRUDE_OIL | SELL | +0.4% -> +0.0% | PENDING |  |
+| SP500 | SELL | +0.0% -> -2.4% | PENDING |  |
+| EMERGING | SELL | +0.0% -> -1.6% | PENDING |  |
+| AUDUSD | BUY | +0.0% -> +6.1% | PENDING |  |
 | AAPL | BUY | -2.1% -> +0.0% | PENDING |  |
-| MSFT | BUY | +0.0% -> +0.7% | PENDING |  |
-| KO | BUY | +0.0% -> +1.2% | PENDING |  |
+| MSFT | BUY | +0.0% -> +0.4% | PENDING |  |
+| NVDA | SELL | +0.0% -> -0.4% | PENDING |  |
+| KO | BUY | +0.0% -> +2.5% | PENDING |  |
 | JNJ | BUY | +0.0% -> +0.4% | PENDING |  |
-| JPM | BUY | +0.0% -> +0.5% | PENDING |  |
-| GS | BUY | +0.0% -> +0.3% | PENDING |  |
-| CAT | SELL | +0.0% -> -0.9% | PENDING |  |
-| BA | SELL | +0.0% -> -0.6% | PENDING |  |
-| HENSOLDT | SELL | +0.6% -> +0.0% | PENDING |  |
-| BAE | SELL | +0.4% -> +0.0% | PENDING |  |
-| LEONARDO | SELL | +0.4% -> -0.3% | PENDING |  |
-| SAAB | SELL | +0.3% -> -0.3% | PENDING |  |
+| CVX | SELL | +1.0% -> +0.0% | PENDING |  |
+| CAT | SELL | +0.0% -> -1.0% | PENDING |  |
+| BA | SELL | +0.0% -> -0.3% | PENDING |  |
+| RENK | SELL | +0.5% -> +0.0% | PENDING |  |
+| BAE | SELL | +0.4% -> -0.4% | PENDING |  |
+| SAAB | SELL | +0.3% -> +0.0% | PENDING |  |
 | KONGSBERG | BUY | +0.0% -> +0.3% | PENDING |  |
-| NORTHROP | SELL | +0.0% -> -0.4% | PENDING |  |
-| ITA | BUY | +0.0% -> +0.5% | PENDING |  |
-| POL | SELL | +0.4% -> +0.0% | PENDING |  |
-| BONK | SELL | +0.1% -> -0.1% | PENDING |  |
+| L3HARRIS | BUY | +0.0% -> +0.4% | PENDING |  |
+| ITA | BUY | +0.0% -> +1.4% | PENDING |  |
+| UNI | BUY | +0.0% -> +0.3% | PENDING |  |
+| OP | SELL | +0.0% -> -0.3% | PENDING |  |
+| WLD | SELL | +0.0% -> -0.4% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Global financial crisis, Sep-Nov 2008 | -11.4% | USDCAD | no |
-| Inflation and rate hikes, Jan-Oct 2022 | -10.4% | GBPUSD | no |
-| Covid crash, Feb-Mar 2020 | -6.1% | USDCAD | no |
-| Sharp dollar rally | -4.2% | USDCAD | no |
-| One-day crash like October 1987 | -1.7% | UK | no |
-| Crypto collapse within a week | +0.1% | TRX | no |
+| Global financial crisis, Sep-Nov 2008 | -13.3% | USDCAD | no |
+| Inflation and rate hikes, Jan-Oct 2022 | -12.4% | GBPUSD | no |
+| Covid crash, Feb-Mar 2020 | -7.5% | USDCAD | no |
+| Sharp dollar rally | -4.5% | USDCAD | no |
+| One-day crash like October 1987 | -2.5% | UK | no |
+| Crypto collapse within a week | -1.3% | TRX | no |
 
 ## Equity, last runs
 
@@ -106,5 +99,6 @@
 | 2026-11-19 | 11,628.65 |
 | 2026-11-20 | 11,628.04 |
 | 2026-11-21 | 11,689.86 |
+| 2026-11-22 | 11,690.88 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
