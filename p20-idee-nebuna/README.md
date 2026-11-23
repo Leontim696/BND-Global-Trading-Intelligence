@@ -1,8 +1,8 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-22T23:56:58.828203+00:00 | strategy `ai_council`
-- Equity: 11,844.70 USD (start 11,183.00, +5.92%)
-- Gross leverage: 0.31x | candles processed: 49
+- Run: 2026-11-23T23:57:19.092960+00:00 | strategy `ai_council`
+- Equity: 11,841.48 USD (start 11,183.00, +5.89%)
+- Gross leverage: 0.32x | candles processed: 49
 - Kill switch: off
 
 ## Positions
@@ -11,21 +11,24 @@
 |---|---:|---:|---:|---:|---:|---:|---:|
 | AAPL | -0.4295 | 352.7241 | 342.5600 | -147.13 | -1.2% | +4.37 | 376.9024 |
 | BAE | 0.0311 | 1911.0731 | 1814.0000 | 56.46 | +0.5% | -3.02 | 1709.6216 |
-| BONK | -7704225.2295 | 0.0000 | 0.0000 | -15.64 | -0.1% | +0.52 | 0.0000 |
+| BONK | -7704225.2295 | 0.0000 | 0.0000 | -15.95 | -0.1% | +0.21 | 0.0000 |
 | CRUDE_OIL | 0.3519 | 142.5928 | 139.6300 | 49.14 | +0.4% | -1.04 | 131.6633 |
 | CVX | 0.6120 | 206.5019 | 208.3700 | 127.51 | +1.1% | +1.14 | 191.7679 |
 | GENERAL_DYNAMICS | 0.2040 | 348.5245 | 341.5000 | 69.67 | +0.6% | -1.43 | 324.9797 |
 | HENSOLDT | 1.1273 | 80.8642 | 75.1200 | 84.69 | +0.7% | -6.48 | 68.6177 |
 | LEONARDO | 1.0397 | 48.2745 | 47.8300 | 49.73 | +0.4% | -0.46 | 44.2071 |
 | LOCKHEED | 0.2457 | 597.8493 | 565.5000 | 138.96 | +1.2% | -7.95 | 543.8914 |
-| PEPE | 11825413.0599 | 0.0000 | 0.0000 | 40.44 | +0.3% | -5.63 | 0.0000 |
+| OP | -512.9543 | 0.0705 | 0.0709 | -36.37 | -0.3% | -0.22 | 0.0946 |
+| PEPE | 11825413.0599 | 0.0000 | 0.0000 | 40.21 | +0.3% | -5.86 | 0.0000 |
 | PG | 1.5875 | 169.2307 | 169.3700 | 268.88 | +2.3% | +0.22 | 158.2012 |
 | RENK | 2.3471 | 32.2497 | 30.5350 | 71.67 | +0.6% | -4.02 | 27.3391 |
 | RHEINMETALL | 0.0752 | 746.6239 | 693.4000 | 52.15 | +0.4% | -4.00 | 613.1567 |
 | SAAB | 0.0765 | 607.6822 | 591.5000 | 45.25 | +0.4% | -1.24 | 536.8864 |
-| TRX | 323.4543 | 0.3054 | 0.3054 | 98.78 | +0.8% | +0.02 | 0.2868 |
+| TRX | 323.4543 | 0.3054 | 0.3057 | 98.88 | +0.8% | +0.11 | 0.2868 |
 | UNH | 0.3727 | 351.2353 | 339.8500 | 126.66 | +1.1% | -4.24 | 307.4105 |
+| UNI | 8.9299 | 4.7464 | 4.6870 | 41.85 | +0.4% | -0.53 | 3.1306 |
 | USDJPY | -11.6908 | 159.3640 | 159.7070 | -1,867.10 | -15.8% | -4.01 | 162.3326 |
+| WLD | -205.6272 | 0.2282 | 0.2372 | -48.77 | -0.4% | -1.85 | 0.3148 |
 | WMT | 1.1154 | 129.5437 | 127.9500 | 142.72 | +1.2% | -1.78 | 116.5337 |
 | XOM | 1.1680 | 165.1895 | 159.9900 | 186.87 | +1.6% | -6.07 | 150.5669 |
 
@@ -34,37 +37,37 @@
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
 | SILVER | SELL | +0.0% -> -0.8% | PENDING |  |
-| CRUDE_OIL | SELL | +0.4% -> +0.0% | PENDING |  |
-| SP500 | SELL | +0.0% -> -2.7% | PENDING |  |
-| USDJPY | BUY | -15.8% -> -1.5% | PENDING |  |
+| SP500 | SELL | +0.0% -> -1.9% | PENDING |  |
+| USDJPY | SELL | -15.8% -> -24.8% | PENDING |  |
 | AAPL | BUY | -1.2% -> +0.0% | PENDING |  |
 | MSFT | BUY | +0.0% -> +0.4% | PENDING |  |
-| NVDA | SELL | +0.0% -> -0.5% | PENDING |  |
-| KO | BUY | +0.0% -> +25.0% | PENDING |  |
-| JNJ | BUY | +0.0% -> +0.5% | PENDING |  |
-| CVX | SELL | +1.1% -> +0.0% | PENDING |  |
-| CAT | SELL | +0.0% -> -1.1% | PENDING |  |
-| BA | SELL | +0.0% -> -0.3% | PENDING |  |
-| RENK | SELL | +0.6% -> +0.0% | PENDING |  |
+| NVDA | SELL | +0.0% -> -0.4% | PENDING |  |
+| AMZN | SELL | +0.0% -> -0.3% | PENDING |  |
+| KO | BUY | +0.0% -> +2.5% | PENDING |  |
+| JNJ | BUY | +0.0% -> +0.4% | PENDING |  |
+| CAT | SELL | +0.0% -> -0.7% | PENDING |  |
+| BA | SELL | +0.0% -> -0.9% | PENDING |  |
 | BAE | SELL | +0.5% -> -0.4% | PENDING |  |
+| THALES | SELL | +0.0% -> -0.5% | PENDING |  |
+| LEONARDO | SELL | +0.4% -> +0.0% | PENDING |  |
 | SAAB | SELL | +0.4% -> +0.0% | PENDING |  |
-| KONGSBERG | BUY | +0.0% -> +0.3% | PENDING |  |
-| L3HARRIS | BUY | +0.0% -> +0.4% | PENDING |  |
-| ITA | BUY | +0.0% -> +1.6% | PENDING |  |
-| UNI | BUY | +0.0% -> +0.4% | PENDING |  |
-| OP | SELL | +0.0% -> -0.3% | PENDING |  |
-| WLD | SELL | +0.0% -> -0.4% | PENDING |  |
+| ITA | BUY | +0.0% -> +1.0% | PENDING |  |
+| UNI | SELL | +0.4% -> +0.0% | PENDING |  |
+| APT | SELL | +0.0% -> -0.2% | PENDING |  |
+| FLOKI | SELL | +0.0% -> -0.6% | PENDING |  |
+| ENA | SELL | +0.0% -> -0.4% | PENDING |  |
+| CRV | SELL | +0.0% -> -0.4% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Inflation and rate hikes, Jan-Oct 2022 | -8.3% | USDJPY | no |
-| Covid crash, Feb-Mar 2020 | -4.6% | PG | no |
-| Global financial crisis, Sep-Nov 2008 | -2.7% | PG | no |
-| Sharp dollar rally | -2.4% | USDJPY | no |
-| One-day crash like October 1987 | -1.9% | PG | no |
-| Crypto collapse within a week | -1.0% | TRX | no |
+| Inflation and rate hikes, Jan-Oct 2022 | -8.1% | USDJPY | no |
+| Covid crash, Feb-Mar 2020 | -4.4% | PG | no |
+| Global financial crisis, Sep-Nov 2008 | -2.4% | PG | no |
+| Sharp dollar rally | -2.3% | USDJPY | no |
+| One-day crash like October 1987 | -1.8% | PG | no |
+| Crypto collapse within a week | -0.8% | TRX | no |
 
 ## Equity, last runs
 
@@ -91,5 +94,6 @@
 | 2026-11-20 | 11,784.20 |
 | 2026-11-21 | 11,844.73 |
 | 2026-11-22 | 11,844.70 |
+| 2026-11-23 | 11,841.48 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
