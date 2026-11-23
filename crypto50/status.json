@@ -1,298 +1,298 @@
 {
-  "time": "2026-11-22T03:30+00:00",
+  "time": "2026-11-23T04:00+00:00",
   "coins": {
     "BTC": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ETH": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "XRP": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "BNB": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "SOL": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "TRX": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "DOGE": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "ADA": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "LINK": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "AVAX": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "XLM": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "SUI": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "SHIB": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "BCH": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "LTC": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "DOT": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "HBAR": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "UNI": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "PEPE": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "AAVE": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "NEAR": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ICP": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ETC": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "APT": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ONDO": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ATOM": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "POL": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ARB": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "FIL": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "ALGO": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "VET": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "OP": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "INJ": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "RENDER": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "TAO": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "FET": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "SEI": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "STX": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "BONK": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "WIF": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "FLOKI": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "TRUMP": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "PENGU": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": true
     },
     "ENA": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "WLD": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "JUP": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "LDO": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "CRV": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     },
     "TIA": {
       "ok": true,
       "added": 1,
-      "last": "2026-11-21",
+      "last": "2026-11-22",
       "meme": false
     }
   }

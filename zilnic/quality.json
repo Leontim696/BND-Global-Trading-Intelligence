@@ -11,7 +11,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-24T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "NASDAQ100": {
@@ -25,7 +25,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-24T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "GOLD": {
@@ -39,7 +39,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-24T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "SILVER": {
@@ -53,7 +53,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-24T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "CRUDE_OIL": {
@@ -67,7 +67,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-24T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "BITCOIN": {
@@ -81,8 +81,8 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
-      "last": "2026-11-20T00:00:00+00:00"
+      "first": "2023-11-23T00:00:00+00:00",
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "ETHEREUM": {
       "symbol": "ETH-USD",
@@ -95,12 +95,12 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
-      "last": "2026-11-20T00:00:00+00:00"
+      "first": "2023-11-23T00:00:00+00:00",
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "EURUSD": {
       "symbol": "EURUSD=X",
-      "rows": 9,
+      "rows": 10,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
@@ -109,12 +109,12 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-23T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "USDJPY": {
       "symbol": "JPY=X",
-      "rows": 9,
+      "rows": 10,
       "dropped_missing": 0,
       "dropped_non_positive": 0,
       "repaired_high_low": 0,
@@ -123,7 +123,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-23T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "US10Y_NOTE": {
@@ -137,7 +137,7 @@
       "candles": 9,
       "update": "incremental (+0)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
+      "first": "2023-11-24T00:00:00+00:00",
       "last": "2026-11-20T00:00:00+00:00"
     },
     "SOLANA": {
@@ -151,8 +151,8 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
-      "last": "2026-11-20T00:00:00+00:00"
+      "first": "2023-11-23T00:00:00+00:00",
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "BNB": {
       "symbol": "BNB-USD",
@@ -165,8 +165,8 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
-      "last": "2026-11-20T00:00:00+00:00"
+      "first": "2023-11-23T00:00:00+00:00",
+      "last": "2026-11-21T00:00:00+00:00"
     },
     "XRP": {
       "symbol": "XRP-USD",
@@ -179,8 +179,8 @@
       "candles": 12,
       "update": "incremental (+1)",
       "repaired_spikes": [],
-      "first": "2023-11-22T00:00:00+00:00",
-      "last": "2026-11-20T00:00:00+00:00"
+      "first": "2023-11-23T00:00:00+00:00",
+      "last": "2026-11-21T00:00:00+00:00"
     }
   },
   "failures": {}

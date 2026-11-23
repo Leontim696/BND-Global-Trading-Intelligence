@@ -383,3 +383,78 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-20T15:00+00:00|USD|Revised UoM Inflation Expectations,2026-11-20T15:00+00:00,USD,Revised UoM Inflation Expectations,Medium,,4.3%
 2026-11-20T17:00+00:00|USD|President Trump Speaks,2026-11-20T17:00+00:00,USD,President Trump Speaks,Medium,,
 2026-11-20T17:15+00:00|USD|FOMC Member Cook Speaks,2026-11-20T17:15+00:00,USD,FOMC Member Cook Speaks,Low,,
+2026-11-22T21:45+00:00|NZD|Core Retail Sales q/q,2026-11-22T21:45+00:00,NZD,Core Retail Sales q/q,Low,0.8%,0.7%
+2026-11-22T21:45+00:00|NZD|Retail Sales q/q,2026-11-22T21:45+00:00,NZD,Retail Sales q/q,Low,0.5%,-0.5%
+2026-11-22T22:00+00:00|AUD|Flash Manufacturing PMI,2026-11-22T22:00+00:00,AUD,Flash Manufacturing PMI,Low,,49.7
+2026-11-22T22:00+00:00|AUD|Flash Services PMI,2026-11-22T22:00+00:00,AUD,Flash Services PMI,Low,,47.8
+2026-11-23T00:00+00:00|JPY|Bank Holiday,2026-11-23T00:00+00:00,JPY,Bank Holiday,Holiday,,
+2026-11-23T08:15+00:00|EUR|French Flash Manufacturing PMI,2026-11-23T08:15+00:00,EUR,French Flash Manufacturing PMI,Medium,49.8,49.3
+2026-11-23T08:15+00:00|EUR|French Flash Services PMI,2026-11-23T08:15+00:00,EUR,French Flash Services PMI,Medium,47.4,48.4
+2026-11-23T08:30+00:00|EUR|German Flash Manufacturing PMI,2026-11-23T08:30+00:00,EUR,German Flash Manufacturing PMI,Medium,54.1,54.2
+2026-11-23T08:30+00:00|EUR|German Flash Services PMI,2026-11-23T08:30+00:00,EUR,German Flash Services PMI,Medium,52.4,51.7
+2026-11-23T09:00+00:00|EUR|Flash Manufacturing PMI,2026-11-23T09:00+00:00,EUR,Flash Manufacturing PMI,Low,52.7,52.4
+2026-11-23T09:00+00:00|EUR|Flash Services PMI,2026-11-23T09:00+00:00,EUR,Flash Services PMI,Low,51.8,51.7
+2026-11-23T09:30+00:00|GBP|Flash Manufacturing PMI,2026-11-23T09:30+00:00,GBP,Flash Manufacturing PMI,Medium,53.0,52.8
+2026-11-23T09:30+00:00|GBP|Flash Services PMI,2026-11-23T09:30+00:00,GBP,Flash Services PMI,Medium,53.0,53.1
+2026-11-23T13:00+00:00|GBP|MPC Member Pill Speaks,2026-11-23T13:00+00:00,GBP,MPC Member Pill Speaks,Low,,
+2026-11-23T13:30+00:00|CAD|Corporate Profits q/q,2026-11-23T13:30+00:00,CAD,Corporate Profits q/q,Low,,8.7%
+2026-11-23T14:45+00:00|USD|Flash Manufacturing PMI,2026-11-23T14:45+00:00,USD,Flash Manufacturing PMI,Medium,54.5,56.0
+2026-11-23T14:45+00:00|USD|Flash Services PMI,2026-11-23T14:45+00:00,USD,Flash Services PMI,Medium,55.6,57.9
+2026-11-23T21:00+00:00|USD|FOMC Member Williams Speaks,2026-11-23T21:00+00:00,USD,FOMC Member Williams Speaks,Low,,
+2026-11-24T00:30+00:00|JPY|Flash Manufacturing PMI,2026-11-24T00:30+00:00,JPY,Flash Manufacturing PMI,Low,53.5,53.3
+2026-11-24T07:02+00:00|CNY|Foreign Direct Investment ytd/y,2026-11-24T07:02+00:00,CNY,Foreign Direct Investment ytd/y,Low,,-4.3%
+2026-11-24T09:00+00:00|EUR|German ifo Business Climate,2026-11-24T09:00+00:00,EUR,German ifo Business Climate,Low,90.6,90.2
+2026-11-24T11:00+00:00|GBP|CBI Realized Sales,2026-11-24T11:00+00:00,GBP,CBI Realized Sales,Low,-24,-10
+2026-11-24T12:30+00:00|GBP|MPC Member Greene Speaks,2026-11-24T12:30+00:00,GBP,MPC Member Greene Speaks,Low,,
+2026-11-24T13:15+00:00|USD|ADP Weekly Employment Change,2026-11-24T13:15+00:00,USD,ADP Weekly Employment Change,Low,,23.8K
+2026-11-24T14:00+00:00|CNY|CB Leading Index m/m,2026-11-24T14:00+00:00,CNY,CB Leading Index m/m,Low,,-0.1%
+2026-11-24T14:00+00:00|EUR|Belgian NBB Business Climate,2026-11-24T14:00+00:00,EUR,Belgian NBB Business Climate,Low,-9.3,-9.8
+2026-11-24T14:00+00:00|USD|HPI m/m,2026-11-24T14:00+00:00,USD,HPI m/m,Low,0.2%,0.3%
+2026-11-24T14:00+00:00|USD|S&P/CS Composite-20 HPI y/y,2026-11-24T14:00+00:00,USD,S&P/CS Composite-20 HPI y/y,Low,2.7%,2.7%
+2026-11-24T15:00+00:00|USD|CB Consumer Confidence,2026-11-24T15:00+00:00,USD,CB Consumer Confidence,Medium,92.1,91.7
+2026-11-24T15:00+00:00|USD|Richmond Manufacturing Index,2026-11-24T15:00+00:00,USD,Richmond Manufacturing Index,Low,-3,-2
+2026-11-24T17:25+00:00|CAD|BOC Gov Macklem Speaks,2026-11-24T17:25+00:00,CAD,BOC Gov Macklem Speaks,Medium,,
+2026-11-24T21:30+00:00|USD|API Weekly Statistical Bulletin,2026-11-24T21:30+00:00,USD,API Weekly Statistical Bulletin,Low,,
+2026-11-24T23:50+00:00|JPY|SPPI y/y,2026-11-24T23:50+00:00,JPY,SPPI y/y,Low,3.6%,3.7%
+2026-11-25T00:30+00:00|AUD|CPI m/m,2026-11-25T00:30+00:00,AUD,CPI m/m,High,0.4%,0.8%
+2026-11-25T00:30+00:00|AUD|CPI y/y,2026-11-25T00:30+00:00,AUD,CPI y/y,High,4.8%,4.3%
+2026-11-25T00:30+00:00|AUD|Construction Work Done q/q,2026-11-25T00:30+00:00,AUD,Construction Work Done q/q,Low,0.8%,-2.1%
+2026-11-25T00:30+00:00|AUD|Trimmed Mean CPI m/m,2026-11-25T00:30+00:00,AUD,Trimmed Mean CPI m/m,High,0.3%,0.3%
+2026-11-25T05:00+00:00|JPY|BOJ Core CPI y/y,2026-11-25T05:00+00:00,JPY,BOJ Core CPI y/y,Low,2.5%,2.4%
+2026-11-25T07:00+00:00|EUR|German Final GDP q/q,2026-11-25T07:00+00:00,EUR,German Final GDP q/q,Low,0.2%,0.2%
+2026-11-25T09:00+00:00|CHF|UBS Economic Expectations,2026-11-25T09:00+00:00,CHF,UBS Economic Expectations,Low,,-15.3
+2026-11-25T10:42+00:00|EUR|German 10-y Bond Auction,2026-11-25T10:42+00:00,EUR,German 10-y Bond Auction,Low,,3.37|1.1
+2026-11-25T13:30+00:00|USD|Core Durable Goods Orders m/m,2026-11-25T13:30+00:00,USD,Core Durable Goods Orders m/m,Low,0.5%,0.5%
+2026-11-25T13:30+00:00|USD|Core PCE Price Index m/m,2026-11-25T13:30+00:00,USD,Core PCE Price Index m/m,High,0.3%,0.3%
+2026-11-25T13:30+00:00|USD|Durable Goods Orders m/m,2026-11-25T13:30+00:00,USD,Durable Goods Orders m/m,Low,0.5%,1.8%
+2026-11-25T13:30+00:00|USD|Personal Income m/m,2026-11-25T13:30+00:00,USD,Personal Income m/m,Low,0.4%,0.2%
+2026-11-25T13:30+00:00|USD|Personal Spending m/m,2026-11-25T13:30+00:00,USD,Personal Spending m/m,Low,0.4%,0.5%
+2026-11-25T13:30+00:00|USD|Prelim GDP Price Index q/q,2026-11-25T13:30+00:00,USD,Prelim GDP Price Index q/q,Medium,2.3%,2.3%
+2026-11-25T13:30+00:00|USD|Prelim GDP q/q,2026-11-25T13:30+00:00,USD,Prelim GDP q/q,High,3.5%,3.4%
+2026-11-25T13:30+00:00|USD|Unemployment Claims,2026-11-25T13:30+00:00,USD,Unemployment Claims,Medium,201K,203K
+2026-11-25T15:00+00:00|USD|New Home Sales,2026-11-25T15:00+00:00,USD,New Home Sales,Low,649K,676K
+2026-11-25T15:30+00:00|USD|Crude Oil Inventories,2026-11-25T15:30+00:00,USD,Crude Oil Inventories,Low,,3.4M
+2026-11-25T17:00+00:00|USD|Natural Gas Storage,2026-11-25T17:00+00:00,USD,Natural Gas Storage,Low,,20B
+2026-11-25T19:00+00:00|USD|Beige Book,2026-11-25T19:00+00:00,USD,Beige Book,Low,,
+2026-11-26T00:30+00:00|AUD|Private Capital Expenditure q/q,2026-11-26T00:30+00:00,AUD,Private Capital Expenditure q/q,Low,4.4%,-3.6%
+2026-11-26T00:30+00:00|AUD|RBA Bulletin,2026-11-26T00:30+00:00,AUD,RBA Bulletin,Low,,
+2026-11-26T07:00+00:00|EUR|German GfK Consumer Climate,2026-11-26T07:00+00:00,EUR,German GfK Consumer Climate,Low,-29.4,-30.8
+2026-11-26T09:00+00:00|EUR|M3 Money Supply y/y,2026-11-26T09:00+00:00,EUR,M3 Money Supply y/y,Low,3.5%,3.5%
+2026-11-26T09:00+00:00|EUR|Private Loans y/y,2026-11-26T09:00+00:00,EUR,Private Loans y/y,Low,3.2%,3.1%
+2026-11-26T10:30+00:00|GBP|BOE Financial Stability Report,2026-11-26T10:30+00:00,GBP,BOE Financial Stability Report,Low,,
+2026-11-26T10:30+00:00|GBP|FPC Meeting Minutes,2026-11-26T10:30+00:00,GBP,FPC Meeting Minutes,Low,,
+2026-11-26T10:30+00:00|GBP|FPC Statement,2026-11-26T10:30+00:00,GBP,FPC Statement,Low,,
+2026-11-26T12:30+00:00|EUR|ECB Monetary Policy Meeting Accounts,2026-11-26T12:30+00:00,EUR,ECB Monetary Policy Meeting Accounts,Low,,
+2026-11-26T13:00+00:00|USD|Bank Holiday,2026-11-26T13:00+00:00,USD,Bank Holiday,Holiday,,
+2026-11-26T23:30+00:00|JPY|Tokyo Core CPI y/y,2026-11-26T23:30+00:00,JPY,Tokyo Core CPI y/y,Medium,2.9%,2.6%
+2026-11-27T07:45+00:00|EUR|French Consumer Spending m/m,2026-11-27T07:45+00:00,EUR,French Consumer Spending m/m,Low,0.2%,-0.5%
+2026-11-27T07:45+00:00|EUR|French Final Private Payrolls q/q,2026-11-27T07:45+00:00,EUR,French Final Private Payrolls q/q,Low,-0.1%,-0.1%
+2026-11-27T07:45+00:00|EUR|French Prelim CPI m/m,2026-11-27T07:45+00:00,EUR,French Prelim CPI m/m,Low,-0.1%,0.4%
+2026-11-27T07:45+00:00|EUR|French Prelim GDP q/q,2026-11-27T07:45+00:00,EUR,French Prelim GDP q/q,Low,-0.1%,-0.1%
+2026-11-27T08:00+00:00|EUR|Spanish Flash CPI y/y,2026-11-27T08:00+00:00,EUR,Spanish Flash CPI y/y,Low,4.8%,4.9%
+2026-11-27T08:55+00:00|EUR|German Unemployment Change,2026-11-27T08:55+00:00,EUR,German Unemployment Change,Low,5K,4K
+2026-11-27T10:33+00:00|EUR|Italian 10-y Bond Auction,2026-11-27T10:33+00:00,EUR,Italian 10-y Bond Auction,Low,,
+2026-11-27T12:40+00:00|EUR|German Buba President Nagel Speaks,2026-11-27T12:40+00:00,EUR,German Buba President Nagel Speaks,Low,,
+2026-11-27T13:30+00:00|CAD|Current Account,2026-11-27T13:30+00:00,CAD,Current Account,Low,9.6B,8.8B
+2026-11-27T13:30+00:00|USD|Goods Trade Balance,2026-11-27T13:30+00:00,USD,Goods Trade Balance,Low,-134.4B,-134.9B
+2026-11-27T13:30+00:00|USD|Prelim Wholesale Inventories m/m,2026-11-27T13:30+00:00,USD,Prelim Wholesale Inventories m/m,Low,0.7%,0.6%
