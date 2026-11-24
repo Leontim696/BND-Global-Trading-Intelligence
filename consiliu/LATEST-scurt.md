@@ -1,93 +1,93 @@
-# Consiliul AI în umbră (scurt), 2026-11-23 22:56 UTC
+# Consiliul AI în umbră (scurt), 2026-11-24 22:56 UTC
 
 | Piață | Decizie | Înclinație | BUY | SELL | HOLD | Cost $ |
 |---|---|---|---:|---:|---:|---:|
-| SP500 | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.024 |
-| NASDAQ100 | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.024 |
-| GOLD | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| SILVER | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
-| CRUDE_OIL | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
-| BITCOIN | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.025 |
+| SP500 | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
+| NASDAQ100 | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
+| GOLD | VINDE | vinde | 0 | 3 | 2 | 0.028 |
+| SILVER | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
+| CRUDE_OIL | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| BITCOIN | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.025 |
 | ETHEREUM | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
-| EURUSD | VINDE | vinde | 0 | 4 | 1 | 0.025 |
-| USDJPY | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.029 |
-| US10Y_NOTE | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.026 |
-| SOLANA | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| BNB | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.024 |
-| XRP | VINDE | vinde | 0 | 3 | 2 | 0.028 |
-| TRX | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
-| DOGE | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| ADA | VINDE | vinde | 0 | 3 | 2 | 0.029 |
-| LINK | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
-| AVAX | VINDE | vinde | 0 | 4 | 1 | 0.027 |
-| XLM | VINDE | vinde | 0 | 3 | 2 | 0.024 |
-| SUI | VINDE | vinde | 0 | 3 | 2 | 0.026 |
-| SHIB | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
-| BCH | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
-| LTC | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.025 |
-| DOT | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
-| HBAR | VINDE | vinde | 0 | 3 | 2 | 0.025 |
-| UNI | VINDE | vinde | 0 | 3 | 2 | 0.026 |
-| PEPE | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
-| AAVE | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.029 |
-| NEAR | VINDE | vinde | 0 | 3 | 2 | 0.027 |
-| ICP | VINDE | vinde | 0 | 4 | 1 | 0.026 |
-| ETC | VINDE | vinde | 0 | 3 | 2 | 0.027 |
-| APT | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
-| ONDO | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| ATOM | VINDE | vinde | 0 | 4 | 1 | 0.027 |
-| POL | VINDE | vinde | 0 | 4 | 1 | 0.025 |
-| ARB | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
-| FIL | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
-| ALGO | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
-| VET | VINDE | vinde | 0 | 4 | 1 | 0.025 |
-| OP | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| INJ | VINDE | vinde | 0 | 3 | 2 | 0.026 |
-| RENDER | VINDE | vinde | 0 | 4 | 1 | 0.025 |
-| TAO | VINDE | vinde | 0 | 4 | 1 | 0.027 |
-| FET | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| SEI | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
-| STX | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.028 |
-| BONK | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
-| WIF | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
-| FLOKI | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.030 |
-| TRUMP | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.024 |
-| PENGU | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.025 |
-| ENA | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
-| WLD | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
-| JUP | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
-| LDO | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
-| CRV | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
-| TIA | VINDE | vinde | 0 | 3 | 2 | 0.026 |
-| RHEINMETALL | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
-| HENSOLDT | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.028 |
-| RENK | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.024 |
-| BAE | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
+| EURUSD | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
+| USDJPY | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
+| US10Y_NOTE | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.027 |
+| SOLANA | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| BNB | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
+| XRP | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
+| TRX | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
+| DOGE | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
+| ADA | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| LINK | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| AVAX | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.024 |
+| XLM | VINDE | vinde | 0 | 4 | 1 | 0.027 |
+| SUI | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
+| SHIB | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| BCH | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.028 |
+| LTC | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
+| DOT | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.029 |
+| HBAR | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
+| UNI | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
+| PEPE | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
+| AAVE | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| NEAR | VINDE | vinde | 0 | 3 | 2 | 0.028 |
+| ICP | VINDE | vinde | 0 | 4 | 1 | 0.027 |
+| ETC | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
+| APT | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.029 |
+| ONDO | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
+| ATOM | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
+| POL | VINDE | vinde | 0 | 3 | 2 | 0.026 |
+| ARB | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.028 |
+| FIL | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
+| ALGO | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| VET | VINDE | vinde | 0 | 3 | 2 | 0.030 |
+| OP | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
+| INJ | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.028 |
+| RENDER | VINDE | vinde | 0 | 3 | 2 | 0.026 |
+| TAO | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
+| FET | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.028 |
+| SEI | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
+| STX | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| BONK | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
+| WIF | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
+| FLOKI | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.028 |
+| TRUMP | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.025 |
+| PENGU | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| ENA | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
+| WLD | VINDE | vinde | 0 | 3 | 2 | 0.025 |
+| JUP | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
+| LDO | NU TRANZACȚIONA | – | 1 | 1 | 3 | 0.027 |
+| CRV | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.027 |
+| TIA | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
+| RHEINMETALL | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.029 |
+| HENSOLDT | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.029 |
+| RENK | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
+| BAE | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.025 |
 | THALES | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.029 |
-| LEONARDO | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
-| SAAB | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.034 |
-| KONGSBERG | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
-| LOCKHEED | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.026 |
+| LEONARDO | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.029 |
+| SAAB | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.031 |
+| KONGSBERG | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.027 |
+| LOCKHEED | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.027 |
 | NORTHROP | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
-| RTX | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
-| GENERAL_DYNAMICS | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.029 |
-| L3HARRIS | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
-| ITA | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.025 |
-| AAPL | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.029 |
-| MSFT | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.030 |
-| NVDA | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
-| GOOGL | VINDE | vinde | 0 | 4 | 1 | 0.026 |
-| AMZN | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
-| WMT | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.027 |
-| KO | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.026 |
-| PG | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.026 |
-| JNJ | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.027 |
-| UNH | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
-| XOM | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.027 |
-| CVX | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.026 |
-| JPM | VINDE | vinde | 0 | 3 | 2 | 0.025 |
+| RTX | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.028 |
+| GENERAL_DYNAMICS | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.028 |
+| L3HARRIS | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.026 |
+| ITA | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.032 |
+| AAPL | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.027 |
+| MSFT | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.027 |
+| NVDA | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
+| GOOGL | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.029 |
+| AMZN | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.029 |
+| WMT | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.028 |
+| KO | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.025 |
+| PG | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.026 |
+| JNJ | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.028 |
+| UNH | NU TRANZACȚIONA | cumpără | 1 | 0 | 4 | 0.029 |
+| XOM | NU TRANZACȚIONA | cumpără | 2 | 0 | 3 | 0.033 |
+| CVX | NU TRANZACȚIONA | – | 0 | 0 | 5 | 0.029 |
+| JPM | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.027 |
 | GS | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
-| CAT | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.026 |
-| BA | NU TRANZACȚIONA | vinde | 0 | 1 | 4 | 0.028 |
+| CAT | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.026 |
+| BA | NU TRANZACȚIONA | vinde | 0 | 2 | 3 | 0.025 |
 
-Cost total: **2.298 $**. Motivele fiecărui agent sunt în raportul complet.
+Cost total: **2.352 $**. Motivele fiecărui agent sunt în raportul complet.
