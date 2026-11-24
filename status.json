@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-24T18:56+00:00",
+  "generated": "2026-11-24T20:56+00:00",
   "ok": false,
   "alerts": [
     "Ultima rulare programată a descoperirii smart-money a eșuat (failure)",
@@ -51,10 +51,10 @@
       "reconciled": true
     },
     "unic": {
-      "equity": 12196.67,
+      "equity": 12206.09,
       "currency": "USD",
-      "return_pct": 9.064,
-      "drawdown_pct": 0.375,
+      "return_pct": 9.149,
+      "drawdown_pct": 0.298,
       "positions": 79,
       "orders": 23,
       "kill_switch": false,
