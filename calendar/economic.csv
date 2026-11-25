@@ -408,6 +408,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-24T11:00+00:00|GBP|CBI Realized Sales,2026-11-24T11:00+00:00,GBP,CBI Realized Sales,Low,-27,-10
 2026-11-24T12:30+00:00|GBP|MPC Member Greene Speaks,2026-11-24T12:30+00:00,GBP,MPC Member Greene Speaks,Low,,
 2026-11-24T13:15+00:00|USD|ADP Weekly Employment Change,2026-11-24T13:15+00:00,USD,ADP Weekly Employment Change,Low,,23.8K
+2026-11-24T13:51+00:00|CNY|CB Leading Index m/m,2026-11-24T13:51+00:00,CNY,CB Leading Index m/m,Low,,-0.1%
 2026-11-24T14:00+00:00|CNY|CB Leading Index m/m,2026-11-24T14:00+00:00,CNY,CB Leading Index m/m,Low,,-0.1%
 2026-11-24T14:00+00:00|EUR|Belgian NBB Business Climate,2026-11-24T14:00+00:00,EUR,Belgian NBB Business Climate,Low,-9.4,-9.8
 2026-11-24T14:00+00:00|USD|HPI m/m,2026-11-24T14:00+00:00,USD,HPI m/m,Low,0.2%,0.3%
@@ -425,6 +426,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-25T07:00+00:00|EUR|German Final GDP q/q,2026-11-25T07:00+00:00,EUR,German Final GDP q/q,Low,0.2%,0.2%
 2026-11-25T09:00+00:00|CHF|UBS Economic Expectations,2026-11-25T09:00+00:00,CHF,UBS Economic Expectations,Low,,-15.3
 2026-11-25T10:42+00:00|EUR|German 10-y Bond Auction,2026-11-25T10:42+00:00,EUR,German 10-y Bond Auction,Low,,3.37|1.1
+2026-11-25T12:25+00:00|USD|FOMC Member Bowman Speaks,2026-11-25T12:25+00:00,USD,FOMC Member Bowman Speaks,Low,,
 2026-11-25T13:30+00:00|USD|Core Durable Goods Orders m/m,2026-11-25T13:30+00:00,USD,Core Durable Goods Orders m/m,Low,0.5%,0.5%
 2026-11-25T13:30+00:00|USD|Core PCE Price Index m/m,2026-11-25T13:30+00:00,USD,Core PCE Price Index m/m,High,0.3%,0.3%
 2026-11-25T13:30+00:00|USD|Durable Goods Orders m/m,2026-11-25T13:30+00:00,USD,Durable Goods Orders m/m,Low,0.7%,1.8%
@@ -434,7 +436,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-25T13:30+00:00|USD|Prelim GDP q/q,2026-11-25T13:30+00:00,USD,Prelim GDP q/q,High,3.5%,3.4%
 2026-11-25T13:30+00:00|USD|Unemployment Claims,2026-11-25T13:30+00:00,USD,Unemployment Claims,Low,201K,203K
 2026-11-25T15:00+00:00|USD|New Home Sales,2026-11-25T15:00+00:00,USD,New Home Sales,Low,650K,676K
-2026-11-25T15:30+00:00|USD|Crude Oil Inventories,2026-11-25T15:30+00:00,USD,Crude Oil Inventories,Low,,3.4M
+2026-11-25T15:30+00:00|USD|Crude Oil Inventories,2026-11-25T15:30+00:00,USD,Crude Oil Inventories,Low,2.0M,3.4M
 2026-11-25T17:00+00:00|USD|Natural Gas Storage,2026-11-25T17:00+00:00,USD,Natural Gas Storage,Low,-19B,20B
 2026-11-25T19:00+00:00|USD|Beige Book,2026-11-25T19:00+00:00,USD,Beige Book,Low,,
 2026-11-26T00:30+00:00|AUD|Private Capital Expenditure q/q,2026-11-26T00:30+00:00,AUD,Private Capital Expenditure q/q,Low,4.5%,-3.6%
@@ -454,7 +456,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-27T07:45+00:00|EUR|French Prelim GDP q/q,2026-11-27T07:45+00:00,EUR,French Prelim GDP q/q,Low,-0.1%,-0.1%
 2026-11-27T08:00+00:00|EUR|Spanish Flash CPI y/y,2026-11-27T08:00+00:00,EUR,Spanish Flash CPI y/y,Low,4.7%,4.9%
 2026-11-27T08:55+00:00|EUR|German Unemployment Change,2026-11-27T08:55+00:00,EUR,German Unemployment Change,Low,5K,4K
-2026-11-27T10:33+00:00|EUR|Italian 10-y Bond Auction,2026-11-27T10:33+00:00,EUR,Italian 10-y Bond Auction,Low,,
+2026-11-27T10:33+00:00|EUR|Italian 10-y Bond Auction,2026-11-27T10:33+00:00,EUR,Italian 10-y Bond Auction,Low,,4.49|1.6
 2026-11-27T12:40+00:00|EUR|German Buba President Nagel Speaks,2026-11-27T12:40+00:00,EUR,German Buba President Nagel Speaks,Low,,
 2026-11-27T13:30+00:00|CAD|Current Account,2026-11-27T13:30+00:00,CAD,Current Account,Low,9.5B,8.8B
 2026-11-27T13:30+00:00|USD|Goods Trade Balance,2026-11-27T13:30+00:00,USD,Goods Trade Balance,Low,-135.9B,-134.9B
