@@ -425,6 +425,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-25T05:00+00:00|JPY|BOJ Core CPI y/y,2026-11-25T05:00+00:00,JPY,BOJ Core CPI y/y,Low,2.5%,2.4%
 2026-11-25T07:00+00:00|EUR|German Final GDP q/q,2026-11-25T07:00+00:00,EUR,German Final GDP q/q,Low,0.2%,0.2%
 2026-11-25T09:00+00:00|CHF|UBS Economic Expectations,2026-11-25T09:00+00:00,CHF,UBS Economic Expectations,Low,,-15.3
+2026-11-25T10:32+00:00|EUR|German 10-y Bond Auction,2026-11-25T10:32+00:00,EUR,German 10-y Bond Auction,Low,,3.37|1.1
 2026-11-25T10:42+00:00|EUR|German 10-y Bond Auction,2026-11-25T10:42+00:00,EUR,German 10-y Bond Auction,Low,,3.37|1.1
 2026-11-25T12:25+00:00|USD|FOMC Member Bowman Speaks,2026-11-25T12:25+00:00,USD,FOMC Member Bowman Speaks,Low,,
 2026-11-25T13:30+00:00|USD|Core Durable Goods Orders m/m,2026-11-25T13:30+00:00,USD,Core Durable Goods Orders m/m,Low,0.5%,0.5%
@@ -435,6 +436,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-25T13:30+00:00|USD|Prelim GDP Price Index q/q,2026-11-25T13:30+00:00,USD,Prelim GDP Price Index q/q,Medium,2.3%,2.3%
 2026-11-25T13:30+00:00|USD|Prelim GDP q/q,2026-11-25T13:30+00:00,USD,Prelim GDP q/q,High,3.5%,3.4%
 2026-11-25T13:30+00:00|USD|Unemployment Claims,2026-11-25T13:30+00:00,USD,Unemployment Claims,Low,201K,203K
+2026-11-25T14:15+00:00|GBP|Monetary Policy Report Hearings,2026-11-25T14:15+00:00,GBP,Monetary Policy Report Hearings,Medium,,
 2026-11-25T15:00+00:00|USD|New Home Sales,2026-11-25T15:00+00:00,USD,New Home Sales,Low,650K,676K
 2026-11-25T15:30+00:00|USD|Crude Oil Inventories,2026-11-25T15:30+00:00,USD,Crude Oil Inventories,Low,2.0M,3.4M
 2026-11-25T17:00+00:00|USD|Natural Gas Storage,2026-11-25T17:00+00:00,USD,Natural Gas Storage,Low,-19B,20B
@@ -444,6 +446,7 @@ id,time_utc,country,title,impact,forecast,previous
 2026-11-26T07:00+00:00|EUR|German GfK Consumer Climate,2026-11-26T07:00+00:00,EUR,German GfK Consumer Climate,Low,-29.4,-30.8
 2026-11-26T09:00+00:00|EUR|M3 Money Supply y/y,2026-11-26T09:00+00:00,EUR,M3 Money Supply y/y,Low,3.5%,3.5%
 2026-11-26T09:00+00:00|EUR|Private Loans y/y,2026-11-26T09:00+00:00,EUR,Private Loans y/y,Low,3.2%,3.1%
+2026-11-26T09:15+00:00|EUR|Euro Summit,2026-11-26T09:15+00:00,EUR,Euro Summit,Low,,
 2026-11-26T10:30+00:00|GBP|BOE Financial Stability Report,2026-11-26T10:30+00:00,GBP,BOE Financial Stability Report,Low,,
 2026-11-26T10:30+00:00|GBP|FPC Meeting Minutes,2026-11-26T10:30+00:00,GBP,FPC Meeting Minutes,Low,,
 2026-11-26T10:30+00:00|GBP|FPC Statement,2026-11-26T10:30+00:00,GBP,FPC Statement,Low,,
