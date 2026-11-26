@@ -1,975 +1,975 @@
-# Consiliul AI în umbră, 2026-11-25 22:57 UTC
+# Consiliul AI în umbră, 2026-11-26 22:58 UTC
 
 Cei 5 agenți votează independent; **nu se tranzacționează nimic**, doar notăm și comparăm după 5 zile.
 
 
-## SP500: **VINDE** (înclină spre vânzare)
-Preț 718.7800 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.025 $.
+## SP500: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 716.7000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.76 | Scăderile recente și prețul sub SMA20, SMA50 și SMA200 indică un context descendent, dar nu stabilesc direcția următoarelor cinci ședințe. Volatilitatea ridicată și RSI de 36 lasă deschisă și posibilitatea unei reveniri, astfel că datele sunt insuficiente pentru o predicție direcțională robustă. |
-| claude | HOLD | 0.55 | Trendul este clar negativ (preț sub SMA20/50/200, regula SMA spune vinde, risk-off generalizat pe cripto, metale și Nasdaq), dar RSI 36 apropiat de supravânzare și volatilitatea ridicată de 38% fac direcția pe 5 zile incertă, cu risc de revenire tehnică. Fără știri sau date economice, semnalele nu sunt suficient de concludente pentru BUY sau SELL. |
-| gemini | SELL | 0.65 | Prețul se află într-un trend descendent clar pe toate orizonturile de timp analizate, tranzacționându-se sub mediile mobile de 20, 50 și 200 de zile, în condițiile unei volatilități în creștere. În plus, scăderile masive de pe piețele de risc și refugierea în obligațiuni americane și dolar indică un sentiment general de aversiune la risc, dar un RSI de 36 aproape de zona de supravânzare temperează ușor convingerea. |
-| grok | SELL | 0.62 | Prețul este sub SMA20, SMA50 și SMA200, iar scăderile pe 5–60 de zile și regula SMA 20/50 indică un trend descendent. RSI de 36 nu este încă extrem de supravândut, iar slăbiciunea largă a altor active susține continuarea presiunii pe termen scurt. |
-| deepseek | SELL | 0.70 | Prețul se află sub mediile mobile principale, RSI indică moment negativ, iar corelația cu scăderile ample de pe alte piețe sugerează continuarea tendinței descendente pe termen scurt. |
+| gpt | HOLD | 0.75 | Prețul sub mediile mobile și scăderile pe mai multe intervale indică presiune descendentă, dar volatilitatea ridicată și RSI de 44 nu confirmă direcția următoarelor 5 ședințe. Doar aceste date nu oferă suficiente dovezi pentru a distinge continuarea scăderii de o revenire temporară. |
+| claude | HOLD | 0.35 | Trendul pe termen scurt este negativ (preț sub SMA20/50/200, regula SMA 20/50 indică vânzare, risk-off generalizat cu obligațiunile în creștere), dar RSI de 44 nu arată supravânzare extremă, iar volatilitatea ridicată de 38% face direcția pe 5 zile incertă, cu posibilitatea unui rebound. Semnalele sunt mixte și insuficiente pentru o predicție fiabilă pe un orizont atât de scurt. |
+| gemini | SELL | 0.65 | Prețul se află sub mediile mobile de 20, 50 și 200 de zile, pe fondul unui trend descendent constant și a unei volatilități în creștere. În plus, scăderile ample de pe piețele de risc (Nasdaq, criptomonede, mărfuri) și aprecierea obligațiunilor indică o aversiune generalizată față de risc, favorizând continuarea scăderii pe termen scurt. |
+| grok | HOLD | 0.48 | Tendința recentă este negativă, prețul stă sub mediile mobile, iar piețele riscante au scăzut, dar RSI nu indică un semnal clar. Din aceste date nu se poate decide direcția pe următoarele 5 zile de tranzacționare. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, iar tendința pe termen scurt este negativă, într-un context de aversiune la risc pe piețele globale. |
 
 ## NASDAQ100: **VINDE** (înclină spre vânzare)
-Preț 638.1000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.025 $.
+Preț 633.9300 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe toate intervalele raportate și prețul sub SMA20, SMA50 și SMA200 susțin o înclinație descendentă pentru următoarele 5 ședințe, în contextul slăbiciunii și pe alte piețe. Totuși, volatilitatea ridicată și lipsa informațiilor fundamentale limitează încrederea și lasă posibilitatea unei reveniri pe termen scurt. |
-| claude | HOLD | 0.35 | Trendul este clar negativ (preț sub SMA20/50/200, regula SMA spune vinde, aversiune generală la risc pe toate activele), dar RSI 39 și scăderea de -11.5% în 20 de zile cu volatilitate de 58% fac posibil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea extremă nu permit o predicție fiabilă pe 5 zile. |
-| gemini | SELL | 0.65 | Prețul se află sub mediile mobile importante (SMA 20, 50 și 200), într-un trend descendent clar pe toate intervalele de timp analizate, iar RSI(14) la 39 mai permite scăderi. În plus, scăderile generalizate pe piețele de risc și volatilitatea ridicată (58% pe 20 de zile) indică o presiune de vânzare continuă pe termen scurt. |
-| grok | SELL | 0.58 | Prețul este sub SMA20, SMA50 și SMA200, iar randamentele pe 1–120 de zile sunt negative, în linie cu semnalul de vânzare. Corecția largă a activelor riscante susține continuarea scăderii pe 5 zile, deși RSI 39 lasă loc și unui rebound scurt. |
-| deepseek | SELL | 0.65 | Prețul se situează sub toate mediile mobile analizate, RSI-ul este sub 50, iar tendința pe termen scurt și corelația cu alte active riscante indică o continuare a scăderii. |
+| gpt | SELL | 0.61 | Scăderile pe intervalele de 5 și 20 de zile și prețul sub SMA20, SMA50 și SMA200 susțin o înclinație descendentă pentru următoarele 5 ședințe. Totuși, volatilitatea ridicată și RSI de 47 reduc încrederea în prognoză și lasă loc unui recul ascendent. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -12.6% pe 20 de zile, regula SMA dă vânzare, aversiune largă la risc), dar RSI 47 nu confirmă supravânzare sau momentum, iar volatilitatea foarte mare (58%) face direcția pe 5 zile imprevizibilă. Semnalele sunt contradictorii și insuficiente pentru un pariu direcțional pe termen atât de scurt. |
+| gemini | SELL | 0.68 | Prețul se află într-un trend descendent clar pe toate orizonturile de timp analizate, situându-se sub mediile mobile de 20, 50 și 200 de zile, în timp ce volatilitatea pe termen scurt este ridicată (58%). Scăderile generalizate pe activele de risc (criptomonede, mărfuri, S&P 500) și creșterea obligațiunilor indică o aversiune față de risc pe piață, iar RSI la 47 permite continuarea scăderii în următoarele 5 zile. |
+| grok | SELL | 0.58 | Prețul este sub SMA20, SMA50 și SMA200, cu scăderi pe 5–120 de zile și semnal de vânzare al regulii SMA 20/50, în context de aversiune la risc pe alte piețe. RSI de 47 nu arată supravânzare extremă, deci biasul pe 5 zile rămâne negativ, fără certitudine. |
+| deepseek | SELL | 0.70 | Prețul se află sub mediile mobile principale, iar tendința pe termen scurt este negativă, cu un RSI neutru care nu indică supravânzare. Corelat cu scăderile generale din alte piețe, este probabil ca prețul să continue să scadă în următoarele 5 zile. |
 
-## GOLD: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 325.4500 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile persistente și prețul sub mediile mobile de 20, 50 și 200 de zile favorizează continuarea tendinței descendente în următoarele 5 ședințe. Totuși, RSI de 23 indică supravânzare, iar apropierea de minimul anual și volatilitatea ridicată sporesc riscul unei reveniri, limitând încrederea în estimare. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, vânzare generalizată pe active de risc și metale), dar RSI 23 și apropierea de minimul anual indică supravânzare și risc de revenire pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși trendul este puternic descendent sub toate mediile mobile relevante pe fondul unei vânzări generalizate în piețe, indicatorul RSI(14) la 23 semnalează o condiție extremă de supravânzare aproape de minimul anual. Această contradicție între impulsul negativ și riscul ridicat al unui ricoșeu tehnic pe termen scurt face ca direcția pentru următoarele 5 zile să fie incertă. |
-| grok | HOLD | 0.46 | Tendința pe 5–120 de zile este clar descendentă, iar prețul stă sub mediile mobile, dar RSI 23 și apropierea de minimul anual indică o posibilă revenire pe termen scurt. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, cu RSI în zona de supravânzare (23) care poate persista, iar regula SMA 20/50 indică vânzare. Corelația cu întărirea dolarului (USD/JPY +0.9%) și scăderile ample pe alte piețe sugerează continuarea presiunii negative pe termen scurt. |
-
-## SILVER: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 36.8400 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## GOLD: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 327.4500 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Tendința descendentă pe toate intervalele, prețul mult sub mediile mobile și slăbiciunea celorlalte piețe înclină estimarea spre continuarea scăderii în următoarele 5 ședințe. Totuși, RSI de 21 indică supravânzare, iar volatilitatea ridicată și apropierea de minimul anual lasă loc unei reveniri bruște, limitând încrederea. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -45% pe 120 de zile, risk-off generalizat, regula SMA spune vinde), dar RSI 21 și prețul la minimul anual cu volatilitate de 66% indică supravânzare extremă și risc ridicat de revenire tehnică. Semnalele contradictorii nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul se află într-un trend descendent sever și generalizat pe piețe, dar indicatorul RSI la 21 și proximitatea minimului anual indică o supravânzare extremă cu risc ridicat de ricoșeu pe termen scurt. Din cauza semnalelor tehnice contradictorii și a volatilității mari de 66%, direcția pentru următoarele 5 zile este incertă. |
-| grok | HOLD | 0.42 | Argintul este în scădere puternică și aproape de minimul anual, cu RSI 21, dar datele nu arată clar dacă urmează continuarea sau un rebound pe 5 zile. Fără știri sau catalizatori, direcția pe termen scurt rămâne incertă. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar contextul general al piețelor (scăderi pe acțiuni, cripto, petrol) sugerează continuarea presiunii de vânzare. Deși RSI la 21 indică o piață supravândută, nu există semnale de inversare, iar apropierea de minimul anual crește riscul de spargere a suportului. |
+| gpt | HOLD | 0.76 | Scăderile persistente și prețul sub mediile mobile indică un trend descendent, dar RSI de 23 semnalează supravânzare și posibilitatea unei reveniri pe termen scurt. Volatilitatea ridicată și aceste semnale contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din datele oferite. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, -12.3% pe 20 de zile, semnal de vânzare SMA 20/50), dar RSI 23 indică supravânzare extremă, iar prețul e aproape de minimul anual, ceea ce face probabil un rebound pe termen scurt. Cu volatilitate de 41% și semnale contradictorii, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
+| gemini | HOLD | 0.60 | Prețul se află într-un trend descendent puternic, tranzacționându-se semnificativ sub toate mediile mobile, pe fondul unor scăderi generalizate în piețe și a unei volatilități ridicate. Pe de altă parte, indicatorul RSI la nivelul 23 semnalează o condiție severă de supravânzare și o posibilă revenire pe termen scurt, făcând direcția următoarelor 5 zile incertă. |
+| grok | HOLD | 0.46 | Tendința pe 5–120 de zile este clar descendentă și prețul stă sub mediile mobile, dar RSI(14) la 23 indică supravânzare, iar ultima zi a fost ușor pozitivă. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | BUY | 0.60 | RSI de 23 indică o stare de supravânzare extremă, ceea ce sugerează o posibilă revenire pe termen scurt, iar prețul a crescut ușor în ultima zi. Deși tendința generală este descendentă, probabilitatea unui rebound tehnic în următoarele 5 zile este ridicată. |
+
+## SILVER: **NU TRANZACȚIONA** (fără înclinație)
+Preț 37.1000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.76 | Tendința puternic descendentă și prețul sub toate mediile mobile favorizează continuarea scăderii, dar RSI de 22 semnalează supravânzare și posibilitatea unui recul ascendent. Volatilitatea ridicată și lipsa altor informații nu permit alegerea suficient de solidă a unei direcții pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -24% pe 20 de zile, regula SMA indică vânzare), dar RSI 22 arată supravânzare extremă, iar prețul este aproape de minimul anual, deci un rebound pe termen scurt este la fel de plauzibil ca o continuare a scăderii. Cu volatilitate de 66% și o scădere generalizată pe toate piețele de risc, datele nu permit o decizie clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși argintul se află într-un trend descendent sever și generalizat pe piețe (sub toate mediile mobile), valoarea extrem de scăzută a RSI (22) indică o supravânzare puternică ce poate genera un ricoșeu pe termen scurt. Din cauza semnalelor tehnice contradictorii pe un orizont de 5 zile și a volatilității foarte ridicate (66%), direcția imediată este incertă. |
+| grok | HOLD | 0.42 | Argintul este într-un trend descendent puternic, mult sub mediile mobile, dar RSI 22 și apropierea de minimul anual sugerează posibilă revenire pe termen scurt. Semnalele sunt contradictorii, deci direcția pe următoarele 5 zile nu poate fi decisă din aceste date. |
+| deepseek | HOLD | 0.60 | Deși RSI de 22 indică o stare de supravânzare care ar putea preceda o revenire pe termen scurt, tendința descendentă puternică și contextul general negativ al pieței fac incertă direcția în următoarele 5 zile. |
 
 ## CRUDE_OIL: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 135.4300 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.031 $.
+Preț 139.8900 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile de 3,4% în 5 zile și 17,4% în 20 de zile, împreună cu prețul sub SMA20 și SMA50, favorizează continuarea presiunii descendente în următoarele 5 ședințe. Totuși, revenirea zilnică de 1,6%, RSI de 36 și volatilitatea ridicată reduc încrederea în această estimare. |
-| claude | HOLD | 0.55 | Trendul pe termen scurt este negativ (preț sub SMA20/SMA50, -17,4% pe 20 de zile, semnal de vânzare SMA 20/50, aversiune generală la risc), dar RSI 36 se apropie de supravânzare, prețul rămâne peste SMA200, iar volatilitatea de 61% face direcția pe 5 zile imprevizibilă. Fără știri sau date fundamentale, semnalele contradictorii nu justifică o poziție direcțională. |
-| gemini | HOLD | 0.65 | Deși trendul pe termen scurt este negativ (sub SMA20 și SMA50, cu scădere de 17.4% în ultimele 20 de zile pe fondul unei piețe globale în declin), prețul se menține peste SMA200 (+4.4%) și are un RSI(14) apropiat de zona de supravânzare (36), înregistrând un ușor recul (+1.6%) în ultima zi. Volatilitatea ridicată (61%) și semnalele tehnice mixte fac imposibilă o predicție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Datele arată un trend scurt negativ (sub SMA20/SMA50, -17,4% în 20 de zile, RSI 36), dar există un rebound zilnic și prețul rămâne peste SMA200, iar volatilitatea este foarte ridicată. Fără știri sau date economice, direcția pe următoarele 5 zile nu poate fi decisă. |
-| deepseek | SELL | 0.60 | Tendința descendentă pe termen scurt este confirmată de prețul aflat sub mediile mobile SMA20 și SMA50, iar contextul global de aversiune la risc indică o continuare a scăderii în următoarele 5 zile. |
+| gpt | HOLD | 0.78 | Scăderea de 16% pe 20 de zile și prețul sub SMA20/SMA50 sugerează presiune descendentă, dar revenirea recentă și poziționarea peste SMA200 oferă semnale contradictorii. Volatilitatea ridicată și lipsa altor date nu permit stabilirea unei direcții suficient de credibile pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.30 | Prețul este sub SMA20 și SMA50, cu un semnal de vânzare SMA 20/50 și o scădere de 16% pe 20 de zile, dar rămâne peste SMA200, iar RSI 39 și revenirea recentă de +3.3% sugerează o posibilă stabilizare. Cu volatilitate de 62% și un context de aversiune generală la risc pe celelalte piețe, semnalele sunt contradictorii pentru un orizont de 5 zile. |
+| gemini | HOLD | 0.65 | Semnalele tehnice sunt contradictorii: prețul se află sub mediile mobile pe 20 și 50 de zile într-un context de scădere generalizată a piețelor, dar arată o revenire pe termen foarte scurt (+2.8% în 5 zile) și rămâne peste SMA200. Din cauza volatilității foarte ridicate (62%) și a direcției neclare, datele sunt insuficiente pentru o decizie fermă. |
+| grok | HOLD | 0.35 | Semnalele sunt mixte: revenirea pe 1 și 5 zile contrastează cu scăderea de 16% pe 20 de zile și cu prețul sub SMA20 și SMA50, iar RSI 39 nu indică o extremă clară. Volatilitatea ridicată și lipsa de știri sau date economice nu permit o direcție credibilă pentru următoarele 5 zile. |
+| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile pe 20 și 50 de zile, iar RSI-ul sub 50 indică o tendință descendentă pe termen scurt, în contextul unui sentiment global de risk-off. Regula SMA 20/50 sugerează vânzare, iar revenirea recentă pare o corecție într-o piață încă slabă. |
 
 ## BITCOIN: **NU TRANZACȚIONA** (fără înclinație)
-Preț 59747.7656 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.025 $.
+Preț 60378.1992 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generalizată a piețelor favorizează continuarea scăderii, dar RSI de 18 indică supravânzare și posibilitatea unui recul ascendent. Aceste date nu oferă suficiente dovezi pentru a decide direcția Bitcoin în următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, slăbiciune generalizată pe piețele de risc), dar RSI de 18 indică o supravânzare extremă care face probabil un rebound tehnic pe termen scurt. Aceste semnale contradictorii, plus volatilitatea ridicată, nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul este într-un trend descendent puternic, sub toate mediile mobile importante și pe fondul unor scăderi generalizate în piețe, însă nivelul RSI(14) de 18 indică o condiție extremă de supravânzare. Aceste semnale tehnice contradictorii fac direcția pe următoarele 5 zile incertă. |
-| grok | HOLD | 0.46 | Tendința pe 5–60 de zile este clar descendentă și prețul stă sub mediile mobile, dar RSI(14) la 18 indică o zonă extrem de supravândută. Din aceste date nu se poate decide dacă în următoarele 5 zile continuă scăderea sau apare un rebound. |
-| deepseek | HOLD | 0.30 | RSI extrem de supravândut (18) sugerează o posibilă revenire pe termen scurt, dar trendul descendent puternic și corelația cu scăderile altor active mențin incertitudinea. |
+| gpt | HOLD | 0.78 | Tendința descendentă și prețul sub toate mediile mobile indică presiune de vânzare, dar RSI de 19 și revenirea recentă sugerează posibilitatea unui recul ascendent. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din datele oferite. |
+| claude | HOLD | 0.35 | Tendința este clar descendentă (preț sub SMA20/50/200, -20.5% pe 20 de zile, slăbiciune generalizată pe toate piețele de risc), dar RSI de 19 indică o supravânzare extremă, iar ultimele zile arată o ușoară revenire, ceea ce face plauzibile atât continuarea scăderii, cât și un rebound pe 5 zile. Fără știri sau alte date, semnalele contradictorii nu permit o direcție clară. |
+| gemini | HOLD | 0.60 | Deși RSI-ul extrem de scăzut (19) și creșterea din ultimele 5 zile (+2.7%) sugerează o posibilă revenire pe termen scurt din zona de supravânzare, prețul rămâne mult sub toate mediile mobile importante, într-un context de scădere generalizată a piețelor de risc. Semnalele tehnice sunt contradictorii, făcând direcția următoarelor 5 zile incertă. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: RSI 19 indică supravânzare și o revenire scurtă, dar prețul rămâne mult sub mediile mobile, iar regula SMA 20/50 indică vânzare. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | Deși RSI supravândut (19) sugerează o posibilă revenire pe termen scurt, tendința descendentă puternică și semnalul de vânzare al mediilor mobile contrabalansează acest indiciu. Datele disponibile nu oferă o direcție clară pentru următoarele 5 zile. |
 
 ## ETHEREUM: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 1677.6948 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 1690.7690 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile pe mai multe intervale, prețul sub SMA20/50/200 și slăbiciunea generalizată a piețelor susțin o înclinație descendentă pentru următoarele 5 zile. Totuși, RSI de 24 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire temporară și limitează încrederea prognozei. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (preț mult sub SMA20/50/200, -30.7% în 20 de zile, regula botului spune vinde, iar piețele de risc scad la unison), dar RSI de 24 indică o supravânzare severă care face plauzibil un rebound pe termen scurt. Semnalele opuse și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși trendul general este puternic descendent, cu prețul mult sub mediile mobile și scăderi extinse pe toate piețele, indicatorul RSI la 24 indică o stare severă de supravânzare care ar putea declanșa un rimbalzo pe termen scurt. Din cauza acestor semnale contradictorii și a volatilității ridicate de 69%, direcția pentru următoarele 5 zile este prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.42 | Tendința rămâne negativă, cu prețul sub mediile mobile și scăderi ample pe 20 și 60 de zile, dar RSI la 24 indică o zonă supravândută. Din aceste date nu se poate decide clar direcția pe următoarele 5 zile. |
-| deepseek | HOLD | 0.40 | RSI-ul de 24 indică o piață supravândută, sugerând o posibilă revenire pe termen scurt, dar tendința puternic descendentă și corelația cu scăderile altor active de risc mențin incertitudinea. |
+| gpt | HOLD | 0.78 | Tendința descendentă și prețul sub mediile mobile sugerează presiune de vânzare, dar RSI de 25 și revenirea de 4,4% din ultimele 5 zile indică posibilitatea continuării unui rebound. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea suficient de clară a direcției pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (preț sub toate mediile mobile, -24% în 20 de zile, scădere generalizată pe piețe), dar RSI de 25 indică supravânzare și un mic rebound recent, deci semnalele pe 5 zile sunt contradictorii. Datele disponibile nu permit o direcție clară pentru următoarele 5 zile de tranzacționare. |
+| gemini | HOLD | 0.60 | Deși RSI-ul de 25 și creșterea de +4.4% din ultimele 5 zile indică o posibilă revenire din supravânzare, trendul mediu rămâne puternic negativ, prețul fiind mult sub mediile mobile și într-un context de scădere generalizată a piețelor. Având în vedere aceste semnale contradictorii și volatilitatea ridicată de 64%, datele sunt insuficiente pentru o direcție clară pe 5 zile. |
+| grok | HOLD | 0.42 | Ethereum rămâne sub mediile mobile și într-un trend descendent pe 20–60 de zile, deși RSI 25 și revenirea recentă de 5 zile sugerează o posibilă corecție. Semnalele sunt contradictorii, iar fără știri nu se poate decide direcția următoarelor 5 zile. |
+| deepseek | SELL | 0.40 | Prețul este sub SMA20, SMA50 și SMA200, iar regula botului indică vânzare; deși RSI la 25 sugerează o posibilă revenire pe termen scurt, contextul general puternic negativ al pieței crypto și tendința descendentă domină. |
 
-## EURUSD: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 1.0908 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## EURUSD: **NU TRANZACȚIONA** (fără înclinație)
+Preț 1.0962 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe toate intervalele analizate și prețul sub SMA20, SMA50 și SMA200 sugerează continuarea tendinței descendente în următoarele 5 ședințe. Totuși, RSI de 21 și apropierea de minimul anual indică supravânzare și risc de revenire, limitând încrederea în prognoză. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar mediul general de aversiune la risc favorizează dolarul), dar RSI de 21 și prețul aflat la doar 0,2% peste minimul anual semnalează o supravânzare care poate aduce o revenire pe termen scurt. Semnalele opuse și lipsa știrilor sau a datelor economice nu permit o direcție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși trendul este puternic descendent sub toate mediile mobile, iar aversiunea față de risc pe alte piețe susține dolarul, indicatorul RSI la 21 și proximitatea minimului anual indică o supravânzare extremă. Aceste semnale tehnice contradictorii fac direcția pe următoarele 5 zile incertă. |
-| grok | HOLD | 0.42 | Tendința pe 20–120 de zile este descendentă și prețul este sub mediile mobile, dar RSI(14) la 21 și apropierea de minimul anual sugerează o posibilă revenire pe termen scurt. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile, iar RSI-ul de 21 indică o piață supravândută, dar tendința descendentă este puternică. Contextul global de aversiune la risc și întărirea dolarului sugerează continuarea scăderii. |
+| gpt | HOLD | 0.76 | Tendința descendentă și prețul sub mediile mobile favorizează continuarea scăderii, dar RSI de 25 și apropierea de minimul anual indică posibilitatea unei reveniri pe termen scurt. Doar aceste date nu oferă suficiente dovezi pentru a decide direcția în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, regula SMA spune vinde, aversiune la risc cu dolar puternic), dar RSI 25 și apropierea de minimul anual sugerează supravânzare și risc de revenire pe termen scurt. Semnalele contradictorii nu permit o decizie fiabilă pe 5 zile. |
+| gemini | HOLD | 0.65 | Trendul general este puternic descendent, susținut de mediile mobile și de aversiunea globală la risc care favorizează dolarul, însă RSI(14) la nivelul 25 și apropierea de minimul anual indică o supravânzare severă. Aceste semnale tehnice contradictorii pe un orizont de 5 zile fac direcția incertă, justificând o poziție neutră. |
+| grok | HOLD | 0.42 | Tendința rămâne descendentă (sub SMA20/50/200, aproape de minimul anual), dar RSI 14 la 25 indică supravânzare și o posibilă revenire pe termen foarte scurt. Pentru următoarele 5 zile semnalele sunt contradictorii, deci direcția nu poate fi decisă doar din aceste date. |
+| deepseek | HOLD | 0.40 | RSI de 25 indică o stare de supravânzare care ar putea duce la o revenire pe termen scurt, dar tendința descendentă puternică și regula botului sugerează vânzare. Având în vedere semnalele contradictorii, nu se poate anticipa o direcție clară. |
 
 ## USDJPY: **NU TRANZACȚIONA** (fără înclinație)
-Preț 159.0090 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
+Preț 159.2620 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Prețul ușor peste mediile mobile și RSI de 55 sugerează un avantaj modest pentru creștere, dar scăderea de 0,3% în ultimele 5 zile și evoluțiile mixte pe intervale mai lungi nu confirmă o direcție clară. Doar aceste date nu oferă suficiente dovezi pentru a anticipa sensul mișcării în următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.30 | Prețul este practic lateral, foarte aproape de toate mediile mobile, cu RSI neutru (55) și momentum mixt, iar semnalul SMA 20/50 de cumpărare e slab. Contextul de aversiune la risc din alte piețe (scăderi puternice la acțiuni, cripto și metale) ar putea favoriza yenul, dar dolarul s-a întărit față de euro, deci datele nu indică o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Prețul USD/JPY este foarte aproape de mediile mobile și are un RSI neutru de 55, indicând o consolidare cu volatilitate scăzută. Deși scăderile masive de pe piețele de acțiuni și mărfuri arată aversiune la risc, atât dolarul cât și yenul sunt active de refugiu, ceea ce face direcția următoarelor 5 zile neclară. |
-| grok | HOLD | 0.46 | Semnalele sunt mixte: prețul este ușor peste mediile mobile și RSI este neutru, dar variația pe 5 zile este negativă, iar mișcările puternice din alte piețe nu clarifică direcția USD/JPY. Datele disponibile nu susțin o estimare fiabilă pentru următoarele 5 zile. |
-| deepseek | HOLD | 0.40 | Datele tehnice indică un ușor avans, dar contextul piețelor sugerează o aversiune la risc care ar putea întări yenul, ducând la o scădere a USDJPY. Semnalele sunt contradictorii, astfel încât nu se poate anticipa o direcție clară. |
+| gpt | HOLD | 0.79 | Prețul ușor peste mediile mobile și RSI de 58 sugerează un impuls pozitiv modest, dar variațiile pe 5, 60 și 120 de zile sunt negative, deci semnalele sunt mixte. Scăderile celorlalte piețe nu stabilesc direcția USD/JPY, iar aceste date sunt insuficiente pentru o estimare convingătoare pe următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.40 | Prețul este ușor peste mediile mobile, cu RSI 58, iar regula SMA 20/50 indică cumpărare, însă trendul pe 60/120 de zile este ușor negativ, iar căderea puternică a activelor de risc (risk-off) poate întări yenul, ca monedă refugiu. Semnalele sunt mixte, volatilitatea este redusă, iar nivelul apropiat de 160 aduce risc de intervenție, deci datele nu susțin o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Prețul USD/JPY este foarte stabil, cu mișcări de sub 1% pe majoritatea orizonturilor de timp și ușor peste mediile mobile, fără un trend puternic. Pe de altă parte, scăderile severe din piețele de acțiuni, mărfuri și cripto indică aversiune la risc, creând semnale contradictorii care nu justifică o direcție clară pe 5 zile. |
+| grok | HOLD | 0.46 | Semnalele tehnice sunt doar ușor pozitive (preț peste mediile mobile, RSI 58), dar variațiile pe 5–120 de zile sunt aproape plate, iar piețele externe arată risk-off, ceea ce poate susține yenul. Datele nu sunt suficiente pentru a decide direcția pe următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | Datele tehnice indică un ușor trend ascendent, dar prăbușirea activelor de risc sugerează o posibilă întărire a yenului ca refugiu, semnalele fiind contradictorii. |
 
 ## US10Y_NOTE: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 91.6400 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.026 $.
+Preț 92.0600 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.82 | Prețul peste SMA20 și SMA50 și avansul de 1,4% în ultimele 5 zile sugerează impuls pozitiv pe termen scurt, dar RSI de 50 și poziția sub SMA200 indică semnale mixte. Doar aceste date nu susțin suficient o direcție pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.55 | Semnalele sunt mixte: prețul este peste SMA20 și SMA50, iar regula botului indică cumpărare, însă rămâne sub SMA200, cu RSI neutru la 50 și o tendință slab negativă pe 60 și 120 de zile. Deși vânzările ample pe piețele de risc ar putea susține obligațiunile ca refugiu, datele de preț nu oferă un avantaj clar pentru următoarele 5 zile. |
-| gemini | BUY | 0.65 | Prețul se află peste mediile mobile pe 20 și 50 de zile, având un impuls pozitiv pe termen scurt (+1.4% în ultimele 5 zile). În plus, scăderile masive de pe piețele de acțiuni, mărfuri și cripto indică o aversiune puternică față de risc, ceea ce susține cererea de refugiu pentru obligațiunile americane. |
-| grok | HOLD | 0.42 | Semnalele sunt mixte: impulsul pe 5 zile și poziția peste SMA20/SMA50 sunt pozitive, dar prețul rămâne sub SMA200, iar RSI este neutru la 50. Fără date economice sau de randament, direcția pe următoarele 5 zile nu poate fi decisă. |
-| deepseek | BUY | 0.60 | Prețul obligațiunilor a crescut ușor în ultimele 5 și 20 de zile, în timp ce activele de risc au scăzut puternic, indicând o fugă către siguranță care ar putea continua. Indicatorii tehnici sunt neutri spre pozitivi, cu prețul peste mediile mobile pe termen scurt. |
+| gpt | HOLD | 0.80 | Impulsul recent pozitiv și prețul peste SMA20 și SMA50 sugerează susținere pe termen scurt, dar RSI de 51 și poziția sub SMA200 nu confirmă o tendință clară. Doar aceste date nu oferă suficiente dovezi pentru a decide direcția prețului în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Prețul este peste SMA20 și SMA50, iar aversiunea generală la risc (acțiuni, cripto și mărfuri în scădere puternică) poate susține obligațiunile, însă RSI neutru de 51 și poziția sub SMA200 nu oferă un semnal clar pentru doar 5 zile. Fără date macro sau știri, avantajul direcțional este prea slab pentru BUY sau SELL. |
+| gemini | BUY | 0.68 | Scăderile puternice pe 20 de zile din piețele de acțiuni, criptomonede și mărfuri indică o aversiune ridicată la risc, ceea ce susține cererea pentru obligațiunile americane ca activ de refugiu. În plus, trendul pe termen scurt este pozitiv (+1.5% în ultimele 5 zile), iar prețul se află peste mediile mobile SMA20 și SMA50, cu un RSI neutru (51) care permite continuarea creșterii. |
+| grok | HOLD | 0.42 | Datele arată un impuls scurt pozitiv și preț peste SMA20/SMA50, dar sub SMA200, cu RSI neutru la 51. Semnalele mixte și lipsa datelor economice nu permit o direcție clară pe următoarele 5 zile. |
+| deepseek | BUY | 0.65 | Contextul de aversiune la risc, cu scăderi puternice pe acțiuni și criptomonede, favorizează activele de refugiu precum obligațiunile americane. Prețul se menține peste mediile mobile pe termen scurt, iar regula SMA 20/50 indică cumpărare. |
 
-## SOLANA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 69.6358 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+## SOLANA: **NU TRANZACȚIONA** (fără înclinație)
+Preț 70.3932 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.76 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 29 indică supravânzare și posibilitatea unei reveniri pe termen scurt. Doar aceste date, în condiții de volatilitate ridicată, nu permit alegerea suficient de sigură a direcției pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, scădere generalizată pe piețele de risc), dar RSI de 29 indică o stare de supravânzare care poate aduce un rebound pe termen scurt. Cu o volatilitate de 72%, direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
-| gemini | HOLD | 0.60 | Deși trendul general al pieței și mediile mobile indică o direcție descendentă puternică, indicatorul RSI de 29 semnalează o condiție de supravânzare care poate genera o revenire pe termen scurt. Din cauza acestor semnale tehnice contradictorii și a volatilității ridicate, datele sunt insuficiente pentru o decizie clară pe următoarele 5 zile. |
-| grok | SELL | 0.58 | Prețul este sub SMA20, SMA50 și SMA200, iar scăderile pe 5, 20 și 60 de zile, împreună cu slăbiciunea piețelor cripto, susțin continuarea presiunii de vânzare. RSI de 29 indică supravânzare, dar nu anulează trendul descendent pe orizontul de 5 zile. |
-| deepseek | SELL | 0.60 | Prețul se tranzacționează sub mediile mobile importante și RSI suprasaturat la vânzare într-un context general negativ al pieței crypto, cu tendință descendentă pe termen scurt. Regula SMA20/50 confirmă semnalul de vânzare. |
+| gpt | HOLD | 0.78 | Scăderile pe 20–60 de zile și prețul sub mediile mobile indică o tendință negativă, dar RSI de 30 și revenirea recentă sugerează posibilitatea unui recul ascendent. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -21% pe 20 de zile, vânzări largi pe toate piețele de risc), dar RSI de 30 și stabilizarea recentă (+2.4% pe 5 zile) sugerează o posibilă supravânzare și un rebound, deci semnalele sunt contradictorii. Fără știri sau alte date, direcția pe 5 zile nu poate fi stabilită cu încredere. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen mediu și lung este puternic descendent și susținut de o scădere generalizată pe toate piețele de risc, indicatorul RSI(14) la nivelul 30 și creșterile ușoare din ultimele 5 zile sugerează o posibilă stabilizare pe termen scurt. Această divergență între presiunea macro negativă și condițiile locale de supravânzare face ca direcția pentru următoarele 5 zile să fie incertă. |
+| grok | HOLD | 0.42 | Tendința pe 20–60 de zile rămâne puternic negativă, iar prețul este sub mediile mobile, dar RSI la 30 și revenirea scurtă de 5 zile indică o posibilă stabilizare. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.50 | RSI indică supravânzare, sugerând o posibilă revenire pe termen scurt, dar tendința generală este puternic descendentă, iar media mobilă confirmă semnalul de vânzare. |
 
 ## BNB: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 547.7404 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 553.5673 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generalizată a piețelor favorizează continuarea scăderii, dar RSI de 19 indică supravânzare și posibilitatea unei reveniri pe termen scurt. Aceste date nu oferă suficiente dovezi pentru a decide direcția prețului în următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, slăbiciune generalizată pe piețele de risc), dar RSI de 19 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii nu permit o direcție clară pe 5 zile doar din aceste prețuri. |
-| gemini | HOLD | 0.65 | Deși RSI-ul extrem de scăzut (19) indică o supravânzare severă pe termen scurt, trendul puternic descendent sub toate mediile mobile și scăderile generalizate din piețele globale și cripto creează semnale contradictorii. Volatilitatea ridicată (55%) face ca direcția pentru următoarele 5 zile să fie prea incertă pentru o decizie clară de cumpărare sau vânzare. |
-| grok | HOLD | 0.42 | Tendința pe 5–60 de zile este clar descendentă și prețul stă sub mediile mobile, dar RSI(14) la 19 indică o zonă puternic supravândută, deci un rebound pe 5 zile nu poate fi exclus. Datele nu separă suficient continuarea scăderii de o revenire tehnică. |
-| deepseek | SELL | 0.70 | BNB se află într-un trend descendent accentuat, cu prețul sub mediile mobile și un RSI de 19, dar fără semnale de inversare. Corelația cu scăderile generale ale pieței crypto și regulile tehnice sugerează continuarea scăderii. |
+| gpt | HOLD | 0.80 | Prețul sub mediile mobile și scăderile ample din ultimele 20–60 de zile indică presiune descendentă, dar RSI de 21 și revenirea recentă sugerează posibilitatea unui recul ascendent. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din datele furnizate. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, regula SMA spune vinde, risk-off generalizat pe toate piețele), dar RSI de 21 indică o supravânzare puternică și ultimele zile arată o ușoară revenire, deci semnalele se contrazic. Fără știri sau alte date, direcția pe 5 zile nu poate fi stabilită cu încredere. |
+| gemini | HOLD | 0.60 | Deși RSI-ul la 21 și randamentele pozitive pe 1 și 5 zile sugerează o posibilă revenire pe termen scurt din zona de supravânzare, prețul se află mult sub mediile mobile (SMA20, SMA50, SMA200) într-un context macro și cripto profund negativ. Aceste semnale tehnice contradictorii nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.48 | Semnalele sunt contradictorii: RSI 21 indică supravânzare și ultimele 5 zile sunt ușor pozitive, dar prețul rămâne sub SMA20/50/200, iar piața cripto și activele de risc sunt în scădere puternică pe 20 de zile. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile SMA20, SMA50 și SMA200, iar tendința descendentă este confirmată de scăderile generalizate pe piețele crypto și de risc. Deși RSI de 21 indică o piață supra-vândută, nu există semnale de inversare, iar regula botului sugerează vânzare. |
 
-## XRP: **VINDE** (înclină spre vânzare)
-Preț 0.9244 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.60 | Momentum-ul negativ pe intervale multiple, prețul sub SMA20/50/200 și scăderile generalizate ale pieței susțin o probabilitate moderat mai mare de continuare a declinului în următoarele 5 zile. Totuși, RSI de 33, apropierea de minimul anual și volatilitatea ridicată lasă loc unei reveniri și limitează încrederea prognozei. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub toate mediile mobile, semnal SMA 20/50 de vânzare, scădere generalizată pe piețele de risc), dar RSI de 33 și apropierea de minimul anual sugerează o zonă de supravânzare în care un rebound pe termen scurt este la fel de plauzibil. Cu volatilitate de 70%, aceste prețuri nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.50 | Deși XRP se află într-un trend descendent puternic, tranzacționându-se semnificativ sub mediile mobile și în contextul unei vânzări generalizate pe piața cripto și de capital, nivelul RSI de 33 și apropierea de minimul anual (+6.7%) indică o stare aproape de supravânzare. Aceste semnale tehnice mixte pe termen scurt și volatilitatea ridicată fac imposibilă o predicție sigură a direcției pentru următoarele 5 zile. |
-| grok | SELL | 0.58 | XRP este sub SMA20, SMA50 și SMA200, cu randamente negative pe 1–60 de zile și semnal de vânzare SMA 20/50, într-un context de risk-off. RSI 33 și apropierea de minimul anual limitează convingerea pe 5 zile, dar datele disponibile înclină spre scădere. |
-| deepseek | SELL | 0.70 | Trendul descendent este confirmat de prețul sub mediile mobile și de regula SMA 20/50, iar RSI-ul de 33, deși aproape de supravânzare, nu oferă încă un semnal de revenire. Corelația cu scăderile ample de pe alte piețe cripto și de acțiuni sugerează continuarea presiunii de vânzare. |
-
-## TRX: **VINDE** (înclină spre vânzare)
-Preț 0.3083 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## XRP: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.9369 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.025 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.59 | Prețul sub SMA20/50/200, scăderile pe toate intervalele raportate și RSI de 37 sugerează continuarea presiunii descendente în următoarele 5 zile. Totuși, rezistența relativă față de celelalte criptomonede și apropierea de minimul anual limitează încrederea în această estimare. |
-| claude | HOLD | 0.35 | TRX este sub toate mediile mobile (SMA20/50/200), are RSI 37 și semnal de vânzare SMA 20/50, însă a scăzut doar -3.7% pe 20 de zile, mult mai puțin decât restul pieței crypto (BTC -25.7%, ETH -30.7%), și are volatilitate scăzută aproape de minimul anual. Semnalele contradictorii, slăbiciune de trend versus rezistență relativă și posibil suport, nu permit o direcție clară pe 5 zile. |
-| gemini | SELL | 0.65 | Prețul TRX se află sub toate mediile mobile majore (SMA 20, 50, 200) și înregistrează scăderi constante pe toate intervalele de timp analizate, confirmând un trend descendent. În plus, scăderile severe din întreaga piață cripto și de capital indică un sentiment general puternic negativ, ceea ce sugerează continuarea presiunii de vânzare în următoarele 5 zile. |
-| grok | HOLD | 0.42 | TRX este sub mediile mobile și în tendință ușor negativă, iar semnalul SMA 20/50 indică vânzare, dar RSI 37 și apropierea de minimul anual nu confirmă o scădere clară pe 5 zile. Față de restul criptomonedelor a rezistat mai bine, deci direcția pe termen scurt rămâne incertă. |
-| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile, RSI sub 50, iar piața crypto este puternic negativă, sugerând continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.76 | Trendul descendent și prețul sub mediile mobile sugerează presiune de vânzare, dar revenirea recentă și RSI de 35 nu exclud o continuare a recuperării. Doar aceste date, în condiții de volatilitate ridicată, nu oferă suficiente dovezi pentru direcția următoarelor 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -22% în 20 de zile, aversiune la risc pe toate piețele), dar RSI 35, revenirea ușoară din ultimele 5 zile și apropierea de minimul anual sugerează o posibilă stabilizare. Semnalele pe 5 zile sunt contradictorii și volatilitatea mare face direcția imprevizibilă doar din aceste prețuri. |
+| gemini | HOLD | 0.60 | Trendul general pe termen mediu este puternic descendent, cu prețul sub toate mediile mobile majore și o scădere amplă în piața cripto și pe burse. Totuși, stabilizarea din ultimele 5 zile (+3.0%) și un RSI apropiat de supravânzare (35) oferă semnale contradictorii pe termen scurt, făcând direcția pentru următoarele 5 zile incertă. |
+| grok | HOLD | 0.48 | Pe termen scurt XRP a revenit ușor, dar rămâne sub mediile mobile, cu RSI 35 și o scădere puternică pe 20–60 de zile, într-un context de risc general. Datele nu sunt suficiente pentru a decide direcția următoarelor 5 zile. |
+| deepseek | SELL | 0.65 | Prețul se situează sub SMA20, SMA50 și SMA200, iar RSI(14) la 35 indică o tendință descendentă, fără semnale de supravânzare. Contextul general al pieței crypto și al activelor de risc este puternic negativ, ceea ce sugerează continuarea scăderii pe termen scurt. |
 
-## DOGE: **VINDE** (înclină spre vânzare)
-Preț 0.0553 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## TRX: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.3041 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile pe toate intervalele analizate, prețul sub mediile mobile și slăbiciunea generală a pieței cripto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 24 indică supravânzare, iar volatilitatea ridicată crește riscul unei reveniri bruște, limitând încrederea în estimare. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere largă), dar RSI de 24 arată o supravânzare care face probabil un rebound pe termen scurt. Cu volatilitate foarte mare și fără știri, semnalele contradictorii nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.55 | Deși trendul general este puternic descendent, cu prețul mult sub toate mediile mobile relevante și pe fondul unei scăderi generalizate a pieței cripto, indicatorul RSI de 24 semnalează o condiție extremă de supravânzare. Această divergență între impulsul negativ pe termen mediu și potențialul unui reviriment tehnic pe termen foarte scurt face ca direcția pentru următoarele 5 zile să fie incertă. |
-| grok | SELL | 0.58 | DOGE este într-un trend descendent clar, sub mediile SMA20/50/200, iar regula SMA 20/50 indică vânzare, în contextul unei piețe cripto și de risc în scădere. RSI de 24 semnalează supravânzare, dar datele disponibile nu arată o inversare confirmată pe următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub mediile mobile, cu RSI supravândut dar fără semne de inversare. Corelația cu piața crypto generală și regula SMA 20/50 sugerează continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.76 | Prețul sub mediile mobile și scăderile pe termen mediu indică presiune descendentă, dar apropierea de minimul anual și RSI de 34 nu confirmă continuarea scăderii în următoarele 5 zile. Creșterea de 0,6% pe ultimele 5 zile și reziliența relativă față de alte criptomonede fac semnalele insuficiente pentru o direcție clară. |
+| claude | HOLD | 0.55 | TRX este sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar prețul e aproape de minimul anual, dar RSI de 34 și reziliența relativă față de piața crypto (-4.5% vs ~-20%) sugerează posibilă stabilizare. Semnalele sunt contradictorii și nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.55 | Prețul TRX se află sub toate mediile mobile majore într-o piață generală puternic descendentă, însă demonstrează reziliență relativă (+0.6% pe 5 zile) și se apropie de zona de supravânzare (RSI 34) lângă minimul anual. Din cauza semnalelor tehnice mixte între trendul negativ macro și suportul pe termen scurt, direcția pentru următoarele 5 zile este incertă. |
+| grok | HOLD | 0.42 | TRX este sub mediile mobile și aproape de minimul anual, iar regula SMA indică vânzare, dar RSI 34 și variația ușor pozitivă pe 5 zile lasă loc unui rebound. Datele nu separă clar direcția următoarelor 5 zile. |
+| deepseek | SELL | 0.70 | Prețul se află sub mediile mobile, RSI indică slăbiciune, iar contextul pieței este puternic negativ pentru criptomonede, sugerând o continuare a scăderii pe termen scurt. |
+
+## DOGE: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.0561 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.80 | Tendința descendentă și slăbiciunea generală a piețelor favorizează scăderea, dar RSI de 26 și revenirea recentă indică posibilitatea unui recul ascendent. Doar aceste date, în condiții de volatilitate ridicată, nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (preț mult sub SMA20/50/200, -42% pe 60 de zile, regula botului spune vinde, iar riscul este general pe toate piețele), dar RSI de 26 indică supravânzare și ultimele 5 zile arată o ușoară revenire, deci semnalele pe 5 zile sunt contradictorii. Fără știri și cu volatilitate foarte mare, datele nu permit o direcție clară pe termen scurt. |
+| gemini | HOLD | 0.65 | Deși RSI-ul de 26 și creșterea ușoară din ultimele 5 zile (+3.1%) sugerează o posibilă revenire pe termen scurt din zona de supravânzare, trendul general rămâne puternic descendent, cu prețul mult sub mediile mobile și o scădere severă pe întreaga piață crypto și de acțiuni. Din cauza semnalelor tehnice contradictorii și a volatilității ridicate (68%), direcția pentru următoarele 5 zile este prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.42 | Semnalele sunt mixte: RSI 26 indică supravânzare și ultimele 5 zile sunt ușor pozitive, dar prețul rămâne sub SMA20/50/200, regula SMA spune vinde, iar piața cripto este slabă. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub mediile mobile, iar contextul pieței este negativ pentru activele de risc, deși RSI-ul supravândut ar putea genera un rebound temporar. |
 
 ## ADA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.1446 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 0.1459 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe mai multe intervale, prețul sub mediile mobile și slăbiciunea generalizată a pieței cripto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 27 indică supravânzare, iar volatilitatea ridicată permite o revenire tehnică, limitând încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț mult sub SMA20/50/200, semnal de vânzare SMA 20/50, slăbiciune generalizată în cripto și active de risc), dar RSI 27 indică supravânzare și posibil rebound pe termen scurt. Semnalele contradictorii și volatilitatea mare nu permit o direcție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul ADA se află într-un trend puternic descendent sub toate mediile mobile, în linie cu scăderile masive de pe întreaga piață cripto și de capital. Totuși, indicatorul RSI de 27 semnalează o zonă de supravânzare, ceea ce face incertă direcția pentru următoarele 5 zile între o continuare a scăderii și un reviriment tehnic pe termen scurt. |
-| grok | HOLD | 0.42 | Tendința rămâne clar descendentă, cu prețul sub mediile mobile și semnal SMA 20/50 de vânzare, dar RSI 27 indică supravânzare. Pentru următoarele 5 zile, datele nu separă suficient continuarea scăderii de un posibil rebound. |
-| deepseek | SELL | 0.70 | Prețul ADA se află într-un trend descendent puternic, sub mediile mobile principale, iar RSI de 27 indică o piață supravândută, dar fără semnale de inversare. Corelația cu scăderile generale ale criptomonedelor și activelor de risc sugerează continuarea presiunii de vânzare pe termen scurt. |
+| gpt | HOLD | 0.76 | Tendința este descendentă, cu prețul sub mediile mobile și scăderi ample pe piața cripto, dar RSI de 27 și revenirea recentă indică posibilitatea unui recul ascendent pe termen scurt. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -42.6% în 60 de zile, scădere generalizată pe piețele de risc), dar RSI de 27 indică supravânzare, iar ultimele 5 zile arată o ușoară stabilizare (+2.0%), deci semnalele pe 5 zile sunt contradictorii. Fără știri sau alte date, direcția pe termen scurt nu poate fi stabilită cu încredere. |
+| gemini | HOLD | 0.60 | Deși RSI-ul la 27 și avansul ușor din ultimele 5 zile (+2.0%) indică o stare de supravânzare cu potențial de revenire tehnică, trendul pe termen mediu și lung rămâne puternic descendent, prețul fiind mult sub mediile mobile și într-un context macro și cripto extrem de negativ. Din cauza acestor semnale contradictorii pe un orizont de 5 zile, dovezile sunt insuficiente pentru o direcție clară. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: RSI 27 și revenirea scurtă de 1–5 zile sugerează un posibil rebound, dar prețul rămâne mult sub mediile mobile, regula SMA 20/50 indică vânzare, iar piața largă este în risk-off. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, într-un trend descendent accentuat, iar contextul general al pieței crypto este puternic negativ, în ciuda RSI-ului supravândut care ar putea genera doar o revenire temporară. |
 
 ## LINK: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 8.8520 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 9.0560 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.030 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.59 | Scăderile pe 20 și 60 de zile, prețul sub SMA20/50/200 și slăbiciunea generală a pieței sugerează continuarea presiunii descendente în următoarele 5 zile. Totuși, RSI de 30 și volatilitatea ridicată indică posibilitatea unei reveniri pe termen scurt, limitând încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub toate mediile mobile, -22.7% pe 20 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc scad în bloc), dar RSI de 30 sugerează o zonă de supravânzare în care un rebound pe termen scurt este plauzibil. Semnalele contradictorii și volatilitatea de 69% nu permit o predicție fiabilă pe 5 zile doar din aceste date. |
-| gemini | HOLD | 0.60 | Deși trendul general este puternic descendent, iar prețul se află sub mediile mobile importante în contextul unei piețe cripto în scădere severă, valoarea RSI de 30 indică o stare de supravânzare. Această divergență între impulsul negativ pe termen mediu și posibilitatea unui reviriment tehnic pe termen scurt face ca direcția pentru următoarele 5 zile să fie incertă. |
-| grok | HOLD | 0.42 | LINK este sub mediile mobile și în tendință descendentă, aliniat cu scăderile largi din crypto, dar RSI(14) la 30 indică o zonă supravândută. Din aceste date nu se poate decide clar direcția pe următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se situează sub SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare, semnalând o tendință descendentă puternică. Corelația cu scăderile ample ale altor criptomonede și active financiare sugerează continuarea presiunii de vânzare pe termen scurt. |
+| gpt | HOLD | 0.78 | Tendința descendentă și prețul sub mediile mobile indică presiune de vânzare, dar revenirea de 6% în ultimele 5 zile și RSI de 35 oferă semnale mixte. Volatilitatea ridicată și lipsa altor informații nu permit o estimare suficient de solidă a direcției pentru următoarele 5 zile. |
+| claude | HOLD | 0.35 | Trendul rămâne clar descendent (preț sub SMA20/50/200, -36% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere generalizată), dar RSI de 35 și revenirea de +6% pe 5 zile sugerează o posibilă stabilizare pe termen scurt. Semnalele sunt contradictorii pentru un orizont de 5 zile, iar datele nu permit o direcție clară. |
+| gemini | HOLD | 0.65 | Deși LINK prezintă o revenire pe termen scurt (+6.0% pe 5 zile) și un RSI(14) de 35 aproape de zona de supravânzare, trendul mediu rămâne negativ cu prețul situat sub mediile mobile SMA20, SMA50 și SMA200. În plus, scăderile generalizate din piața cripto și de capital pe ultimele 20 de zile creează semnale contradictorii și o incertitudine prea mare pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | LINK este sub mediile SMA20/50/200, iar regula SMA 20/50 indică vânzare, dar ultimele 5 zile arată un rebound de +6% cu RSI 35, fără semnal clar. Volatilitatea ridicată și scăderile generale ale pieței cripto fac direcția pe 5 zile imposibil de decis doar din aceste date. |
+| deepseek | SELL | 0.55 | Prețul se situează sub mediile mobile SMA20 și SMA50, iar regula botului pe baza acestora indică vânzare. RSI-ul de 35 și scăderile recente pe piețele crypto și tradiționale sugerează continuarea presiunii negative. |
 
-## AVAX: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 6.5770 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe 5–60 de zile, prețul sub SMA20/50/200 și slăbiciunea generală a pieței crypto favorizează continuarea declinului în următoarele 5 zile de tranzacționare. Totuși, RSI de 23 indică supravânzare și posibilitatea unui rebound, iar volatilitatea ridicată limitează încrederea în prognoză. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub toate mediile mobile, semnal de vânzare SMA 20/50, scădere generalizată pe piețele de risc), dar RSI de 23 indică o stare de supravânzare care face probabil un rebound pe termen scurt. Cu volatilitate de 92%, semnalele contradictorii nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI(14) la 23 indică o condiție puternică de supravânzare pe termen scurt, trendul general al AVAX și al întregii piețe este puternic descendent, cu prețul mult sub mediile mobile și o volatilitate ridicată de 92%. Din cauza conflictului dintre riscul unui nou declin sistemic și probabilitatea unui ricoșeu tehnic, direcția pe următoarele 5 zile este prea incertă. |
-| grok | HOLD | 0.42 | AVAX este într-un trend descendent clar, sub mediile mobile, iar regula SMA 20/50 indică vânzare, dar RSI 23 arată supravânzare și poate permite un rebound. Datele nu permit o direcție sigură pe următoarele 5 zile. |
-| deepseek | SELL | 0.60 | Prețul AVAX se află sub mediile mobile principale, iar regula SMA20/50 indică vânzare, reflectând un trend descendent puternic. Deși RSI este supravândut, contextul pieței crypto rămâne negativ, sugerând continuarea scăderii pe termen scurt. |
-
-## XLM: **VINDE** (înclină spre vânzare)
-Preț 0.1243 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## AVAX: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 6.6320 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Tendința descendentă pe toate intervalele raportate, prețul sub mediile mobile și slăbiciunea generală a pieței crypto favorizează continuarea scăderii în următoarele 5 zile. Totuși, RSI de 32 și apropierea de minimul anual permit un rebound, iar volatilitatea ridicată limitează încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -26% pe 20 de zile, semnal SMA de vânzare, slăbiciune generalizată pe piețe), dar RSI de 32 și prețul aflat la doar 3.8% peste minimul anual sugerează o zonă de supravânzare unde un rebound pe termen scurt este la fel de plauzibil. Pe un orizont de 5 zile și cu volatilitate de 65%, datele nu oferă un avantaj clar în nicio direcție. |
-| gemini | HOLD | 0.60 | Deși XLM se află într-un trend descendent puternic și sub toate mediile mobile pe fondul unor scăderi generalizate în piață, indicatorul RSI la 32 și apropierea de minimul anual (+3.8%) sugerează că activul se apropie de zona de supravânzare. Din cauza acestui conflict între impulsul negativ și posibilitatea unui ricoșeu tehnic pe termen scurt, datele sunt insuficiente pentru o decizie clară pe 5 zile. |
-| grok | SELL | 0.62 | XLM este într-un trend descendent clar, sub toate mediile mobile, aproape de minimul anual, iar regula SMA 20/50 indică vânzare, în contextul slăbiciunii generale a criptomonedelor. RSI la 32 sugerează o posibilă revenire pe termen scurt, dar datele disponibile nu o confirmă pentru următoarele 5 zile. |
-| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, cu RSI aproape de supravânzare dar încă negativ, iar contextul general al pieței crypto și al activelor de risc este puternic negativ. |
+| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, însă RSI de 22 și creșterile recente pot indica un recul ascendent temporar. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, -18.9% pe 20 de zile, regula SMA spune vinde, piețe de risc în scădere generalizată), dar RSI de 22 indică supravânzare extremă și ultimele 5 zile arată stabilizare, deci semnalele pentru următoarele 5 zile sunt contradictorii. Cu o volatilitate de 89%, datele de preț nu permit o direcție fiabilă. |
+| gemini | HOLD | 0.60 | Deși RSI-ul de 22 și stabilizarea din ultimele 5 zile (+1.7%) sugerează o posibilă revenire tehnică din zona de supravânzare, trendul pe termen mediu rămâne puternic negativ, prețul fiind mult sub mediile mobile și întreaga piață aflându-se în declin. Din cauza acestor semnale contradictorii și a volatilității ridicate de 89%, datele sunt insuficiente pentru o direcție clară pe 5 zile. |
+| grok | HOLD | 0.42 | AVAX este sub mediile mobile și într-un trend descendent, dar RSI 22 indică supravânzare, iar ultimele 1–5 zile sunt ușor pozitive. Semnalele pe 5 zile sunt contradictorii, deci direcția nu poate fi decisă din aceste date. |
+| deepseek | BUY | 0.65 | Indicatorul RSI se află la 22, semnalând un nivel extrem de supravânzare, ceea ce poate duce la o revenire pe termen scurt. Deși trendul pe termen lung este negativ, probabilitatea unei corecții pozitive în următoarele 5 zile este ridicată. |
 
-## SUI: **VINDE** (înclină spre vânzare)
-Preț 0.6485 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile pe intervale multiple, prețul sub mediile mobile și slăbiciunea generalizată a pieței înclină estimarea spre continuarea declinului în următoarele 5 zile. Totuși, RSI de 24 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire temporară și limitează încrederea prognozei. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, slăbiciune generalizată pe piețele de risc), dar RSI de 24 indică o supravânzare care poate provoca un rebound pe termen scurt. Cu o volatilitate de 87%, direcția pe 5 zile nu poate fi decisă fiabil din aceste date. |
-| gemini | HOLD | 0.60 | Deși trendul general este puternic descendent, cu prețul sub toate mediile mobile importante și scăderi masive pe întreaga piață, valoarea RSI de 24 indică o stare severă de supravânzare. Această divergență între impulsul negativ și riscul unui reviriment tehnic pe termen scurt face imposibilă o predicție clară pentru următoarele 5 zile. |
-| grok | SELL | 0.58 | SUI este într-un trend descendent clar, sub mediile SMA20/50/200, cu scăderi pe 5, 20 și 60 de zile și semnal de vânzare al regulii SMA. RSI de 24 indică supravânzare, dar volatilitatea ridicată și slăbiciunea piețelor cripto nu susțin o revenire în următoarele 5 zile. |
-| deepseek | SELL | 0.55 | Tendința descendentă este puternică, prețul se situează sub mediile mobile majore, iar regula botului indică vânzare; deși RSI este supra-vândut, nu există semnale de inversare pe termen scurt. |
-
-## SHIB: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## XLM: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.1281 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința este puternic descendentă, cu prețul sub toate mediile mobile și scăderi ample pe piața cripto, dar RSI de 18 indică supravânzare și posibilitatea unui rebound. Aceste semnale nu oferă suficiente dovezi pentru a decide direcția următoarelor 5 zile, mai ales în condițiile volatilității ridicate. |
-| claude | HOLD | 0.40 | Trendul este clar descendent (sub toate mediile mobile, -25% pe 20 de zile, slăbiciune generalizată în cripto), dar RSI 18 indică o supravânzare extremă, iar prețul aproape de minimul anual face probabil un rebound pe termen scurt. Semnalele opuse și volatilitatea foarte mare nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI(14) la 18 indică o supravânzare extremă și prețul este aproape de minimul anual (+5%), trendul descendent puternic (sub toate mediile mobile) și scăderile masive pe întreaga piață cripto și de acțiuni fac o inversare pe 5 zile foarte incertă. Prin urmare, semnalele contradictorii dintre supravânzarea tehnică și impulsul negativ al pieței justifică o poziție neutră (HOLD). |
-| grok | HOLD | 0.46 | Tendința pe mai multe orizonturi este clar descendentă și prețul stă sub mediile mobile, dar RSI 18 și apropierea de minimul anual indică o zonă supravândută. Fără știri sau alte date, direcția pe următoarele 5 zile nu poate fi decisă. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar corelația cu prăbușirea generală a pieței crypto indică continuarea scăderii. RSI-ul supravândut (18) poate persista în condiții de panică, fără semnale de inversare. |
+| gpt | HOLD | 0.76 | Tendința descendentă și prețul sub mediile mobile sugerează presiune de vânzare, dar revenirea zilnică și RSI de 33 lasă deschisă posibilitatea unui rebound. Volatilitatea ridicată și lipsa altor informații nu permit o estimare suficient de sigură a direcției în următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub toate mediile mobile, semnal SMA 20/50 de vânzare, scădere generalizată pe piețele de risc), dar RSI 33, apropierea de minimul anual și stabilizarea pe 5 zile sugerează un posibil rebound pe termen scurt. Semnalele contradictorii nu permit o direcție clară pentru următoarele 5 zile. |
+| gemini | HOLD | 0.60 | Deși XLM se află într-un trend descendent clar sub mediile mobile și în contextul unei scăderi generale a piețelor, prețul s-a stabilizat în ultimele 5 zile (+0.4%) aproape de minimul anual, iar RSI(14) la 33 indică o apropiere de zona de supravânzare. Acești factori contradictorii pe termen scurt fac direcția pentru următoarele 5 zile incertă doar pe baza datelor de preț disponibile. |
+| grok | SELL | 0.58 | XLM rămâne sub SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare, în timp ce scăderile pe 20 și 60 de zile se aliniază cu un context risk-off al criptomonedelor. RSI la 33 și revenirea scurtă de o zi nu oferă un semnal suficient de inversare pentru următoarele 5 zile. |
+| deepseek | SELL | 0.55 | Prețul se situează sub mediile mobile principale (SMA20, SMA50, SMA200), iar regula botului pe baza SMA20/50 indică vânzare. Deși RSI(14) de 33 este aproape de supravânzare, tendința descendentă pe termen mediu și contextul general negativ al pieței crypto sugerează continuarea scăderii în următoarele 5 zile. |
+
+## SUI: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.6675 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.80 | Prețul sub mediile mobile și scăderile ample ale pieței indică presiune descendentă, însă RSI de 28 și revenirea recentă sugerează posibilitatea unui recul ascendent. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -20.7% pe 20 de zile, semnal de vânzare SMA 20/50) într-o piață largă de risk-off, dar RSI 28 indică supravânzare și un posibil rebound pe termen scurt. Semnalele contradictorii și volatilitatea de ~80% fac imprevizibilă direcția pe 5 zile. |
+| gemini | HOLD | 0.55 | Deși trendul pe termen mediu este puternic descendent, cu prețul sub mediile mobile și o scădere amplă în toate piețele, indicatorul RSI la 28 și câștigurile ușoare din ultimele 5 zile sugerează o stare de supravânzare și o posibilă stabilizare pe termen scurt. Această divergență între tendința negativă generală și semnalele de revenire tehnică pe termen foarte scurt face ca direcția pentru următoarele 5 zile să fie incertă. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: revenirea scurtă și RSI-ul 28 sugerează o posibilă revenire, dar prețul rămâne sub mediile mobile, iar regula SMA 20/50 indică vânzare într-un context de risc general. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | RSI indică supravânzare, sugerând o posibilă revenire pe termen scurt, dar tendința generală descendentă și contextul negativ al pieței cripto fac incertă direcția următoarelor 5 zile. |
+
+## SHIB: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.0000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.78 | Tendința descendentă și prețul sub mediile mobile indică presiune de vânzare, dar RSI de 23 și revenirea recentă pot semnala un recul ascendent temporar. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, -20% pe 20 de zile, regula SMA 20/50 indică vânzare, iar piața cripto și activele de risc scad în bloc), însă RSI de 23 indică supravânzare și o posibilă revenire pe termen scurt. Semnalele sunt contradictorii, iar pentru un memecoin pe 5 zile datele nu permit o direcție fiabilă. |
+| gemini | HOLD | 0.55 | Deși RSI-ul de 23 și stabilizarea pe ultimele 5 zile (+0.6%) indică o zonă de supravânzare cu potențial de revenire pe termen scurt, prețul se află mult sub mediile mobile principale într-un context macro și cripto profund negativ. Aceste semnale tehnice contradictorii fac direcția pentru următoarele 5 zile prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.42 | SHIB este sub mediile mobile, în trend descendent pe 20–120 de zile, iar regula SMA indică vânzare, dar RSI 23 sugerează supravânzare și ultimele 1–5 zile sunt ușor pozitive. Semnalele sunt contradictorii pentru următoarele 5 zile, deci direcția nu poate fi decisă din aceste date. |
+| deepseek | HOLD | 0.30 | RSI indică supravânzare (23), ceea ce ar putea duce la o revenire pe termen scurt, dar tendința generală este puternic descendentă, iar contextul pieței este negativ, făcând dificilă o predicție clară. |
 
 ## BCH: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 197.7000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.025 $.
+Preț 205.8000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile persistente, prețul sub mediile mobile și slăbiciunea generalizată a pieței cripto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 27 indică supravânzare și posibilitatea unei reveniri tehnice, ceea ce limitează încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -29.8% pe 20 de zile, semnal de vânzare SMA 20/50, slăbiciune generalizată pe piețele de risc), dar RSI 27 indică supravânzare și posibil rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul BCH se află într-un trend descendent pronunțat, fiind semnificativ sub mediile mobile de 20, 50 și 200 de zile, pe fondul unor scăderi generale pe piața cripto și a activelor de risc. Totuși, nivelul RSI de 27 indică o zonă de supravânzare care poate genera un ricoșeu pe termen scurt, făcând direcția pentru următoarele 5 zile incertă. |
-| grok | HOLD | 0.48 | Tendința pe 20–60 de zile este puternic descendentă și prețul stă sub mediile mobile, dar RSI(14) la 27 indică supravânzare, deci semnalele pentru următoarele 5 zile se contrazic. Fără alte date nu se poate decide dacă urmează o continuare a scăderii sau un rebound scurt. |
-| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub mediile mobile, iar contextul general al pieței crypto este puternic negativ, ceea ce sugerează continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.76 | Tendința pe termen mediu este descendentă, cu prețul sub mediile mobile și slăbiciune generalizată în piața cripto, dar creșterile recente indică o posibilă revenire pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit alegerea unei direcții suficient de bine susținute pentru următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul rămâne clar descendent (preț sub SMA50/SMA200, -24% pe 20 de zile, slăbiciune generală pe piețe), dar RSI 35 și revenirea recentă de +5.6% pe 5 zile sugerează o posibilă corecție tehnică, așa că semnalele pe 5 zile sunt contradictorii. Cu o volatilitate de 64%, datele nu permit o direcție clară. |
+| gemini | HOLD | 0.65 | Deși BCH a înregistrat o revenire pe termen foarte scurt (+5.6% în 5 zile) și are un RSI aproape de supravânzare (35), trendul general rămâne puternic negativ, cu prețul sub toate mediile mobile majore. Scăderile semnificative pe 20 de zile din întreaga piață cripto și de acțiuni indică un mediu de aversiune la risc, oferind semnale contradictorii care fac direcția pe următoarele 5 zile incertă. |
+| grok | HOLD | 0.46 | Pe 5 zile BCH a urcat, dar rămâne sub mediile mobile, cu RSI 35 și o tendință de 20–60 de zile puternic negativă, iar regula SMA 20/50 indică vânzare. Piețele corelate sunt și ele în scădere, deci datele nu susțin o direcție clară pentru următoarele 5 zile. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, iar RSI-ul de 35 indică o tendință descendentă, în timp ce piața crypto mai largă este în scădere. Regula SMA 20/50 confirmă semnalul de vânzare. |
 
-## LTC: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 40.8800 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe mai multe intervale, prețul sub mediile mobile și declinul generalizat al criptomonedelor înclină perspectiva următoarelor 5 zile spre continuarea scăderii. Totuși, RSI de 21 indică supravânzare, iar volatilitatea ridicată permite o revenire tehnică, limitând încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub toate mediile mobile, scădere de 27% în 20 de zile, regula SMA 20/50 indică vânzare, iar piața crypto este slabă în ansamblu), dar RSI de 21 arată o stare de supravânzare care face posibil un rebound pe termen scurt. Semnalele sunt contradictorii pe un orizont de 5 zile, iar volatilitatea este mare, așa că datele nu permit o decizie clară. |
-| gemini | HOLD | 0.60 | Deși LTC este puternic supravândut cu un RSI de 21, ceea ce ar putea sugera un reviriment pe termen scurt, trendul general al pieței cripto și al activelor de risc este sever descendent, cu prețul mult sub toate mediile mobile importante. Această contradicție între condițiile extreme de supravânzare și momentul negativ puternic face direcția pe următoarele 5 zile incertă. |
-| grok | HOLD | 0.42 | Tendința rămâne descendentă, cu prețul sub mediile mobile și semnal SMA 20/50 de vânzare, dar RSI la 21 arată supravânzare extremă. Pentru următoarele 5 zile, datele nu separă clar continuarea scăderii de un posibil rebound. |
-| deepseek | SELL | 0.60 | Prețul se află într-un trend descendent puternic, sub mediile mobile, iar RSI-ul de 21 indică o piață supra-vândută, dar într-un context general negativ pentru criptomonede. Deși este posibilă o revenire pe termen scurt, probabilitatea ca scăderea să continue în următoarele 5 zile este mai mare. |
-
-## DOT: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.6530 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
+## LTC: **NU TRANZACȚIONA** (fără înclinație)
+Preț 42.7900 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.62 | Scăderile persistente, prețul sub toate mediile mobile și slăbiciunea generală a pieței cripto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 20 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire temporară și limitează încrederea în prognoză. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (preț mult sub SMA20/50/200, -31.6% în 20 de zile, slăbiciune generalizată pe piețele de risc), dar RSI de 20 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea de ~76% nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși trendul general este puternic descendent, cu prețul mult sub mediile mobile și scăderi masive pe întreaga piață, valoarea RSI de 20 indică o stare severă de supravânzare aproape de minimul anual. Această divergență între presiunea de vânzare și probabilitatea unui rimbalzo tehnic pe termen scurt face ca direcția pentru următoarele 5 zile să fie incertă. |
-| grok | HOLD | 0.42 | Tendința pe 5–60 de zile este clar descendentă, iar prețul stă mult sub mediile mobile, dar RSI 20 și apropierea de minimul anual fac posibil un rebound scurt. Datele nu separă suficient continuarea scăderii de o revenire tehnică în următoarele 5 zile. |
-| deepseek | HOLD | 0.40 | Prețul DOT se află într-un trend descendent accentuat, reflectat de mediile mobile și de scăderile semnificative pe termen scurt, însă RSI-ul de 20 indică o stare de supravânzare extremă care ar putea genera o revenire temporară, făcând direcția pe 5 zile incertă. |
+| gpt | HOLD | 0.78 | Tendința predominantă este descendentă, cu prețul sub mediile mobile și scăderi ample pe 20–60 de zile, dar revenirea recentă și RSI de 30 oferă semnale contradictorii pentru următoarele 5 zile. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de clare. |
+| claude | HOLD | 0.35 | Trendul rămâne clar descendent (preț sub SMA20/50/200, -41% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc scad în bloc), dar RSI de 30 și revenirea recentă de +4.7% sugerează condiții de supravânzare și un posibil rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen mediu și lung este puternic descendent, cu prețul sub mediile mobile și o piață largă în scădere, revenirea recentă pe 1 și 5 zile (+4.7%, +5.3%) alături de un RSI la limita supravânzării (30) oferă semnale contradictorii. Prin urmare, datele sunt insuficiente pentru a stabili cu claritate direcția prețului pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: revenirea pe 1 și 5 zile și RSI la 30 sugerează un posibil rebound, dar prețul rămâne sub mediile mobile, iar piața largă este în risk-off. Nu pot decide direcția pe următoarele 5 zile doar din aceste date. |
+| deepseek | HOLD | 0.50 | Prețul a scăzut semnificativ, iar tendința descendentă este confirmată de mediile mobile și regula botului. Cu toate acestea, RSI-ul la 30 și rebound-ul recent pe 1 și 5 zile introduc incertitudine privind direcția următoarelor 5 zile. |
 
-## HBAR: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0504 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.025 $.
+## DOT: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.6600 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Tendința puternic descendentă, prețul sub toate mediile mobile și scăderile generalizate din piața cripto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 20 și apropierea de minimul anual cresc riscul unei reveniri tehnice, limitând încrederea în prognoză. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -30.7% în 20 de zile, slăbiciune generalizată pe piețele de risc), dar RSI de 20 și prețul aproape de minimul anual sugerează o supravânzare care poate produce un rebound pe termen scurt. Semnalele contradictorii nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Prețul se află într-un trend descendent sever pe toate mediile mobile, în contextul unei scăderi generalizate pe piețele cripto și de acțiuni. Totuși, nivelul extrem de supravândut (RSI de 20) și proximitatea față de minimul anual creează semnale contradictorii pe termen scurt, făcând direcția pe următoarele 5 zile incertă. |
-| grok | HOLD | 0.46 | Tendința pe 20–60 de zile rămâne puternic negativă, iar prețul este mult sub mediile mobile, dar RSI(14) la 20 indică supravânzare extremă. Datele nu permit să decid dacă în următoarele 5 zile continuă scăderea sau apare un rebound. |
-| deepseek | SELL | 0.70 | Trendul descendent este puternic, prețul fiind sub toate mediile mobile, iar RSI-ul de 20 nu garantează o revenire imediată. Corelația cu scăderile altor criptomonede și regula botului sugerează continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.74 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 22 indică supravânzare și posibilitatea unui recul ascendent. Datele oferite nu permit alegerea suficient de sigură a unei direcții pentru următoarele 5 zile, mai ales la volatilitatea ridicată observată. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -27% pe 20 de zile, slăbiciune generalizată pe piețe), dar RSI 22 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele sunt contradictorii, deci direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
+| gemini | HOLD | 0.60 | Deși RSI(14) la 22 și stabilizarea recentă pe 5 zile (-0.5%) sugerează condiții de supravânzare, trendul general al DOT și al pieței globale rămâne puternic descendent, cu prețul mult sub mediile mobile. Această divergență între semnalele de revenire pe termen scurt și presiunea de vânzare macro face ca direcția pentru următoarele 5 zile să fie incertă. |
+| grok | HOLD | 0.46 | Tendința rămâne negativă, prețul fiind mult sub mediile mobile, dar RSI 22 indică supravânzare și datele nu arată clar direcția pe 5 zile. Semnalele sunt contradictorii, deci nu se poate decide cumpărarea sau vânzarea. |
+| deepseek | HOLD | 0.30 | RSI de 22 indică o stare de supravânzare, ceea ce ar putea duce la o revenire pe termen scurt, dar tendința generală este puternic descendentă, cu prețul sub toate mediile mobile. Datele sunt contradictorii, astfel încât nu pot decide direcția clară pentru următoarele 5 zile. |
+
+## HBAR: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 0.0522 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.80 | Tendința descendentă și scăderile ample din piața cripto favorizează continuarea slăbiciunii, dar RSI de 25 și revenirea recentă indică posibilitatea unui recul ascendent pe termen scurt. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (preț mult sub SMA20/50/200, regula SMA spune vinde, piețele de risc în scădere generalizată), dar RSI 25 indică supravânzare și o posibilă revenire pe termen scurt. Semnalele contradictorii nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși RSI-ul de 25 și creșterea ușoară din ultimele 5 zile indică o posibilă revenire din supravânzare, trendul general rămâne puternic descendent sub toate mediile mobile majore, într-un context macro și cripto profund negativ. Aceste semnale contradictorii pe termen scurt nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Tendința rămâne puternic descendentă, cu prețul sub mediile mobile și scăderi mari pe 20–60 de zile, dar RSI 25 și revenirea recentă pe 1–5 zile indică o posibilă corecție. Semnalele sunt contradictorii pentru următoarele 5 zile, deci direcția nu poate fi decisă din aceste date. |
+| deepseek | BUY | 0.40 | RSI de 25 indică o stare de supravânzare, iar creșterea pe 1 zi (+3.6%) sugerează un posibil rebound pe termen scurt, deși tendința generală rămâne negativă. |
 
 ## UNI: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 4.7220 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 4.7490 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe 5–60 de zile, prețul sub mediile mobile și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 24 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire și limitează încrederea în estimare. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -38% pe 20 de zile, semnal de vânzare SMA 20/50, slăbiciune generală pe piețe), dar RSI de 24 indică o supravânzare care poate aduce un rebound pe termen scurt. Cu o volatilitate de peste 100% semnalele contradictorii nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.40 | Deși RSI(14) la 24 indică o stare de supravânzare severă, trendul descendent puternic și scăderile generalizate din întreaga piață oferă semnale contradictorii. Având în vedere volatilitatea extremă de 114%, datele sunt insuficiente pentru a prezice o direcție clară pe 5 zile. |
-| grok | HOLD | 0.42 | UNI este sub mediile mobile și în scădere pe 1–60 de zile, dar RSI(14) de 24 arată supravânzare, deci semnalele se contrazic. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
-| deepseek | HOLD | 0.30 | RSI extrem de scăzut (24) sugerează o posibilă revenire pe termen scurt, dar tendința puternic descendentă și contextul general negativ al pieței cripto fac direcția incertă. |
+| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează scăderea, dar RSI de 27 și revenirea de 6,1% în ultimele 5 zile sugerează posibilitatea unui recul ascendent. Semnalele contradictorii și volatilitatea ridicată nu permit o concluzie suficient de solidă pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -30% pe 20 de zile, piețe de risc în scădere largă), dar RSI de 27 indică supravânzare și ultimele 5 zile arată un mic rebound, deci semnalele sunt contradictorii. Cu o volatilitate de peste 100%, direcția pe 5 zile nu poate fi stabilită cu încredere doar din aceste prețuri. |
+| gemini | HOLD | 0.65 | Deși RSI-ul de 27 indică o zonă de supravânzare și prețul a avut o ușoară revenire de +6.1% în ultimele 5 zile, trendul general rămâne puternic descendent sub toate mediile mobile majore, într-un context macro și cripto profund negativ. Aceste semnale tehnice contradictorii și volatilitatea extremă nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | UNI este sub mediile mobile, cu RSI 27 și o scădere de 30% pe 20 de zile, dar a recuperat 6,1% în ultimele 5 zile într-o piață riscantă în scădere. Semnalele pe termen scurt sunt contradictorii, iar volatilitatea foarte ridicată nu permite o direcție clară pentru următoarele 5 zile. |
+| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile principale, iar regula SMA 20/50 indică vânzare; deși RSI este supravândut, tendința generală descendentă și corelația cu piața crypto slabă sugerează continuarea scăderii pe termen scurt. |
 
-## PEPE: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.80 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 5 indică o supravânzare extremă și posibilitatea unui recul ascendent. Volatilitatea ridicată și datele limitate nu permit stabilirea unei direcții suficient de credibile pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.30 | Trendul este clar descendent (preț sub SMA20/SMA50, -30% pe 20 de zile, slăbiciune generală pe cripto și piețe de risc), dar RSI de 5 indică o supravânzare extremă care face probabil un rebound pe termen scurt, așa că semnalele se contrazic. La o volatilitate de ~100% și fără știri, direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
-| gemini | HOLD | 0.60 | Deși RSI(14) la 5 indică o supravânzare extremă și prețul se află aproape de suportul SMA200, întreaga piață cripto și activele de risc sunt într-o scădere puternică pe ultimele 20 de zile, iar mediile mobile pe termen scurt sunt profund negative. Aceste semnale contradictorii și volatilitatea anualizată de peste 100% fac direcția pe următoarele 5 zile prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.42 | Semnalele sunt contradictorii: tendința pe 5–60 de zile și poziția sub mediile mobile sunt negative, iar RSI(14) la 5 indică o supravânzare extremă care poate produce un rebound scurt. În lipsa altor date, direcția pe următoarele 5 zile nu poate fi decisă. |
-| deepseek | SELL | 0.60 | Tendința descendentă este confirmată de prețul sub SMA20 și SMA50, iar contextul pieței cu scăderi generalizate întărește perspectiva negativă. Deși RSI indică o stare de supravânzare extremă, impulsul rămâne negativ pe termen scurt. |
-
-## AAVE: **VINDE** (înclină spre vânzare)
-Preț 94.0700 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.030 $.
+## PEPE: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.0000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile de 10,2% în 5 zile și 28,6% în 20 de zile, prețul sub toate mediile mobile și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile de tranzacționare. Totuși, RSI de 24 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire temporară și limitează încrederea în estimare. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, regula SMA 20/50 spune vinde, piața crypto largă în scădere puternică), dar RSI de 24 indică o stare de supravânzare care face probabil un rebound pe termen scurt. Cu volatilitate de ~82%, semnalele contradictorii nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși trendul general al pieței și mediile mobile indică o scădere puternică, nivelul RSI de 24 arată că activul este supravândut, crescând riscul unui ricoșeu tehnic pe termen scurt. Din cauza acestor semnale contradictorii și a volatilității ridicate, datele sunt insuficiente pentru o decizie clară pe 5 zile. |
-| grok | SELL | 0.56 | AAVE este sub mediile SMA20/50/200, cu scăderi pe 5–60 de zile și semnal SMA 20/50 de vânzare, în linie cu corecția cripto. RSI 24 indică supravânzare, deci un rebound pe 5 zile rămâne posibil, dar impulsul dominant este încă descendent. |
-| deepseek | SELL | 0.65 | AAVE se află într-un trend descendent accentuat, cu prețul sub toate mediile mobile și RSI în zona supravândută (24), ceea ce sugerează continuarea scăderii pe termen scurt. Contextul general al pieței crypto și al activelor de risc este puternic negativ, cu scăderi generalizate, ceea ce întărește perspectiva bearish. |
+| gpt | HOLD | 0.78 | Scăderea pe 20 de zile și poziționarea sub mediile mobile indică presiune descendentă, dar RSI de 11 sugerează supravânzare și posibilitatea unui recul ascendent. Volatilitatea foarte ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.30 | Trendul pe termen scurt este clar negativ (-27% pe 20 de zile, sub SMA20/SMA50, semnal de vânzare SMA, slăbiciune generală pe piețele de risc), dar RSI de 11 indică o supravânzare extremă care face probabil un rebound, iar ultimele 5 zile arată deja stabilizare. Semnalele contradictorii și volatilitatea de ~100% nu permit o direcție fiabilă pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși RSI(14) la 11 și stabilizarea pe ultimele 5 zile lângă SMA200 sugerează o supravânzare extremă și o posibilă revenire tehnică, trendul general al pieței cripto și de acțiuni este puternic descendent. Având în vedere semnalele contradictorii și volatilitatea anualizată de peste 100%, direcția pe următoarele 5 zile este prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.35 | Semnalele sunt contradictorii: RSI(14) la 11 indică supravânzare extremă, dar prețul este sub SMA20/SMA50, regula botului este de vânzare, iar piața cripto este în scădere pe 20 de zile. Volatilitatea de peste 90% face direcția pe 5 zile imposibil de decis doar din aceste date. |
+| deepseek | HOLD | 0.40 | RSI extrem de scăzut (11) sugerează o posibilă revenire pe termen scurt, dar tendința descendentă puternică (preț sub SMA20 și SMA50) și contextul macro negativ (majoritatea activelor de risc în scădere) fac direcția incertă. |
+
+## AAVE: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 95.4100 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | SELL | 0.60 | Scăderile persistente, prețul sub mediile mobile și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 27 sugerează supravânzare și posibilitatea unei reveniri tehnice, iar volatilitatea ridicată limitează încrederea în prognoză. |
+| claude | HOLD | 0.40 | Trendul este clar descendent (preț sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere generalizată), dar RSI 27 semnalează o zonă de supravânzare care face probabil un rebound pe termen scurt. Cu o volatilitate de peste 80%, aceste semnale contradictorii nu permit o predicție fiabilă pentru următoarele 5 zile. |
+| gemini | HOLD | 0.60 | Deși trendul general al pieței este puternic descendent, iar prețul se află semnificativ sub mediile mobile (SMA20, SMA50, SMA200), valoarea RSI de 27 indică o zonă de supravânzare care ar putea genera o revenire tehnică pe termen scurt. Această divergență între impulsul negativ pe termen mediu și epuizarea vânzătorilor pe termen scurt face ca direcția pentru următoarele 5 zile să fie incertă. |
+| grok | HOLD | 0.48 | AAVE este sub mediile mobile, într-un trend descendent puternic, dar RSI(14) de 27 indică supravânzare și o posibilă revenire pe termen scurt. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.50 | Prețul se află într-un trend descendent puternic, sub mediile mobile, dar RSI-ul la 27 indică o stare de supravânzare care ar putea duce la o revenire pe termen scurt. Incertitudinea este ridicată, iar datele disponibile nu oferă un semnal clar pentru următoarele 5 zile. |
 
 ## NEAR: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 2.8900 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
+Preț 3.0550 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile persistente, prețul sub SMA20 și SMA50 și slăbiciunea generalizată a pieței cripto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 31 și volatilitatea ridicată lasă loc unei reveniri tehnice, astfel că direcția estimată are încredere limitată. |
-| claude | HOLD | 0.35 | Trendul pe termen scurt și mediu este clar negativ (sub SMA20 și SMA50, semnal de vânzare SMA 20/50, scădere generalizată pe piețele de risc), dar RSI de 31 indică o zonă apropiată de supravânzare, iar prețul rămâne peste SMA200, deci un rebound este la fel de plauzibil ca o continuare a scăderii. Cu o volatilitate de aproximativ 99%, direcția pe 5 zile nu poate fi determinată fiabil doar din aceste date. |
-| gemini | HOLD | 0.45 | Deși trendul pe termen scurt și mediu este puternic descendent pe fondul unei scăderi generale a piețelor, prețul rămâne peste SMA200 (+4.4%) și se apropie de zona de supravânzare (RSI 31). Acești factori contradictorii și volatilitatea extremă nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | SELL | 0.58 | Tendința pe 1–60 de zile este clar descendentă, prețul stă mult sub SMA20 și SMA50, iar regula SMA 20/50 indică vânzare, în context de scăderi ample pe cripto. RSI la 31 sugerează apropierea de supravândut, dar nu oferă un semnal suficient de inversare pentru următoarele 5 zile. |
-| deepseek | HOLD | 0.40 | Tendința descendentă pe termen scurt este puternică, dar RSI aproape de supravânzare și prețul încă peste SMA200 creează incertitudine pentru următoarele 5 zile. |
+| gpt | HOLD | 0.80 | Tendința pe 20–60 de zile și poziția sub SMA20/SMA50 sunt negative, dar revenirea recentă și menținerea peste SMA200 oferă semnale contradictorii. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile. |
+| claude | HOLD | 0.35 | Trendul pe termen mediu este negativ (sub SMA20 și SMA50, regula botului indică vânzare, iar piețele de risc sunt în scădere largă), dar revenirea recentă de +7.2% în 5 zile și RSI de 37 sugerează o posibilă stabilizare. Semnalele sunt contradictorii și volatilitatea foarte mare, deci datele nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși NEAR arată o revenire pe termen foarte scurt (+7.2% în 5 zile) și se menține peste SMA200, trendul intermediar rămâne puternic negativ, fiind sub SMA20 și SMA50 într-o piață globală în scădere severă. Aceste semnale contradictorii și volatilitatea extrem de ridicată nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.46 | Semnalele sunt mixte: revenirea pe 1 și 5 zile contrastează cu scăderea pe 20/60 de zile, prețul sub SMA20 și SMA50 și semnalul de vânzare al botului. Volatilitatea ridicată și slăbiciunea piețelor cripto nu permit o direcție clară pe următoarele 5 zile. |
+| deepseek | SELL | 0.65 | Prețul se situează sub SMA20 și SMA50, iar regula botului indică vânzare; corelația cu scăderile recente din piața crypto și asset-urile de risc sugerează continuarea presiunii negative pe termen scurt. |
 
 ## ICP: **VINDE** (înclină spre vânzare)
-Preț 1.9990 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
+Preț 2.0170 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe mai multe intervale, prețul sub toate mediile mobile și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 33 și volatilitatea ridicată lasă loc unei reveniri tehnice, astfel că semnalul are încredere moderată. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub toate mediile mobile, semnal SMA 20/50 de vânzare, scădere generalizată pe piețele cripto), dar RSI de 33 și apropierea de minimul anual sugerează o zonă de supravânzare în care un rebound pe termen scurt este plauzibil. Cu volatilitate de peste 100% și fără știri, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
-| gemini | HOLD | 0.60 | Trendul general al ICP și al întregii piețe este puternic descendent, prețul aflându-se semnificativ sub mediile mobile pe 20, 50 și 200 de zile. Totuși, nivelul RSI de 33 și apropierea de minimul anual (+7.2%), combinate cu o volatilitate extremă de 111%, fac direcția pe următoarele 5 zile prea incertă pentru o decizie clară. |
-| grok | SELL | 0.58 | ICP este sub mediile SMA20/50/200, cu scăderi pe 1–60 de zile și semnal de vânzare SMA 20/50, iar piața cripto este și ea în scădere. RSI 33 și apropierea de minimul anual nu oferă un semnal clar de revenire pe 5 zile, deci biasul rămâne negativ. |
-| deepseek | SELL | 0.75 | Trendul descendent este puternic, cu prețul sub toate mediile mobile și RSI(14) la 33, aproape de supravânzare dar fără semnal de inversare. Contextul general al piețelor crypto și de risc, puternic negative, sugerează continuarea presiunii de vânzare pe termen scurt. |
+| gpt | SELL | 0.58 | Prețul sub mediile mobile și scăderile pe 20 și 60 de zile, alături de slăbiciunea generală a pieței, înclină perspectiva următoarelor 5 zile spre scădere. Totuși, RSI de 32 și volatilitatea ridicată permit un recul ascendent, astfel că semnalul are încredere limitată. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (sub toate mediile mobile, -36.9% în 60 de zile, piața cripto în scădere generală), dar RSI de 32 și stabilizarea din ultimele 5 zile aproape de minimul anual sugerează o posibilă revenire, așa că semnalele pe 5 zile sunt contradictorii. Cu o volatilitate de peste 100%, datele nu permit o decizie fiabilă de direcție. |
+| gemini | HOLD | 0.55 | Deși trendul general este puternic descendent (prețul fiind sub mediile mobile și piața extinsă în scădere), indicatorul RSI la 32 și evoluția pe 5 zile (-0.4%) indică o posibilă stabilizare pe termen scurt aproape de minimul anual. Având în vedere volatilitatea extremă (108%) și semnalele contradictorii dintre trendul negativ și condițiile de supravânzare, datele sunt insuficiente pentru o direcție clară în următoarele 5 zile. |
+| grok | SELL | 0.62 | ICP este sub SMA20, SMA50 și SMA200, cu scăderi de 15,9% pe 20 de zile și 36,9% pe 60 de zile, iar regula SMA 20/50 indică vânzare. RSI de 32 sugerează o posibilă revenire scurtă, dar trendul și slăbiciunea piețelor cripto rămân negative pe orizontul de 5 zile. |
+| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub mediile mobile, cu RSI aproape de supravânzare și într-un context general de scădere a criptomonedelor, ceea ce sugerează continuarea scăderii. |
 
-## ETC: **VINDE** (înclină spre vânzare)
-Preț 5.7600 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
+## ETC: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 5.8800 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Tendința descendentă pe 20–60 de zile, prețul sub toate mediile mobile și scăderile generalizate ale pieței susțin o probabilitate mai mare de continuare a declinului în următoarele 5 zile. Totuși, RSI de 32 și volatilitatea ridicată permit un recul ascendent, limitând încrederea în estimare. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, -39% pe 60 de zile, regula SMA 20/50 spune vinde, piața cripto și activele de risc în scădere generală), dar RSI 32 aproape de supravânzare și stabilizarea pe 5 zile (-0.9%) sugerează un posibil rebound. Semnalele contradictorii și volatilitatea ridicată nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși ETC se află într-un trend descendent clar sub mediile mobile și într-un context macro și cripto profund negativ, indicatorul RSI de 32 și încetinirea scăderii în ultimele 5 zile (-0.9%) sugerează o posibilă epuizare a vânzătorilor pe termen scurt. Această divergență între presiunea generală de vânzare și potențialul unui reviriment tehnic din zona de supravânzare face direcția pe următoarele 5 zile prea incertă pentru o poziție clară. |
-| grok | SELL | 0.58 | ETC este sub SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare, în contextul unei scăderi de 21,5% pe 20 de zile. RSI de 32 sugerează o posibilă revenire, dar nu anulează tendința descendentă pe termen scurt. |
-| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, iar RSI este aproape de supravânzare dar încă nu indică o inversare. Tendința generală a pieței crypto este puternic negativă, sugerând continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.78 | Tendința generală este descendentă, cu prețul sub SMA20/50/200, dar revenirea de 7,5% din ultimele 5 zile contrastează cu această tendință. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.55 | Trendul rămâne clar descendent (preț sub SMA20/50/200, -37.7% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc scad larg), dar revenirea recentă de +7.5% pe 5 zile și RSI de 36, aproape de supravânzare, sugerează un posibil rebound pe termen scurt. Semnalele sunt contradictorii pentru un orizont de 5 zile, iar volatilitatea ridicată face direcția greu de prognozat doar din aceste date. |
+| gemini | HOLD | 0.60 | Deși ETC arată o revenire pe termen foarte scurt (+7.5% în 5 zile) și un RSI scăzut (36), trendul general rămâne puternic negativ, prețul fiind sub toate mediile mobile importante într-un context de scădere severă pe întreaga piață. Semnalele tehnice contradictorii și volatilitatea ridicată (69%) nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.46 | ETC este sub mediile SMA20/50/200, iar regula SMA 20/50 indică vânzare, deși ultimele 5 zile arată un rebound de +7,5% și RSI 36. Semnalele pe termen scurt și mediu se contrazic, iar volatilitatea ridicată nu permite o direcție clară pentru următoarele 5 zile. |
+| deepseek | SELL | 0.65 | Prețul ETC se situează sub mediile mobile SMA20, SMA50 și SMA200, iar RSI-ul de 36 confirmă tendința descendentă, în contextul în care majoritatea criptomonedelor și activelor de risc au înregistrat scăderi semnificative pe termen scurt. |
 
 ## APT: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.3648 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 0.3738 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința puternic descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, însă RSI de 9 indică o supravânzare extremă și posibilitatea unui recul ascendent. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile. |
-| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, -43% în 20 de zile, piață crypto largă în scădere), dar RSI de 9 indică o supravânzare extremă care face probabil un rebound pe termen scurt, astfel că semnalele se anulează. Cu volatilitate de ~99% și fără știri, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
-| gemini | HOLD | 0.65 | Prețul se află într-un trend descendent sever pe toate orizonturile de timp, susținut de scăderi masive pe întreaga piață cripto și de active de risc, dar indicatorul RSI(14) la nivelul extrem de 9 arată o supravânzare acută. Având în vedere volatilitatea anualizată de aproape 100% și conflictul dintre trendul negativ puternic și potențialul unui ricoșeu tehnic pe termen scurt, direcția pentru următoarele 5 zile este prea incertă. |
-| grok | HOLD | 0.42 | Tendința pe 5–60 de zile este puternic descendentă, iar prețul stă mult sub mediile mobile, dar RSI(14) de 9 indică o zonă extrem de supravândută. Semnalele sunt contradictorii pentru următoarele 5 zile, deci direcția nu poate fi decisă din aceste date. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar RSI extrem de scăzut (9) nu garantează o revenire imediată. Regula SMA 20/50 indică vânzare, iar contextul general al pieței crypto este negativ, sugerând continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.78 | Tendința puternic descendentă și slăbiciunea generală a pieței favorizează scăderea, dar RSI de 12 și revenirea recentă pot indica un recul ascendent pe termen scurt. Volatilitatea ridicată și semnalele contradictorii nu permit o estimare suficient de robustă a direcției în următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -36% în 20 de zile, regula SMA indică vânzare, iar piețele de risc scad la rândul lor), dar RSI de 12 semnalează o supravânzare extremă care face probabil un rebound pe termen scurt. Cu o volatilitate de ~97%, semnalele contradictorii nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși indicatorul RSI(14) de 12 sugerează o supravânzare extremă și o stabilizare recentă pe 5 zile (+1.1%), trendul general rămâne puternic negativ, prețul fiind mult sub mediile mobile și întreaga piață suferind scăderi majore. Din cauza acestor semnale contradictorii și a volatilității foarte ridicate de 97%, direcția pe următoarele 5 zile este prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.46 | Tendința rămâne puternic negativă, cu prețul mult sub mediile mobile și piața de risc în scădere, dar RSI 12 și revenirea ușoară pe 1 și 5 zile indică un posibil rebound. Datele sunt contradictorii pentru direcția următoarelor 5 zile. |
+| deepseek | SELL | 0.60 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar corelația cu prăbușirea pieței crypto sugerează continuarea scăderii. Deși RSI extrem de scăzut (12) poate indica o posibilă revenire pe termen scurt, semnalul botului și contextul general rămân negative. |
 
 ## ONDO: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.2784 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 0.2828 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.58 | Tendința descendentă pe mai multe intervale, prețul sub mediile mobile și slăbiciunea generală a pieței susțin o probabilitate ușor mai mare de scădere în următoarele 5 zile. Totuși, RSI de 19 indică supravânzare și posibilitatea unui rebound, iar volatilitatea ridicată limitează încrederea în estimare. |
-| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, -49% în 60 de zile, piață crypto largă în scădere), dar RSI 19 indică supravânzare extremă, ceea ce face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea de ~87% nu permit o predicție fiabilă pe 5 zile doar din aceste prețuri. |
-| gemini | HOLD | 0.50 | Deși ONDO este extrem de supravândut cu un RSI de 19, trendul general al pieței și mediile mobile indică o scădere puternică. Aceste semnale contradictorii și volatilitatea ridicată fac imposibilă o predicție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Tendința rămâne clar descendentă, sub mediile mobile și în linie cu scăderile cripto, dar RSI de 19 indică supravânzare extremă. Pentru următoarele 5 zile semnalele se contrazic, deci direcția nu poate fi decisă din aceste date. |
-| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar contextul pieței crypto este negativ. Deși RSI indică o stare supravândută, momentum-ul descendent sugerează continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 22 și stabilizarea recentă pot preceda o revenire tehnică. Aceste semnale contradictorii și volatilitatea ridicată nu permit o concluzie suficient de solidă pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub toate mediile mobile, regula SMA spune vinde, piețele de risc în scădere generală), dar RSI de 22 indică o supravânzare puternică ce poate aduce un rebound pe termen scurt. Semnalele contradictorii și volatilitatea mare nu permit o direcție fiabilă pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși ONDO este într-un trend descendent pronunțat și sub toate mediile mobile importante, valoarea RSI(14) de 22 indică o stare extremă de supravânzare, iar prețul s-a stabilizat în ultimele 5 zile (+0.3%). Având în vedere semnalele tehnice contradictorii pe termen scurt și scăderea generalizată a pieței cripto și a activelor de risc, datele sunt insuficiente pentru o direcție clară. |
+| grok | HOLD | 0.42 | Tendința pe 20–60 de zile rămâne puternic negativă, iar prețul stă sub mediile mobile, dar RSI 22 indică supravânzare și ultimele 5 zile sunt aproape plate. Semnalele sunt contradictorii, deci direcția pe următoarele 5 zile nu poate fi decisă din aceste date. |
+| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub mediile mobile, iar contextul pieței globale este de vânzare (risk-off), deși RSI supravândut ar putea genera un rebound temporar. |
 
 ## ATOM: **VINDE** (înclină spre vânzare)
-Preț 1.2500 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
+Preț 1.2370 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Prețul sub mediile mobile de 20, 50 și 200 de zile, RSI de 38 și scăderile pe 20 și 60 de zile sugerează continuarea presiunii descendente în următoarele 5 zile. Slăbiciunea generală a pieței crypto susține această perspectivă, dar volatilitatea ridicată limitează încrederea și permite un rebound. |
-| claude | HOLD | 0.35 | ATOM este într-un trend descendent clar (sub toate mediile mobile, -30% pe 60 de zile, semnal de vânzare SMA 20/50) pe fondul unei slăbiciuni generale a pieței, dar RSI de 38, stabilizarea pe 5 zile (-1%) și performanța relativ mai bună decât BTC/ETH pe 20 de zile sugerează o posibilă consolidare. Cu o volatilitate de ~85%, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
-| gemini | SELL | 0.68 | ATOM se află într-un trend descendent clar, tranzacționându-se sub mediile mobile de 20, 50 și 200 de zile, fără a fi încă în zona de supravânzare conform RSI (38). În plus, scăderile masive din întreaga piață cripto și de capital pe ultimele 20 de zile indică un mediu de aversiune la risc ce favorizează continuarea scăderii pe termen scurt. |
-| grok | SELL | 0.62 | Prețul este sub SMA20, SMA50 și SMA200, cu scăderi pe 20 și 60 de zile și semnal de vânzare SMA 20/50, într-o piață cripto slabă. RSI de 38 nu arată încă o supravânzare extremă, deci scăderea pare mai probabilă pe 5 zile, deși volatilitatea mare limitează certitudinea. |
-| deepseek | SELL | 0.65 | Prețul se situează sub SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare, semnalând o tendință descendentă. RSI la 38 și scăderile generalizate pe piața crypto sugerează continuarea presiunii negative pe termen scurt. |
+| gpt | SELL | 0.59 | Prețul sub SMA20/50/200, scăderea de 8,8% în 20 de zile și slăbiciunea generală a pieței înclină estimarea spre scădere în următoarele 5 zile. Totuși, avansul de 0,8% pe ultimele 5 zile și volatilitatea ridicată limitează încrederea în această direcție. |
+| claude | HOLD | 0.55 | ATOM rămâne într-un trend descendent clar (sub SMA20/50/200, -33.7% pe 60 de zile, semnal de vânzare SMA 20/50), dar RSI 37, stabilizarea pe 5 zile (+0.8%) și scăderea mai mică decât restul pieței crypto pe 20 de zile sugerează o posibilă pauză. Cu o volatilitate de ~77%, direcția pe 5 zile nu poate fi decisă fiabil din aceste date. |
+| gemini | SELL | 0.65 | ATOM se află într-un trend descendent clar, tranzacționându-se semnificativ sub mediile mobile de 20, 50 și 200 de zile, pe fondul unui sentiment general negativ pe piețele cripto și de acțiuni. Deși a arătat o ușoară stabilizare în ultimele 5 zile (+0.8%) și are un RSI scăzut (37), presiunea de vânzare la nivel macro sugerează o continuare a scăderii pe termen scurt. |
+| grok | SELL | 0.62 | ATOM rămâne sub SMA20, SMA50 și SMA200, iar semnalul SMA 20/50 indică vânzare, în timp ce scăderea pe 20 și 60 de zile se aliniază cu slăbiciunea piețelor cripto. RSI de 37 nu este suficient de extrem pentru a anula tendința descendentă pe următoarele 5 zile. |
+| deepseek | SELL | 0.70 | Prețul se situează sub SMA20, SMA50 și SMA200, iar RSI de 37 indică o tendință bearish fără a fi supravândut. Corelația cu scăderile altor criptomonede și semnalul botului de vânzare sugerează continuarea declinului pe termen scurt. |
 
 ## POL: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0759 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 0.0764 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.030 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile pe 5–60 de zile, prețul sub SMA20/50/200 și slăbiciunea generală a pieței susțin o înclinație descendentă pentru următoarele 5 zile. Totuși, RSI de 30 indică apropierea de supravânzare și posibilitatea unei reveniri tehnice, ceea ce limitează încrederea prognozei. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, regula botului spune vinde, iar piața crypto scade larg), dar RSI la 30 indică o zonă de supravânzare care poate aduce un rebound pe termen scurt. Semnalele contradictorii nu permit o predicție fiabilă pe 5 zile doar din aceste prețuri. |
-| gemini | HOLD | 0.65 | Deși POL se află într-un trend descendent sever, sub toate mediile mobile și într-un context macro și cripto profund negativ, nivelul RSI de 30 indică o zonă de supravânzare care poate declanșa o revenire tehnică pe termen scurt. Din cauza acestor semnale contradictorii pe un orizont de doar 5 zile, datele sunt insuficiente pentru o direcție clară. |
-| grok | HOLD | 0.42 | Tendința rămâne negativă, cu prețul sub mediile mobile și piața cripto în scădere, dar RSI la 30 indică o zonă supravândută care poate produce un rebound scurt. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se situează sub mediile mobile cheie, iar tendința descendentă este accentuată de scăderile generale din piața crypto. RSI de 30 indică o stare de supravânzare, dar într-un trend puternic descendent, acesta poate persista. |
+| gpt | HOLD | 0.74 | Tendința este descendentă, cu prețul sub SMA20/50/200 și scăderi ample pe 20–60 de zile, dar RSI de 32 și stabilizarea recentă lasă deschisă posibilitatea unei reveniri temporare. Aceste date nu oferă un avantaj direcțional suficient de clar pentru următoarele 5 zile, mai ales în condiții de volatilitate ridicată. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, -17.6% pe 20 de zile, semnal de vânzare SMA 20/50, slăbiciune generală pe piețele cripto și de risc), dar RSI de 32, aproape de supravânzare, și stabilizarea din ultimele 5 zile sugerează un posibil rebound pe termen scurt. Semnalele sunt contradictorii pe un orizont de 5 zile, așa că datele nu permit o direcție clară. |
+| gemini | HOLD | 0.55 | Deși trendul pe termen mediu este negativ și întreaga piață cripto scade, prețul POL s-a stabilizat în ultimele 5 zile (+0.4%), iar RSI-ul de 32 indică apropierea de zona de supravânzare. Având în vedere aceste semnale contradictorii între tendința generală de scădere și stabilizarea pe termen scurt, datele sunt insuficiente pentru o direcție clară în următoarele 5 zile. |
+| grok | SELL | 0.58 | POL este sub SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare, în timp ce scăderile pe 20 și 60 de zile coincid cu un risc-off larg pe cripto. RSI 32 și revenirea scurtă de 1–5 zile nu anulează tendința descendentă, deci direcția pe 5 zile rămâne mai degrabă negativă, cu încredere moderată din cauza volatilității ridicate. |
+| deepseek | SELL | 0.65 | Prețul se situează sub toate mediile mobile, RSI-ul de 32 nu confirmă încă o inversare, iar contextul puternic negativ al piețelor crypto și de risc indică o continuare a scăderii. Regula SMA 20/50 și tendința descendentă pe 20 și 60 de zile susțin un scenariu bearish pe termen scurt. |
 
-## ARB: **NU TRANZACȚIONA** (fără înclinație)
-Preț 0.1104 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.79 | Tendința descendentă și scăderile ample ale pieței favorizează continuarea declinului, însă RSI de 14 indică supravânzare și posibilitatea unei reveniri pe termen scurt. Volatilitatea ridicată și lipsa altor informații nu permit o estimare suficient de solidă a direcției în următoarele 5 zile. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -32% în 20 de zile, slăbiciune generalizată pe piețele cripto și de risc), dar RSI 14 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși indicatorul RSI(14) la nivelul 14 semnalează o supravânzare extremă care ar putea genera un reviriment tehnic pe termen scurt, trendul general este puternic descendent, cu prețul mult sub mediile mobile și o scădere severă pe toate piețele globale și cripto. Din cauza acestor semnale puternic contradictorii și a volatilității ridicate, direcția pentru următoarele 5 zile este prea incertă pentru a lua o decizie clară. |
-| grok | HOLD | 0.46 | Tendința pe 5–60 de zile este clar descendentă, prețul este sub mediile mobile, iar regula SMA 20/50 indică vânzare, dar RSI(14) de 14 semnalează o supravânzare extremă. Semnalele sunt contradictorii pentru următoarele 5 zile, deci direcția nu poate fi decisă din aceste date. |
-| deepseek | HOLD | 0.30 | RSI de 14 sugerează o stare de supravânzare extremă, dar tendința descendentă puternică și contextul macroeconomic negativ fac incertă direcția pe termen scurt. |
-
-## FIL: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.5349 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+## ARB: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.1132 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile persistente, prețul mult sub mediile mobile și slăbiciunea generală a pieței sugerează continuarea presiunii descendente în următoarele 5 zile. Totuși, RSI de 14 indică supravânzare extremă, iar volatilitatea ridicată face posibilă o revenire bruscă și limitează încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (preț mult sub SMA20/50/200, regula botului spune vinde, piețele de risc sunt toate în scădere), dar RSI de 14 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea de aproape 90% nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși RSI(14) la 14 indică o supravânzare extremă care ar putea genera un ricoșeu pe termen scurt, trendul puternic descendent al FIL și scăderile generalizate din piața cripto și cea bursieră creează un risc ridicat de continuare a scăderii. Semnalele contradictorii între supravânzarea tehnică și impulsul negativ sever nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.46 | Tendința pe 5–60 de zile este puternic descendentă, iar prețul stă mult sub mediile mobile, dar RSI(14) de 14 indică o zonă extrem de supravândută. Din aceste date nu se poate decide clar direcția pe următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar regula SMA 20/50 indică vânzare; deși RSI este extrem de scăzut, contextul general al pieței crypto este negativ. |
+| gpt | HOLD | 0.76 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 20 și revenirea zilnică de 2,5% sugerează posibilitatea unui rebound tehnic. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, -27.7% în 20 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere generală), dar RSI de 20 semnalează supravânzare extremă și posibil un rebound pe termen scurt. Cu o volatilitate de 90%, semnalele contradictorii nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși RSI-ul de 20 și revenirea pe o zi (+2.5%) indică o zonă puternic supravândută cu potențial de ricoșeu pe termen scurt, trendul general rămâne profund negativ, cu prețul mult sub mediile mobile și scăderi masive pe toate piețele globale. Semnalele tehnice sunt prea contradictorii, iar volatilitatea de 90% face imposibilă o predicție sigură pe 5 zile. |
+| grok | HOLD | 0.46 | Tendința rămâne descendentă, prețul fiind sub mediile mobile, dar RSI 20 indică supravânzare și semnalele pe 5 zile sunt mixte. Volatilitatea ridicată și lipsa altor date nu permit o direcție clară. |
+| deepseek | SELL | 0.60 | Prețul ARB este sub mediile mobile SMA20 și SMA50, iar RSI-ul de 20 indică o stare de supra-vânzare. Totuși, contextul puternic negativ al piețelor crypto și tradiționale sugerează că prețul va continua să scadă în următoarele 5 zile. |
+
+## FIL: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 0.5486 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.80 | Tendința descendentă și slăbiciunea generală a pieței favorizează scăderea, dar RSI de 18 și revenirea recentă indică posibilitatea unui recul ascendent. Doar aceste date, în condiții de volatilitate ridicată, nu oferă suficiente dovezi pentru direcția prețului în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | FIL este într-un trend descendent puternic (sub toate mediile mobile, -30% în 20 de zile, semnal de vânzare SMA 20/50, piețe largi în scădere), dar RSI 18 indică supravânzare extremă și o ușoară stabilizare pe 1-5 zile, deci un rebound este la fel de plauzibil ca o continuare a scăderii. Fără știri și cu volatilitate de peste 85%, datele nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși RSI(14) la nivelul 18 indică o supravânzare extremă și o ușoară stabilizare în ultimele 5 zile (+2.4%), prețul rămâne într-un trend descendent sever sub toate mediile mobile majore. Scăderile generalizate de pe întreaga piață crypto și bursieră creează un conflict puternic între potențialul de revenire tehnică pe termen scurt și presiunea macroeconomică negativă. |
+| grok | HOLD | 0.42 | Semnalele sunt mixte: RSI 18 indică supravânzare și ultimele 1–5 zile sunt ușor pozitive, dar trendul pe 20–60 de zile rămâne puternic negativ, iar prețul este mult sub mediile mobile. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | BUY | 0.30 | RSI extrem de scăzut (18) indică o stare de supravânzare, sugerând o posibilă revenire pe termen scurt, deși tendința generală rămâne negativă. |
 
 ## ALGO: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0789 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 0.0783 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.76 | Scăderile pe 20–60 de zile și prețul sub mediile mobile indică presiune descendentă, dar creșterea de 3% pe ultimele 5 zile și RSI de 33 lasă deschisă posibilitatea unei reveniri. Volatilitatea ridicată și lipsa altor informații nu permit o concluzie suficient de solidă privind direcția următoarelor 5 zile. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, regula SMA 20/50 indică vânzare, iar piețele de risc au scăzut puternic), dar RSI de 33 și revenirea de +3% pe 5 zile sugerează o posibilă stabilizare pe termen scurt. Semnalele sunt contradictorii, iar volatilitatea de circa 76% face ca direcția pe 5 zile să fie incertă. |
-| gemini | HOLD | 0.60 | Deși trendul general este puternic descendent, cu prețul sub mediile mobile și o piață globală în scădere severă, valoarea RSI de 33 și ușoara revenire de +3.0% din ultimele 5 zile indică o posibilă stabilizare pe termen scurt. Din cauza semnalelor tehnice mixte și a volatilității ridicate, datele sunt insuficiente pentru a prezice o direcție clară în următoarele 5 zile. |
-| grok | SELL | 0.62 | ALGO este sub SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare, în timp ce scăderile pe 20 și 60 de zile coincid cu un context negativ pe criptomonede. RSI de 33 și revenirea de +3% pe 5 zile limitează convingerea, dar datele disponibile favorizează continuarea slăbiciunii. |
-| deepseek | SELL | 0.70 | Prețul se află sub mediile mobile, RSI aproape de supravânzare dar încă slab, iar contextul general al piețelor este puternic negativ, sugerând continuarea scăderii. |
+| gpt | HOLD | 0.77 | Tendința predominantă este descendentă, cu prețul sub mediile mobile și slăbiciune generalizată a piețelor, dar revenirea de 6,8% în ultimele 5 zile oferă un semnal contrar. Volatilitatea ridicată și semnalele mixte nu permit alegerea unei direcții suficient de fundamentate pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.55 | Trendul rămâne clar descendent (preț sub SMA50 și SMA200, regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere largă), însă RSI de 34 și revenirea de +6.8% pe 5 zile sugerează o posibilă stabilizare pe termen scurt. Semnalele sunt contradictorii și volatilitatea e mare, deci datele nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen mediu este puternic descendent și întreaga piață suferă scăderi, revenirea pe 5 zile (+6.8%) și RSI-ul scăzut (34) oferă semnale contradictorii pe termen scurt. În lipsa unei direcții clare pentru următoarele 5 zile și pe fondul volatilității ridicate, datele sunt insuficiente pentru o decizie fermă. |
+| grok | HOLD | 0.42 | ALGO rămâne sub mediile SMA20/50/200, cu semnal de vânzare și un context de risk-off pe cripto, dar ultimele 5 zile arată un rebound de +6,8% și RSI 34, fără a confirma o continuare clară. Volatilitatea ridicată și lipsa altor date fac direcția pe următoarele 5 zile de tranzacționare incertă. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, RSI indică slăbiciune, iar contextul general al pieței este puternic negativ, sugerând continuarea scăderii. |
 
-## VET: **VINDE** (înclină spre vânzare)
-Preț 0.0047 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe 20 și 60 de zile, prețul sub toate mediile mobile și slăbiciunea generală a pieței susțin o înclinație descendentă pentru următoarele 5 zile. Totuși, volatilitatea ridicată și apropierea de minimul anual fac posibil un recul ascendent, astfel că semnalul are încredere limitată. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, -50.7% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere generalizată), dar RSI de 39 și performanța relativ mai bună față de BTC/ETH pe 20 de zile sugerează o posibilă stabilizare pe termen scurt. Semnalele pentru următoarele 5 zile sunt contradictorii și insuficiente pentru o direcție sigură. |
-| gemini | SELL | 0.65 | Prețul VET se află într-un trend descendent clar, situându-se semnificativ sub mediile mobile pe 20, 50 și 200 de zile, pe fondul unei scăderi de peste 50% în ultimele 60 de zile. Corecțiile majore și generalizate din piața cripto și de capital, alături de un RSI de 39 care nu indică încă o supravânzare extremă, sugerează continuarea presiunii de vânzare pe termen scurt. |
-| grok | SELL | 0.58 | VET este sub SMA20/50/200, cu scăderi pe 1–60 de zile și semnal de vânzare SMA 20/50, iar piața cripto rămâne în risk-off. RSI 39 și apropierea de minimul anual limitează încrederea pe un orizont de doar 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile SMA20, SMA50 și SMA200, iar RSI-ul este sub 50, indicând un trend descendent. Corelația cu scăderile puternice din piața crypto și din alte active de risc sugerează continuarea scăderii pe termen scurt. |
-
-## OP: **NU TRANZACȚIONA** (fără înclinație)
-Preț 0.0686 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
+## VET: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.0048 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 8 indică o supravânzare extremă, compatibilă și cu o revenire temporară. Volatilitatea ridicată și lipsa altor date nu permit alegerea suficient de convingătoare a direcției pentru următoarele 5 zile. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -37.8% în 20 de zile, semnal de vânzare SMA 20/50, slăbiciune generală pe piețe), dar RSI de 8 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși indicatorul RSI(14) la nivelul extrem de 8 indică o supravânzare severă și potențialul unui reviriment tehnic pe termen scurt, trendul general al OP și al întregii piețe rămâne puternic descendent, cu prețul mult sub mediile mobile. Din cauza acestui conflict între epuizarea vânzătorilor și riscul sistemic ridicat (volatilitate de 82%), direcția pe următoarele 5 zile este incertă. |
-| grok | HOLD | 0.42 | Tendința pe 5–60 de zile este puternic descendentă, iar prețul stă mult sub mediile mobile, dar RSI(14) de 8 indică o zonă extrem de supravândută. Datele nu permit o direcție clară pentru următoarele 5 zile de tranzacționare. |
-| deepseek | HOLD | 0.30 | RSI extrem de scăzut (8) indică o posibilă revenire pe termen scurt, însă tendința descendentă puternică și semnalul de vânzare al mediilor mobile fac direcția incertă. |
+| gpt | HOLD | 0.80 | Revenirea de +8,0% în ultimele 5 zile contrastează cu tendința descendentă pe 20–60 de zile și cu prețul sub mediile mobile, fără un semnal clar pentru următoarele 5 zile. RSI de 42 și volatilitatea ridicată nu clarifică direcția, iar datele disponibile sunt insuficiente pentru o prognoză direcțională robustă. |
+| claude | HOLD | 0.30 | Trendul pe termen mediu rămâne negativ (preț sub SMA50 și SMA200, -48% pe 60 de zile, regula SMA 20/50 indică vânzare, piața crypto în scădere largă), dar revenirea recentă de +8% pe 5 zile și RSI neutru de 42 dau semnale contradictorii. Cu volatilitate de peste 70%, datele nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși VET a înregistrat o creștere de +8.0% pe 5 zile și rezistă mai bine decât restul pieței cripto, prețul rămâne sub toate mediile mobile majore (SMA 20, 50, 200) într-un context macro și sectorial profund negativ. Semnalele mixte între revenirea pe termen scurt și trendul descendent dominant, alături de un RSI neutru la 42, nu oferă suficiente dovezi pentru o direcție clară în următoarele 5 zile. |
+| grok | HOLD | 0.55 | Datele arată un rebound scurt (+8% pe 5 zile), dar prețul rămâne sub SMA20/50/200, RSI este 42, iar trendul pe 60 de zile și piețele cripto corelate sunt puternic negative. Volatilitatea ridicată și semnalele contradictorii nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | SELL | 0.60 | Tendința pe termen scurt este pozitivă, dar contextul general rămâne puternic bearish, cu prețul sub mediile mobile principale și RSI sub 50. Regula SMA 20/50 indică vânzare, iar corelația cu piața crypto largă sugerează continuarea scăderii. |
+
+## OP: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 0.0693 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.78 | Tendința puternic descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 10 semnalează supravânzare extremă și posibilitatea unei reveniri tehnice. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea suficient de convingătoare a direcției în următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -31.6% pe 20 de zile, slăbiciune generalizată pe piețe), dar RSI 10 indică o supravânzare extremă care poate declanșa un rebound pe termen scurt. Semnalele contradictorii nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.45 | Deși RSI(14) la 10 indică o supravânzare extremă și o stabilizare recentă pe 5 zile (-1.3%), trendul general rămâne puternic descendent, cu prețul mult sub mediile mobile și o scădere severă pe toate piețele cripto și bursiere. Conflictul dintre semnalele tehnice de supravânzare pe termen scurt și presiunea macroeconomică negativă face imposibilă o predicție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.48 | Tendința rămâne puternic descendentă, sub mediile mobile, iar regula SMA indică vânzare, dar RSI de 10 arată o supravânzare extremă lângă minimul anual. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | BUY | 0.60 | RSI extrem de scăzut (10) sugerează o posibilă revenire pe termen scurt, deși tendința generală este puternic descendentă. |
 
 ## INJ: **VINDE** (înclină spre vânzare)
-Preț 5.8590 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 5.9530 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Impulsul negativ pe 5 și 20 de zile, prețul sub mediile mobile și scăderile generalizate din piața cripto înclină perspectiva următoarelor 5 zile spre continuarea declinului. Totuși, RSI de 31 și volatilitatea ridicată permit o revenire bruscă, astfel că semnalul are încredere moderată. |
-| claude | HOLD | 0.30 | Trendul pe termen scurt este clar descendent (sub SMA20/SMA50, regula botului spune vinde, piața crypto în general în scădere puternică), dar RSI de 31 și scăderea de -17.5% în 5 zile sugerează o zonă de supravânzare unde un rebound este posibil. Cu volatilitate de peste 100% și semnale contradictorii, datele nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși trendul general al pieței și mediile mobile indică o presiune puternică de vânzare, RSI-ul la 31 și apropierea de SMA200 sugerează condiții de supravânzare care pot genera un ricoșeu pe termen scurt. Din cauza acestor semnale tehnice contradictorii și a volatilității extrem de ridicate, direcția pentru următoarele 5 zile este incertă. |
-| grok | SELL | 0.62 | Prețul este clar sub mediile mobile pe 20 și 50 de zile, cu scăderi puternice pe 5 și 20 de zile și un context cripto general negativ. RSI aproape de supravânzare limitează certitudinea, dar impulsul pe termen scurt rămâne descendent. |
-| deepseek | SELL | 0.70 | Prețul INJ se află într-un trend descendent accentuat, tranzacționându-se cu mult sub mediile mobile pe 20 și 50 de zile, iar regula SMA 20/50 indică vânzare. RSI de 31, deși aproape de supravânzare, nu oferă un semnal suficient de inversare în contextul prăbușirii generale a criptomonedelor. |
+| gpt | SELL | 0.60 | Scăderile pe 5 și 20 de zile, prețul sub SMA20 și SMA50 și slăbiciunea generală a pieței crypto favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 35, apropierea de SMA200 și volatilitatea ridicată lasă loc unei reveniri și limitează încrederea în prognoză. |
+| claude | HOLD | 0.35 | Trendul pe termen scurt este clar negativ (preț mult sub SMA20/SMA50, semnal de vânzare, slăbiciune generalizată pe piețe), dar RSI de 35 aproape de supravânzare și prețul la nivelul SMA200 sugerează un posibil suport sau o revenire tehnică. Cu o volatilitate de peste 100%, direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
+| gemini | HOLD | 0.65 | Deși trendul pe termen scurt este puternic negativ (prețul este mult sub SMA20 și SMA50) într-un context macro și cripto profund nefavorabil, prețul se află exact la suportul tehnic major SMA200 (-0.2%) cu un RSI(14) de 35 aproape de zona de supravânzare. Volatilitatea anualizată extremă de 115% și conflictul dintre impulsul descendent și nivelul de suport pe termen lung fac direcția pe următoarele 5 zile incertă. |
+| grok | SELL | 0.58 | Tendința pe 5, 20 și 60 de zile este negativă, prețul este mult sub SMA20 și SMA50, iar regula SMA 20/50 indică vânzare, în contextul unei piețe de risc în scădere. RSI la 35 și apropierea de SMA200 lasă loc unui rebound, dar impulsul pe termen scurt rămâne descendent. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, RSI indică slăbiciune, iar contextul pieței crypto și al activelor de risc este puternic negativ, sugerând continuarea scăderii. |
 
-## RENDER: **VINDE** (înclină spre vânzare)
-Preț 1.2810 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | SELL | 0.58 | Prețul sub toate mediile mobile și scăderile persistente, alături de slăbiciunea generală a pieței cripto, înclină estimarea spre continuarea declinului în următoarele 5 zile. Totuși, RSI de 29 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire temporară și limitează încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub toate mediile mobile, regula SMA 20/50 indică vânzare, piața crypto în scădere largă), dar RSI de 29 indică supravânzare și prețul e aproape de minimul anual, deci un rebound pe termen scurt este la fel de plauzibil. Cu volatilitate de peste 80% și fără știri, direcția pe 5 zile nu poate fi determinată cu încredere din aceste date. |
-| gemini | HOLD | 0.65 | Trendul general al pieței este puternic descendent, cu prețul RENDER situat semnificativ sub toate mediile mobile principale și corelat cu scăderi majore pe întregul sector cripto și bursier. Totuși, nivelul RSI de 29 indică o zonă de supravânzare aproape de minimul anual (+7.6%), creând un risc ridicat de ricoșeu pe termen scurt care face direcția pe următoarele 5 zile incertă. |
-| grok | SELL | 0.62 | Tendința pe 5–60 de zile este clar descendentă, prețul stă sub SMA20/50/200, iar regula SMA 20/50 indică vânzare, în context de scăderi ample pe cripto. RSI 29 sugerează posibilă revenire tehnică, dar datele disponibile nu o confirmă pentru următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se află sub toate mediile mobile, cu un RSI de 29 indicând un trend descendent puternic, iar corelația cu scăderile ample ale altor criptomonede și active de risc sugerează continuarea deprecierii pe termen scurt. |
-
-## TAO: **VINDE** (înclină spre vânzare)
-Preț 181.2000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+## RENDER: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 1.2960 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile recente, prețul sub toate mediile mobile și slăbiciunea generală a pieței crypto sugerează continuarea presiunii descendente în următoarele 5 zile. Totuși, RSI de 31 și volatilitatea ridicată permit o revenire pe termen scurt, ceea ce limitează încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub SMA20/50/200, -43% în 60 de zile, regula SMA spune vinde, piețe de risc în scădere largă), dar RSI 31 și apropierea de minimul anual sugerează o zonă de supravânzare unde un rebound pe termen scurt e la fel de plauzibil. Cu volatilitate de 93% și fără știri, direcția pe 5 zile nu poate fi decisă din aceste date. |
-| gemini | SELL | 0.65 | Prețul TAO se află într-un trend descendent pronunțat, tranzacționându-se semnificativ sub toate mediile mobile principale (SMA20, SMA50, SMA200), într-un context de scădere generalizată pe piața cripto și a activelor de risc. Deși RSI-ul de 31 este aproape de zona de supravânzare, momentul negativ puternic și volatilitatea ridicată indică o probabilitate mare de continuare a scăderii în următoarele 5 zile. |
-| grok | SELL | 0.62 | TAO este sub mediile SMA20/50/200, cu scăderi recente și semnal de vânzare SMA 20/50, iar piața cripto rămâne în risc-off. RSI 31 sugerează o posibilă revenire, dar datele nu arată încă o inversare clară pe 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se menține sub mediile mobile principale, iar regula SMA 20/50 indică vânzare; RSI aproape de 31 și contextul negativ al pieței crypto sugerează continuarea tendinței descendente pe termen scurt. |
+| gpt | HOLD | 0.76 | Tendința descendentă și prețul sub mediile mobile sugerează presiune negativă, dar revenirea recentă și RSI de 33 nu exclud un recul ascendent. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, regula botului spune vinde, piețele de risc în scădere largă), dar RSI de 33 și stabilizarea din ultimele 5 zile sugerează o posibilă revenire pe termen scurt. Semnalele sunt contradictorii, iar volatilitatea de peste 80% face direcția pe 5 zile imprevizibilă din aceste date. |
+| gemini | HOLD | 0.60 | Deși trendul general al pieței și mediile mobile indică o direcție descendentă puternică, stabilizarea recentă pe 5 zile (+1.6%) și nivelul RSI aproape de supravânzare (33) sugerează o posibilă pauză a scăderilor. Aceste semnale contradictorii pe termen scurt fac direcția pentru următoarele 5 zile incertă. |
+| grok | SELL | 0.58 | Tendința pe 20–60 de zile rămâne clar descendentă, prețul stă sub SMA20/50/200, iar regula SMA 20/50 indică vânzare, în timp ce piața cripto și activele de risc sunt în scădere. RSI 33 și revenirea scurtă de 1–5 zile nu anulează presiunea de vânzare pe orizontul următor. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile SMA20, SMA50 și SMA200, iar RSI-ul de 33 indică un moment negativ, în timp ce majoritatea piețelor globale (crypto, acțiuni, mărfuri) au scăderi semnificative pe 20 de zile, sugerând continuarea tendinței descendente. |
+
+## TAO: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 181.9000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.78 | Tendința pe termen mediu este descendentă, cu prețul sub mediile mobile și scăderi ample în piețele comparabile, dar stabilizarea din ultimele 5 zile și RSI de 32 fac posibilă o revenire temporară. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea suficient de clară a direcției pentru următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub SMA20/50/200, -43% pe 60 de zile, piețe de risc în scădere largă), însă RSI 32 și stabilizarea din ultimele 5 zile sugerează o posibilă consolidare sau revenire tehnică. Semnalele sunt contradictorii, iar volatilitatea de 88% face direcția pe 5 zile imprevizibilă din aceste date. |
+| gemini | HOLD | 0.60 | Deși tendința pe termen mediu este puternic descendentă și prețul se află sub mediile mobile majore, valoarea RSI de 32 și stabilizarea din ultimele 5 zile (+0.5%) indică o posibilă epuizare a vânzărilor pe termen scurt. Din cauza acestor semnale tehnice contradictorii și a volatilității ridicate, direcția pentru următoarele 5 zile este incertă. |
+| grok | SELL | 0.58 | TAO rămâne sub SMA20, SMA50 și SMA200, cu scăderi de 15,6% pe 20 de zile și 43,4% pe 60 de zile, iar regula SMA 20/50 indică vânzare. RSI de 32 și revenirea scurtă nu compensează trendul descendent și slăbiciunea piețelor cripto corelate, deci pe 5 zile biasul rămâne negativ. |
+| deepseek | SELL | 0.65 | Prețul se situează sub SMA20, SMA50 și SMA200, iar regula botului indică vânzare, semnalând o tendință descendentă puternică. RSI de 32, deși aproape de supravânzare, nu oferă un semnal de inversare suficient de puternic în contextul scăderilor generalizate pe piețele crypto și de risc. |
 
 ## FET: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.1067 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 0.1086 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile persistente, prețul mult sub mediile mobile și slăbiciunea generală a pieței înclină perspectiva pentru următoarele 5 zile spre continuarea declinului. Totuși, RSI de 19 indică supravânzare, iar volatilitatea ridicată și apropierea de minimul anual sporesc riscul unei reveniri tehnice, limitând încrederea prognozei. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar piețele de risc scad la unison), dar RSI 19 și prețul aflat la doar 2.7% peste minimul anual sugerează o supravânzare extremă care face plauzibil și un rebound pe termen scurt. Cu o volatilitate de ~97%, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
-| gemini | HOLD | 0.65 | Deși FET se află într-un trend descendent puternic sub toate mediile mobile, în ton cu scăderea masivă a întregii piețe, indicatorul RSI de 19 arată o supravânzare extremă aproape de minimul anual. Aceste semnale contradictorii și volatilitatea de 97% fac direcția pe următoarele 5 zile prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.58 | Tendința pe 5–60 de zile este puternic descendentă, iar prețul rămâne mult sub mediile mobile, dar RSI 19 și apropierea de minimul anual indică o posibilă revenire pe termen scurt. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | HOLD | 0.40 | RSI extrem de scăzut (19) sugerează o posibilă revenire pe termen scurt, dar trendul descendent puternic și regula SMA 20/50 indică vânzare, iar contextul pieței crypto este negativ. |
+| gpt | HOLD | 0.78 | Tendința este puternic descendentă, cu prețul sub toate mediile mobile și scăderi ample pe piața cripto, dar RSI de 16 indică supravânzare și posibilitatea unui ricoșeu. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea suficient de sigură a direcției în următoarele 5 zile doar din datele oferite. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (prețul este mult sub SMA20/50/200, regula botului spune vinde, iar piețele de risc scad pe larg), însă RSI de 16 indică o supravânzare extremă, cu risc de revenire tehnică pe termen scurt. Semnalele conflictuale și volatilitatea ridicată nu permit o direcție clară pe 5 zile doar din aceste date. |
+| gemini | HOLD | 0.65 | Deși RSI(14) la 16 indică o supravânzare extremă ce ar putea genera un rimbalz pe termen scurt, trendul puternic descendent al FET și scăderile generalizate din piețele globale și cripto creează semnale contradictorii. Volatilitatea foarte ridicată de 87% și absența unui semnal clar de inversare fac ca direcția pe următoarele 5 zile să fie prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.48 | Tendința rămâne puternic descendentă, sub mediile mobile, iar regula SMA 20/50 indică vânzare, dar RSI de 16 semnalează o zonă extrem de supravândută. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | SELL | 0.65 | FET se află într-un trend descendent puternic, sub toate mediile mobile, iar RSI extrem de supravândut (16) nu oferă un semnal clar de inversare. Contextul general al piețelor crypto și tradiționale este negativ, sugerând continuarea scăderii pe termen scurt. |
 
 ## SEI: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0328 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 0.0333 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile persistente, prețul mult sub mediile mobile și slăbiciunea generală a pieței cripto înclină perspectiva pentru următoarele 5 zile spre continuarea declinului. Totuși, RSI de 19 indică supravânzare, iar apropierea de minimul anual și volatilitatea ridicată fac posibilă o revenire pe termen scurt, limitând încrederea în estimare. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -56% pe 60 de zile, iar regula SMA 20/50 spune vinde) pe fondul unei slăbiciuni generale a pieței, dar RSI de 19 și prețul aflat la doar 1,5% peste minimul anual indică o supravânzare extremă care poate declanșa un rebound. Semnalele contradictorii și volatilitatea de circa 80% nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.65 | Trendul general al SEI și al pieței cripto este puternic descendent, prețul situându-se mult sub mediile mobile și aproape de minimul anual. Cu toate acestea, valoarea RSI de 19 indică o supravânzare extremă care ar putea genera un rimbalz tehnic pe termen scurt, făcând direcția următoarelor 5 zile prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.46 | SEI este în trend descendent puternic, sub mediile mobile, dar RSI(14) de 19 și apropierea de minimul anual indică o zonă extrem de supravândută. Datele nu permit o direcție clară pentru următoarele 5 zile, între continuarea scăderii și un posibil rebound. |
-| deepseek | SELL | 0.60 | Trendul descendent este puternic, cu prețul sub toate mediile mobile și RSI supravândut (19), iar contextul pieței crypto este negativ, sugerând continuarea scăderii. Deși RSI-ul extrem ar putea anunța o revenire pe termen scurt, momentumul actual și regula botului indică vânzare. |
+| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 21 indică supravânzare și posibilitatea unui rebound. Datele disponibile nu permit stabilirea suficient de sigură a direcției în următoarele 5 zile, mai ales la volatilitatea ridicată raportată. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (preț mult sub SMA20/50/200, -53.7% pe 60 de zile, regula SMA spune vinde) într-o piață largă în scădere, dar RSI de 21 indică supravânzare extremă și prețul este aproape de minimul anual, deci un rebound pe termen scurt este la fel de plauzibil. Cu volatilitate de ~80%, semnalele contradictorii nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși trendul general al pieței și mediile mobile pentru SEI indică o scădere puternică, valoarea RSI de 21 arată o supravânzare extremă și o stabilizare recentă (+1.4% într-o zi). Semnalele contradictorii dintre trendul descendent sever și posibilitatea unui rimbalz tehnic pe termen scurt fac direcția pe următoarele 5 zile incertă. |
+| grok | SELL | 0.58 | Tendința pe 5–60 de zile rămâne clar descendentă, iar prețul este mult sub mediile mobile, în linie cu slăbiciunea piețelor cripto. RSI-ul de 21 indică supravânzare, dar datele disponibile nu arată încă o inversare pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.50 | RSI extrem de supravândut (21) sugerează o posibilă revenire pe termen scurt, dar trendul descendent puternic și regula botului (SMA 20/50) indică vânzare, făcând incertă direcția pe 5 zile. |
 
-## STX: **NU TRANZACȚIONA** (fără înclinație)
-Preț 0.2603 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.76 | Scăderea pe 20 de zile și prețul sub SMA20/SMA50 sugerează presiune descendentă, dar RSI de 30 și menținerea peste SMA200 lasă deschisă posibilitatea unei reveniri. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea suficient de convingătoare a direcției în următoarele 5 zile. |
-| claude | HOLD | 0.55 | Trendul pe termen scurt este clar descendent (sub SMA20/SMA50, -27.6% în 20 de zile, regula botului indică vânzare, iar piețele de risc sunt larg în scădere), dar RSI 30 sugerează supravânzare și stabilizare recentă (+0.1%/-1.2%), deci semnalele sunt contradictorii. Fără știri, direcția pe 5 zile nu poate fi stabilită cu încredere. |
-| gemini | HOLD | 0.60 | Deși STX este la limita zonei de supravânzare cu un RSI de 30 și se menține peste SMA200 (+7.6%), se află sub SMA20 și SMA50 pe fondul unor scăderi masive pe întreaga piață în ultimele 20 de zile. Semnalele tehnice mixte și volatilitatea ridicată nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Tendința pe 20–60 de zile și semnalul SMA 20/50 sunt negative, iar piața cripto este slabă, dar RSI 30 indică supravânzare și orizontul de 5 zile este prea zgomotos la volatilitate de 78%. Datele nu permit o direcție clară. |
-| deepseek | HOLD | 0.30 | Prețul se află sub mediile mobile pe 20 și 50 de zile, iar RSI-ul de 30 sugerează o piață supra-vândută, dar fără un catalizator clar, direcția pe 5 zile este incertă. |
-
-## BONK: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.030 $.
+## STX: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 0.2639 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința puternic descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 21 indică supravânzare și posibilitatea unui rebound. Volatilitatea foarte mare și lipsa altor informații nu permit o concluzie suficient de solidă asupra direcției în următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar piețele cripto și de risc sunt în scădere largă), dar RSI de 21 arată o stare de supravânzare extremă care poate declanșa un rebound pe termen scurt. Cu volatilitate de peste 90% și fără știri, semnalele contradictorii nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI(14) la 21 indică o supravânzare severă, trendul descendent puternic al BONK și scăderile generalizate pe întreaga piață crypto și de acțiuni fac direcția pe termen scurt extrem de incertă. Prin urmare, datele oferă semnale contradictorii între o posibilă revenire tehnică și continuarea prăbușirii macro, justificând menținerea poziției. |
-| grok | HOLD | 0.42 | Tendința pe 1–120 de zile și poziția sub mediile mobile indică scădere, iar regula SMA 20/50 spune vinde, dar RSI 21 și apropierea de minimul anual lasă loc unui rebound. Cu volatilitate foarte mare și fără alte date, direcția pe următoarele 5 zile nu poate fi decisă. |
-| deepseek | SELL | 0.65 | Prețul BONK se află într-un trend descendent accentuat, sub toate mediile mobile, iar contextul pieței crypto este puternic negativ. Deși RSI indică supravânzare, momentumul descendent și regula SMA sugerează continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.78 | Prețul sub SMA20 și SMA50 și scăderea generalizată a pieței indică presiune negativă, dar revenirea de 7,6% în ultimele 5 zile și RSI de 33 oferă semnale contradictorii. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de credibile pentru următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul pe termen mediu este negativ (sub SMA20 și SMA50, -21.8% pe 20 de zile, regula SMA 20/50 indică vânzare, iar piața crypto este în scădere largă), dar RSI 33 aproape de supravânzare și revenirea de +7.6% pe 5 zile sugerează un posibil rebound. Semnalele sunt contradictorii, iar volatilitatea este mare, deci datele nu permit o decizie clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși STX arată o revenire pe termen foarte scurt (+7.6% în 5 zile) și un RSI(14) de 33 aproape de zona de supravânzare, prețul rămâne sub mediile mobile de 20 și 50 de zile într-un context macro negativ generalizat. Semnalele tehnice contradictorii și volatilitatea ridicată nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.48 | Datele arată un rebound scurt (+7,6% pe 5 zile) dar prețul rămâne sub SMA20 și SMA50, RSI este 33, iar piețele majore sunt în scădere pe 20 de zile. Semnalele sunt contradictorii, deci direcția pe următoarele 5 zile nu poate fi decisă. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile pe 20 și 50 de zile, iar regula botului indică vânzare; RSI aproape de supravânzare ar putea limita scăderea, dar tendința pe termen scurt rămâne negativă. |
+
+## BONK: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 0.0000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.029 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.77 | Trendul descendent și slăbiciunea generală a pieței sugerează presiune negativă, dar RSI de 24 și creșterile recente permit și un recul ascendent. Volatilitatea ridicată și lipsa altor confirmări nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.30 | Trendul este clar descendent (preț mult sub SMA20/50/200, -41.6% pe 60 de zile, piața crypto largă în scădere, iar regula botului spune vinde), dar RSI 24 indică supravânzare și ultimele 5 zile arată o ușoară stabilizare, deci un rebound pe termen scurt este la fel de plauzibil ca o continuare a căderii. Cu volatilitate de ~90% și fără știri, datele nu permit o direcție fiabilă pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși RSI-ul de 24 și stabilizarea din ultimele 5 zile (+1.4%) sugerează o stare de supravânzare, trendul general rămâne puternic descendent, cu prețul situat mult sub mediile mobile și o scădere severă pe întreaga piață cripto și de acțiuni. Din cauza semnalelor contradictorii pe termen scurt și a volatilității extrem de ridicate (90%), direcția pentru următoarele 5 zile este prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.42 | Tendința pe 20–120 de zile este puternic descendentă și prețul stă mult sub mediile mobile, dar RSI 24 și variațiile ușor pozitive pe 1–5 zile lasă loc unui rebound scurt. Semnalele sunt contradictorii, iar prețul raportat este prea imprecis pentru o direcție clară pe cinci zile. |
+| deepseek | BUY | 0.25 | RSI extrem de scăzut (24) și creșterile mici pe 1 și 5 zile sugerează o posibilă corecție ascendentă pe termen scurt, deși trendul pe termen lung rămâne negativ. |
 
 ## WIF: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.1211 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
+Preț 0.1273 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.59 | Tendința descendentă pe mai multe intervale, prețul sub SMA20/50/200 și slăbiciunea generală a pieței susțin o probabilitate moderat mai mare de scădere în următoarele 5 zile. Totuși, RSI de 22 indică supravânzare, iar volatilitatea ridicată permite un recul ascendent puternic, ceea ce limitează încrederea în prognoză. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -52% pe 60 de zile, regula SMA 20/50 spune vinde, piața crypto și activele de risc în scădere largă), dar RSI de 22 indică o supravânzare severă care face probabil un rebound pe termen scurt. Cu o volatilitate de aproape 80% și fără știri, direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
-| gemini | HOLD | 0.65 | Deși WIF se află într-un trend descendent puternic și într-un context macro și cripto nefavorabil, nivelul RSI de 22 indică o supravânzare extremă care poate declanșa o revenire pe termen scurt. Din cauza acestor semnale tehnice contradictorii pe un orizont de 5 zile și a volatilității foarte mari, direcția prețului este prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.42 | Tendința rămâne descendentă, sub mediile mobile și în linie cu scăderile cripto, iar regula SMA indică vânzare. RSI de 22 și apropierea de minimul anual pot susține un rebound, deci direcția pe 5 zile nu este clară. |
-| deepseek | HOLD | 0.30 | RSI la 22 indică o stare de supravânzare, sugerând o posibilă revenire pe termen scurt, dar trendul descendent puternic și regula SMA 20/50 recomandă vânzare. |
+| gpt | HOLD | 0.78 | Tendința descendentă și prețul sub SMA20/50/200 indică presiune negativă, dar RSI de 30 și revenirea recentă sugerează posibilitatea unui rebound. Doar aceste date, în condiții de volatilitate foarte mare, nu permit stabilirea suficient de clară a direcției pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul rămâne puternic descendent (preț sub toate mediile mobile, -48% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc scad la nivel larg), însă RSI la 30 și revenirea recentă de +5% sugerează o posibilă supravânzare pe termen scurt. Semnalele contradictorii și volatilitatea foarte mare nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.50 | Deși trendul general este puternic descendent, cu prețul situat semnificativ sub mediile mobile și o piață globală în scădere, există semne de revenire pe termen foarte scurt (+5.1% într-o zi, +4.3% în 5 zile) de la un nivel RSI de supravânzare (30). Aceste semnale contradictorii și volatilitatea extremă de 83% fac imposibilă o predicție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Datele arată un trend descendent clar față de mediile mobile și o piață cripto slabă, deși RSI este aproape de zona de supravânzare și ultimele zile au avut un mic rebound. Volatilitatea foarte mare și semnalele contradictorii nu permit o direcție fiabilă pentru următoarele 5 zile. |
+| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile principale (SMA20, SMA50, SMA200), iar tendința descendentă pe termen scurt și mediu este accentuată de scăderile generale din piața crypto. Deși RSI indică o zonă supravândută, contextul general negativ și regula botului sugerează continuarea scăderii. |
 
-## FLOKI: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.77 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 19 indică supravânzare și posibilitatea unui recul ascendent. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -29.5% pe 20 de zile, piața crypto largă în scădere), dar RSI de 19 indică o supravânzare extremă care face probabil un rebound pe termen scurt, deci semnalele sunt contradictorii. Pe un orizont de 5 zile, la un memecoin cu volatilitate foarte mare și fără știri, datele nu permit o direcție clară. |
-| gemini | HOLD | 0.65 | Deși trendul general este puternic descendent, iar piața cripto și activele de risc suferă scăderi masive, nivelul RSI(14) de 19 indică o supravânzare extremă care ar putea genera un ricoșeu tehnic pe termen scurt. Din cauza acestor semnale tehnice contradictorii pe un orizont de 5 zile și a volatilității ridicate, direcția este prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.42 | Tendința pe 20–60 de zile este clar descendentă și piața cripto este în scădere, dar RSI(14) la 19 indică o zonă puternic supravândută, deci un rebound pe 5 zile nu poate fi exclus. Datele nu permit o direcție sigură pe termen scurt. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar regula SMA 20/50 indică vânzare; deși RSI-ul de 19 sugerează o piață supra-vândută, contextul general bearish al pieței crypto nu oferă semnale de inversare iminentă. |
-
-## TRUMP: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.8380 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+## FLOKI: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.0000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile persistente, prețul mult sub mediile mobile și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile de tranzacționare. Totuși, RSI de 16 indică supravânzare, iar volatilitatea foarte mare face posibilă o revenire bruscă și limitează încrederea în estimare. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -60% pe 60 de zile, piața crypto în scădere generală), dar RSI 16 și apropierea de minimul anual indică o supravânzare extremă care poate produce un rebound pe termen scurt. Semnalele contradictorii și volatilitatea foarte mare nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși nivelul RSI de 16 indică o supravânzare extremă care ar putea genera un rimbalz tehnic pe termen scurt, trendul descendent puternic și scăderile masive de pe întreaga piață crypto și bursieră sugerează un risc ridicat de continuare a deprecierii. În absența unui semnal clar de stabilizare și având în vedere volatilitatea foarte mare, datele sunt contradictorii pentru următoarele 5 zile. |
-| grok | HOLD | 0.46 | Trendul pe 5–60 de zile este puternic negativ și prețul stă mult sub mediile mobile, dar RSI 16 și apropierea de minimul anual indică o posibilă revenire tehnică. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, cu un RSI extrem de supravândut (16), dar fără semnale de inversare, iar contextul general al pieței cripto și al activelor de risc este puternic negativ. |
+| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 23 și revenirea recentă pot indica un recul ascendent temporar. Datele disponibile nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile, mai ales la volatilitatea ridicată a FLOKI. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, semnal SMA de vânzare, piețe largi în scădere), dar RSI 23 indică supravânzare și un posibil rebound pe termen scurt, deci semnalele pe 5 zile sunt contradictorii. Fără știri și cu volatilitate foarte mare, datele nu permit o direcție fiabilă. |
+| gemini | HOLD | 0.60 | Deși RSI(14) la 23 indică o supravânzare extremă și o ușoară stabilizare recentă (+2.9% pe 5 zile), prețul rămâne într-un trend descendent puternic sub toate mediile mobile majore. Contextul macroeconomic general este puternic negativ, cu scăderi masive pe Bitcoin și piețele de acțiuni, făcând direcția pe următoarele 5 zile prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: RSI 23 și plusul pe 1/5 zile sugerează o posibilă revenire, dar prețul rămâne mult sub mediile mobile, iar scăderile pe 20/60 de zile și slăbiciunea piețelor crypto indică trend descendent. Volatilitatea foarte mare face direcția pe 5 zile imposibil de decis doar din aceste date. |
+| deepseek | HOLD | 0.40 | RSI supravândut (23) sugerează o posibilă revenire pe termen scurt, dar tendința descendentă puternică și regula SMA 20/50 de vânzare indică incertitudine ridicată. |
 
-## PENGU: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0042 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.76 | Trendul puternic descendent și scăderile generalizate favorizează continuarea declinului, dar RSI de 12 indică supravânzare extremă și posibilitatea unui recul ascendent. Doar aceste date, pe fondul volatilității foarte ridicate, nu permit alegerea suficient de sigură a direcției pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, -42% pe 20 de zile, aversiune generală la risc în cripto), dar RSI de 12 indică o supravânzare extremă, iar prețul se află aproape de minimul anual, ceea ce face probabil un rebound pe termen scurt. Semnalele sunt contradictorii, iar volatilitatea foarte mare nu permite o direcție clară pe 5 zile doar din aceste date. |
-| gemini | HOLD | 0.65 | Deși RSI(14) de 12 indică o supravânzare extremă care ar putea genera un reviriment pe termen scurt, trendul puternic descendent sub toate mediile mobile și scăderile masive de pe întreaga piață crypto și bursieră fac o cumpărare prea riscantă. Datorită conflictului dintre supravânzarea tehnică și contextul macroeconomic puternic negativ, direcția pentru următoarele 5 zile este incertă. |
-| grok | HOLD | 0.46 | PENGU este în trend descendent puternic și sub mediile mobile, dar RSI(14) de 12 indică o zonă extrem de supravândută, iar piața largă este și ea în scădere. Semnalele sunt contradictorii, deci direcția pe următoarele 5 zile nu poate fi decisă din aceste date. |
-| deepseek | SELL | 0.60 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar RSI extrem de scăzut (12) indică o continuare probabilă a scăderii, în contextul unui market general negativ. |
-
-## ENA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.0983 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+## TRUMP: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.8900 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile persistente, prețul sub toate mediile mobile indicate și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 16 indică supravânzare, iar volatilitatea ridicată permite o revenire bruscă, limitând încrederea în prognoză. |
-| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, -45.7% în 20 de zile, semnal de vânzare SMA 20/50, slăbiciune generală pe piețele de risc), dar RSI de 16 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea foarte mare nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși RSI(14) de 16 indică o supravânzare extremă care ar putea genera un ricoșeu pe termen scurt, trendul puternic descendent al întregii piețe și poziționarea mult sub mediile mobile mențin riscul de scădere ridicat. Datele disponibile sunt contradictorii pentru orizontul de 5 zile, motiv pentru care nu se poate lua o decizie clară. |
-| grok | HOLD | 0.46 | Tendința pe 20 și 60 de zile este puternic descendentă, iar prețul stă sub mediile mobile, dar RSI de 16 indică o zonă extrem de supravândută. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | SELL | 0.55 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar RSI-ul de 16 indică o stare de supravânzare, dar într-un context de piață negativ, tendința de scădere poate continua. |
+| gpt | HOLD | 0.79 | Trendul descendent și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 25 și revenirea recentă indică posibilitatea unui rebound. Volatilitatea foarte ridicată și lipsa altor date nu permit o alegere suficient de solidă a direcției pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (preț mult sub SMA20/50/200, regula SMA spune vinde, piețele de risc sunt în scădere largă), dar RSI 25 și revenirea recentă de +6.2% sugerează condiții de supravânzare care pot aduce un rebound pe termen scurt. Semnalele sunt contradictorii, iar volatilitatea de aproape 90% face direcția pe 5 zile imprevizibilă din aceste date. |
+| gemini | HOLD | 0.60 | Deși RSI-ul de 25 și creșterile pe 1 și 5 zile sugerează o posibilă revenire din supravânzare, trendul general rămâne puternic descendent sub toate mediile mobile, iar piața globală este în scădere severă. Având în vedere semnalele contradictorii pe termen foarte scurt și volatilitatea extremă, datele sunt insuficiente pentru o direcție clară în următoarele 5 zile. |
+| grok | HOLD | 0.35 | Semnalele sunt contradictorii: revenire scurtă și RSI 25, dar prețul rămâne mult sub mediile mobile, regula SMA indică vânzare, iar piețele riscante sunt în scădere. Volatilitatea foarte mare și lipsa altor date nu permit o direcție credibilă pe 5 zile. |
+| deepseek | HOLD | 0.30 | RSI indică supravânzare, ceea ce ar putea duce la o revenire pe termen scurt, dar tendința generală este puternic descendentă, iar media mobilă sugerează vânzare. În contextul volatilității ridicate și al piețelor globale în scădere, direcția pe 5 zile este incertă. |
+
+## PENGU: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.0043 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.025 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 15 indică supravânzare și posibilitatea unui recul ascendent. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de convingătoare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, regula SMA spune vinde, piața crypto largă în scădere), dar RSI 15 indică supravânzare extremă și posibil rebound pe termen scurt. Semnalele contradictorii și volatilitatea foarte mare nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși indicatorul RSI la 15 indică o supravânzare extremă și o stabilizare recentă pe 5 zile (-0.1%), trendul general rămâne puternic descendent sub toate mediile mobile, pe fondul unei scăderi masive a întregii piețe cripto și de acțiuni. Volatilitatea foarte ridicată de 104% și semnalele contradictorii dintre trendul macro negativ și epuizarea pe termen scurt fac direcția pe 5 zile prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: RSI(14) la 15 indică supravânzare, dar prețul rămâne mult sub mediile mobile, aproape de minimul anual, iar regula SMA 20/50 indică vânzare într-o piață largă slabă. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | HOLD | 0.35 | RSI extrem de scăzut (15) sugerează o posibilă revenire pe termen scurt, dar trendul descendent puternic (preț sub toate mediile mobile) și semnalul botului de vânzare indică continuarea scăderii, făcând direcția incertă. |
+
+## ENA: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 0.1009 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.76 | Tendința dominantă este descendentă, cu prețul sub toate mediile mobile și ENA mai slabă decât principalele criptomonede pe 20 de zile, însă RSI de 20 și revenirea recentă indică posibilitatea unui recul ascendent. Volatilitatea ridicată și semnalele contradictorii nu permit alegerea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (preț mult sub SMA20/50/200, -37% în 20 de zile, semnal de vânzare SMA 20/50, slăbiciune generalizată pe piețe), dar RSI 20 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea foarte mare nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși RSI(14) la 20 și stabilizarea recentă (+1.8% pe 5 zile) indică o zonă de supravânzare, trendul pe termen mediu rămâne puternic descendent (-37.1% pe 20 de zile, prețul fiind mult sub mediile mobile SMA20, SMA50 și SMA200). În contextul unei scăderi generalizate pe piețele cripto și globale, semnalele tehnice sunt prea contradictorii pentru o direcție clară pe 5 zile. |
+| grok | HOLD | 0.48 | Tendința rămâne clar descendentă, cu prețul mult sub mediile mobile și semnal SMA 20/50 de vânzare, dar RSI 14 la 20 indică supravânzare, iar ultimele 1–5 zile sunt ușor pozitive. Datele nu permit o direcție fiabilă pentru următoarele 5 zile. |
+| deepseek | BUY | 0.60 | RSI de 20 indică o stare de supravânzare extremă, iar creșterile ușoare pe 1 și 5 zile sugerează un posibil rebound pe termen scurt. |
 
 ## WLD: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.2358 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 0.2400 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Tendința descendentă pe mai multe intervale, prețul sub mediile mobile și slăbiciunea generală a pieței susțin o înclinație spre scădere în următoarele 5 zile. Totuși, RSI de 24 indică supravânzare, iar volatilitatea ridicată permite o revenire bruscă, limitând încrederea în estimare. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (preț mult sub SMA20/50/200, regula SMA spune vinde, piețele de risc scad larg), dar RSI 24 indică supravânzare și posibilitatea unui rebound pe termen scurt. Cu o volatilitate de ~100%, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
-| gemini | HOLD | 0.60 | Deși WLD este într-un trend descendent puternic, susținut de scăderi masive pe întreaga piață crypto și prețuri mult sub mediile mobile, valoarea RSI de 24 indică o stare severă de supravânzare care crește riscul unui reviriment pe termen scurt. Din cauza acestor semnale tehnice contradictorii pe un orizont de 5 zile și a volatilității extreme, datele sunt insuficiente pentru o decizie clară. |
-| grok | HOLD | 0.48 | Tendința pe 5–60 de zile este clar descendentă și prețul stă mult sub mediile mobile, dar RSI(14) de 24 indică supravânzare, deci un rebound pe 5 zile nu poate fi exclus. Datele disponibile nu permit o direcție sigură pe termen scurt. |
-| deepseek | SELL | 0.60 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar RSI de 24 indică o stare de supravânzare care ar putea duce la o revenire temporară. Totuși, contextul general de piață este negativ, iar regula SMA 20/50 sugerează vânzare, ceea ce face mai probabilă continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.78 | Tendința dominantă este descendentă, cu prețul sub toate mediile mobile și scăderi ample pe piața cripto, dar RSI de 27 și revenirea recentă indică posibilitatea unui recul ascendent. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -54% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc scad pe scară largă), dar RSI de 27 și ușoara revenire din ultimele 5 zile sugerează o zonă de supravânzare care poate aduce un rebound. Semnalele sunt contradictorii și volatilitatea este foarte mare, așa că direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
+| gemini | HOLD | 0.60 | Deși RSI(14) de 27 și creșterea de +4.3% din ultimele 5 zile indică o posibilă revenire pe termen scurt din zona de supravânzare, trendul general rămâne puternic descendent, cu prețul mult sub mediile mobile și o scădere severă pe piața globală și crypto. Semnalele tehnice contradictorii și volatilitatea foarte ridicată (91%) fac imposibilă o predicție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Pe 5 zile semnalul este mixt: revenire scurtă (+4,3%) și RSI 27 supra-vândut, dar prețul rămâne mult sub SMA20/50/200, iar regula SMA indică vânzare într-un context de risc general. Volatilitatea foarte ridicată face direcția următoarelor 5 zile imposibil de decis doar din aceste date. |
+| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile principale, iar RSI indică supravânzare. Totuși, tendința descendentă puternică și corelația cu scăderile altor criptomonede sugerează o continuare a scăderii. |
 
 ## JUP: **VINDE** (înclină spre vânzare)
-Preț 0.2215 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 0.2262 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.029 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.61 | Scăderile pe 5–60 de zile și prețul sub SMA20, SMA50 și SMA200 favorizează continuarea tendinței descendente în următoarele 5 zile, pe fondul slăbiciunii generale a pieței cripto. Volatilitatea ridicată și performanța relativ mai bună decât Bitcoin limitează însă încrederea în această estimare. |
-| claude | HOLD | 0.35 | JUP este într-un trend descendent clar (sub SMA20, SMA50 și SMA200, semnal de vânzare SMA 20/50) pe fondul unei slăbiciuni generale a pieței crypto, dar RSI de 41 nu indică încă supravânzare, iar JUP a rezistat relativ mai bine decât Solana și Bitcoin în ultimele 20 de zile. Cu o volatilitate de peste 100% anualizat, direcția pe 5 zile nu poate fi stabilită fiabil doar din aceste prețuri. |
-| gemini | SELL | 0.70 | Prețul JUP se află într-un trend descendent clar pe termen scurt și mediu, tranzacționându-se sub mediile mobile de 20, 50 și 200 de zile, fără a fi încă în zona de supravânzare (RSI 41). În plus, scăderile generalizate și severe de pe piața cripto și de capital din ultimele 20 de zile indică o aversiune puternică față de risc, favorizând continuarea scăderii în următoarele 5 zile. |
-| grok | SELL | 0.62 | JUP este sub SMA20, SMA50 și SMA200, cu scăderi pe 1, 5, 20 și 60 de zile, RSI 41 și semnal de vânzare SMA 20/50, iar piața cripto este slabă. Volatilitatea ridicată limitează certitudinea, dar datele disponibile indică mai degrabă continuarea scăderii pe 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se află sub SMA20, SMA50 și SMA200, iar RSI-ul de 41 confirmă un momentum negativ. Corelat cu scăderile generalizate de pe piața crypto și activele de risc, trendul descendent are probabilitate mare să continue. |
+| gpt | SELL | 0.58 | Prețul sub SMA20, SMA50 și SMA200, scăderea de 33,3% în 60 de zile și RSI de 42 înclină perspectiva pentru următoarele 5 zile spre scădere. Totuși, rezistența relativă față de piața cripto în ultimele 20 de zile și volatilitatea ridicată limitează încrederea în această estimare. |
+| claude | HOLD | 0.30 | Trendul pe termen mediu este negativ (sub SMA20 și SMA50, regula botului spune vinde, -33% pe 60 de zile), iar piețele de risc sunt în scădere puternică, dar JUP a rezistat relativ bine pe 20 de zile (-5.8% față de -21% la Solana), iar RSI-ul de 42 este neutru. Cu o volatilitate de peste 100%, semnalele contradictorii nu permit o predicție fiabilă pe 5 zile. |
+| gemini | SELL | 0.65 | Prețul JUP se află sub toate mediile mobile majore (SMA 20, 50 și 200), confirmând un trend descendent clar, susținut și de un RSI de 42. În plus, scăderile masive din ultimele 20 de zile pe întreaga piață cripto (inclusiv Bitcoin și Solana) și pe piețele de acțiuni indică un mediu de aversiune la risc puternică, favorizând continuarea scăderii pe termen scurt. |
+| grok | HOLD | 0.42 | JUP este sub mediile mobile și semnalul SMA 20/50 indică vânzare, într-un context de scăderi ample pe cripto. Volatilitatea anualizată de peste 100% face însă direcția pe următoarele 5 zile imposibil de decis doar din aceste date. |
+| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile pe termen scurt și mediu, iar regula SMA indică vânzare, în contextul unei piețe crypto puternic corectate. Deși RSI nu este extrem, tendința descendentă pe 60 de zile și volatilitatea ridicată sugerează continuarea scăderii pe termen scurt. |
 
-## LDO: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.2288 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.025 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința puternic descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 14 indică supravânzare și posibilitatea unei reveniri pe termen scurt. Aceste semnale contradictorii și volatilitatea ridicată nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 zile doar din datele oferite. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, regula SMA spune vinde, piața crypto în scădere generală), dar RSI de 14 indică o supravânzare extremă, aproape de minimul anual, ceea ce face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o decizie clară pentru următoarele 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI(14) la nivelul extrem de 14 și apropierea de minimul anual (+3.9%) indică o supravânzare severă, trendul descendent puternic și scăderile generalizate din întreaga piață prezintă riscuri majore de continuare a scăderii. Din cauza semnalelor tehnice contradictorii pe termen scurt și a volatilității ridicate, datele sunt insuficiente pentru o direcție clară în următoarele 5 zile. |
-| grok | HOLD | 0.42 | Tendința pe 5–120 de zile este puternic descendentă, iar regula SMA 20/50 indică vânzare, dar RSI(14) de 14 și apropierea de minimul anual semnalează o condiție extrem de supravândută. Datele nu permit o direcție clară pentru următoarele 5 zile. |
-| deepseek | SELL | 0.70 | LDO se află într-un trend descendent puternic, cu prețul sub toate mediile mobile și un RSI extrem de scăzut (14), iar sentimentul general al pieței este negativ, ceea ce sugerează continuarea scăderii pe termen scurt. |
-
-## CRV: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.1752 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## LDO: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 0.2331 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.59 | Scăderile persistente, prețul sub toate mediile mobile indicate și slăbiciunea generală a pieței favorizează continuarea declinului în următoarele 5 zile. Totuși, RSI de 11 indică supravânzare extremă, iar volatilitatea ridicată face posibilă o revenire bruscă și limitează încrederea în prognoză. |
-| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, regula SMA 20/50 indică vânzare, iar piețele de risc scad la unison), dar RSI de 11 arată o supravânzare extremă care face probabil un rebound tehnic pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o predicție fiabilă pentru următoarele 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI(14) la nivelul extrem de scăzut de 11 sugerează o stare puternică de supravânzare, trendul general al CRV și al întregii piețe rămâne sever descendent, cu prețul situat mult sub mediile mobile. Această contradicție între posibilitatea unui reviriment tehnic pe termen scurt și presiunea vânzătorilor la nivel macro face ca direcția pentru următoarele 5 zile să fie incertă. |
-| grok | HOLD | 0.46 | Tendința pe 5–60 de zile este puternic descendentă, prețul e sub mediile mobile, iar regula SMA 20/50 indică vânzare, dar RSI(14) de 11 arată o supravânzare extremă care poate produce un rebound scurt. Datele nu separă clar continuarea scăderii de o revenire în următoarele 5 zile. |
-| deepseek | HOLD | 0.30 | Deși RSI-ul de 11 indică o stare de supravânzare extremă care ar putea duce la o revenire, tendința descendentă puternică și corelația cu scăderile generale din piața crypto mențin incertitudinea asupra direcției pe termen scurt. |
+| gpt | HOLD | 0.76 | Tendința descendentă și slăbiciunea generală a pieței favorizează continuarea scăderii, dar RSI de 18 semnalează supravânzare și posibilitatea unui rebound pe termen scurt. Datele disponibile nu permit alegerea suficient de sigură a unei direcții pentru următoarele 5 zile, mai ales în condiții de volatilitate ridicată. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -51% pe 60 de zile, regula SMA spune vinde, piața crypto largă în scădere), dar RSI de 18 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Deși nivelul extrem de supravândut al RSI(14) la 18 și creșterea ușoară din ultima zi ar putea sugera un potențial reviriment tehnic pe termen scurt, trendul general al LDO și al întregii piețe este puternic descendent, cu prețul mult sub mediile mobile. Din cauza acestui conflict între semnalele de supravânzare extremă și presiunea macro negativă, direcția pe următoarele 5 zile este prea incertă pentru a lua o poziție. |
+| grok | HOLD | 0.42 | LDO este într-un trend descendent clar, sub mediile mobile, dar RSI 14 la 18 și apropierea de minimul anual indică o zonă extrem de supravândută. Direcția pe următoarele 5 zile nu poate fi decisă doar din aceste date, mai ales cu volatilitate ridicată și corecție generală pe piețe. |
+| deepseek | BUY | 0.30 | RSI de 18 indică o stare de supravânzare, ceea ce adesea precede o creștere pe termen scurt. Prețul a avut o ușoară revenire în ultima zi, sugerând un posibil momentum pozitiv. |
+
+## CRV: **NU TRANZACȚIONA** (fără înclinație)
+Preț 0.1716 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.80 | Tendința este puternic descendentă, iar CRV pierde mai mult decât principalele criptomonede, însă RSI de 11 indică o supravânzare extremă și posibilitatea unei reveniri pe termen scurt. Doar aceste date nu permit alegerea suficient de credibilă a direcției pentru următoarele 5 zile, în condiții de volatilitate ridicată. |
+| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, -31.7% în 20 de zile, semnal de vânzare SMA 20/50, risc generalizat pe piețe), dar RSI 11 indică o supravânzare extremă, iar prețul aproape de minimul anual face plauzibil un rebound pe termen scurt. Semnalele contradictorii și volatilitatea mare nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși CRV se află într-un trend descendent pronunțat sub toate mediile mobile, iar piața globală și sectorul cripto înregistrează scăderi masive, indicatorul RSI de 11 arată o condiție extremă de supravânzare. Având în vedere semnalele contradictorii dintre momentumul negativ puternic și posibilitatea unui reviriment tehnic pe termen scurt de 5 zile, datele sunt insuficiente pentru o decizie clară. |
+| grok | HOLD | 0.42 | CRV este în trend descendent puternic, sub mediile mobile, dar RSI(14) de 11 indică o zonă extrem de supravândută, iar piața cripto este și ea slabă. Datele nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | RSI extrem de scăzut (11) sugerează o posibilă revenire, dar tendința puternic descendentă și semnalul botului de vânzare indică continuarea scăderii; datele sunt insuficiente pentru o predicție clară. |
 
 ## TIA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 0.3232 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 0.3362 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile recente, prețul sub mediile mobile și slăbiciunea generală a pieței cripto sugerează continuarea presiunii descendente în următoarele 5 zile. Totuși, RSI de 26 indică supravânzare, iar volatilitatea ridicată face posibilă o revenire temporară și limitează încrederea în prognoză. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (preț sub toate mediile mobile, semnal de vânzare SMA 20/50, slăbiciune generalizată pe piețele de risc), dar RSI de 26 indică o stare de supravânzare care poate aduce un rebound pe termen scurt. Cu o volatilitate de peste 100%, direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
-| gemini | HOLD | 0.60 | Trendul general al pieței este puternic descendent, iar TIA se află semnificativ sub mediile sale mobile (SMA20, SMA50, SMA200). Cu toate acestea, indicatorul RSI la 26 semnalează o stare de supravânzare care ar putea genera un rimbalz tehnic pe termen scurt, creând semnale contradictorii pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Tendința rămâne descendentă, sub mediile mobile, iar semnalul SMA 20/50 este de vânzare, dar RSI la 26 indică supravânzare. Pentru următoarele 5 zile, datele nu separă clar continuarea scăderii de un rebound tehnic. |
-| deepseek | SELL | 0.65 | Prețul TIA se situează sub toate mediile mobile (SMA20, SMA50, SMA200), iar tendința descendentă este confirmată de scăderile generalizate din piața crypto; deși RSI indică supravânzare, momentumul negativ pe termen scurt sugerează continuarea scăderii. |
+| gpt | HOLD | 0.78 | Tendința pe 20–60 de zile și poziția sub mediile mobile sugerează presiune descendentă, dar revenirea recentă și RSI de 31 permit și o continuare a revenirii pe termen scurt. Volatilitatea ridicată și semnalele contradictorii nu permit alegerea unei direcții suficient de bine susținute pentru următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul rămâne clar descendent (preț sub SMA20/50/200, regula SMA vinde, piețele de risc în scădere largă), dar RSI de 31 și revenirea recentă de +4% sugerează o posibilă stabilizare pe termen scurt, deci semnalele sunt contradictorii. Cu o volatilitate de aproape 100% și fără știri, direcția pe 5 zile nu poate fi stabilită fiabil. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen mediu și contextul general al piețelor sunt puternic negative (prețul fiind sub mediile mobile importante), TIA arată o stabilizare pe termen scurt (+2.3% în 5 zile) și un RSI aproape de supravândut (31). Aceste semnale contradictorii, combinate cu o volatilitate extrem de ridicată, fac imposibilă o predicție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Tendința pe 20 și 60 de zile este clar negativă, iar prețul rămâne sub mediile mobile, dar ultimele 1–5 zile arată un mic rebound, iar RSI 31 nu confirmă o direcție fermă. Volatilitatea foarte ridicată și lipsa altor date fac imposibilă o estimare sigură pentru următoarele 5 zile. |
+| deepseek | SELL | 0.60 | Prețul se menține sub mediile mobile SMA20, SMA50 și SMA200, iar tendința descendentă pe 20 și 60 de zile este accentuată de contextul negativ al pieței crypto. Deși RSI este aproape de supravânzare, semnalul botului pe baza SMA20/50 este de vânzare, sugerând continuarea scăderii. |
 
-## RHEINMETALL: **NU TRANZACȚIONA** (fără înclinație)
-Preț 734.5000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.80 | Tendința descendentă și scăderile generalizate favorizează continuarea presiunii de vânzare, dar RSI de 19 și volatilitatea ridicată lasă deschisă posibilitatea unei reveniri tehnice. Doar aceste date nu permit stabilirea cu suficientă încredere a direcției în următoarele 5 ședințe. |
-| claude | HOLD | 0.30 | Trendul este puternic descendent (sub toate mediile mobile, -28% pe 20 de zile, regula SMA spune vinde) și piețele de risc scad, dar RSI de 19 indică o supravânzare extremă care face probabil un rebound pe termen scurt. Cu o volatilitate de 91% și semnale contradictorii, direcția pe 5 zile nu poate fi determinată fiabil din aceste date. |
-| gemini | HOLD | 0.65 | Deși RSI-ul extrem de scăzut (19) și revenirea de o zi (+1.3%) sugerează condiții de supravânzare, trendul descendent puternic sub toate mediile mobile și scăderea generalizată a piețelor globale indică un risc ridicat de continuare a scăderii. În condițiile unei volatilități anualizate de 91% și a semnalelor tehnice contradictorii pe termen scurt, direcția pentru următoarele 5 zile este prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.42 | Tendința pe 20–120 de zile rămâne puternic descendentă, iar prețul este sub mediile mobile, dar RSI 19 și apropierea de minimul anual indică o posibilă revenire pe termen scurt. Semnalele sunt contradictorii pentru următoarele 5 zile, deci direcția nu poate fi decisă din aceste date. |
-| deepseek | HOLD | 0.40 | RSI extrem de scăzut (19) sugerează o posibilă revenire pe termen scurt, dar trendul puternic descendent și contextul pieței globale negative indică incertitudine ridicată. |
-
-## HENSOLDT: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 77.4000 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.032 $.
+## RHEINMETALL: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 735.8000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Scăderea recentă și prețul sub SMA20, SMA50 și SMA200 sugerează presiune descendentă, dar RSI de 43 și semnalul de cumpărare al regulii SMA20/50 nu confirmă o direcție clară. Volatilitatea ridicată și lipsa altor informații fac aceste date insuficiente pentru estimarea direcției în următoarele 5 ședințe. |
-| claude | HOLD | 0.40 | Prețul este sub toate mediile mobile, cu un trend negativ pe 20 de zile și o piață generală în aversiune la risc, deși RSI 43 și semnalul SMA 20/50 de cumpărare (încă pozitiv, dar întârziat) nu indică o direcție clară. Cu o volatilitate de circa 54% și fără știri, semnalele contradictorii nu justifică o predicție pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul se află sub mediile mobile de 20, 50 și 200 de zile într-un context de piață globală negativă, însă RSI-ul este neutru (43) și volatilitatea este ridicată (54%). Având în vedere semnalele mixte dintre regula botului și trendul descendent pe termen scurt, dovezile sunt insuficiente pentru o direcție clară în următoarele 5 zile. |
-| grok | HOLD | 0.42 | Prețul este sub mediile SMA20, SMA50 și SMA200, iar evoluția pe 5, 20 și 60 de zile este negativă, deși RSI 43 nu indică o direcție clară. Semnalul simplu de cumpărare contrazice trendul, iar volatilitatea ridicată face mișcarea pe 5 zile imposibil de decis din aceste date. |
-| deepseek | SELL | 0.55 | Prețul se află sub mediile mobile SMA20, SMA50 și SMA200, iar RSI-ul sub 50 indică o tendință descendentă pe termen scurt, în contextul unei corecții generale a piețelor. Deși regula SMA20/50 sugerează cumpărare, momentul negativ și volatilitatea ridicată favorizează o scădere în următoarele 5 zile. |
+| gpt | HOLD | 0.80 | Tendința este puternic descendentă, dar RSI de 31 și apropierea de minimul anual lasă deschisă posibilitatea unei reveniri pe termen scurt. Volatilitatea foarte ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de convingătoare pentru următoarele 5 zile. |
+| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, aversiune generală la risc), dar RSI 31, stabilizarea din ultimele 5 zile și apropierea de minimul anual sugerează posibilă epuizare, deci direcția pe 5 zile este incertă. Volatilitatea foarte ridicată (91%) face ca semnalul să fie zgomotos, iar datele nu sunt suficiente pentru o decizie clară. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen mediu și lung este puternic negativ, prețul s-a stabilizat în ultimele 5 zile (-1.1%), iar RSI(14) la 31 indică o stare apropiată de supravânzare. Volatilitatea extremă de 91% și semnalele contradictorii dintre trendul descendent și posibila epuizare a vânzărilor fac direcția pe următoarele 5 zile prea incertă. |
+| grok | SELL | 0.58 | Tendința pe 20–120 de zile rămâne puternic descendentă, prețul este mult sub mediile mobile, iar regula SMA 20/50 indică vânzare, în context de aversiune la risc pe alte piețe. RSI aproape de 31 și apropierea de minimul anual limitează certitudinea pe doar 5 zile, dar datele disponibile favorizează continuarea scăderii. |
+| deepseek | SELL | 0.60 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, iar RSI de 31 indică o posibilă continuare a scăderii pe termen scurt. |
 
-## RENK: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 32.0300 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
+## HENSOLDT: **NU TRANZACȚIONA** (fără înclinație)
+Preț 77.2200 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.030 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Tendința descendentă și slăbiciunea generală a piețelor favorizează continuarea scăderii, dar RSI de 28 și revenirea zilnică de 2,3% lasă deschisă posibilitatea unui rebound tehnic. Doar aceste date, pe fondul volatilității ridicate, nu oferă suficiente dovezi pentru direcția următoarelor 5 ședințe. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (sub toate mediile mobile, -28% pe 60 de zile, semnal SMA de vânzare, piețe largi în scădere), dar RSI de 28 indică supravânzare și posibil rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși acțiunea se află într-un trend descendent clar sub mediile mobile și în contextul unei piețe globale în scădere, nivelul RSI de 28 și aprecierea din ultima zi (+2.3%) indică o zonă de supravânzare cu potențial de revenire pe termen scurt. Aceste semnale contradictorii și volatilitatea ridicată nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.46 | Tendința pe 20–120 de zile este descendentă și prețul stă sub mediile mobile, dar RSI de 28 arată supravânzare, iar saltul de o zi nu clarifică direcția pe 5 zile. Din aceste date nu se poate decide dacă urmează creștere sau scădere. |
-| deepseek | SELL | 0.60 | Tendința descendentă este puternică, cu prețul sub mediile mobile SMA20 și SMA50, iar RSI-ul supravândut poate persista. Contextul global negativ și regula SMA 20/50 confirmă semnalul de vânzare. |
+| gpt | HOLD | 0.80 | Scăderea pe 20 de zile și prețul sub SMA20, SMA50 și SMA200 sugerează presiune descendentă, dar semnalul de cumpărare al regulii SMA20/50 este contradictoriu. Volatilitatea ridicată și lipsa altor informații nu permit o estimare suficient de robustă a direcției în următoarele 5 ședințe. |
+| claude | HOLD | 0.30 | Prețul este sub SMA20, SMA50 și SMA200, iar RSI de 40 arată un impuls slab dar nu o zonă de supravânzare, într-un context de aversiune generală la risc pe celelalte piețe. Semnalul de cumpărare al regulii SMA 20/50 contrazice poziția prețului sub ambele medii, iar la o volatilitate de circa 54% datele nu indică o direcție clară pentru următoarele 5 zile. |
+| gemini | HOLD | 0.60 | Prețul se află sub mediile mobile pe 20, 50 și 200 de zile, într-un context de scădere generalizată pe piețele globale și volatilitate ridicată (54%). Cu toate acestea, stabilizarea recentă pe 5 zile (-0.6%) și un RSI neutru spre supravândut (40) nu oferă o direcție clară pe termen scurt, justificând o poziție de așteptare. |
+| grok | HOLD | 0.35 | Datele sunt contradictorii: prețul este sub mediile mobile și în scădere pe 20 și 60 de zile, iar RSI 40 nu indică o revenire clară, deși regula SMA 20/50 semnalează cumpărare. Fără știri sau rezultate, direcția pe următoarele 5 zile nu poate fi decisă. |
+| deepseek | HOLD | 0.40 | Prețul se menține sub mediile mobile principale, iar RSI la 40 indică o tendință negativă, însă regula botului bazată pe SMA 20/50 oferă semnal de cumpărare, iar volatilitatea ridicată face incertă direcția pe termen scurt. |
+
+## RENK: **NU TRANZACȚIONA** (fără înclinație)
+Preț 32.6100 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.76 | Tendința predominantă este descendentă, cu prețul sub mediile mobile, dar revenirea recentă și volatilitatea ridicată fac incertă direcția următoarelor 5 ședințe. Doar aceste date de preț nu oferă suficiente dovezi pentru a decide între continuarea scăderii și o recuperare temporară. |
+| claude | HOLD | 0.35 | Trendul este clar descendent (sub toate mediile mobile, -26.8% pe 60 de zile, regula SMA 20/50 indică vânzare, iar piețele de risc scad larg), dar RSI 37, apropierea de minimul anual și ușoara revenire pe 1-5 zile sugerează un posibil rebound tehnic. Semnalele contradictorii și volatilitatea ridicată nu permit o prognoză fiabilă pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen mediu și lung este puternic descendent (prețul fiind sub mediile mobile de 20, 50 și 200 de zile) într-un context macro negativ, creșterea ușoară din ultimele 5 zile (+2.0%) și apropierea de zona de supravânzare (RSI 37) indică o posibilă stabilizare pe termen scurt. Această divergență între revenirea recentă și trendul general negativ, combinată cu volatilitatea ridicată de 51%, face direcția pentru următoarele 5 zile prea incertă pentru o decizie clară. |
+| grok | HOLD | 0.42 | Tendința pe 20–120 de zile rămâne negativă și prețul este sub mediile mobile, dar ultimele 1–5 zile arată o revenire modestă, iar RSI nu este extrem. Fără știri sau rezultate, direcția următoarelor 5 zile nu poate fi decisă din aceste date. |
+| deepseek | HOLD | 0.40 | Prețul a avut o ușoară revenire pe termen scurt (+2% în 5 zile), dar tendința pe termen mediu este puternic negativă (SMA20/50 indică vânzare, preț sub SMA200), iar contextul general al pieței este nefavorabil, fără semnale clare pentru următoarele 5 zile. |
 
 ## BAE: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 1855.0000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 1839.0000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.75 | Prețul sub SMA20/50/200 și scăderea de 8,9% în 20 de zile indică presiune descendentă, dar revenirea zilnică de 1,9% și volatilitatea ridicată fac incertă continuarea pe termen scurt. Doar aceste date nu oferă suficiente dovezi pentru a decide direcția în următoarele 5 ședințe. |
-| claude | HOLD | 0.55 | Trendul este descendent (preț sub SMA20/50/200, semnal de vânzare SMA, piețe largi în risk-off), dar RSI 36 se apropie de supravânzare, iar volatilitatea ridicată face direcția pe 5 zile incertă. Semnalele contradictorii nu oferă un avantaj clar pentru o predicție. |
-| gemini | HOLD | 0.60 | Deși tendința pe termen mediu și lung este negativă (preț sub SMA20, SMA50 și SMA200 într-un context de piață puternic avers față de risc), RSI-ul de 36 și stabilizarea pe ultimele 5 zile (-0.3%, cu +1.9% în ultima zi) indică o posibilă epuizare a vânzărilor pe termen scurt. Din cauza semnalelor tehnice mixte și a volatilității ridicate (42%), direcția pentru următoarele 5 zile este incertă. |
-| grok | SELL | 0.58 | Prețul este sub SMA20, SMA50 și SMA200, iar tendința pe 20–120 de zile rămâne negativă, în linie cu semnalul de vânzare. RSI de 36 și revenirea de o zi nu oferă suficiente dovezi pentru o inversare în următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul se află sub mediile mobile SMA20, SMA50 și SMA200, iar RSI la 36 confirmă tendința descendentă, fără semnale de inversare pe termen scurt. |
+| gpt | HOLD | 0.78 | Scăderile recente și prețul sub SMA20/50/200 indică o tendință negativă, dar avansul de 0,6% pe 5 zile și RSI de 45 nu confirmă clar continuarea ei pe termen scurt. Volatilitatea ridicată și lipsa altor informații fac insuficiente aceste date pentru a decide direcția următoarelor 5 ședințe. |
+| claude | HOLD | 0.30 | Prețul este sub toate mediile mobile și regula SMA 20/50 indică vânzare, iar piețele de risc sunt în scădere generalizată, dar RSI neutru (45), stabilizarea pe 5 zile (+0.6%) și volatilitatea ridicată nu oferă un semnal clar pentru următoarele 5 zile. Fără știri sau date fundamentale, direcția pe termen scurt nu poate fi determinată cu încredere. |
+| gemini | HOLD | 0.45 | Deși prețul se află sub mediile mobile de 20, 50 și 200 de zile într-un context global de scădere a piețelor, evoluția din ultimele 5 zile (+0.6%) și nivelul neutru al RSI (45) sugerează o posibilă stabilizare pe termen scurt. Din cauza semnalelor mixte și a volatilității ridicate (42%), datele sunt insuficiente pentru o direcție clară în următoarele 5 zile. |
+| grok | HOLD | 0.46 | Prețul este sub SMA20, SMA50 și SMA200, iar randamentele pe 20/60/120 de zile sunt negative, dar mișcarea pe 5 zile este ușor pozitivă și RSI este neutru. Volatilitatea ridicată și lipsa altor date fac direcția următoarelor 5 ședințe prea incertă. |
+| deepseek | SELL | 0.60 | Indicatorii tehnici arată o tendință descendentă, cu prețul sub mediile mobile și RSI sub 50, iar contextul pieței globale este unul de aversiune la risc, ceea ce sugerează o continuare a scăderii pe termen scurt. |
 
 ## THALES: **NU TRANZACȚIONA** (fără înclinație)
-Preț 229.7000 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.025 $.
+Preț 227.6000 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.83 | Prețul ușor peste SMA20 și SMA50 și RSI de 53 indică un impuls pozitiv slab, dar poziția sub SMA200 și scăderile pe 20 și 60 de zile transmit semnale contradictorii. Rezistența relativă față de piețele în scădere nu este suficientă pentru a anticipa direcția următoarelor 5 ședințe, mai ales la volatilitatea raportată. |
-| claude | HOLD | 0.35 | Prețul oscilează lângă SMA20 și SMA50 cu RSI neutru (53), iar semnalul de cumpărare SMA 20/50 este slab, cu prețul încă sub SMA200 și în scădere pe 20 și 60 de zile. Mediul general de aversiune la risc (Nasdaq -11.5%, cripto puternic în scădere) adaugă incertitudine, deci datele nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul este în consolidare aproape de mediile mobile SMA20 și SMA50, cu un RSI neutru la 53, dar rămâne sub SMA200. Deși acțiunea arată reziliență pe termen scurt față de scăderile masive de pe alte piețe globale, semnalele tehnice mixte nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.46 | Semnalele sunt mixte: pe 1 și 5 zile prețul e ușor pozitiv și peste SMA20/SMA50, dar pe 20 și 60 de zile e negativ și sub SMA200, iar RSI este neutru. Fără știri sau rezultate, direcția pe următoarele 5 zile nu poate fi decisă din aceste date. |
-| deepseek | HOLD | 0.50 | Prețul are un momentum ușor pozitiv pe termen scurt, dar se află sub SMA200 și într-un context de piață risk-off, ceea ce face direcția incertă. |
+| gpt | HOLD | 0.83 | Prețul sub mediile mobile și scăderile pe 20–120 de zile sugerează slăbiciune, dar RSI de 54 și avansul de 0,7% pe ultimele 5 zile oferă semnale mixte. Doar aceste date nu susțin o direcție suficient de clară pentru următoarele 5 ședințe, iar semnalul de cumpărare al regulii SMA nu este concludent. |
+| claude | HOLD | 0.30 | Prețul este practic pe SMA20/SMA50, cu RSI neutru (54) și un trend ușor negativ sub SMA200, deci semnalul de cumpărare al regulii SMA 20/50 este slab. Contextul de risk-off puternic pe alte piețe adaugă incertitudine, iar datele nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.65 | Prețul se află într-o zonă de consolidare neutră (RSI 54), dar rămâne ușor sub toate mediile mobile importante (SMA20, SMA50 și SMA200), într-un context macro marcat de scăderi generalizate pe piețele globale. Semnalele tehnice mixte și presiunea negativă din restul piețelor nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.35 | Datele sunt mixte: prețul este ușor sub mediile mobile, RSI-ul este neutru, iar variațiile recente sunt mici, deși regula SMA 20/50 indică cumpărare. Scăderile ample din alte piețe nu oferă un semnal clar pentru direcția THALES în următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | Prețul se află într-o zonă neutră, cu RSI aproape de 50 și medii mobile apropiate, iar contextul pieței este mixt, ceea ce face dificilă anticiparea direcției pe termen scurt. Regula botului sugerează cumpărare, dar incertitudinea generală justifică o poziție de așteptare. |
 
 ## LEONARDO: **NU TRANZACȚIONA** (fără înclinație)
-Preț 49.2000 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
+Preț 48.9600 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.029 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul sub SMA20 și SMA200, RSI de 43 și randamentele recente negative sugerează slăbiciune, dar revenirea zilnică și semnalul de cumpărare al regulii SMA20/50 oferă indicii contradictorii. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 ședințe. |
-| claude | HOLD | 0.35 | Semnalele sunt mixte: prețul este sub SMA200 (-7,1%), are un trend negativ pe termen mediu și apare într-un context de aversiune largă la risc, dar RSI de 43, poziția apropiată de SMA50 și semnalul de cumpărare SMA 20/50 nu indică o direcție clară. Cu o volatilitate de 43% și fără știri, mișcarea pe 5 zile nu poate fi anticipată în mod fiabil. |
-| gemini | HOLD | 0.60 | Prețul se află sub mediile mobile principale (SMA20, SMA50, SMA200), cu un RSI neutru de 43 și o volatilitate ridicată într-un context macro negativ, contrazicând semnalul simplu de cumpărare al botului. Datele sunt insuficiente și mixte pentru a anticipa clar direcția prețului în următoarele 5 zile. |
-| grok | HOLD | 0.42 | Semnalul SMA 20/50 indică cumpărare, dar prețul este sub mediile mobile, randamentele pe 5–120 de zile sunt negative, iar RSI 43 nu arată un impuls clar. Volatilitatea ridicată și contextul risk-off fac direcția pe următoarele 5 zile imposibil de decis din aceste date. |
-| deepseek | HOLD | 0.30 | Semnalul botului bazat pe SMA20/50 indică cumpărare, dar prețul se află sub mediile mobile, iar contextul piețelor globale sugerează aversiune la risc, ceea ce face incertă direcția pe termen scurt. |
+| gpt | HOLD | 0.84 | Prețul sub SMA20, SMA50 și SMA200 și scăderile pe 20–120 de zile sugerează slăbiciune, dar RSI de 48, avansul săptămânal și semnalul de cumpărare al regulii SMA oferă indicii mixte. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.30 | Semnalele sunt mixte: prețul este sub SMA20 și SMA200, cu un trend negativ pe 60/120 de zile și o piață largă în scădere, dar RSI neutru (48) și regula SMA 20/50 care indică cumpărare nu oferă o direcție clară. Cu volatilitate ridicată (43%) și fără știri, mișcarea pe 5 zile nu poate fi anticipată fiabil. |
+| gemini | HOLD | 0.60 | Prețul se află sub mediile mobile principale (SMA 20, 50 și 200), cu un RSI neutru de 48 și o volatilitate ridicată de 43%, într-un context macro negativ pe alte piețe. Deși regula SMA 20/50 indică cumpărare și acțiunea a rezistat relativ bine, datele sunt contradictorii și insuficiente pentru o direcție clară pe 5 zile. |
+| grok | HOLD | 0.46 | Semnalele sunt mixte: prețul este sub SMA20, SMA50 și SMA200, iar randamentele pe 20–120 de zile sunt negative, deși RSI este neutru și regula SMA 20/50 indică cumpărare. Volatilitatea ridicată și contextul risk-off nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | Prețul se află sub mediile mobile majore, iar RSI este neutru, indicând o tendință incertă. Deși regula SMA 20/50 sugerează cumpărare, contextul general al pieței este negativ, ceea ce face dificilă anticiparea direcției pe termen scurt. |
 
 ## SAAB: **NU TRANZACȚIONA** (fără înclinație)
-Preț 613.8000 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.028 $.
+Preț 607.0000 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.029 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.83 | Prețul sub SMA20 și SMA50, RSI de 42 și scăderea de 6,6% pe 20 de zile indică slăbiciune, dar revenirea zilnică de 2,4% și poziția peste SMA200 oferă semnale contradictorii. Volatilitatea ridicată și lipsa altor date nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 ședințe. |
-| claude | HOLD | 0.35 | Semnalele sunt mixte: prețul e sub SMA20 și SMA50, dar peste SMA200, iar RSI de 42 este neutru, pe fondul unei volatilități ridicate și al unei aversiuni generale la risc pe celelalte piețe. Regula SMA 20/50 indică cumpărare, însă contrazice poziția prețului sub ambele medii, deci datele nu permit o prognoză clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Prețul se află sub mediile mobile pe 20 și 50 de zile cu un RSI neutru de 42, în timp ce piețele globale arată un sentiment pronunțat de aversiune față de risc. Deși trendul pe termen lung rămâne pozitiv peste SMA200, semnalele pe termen scurt sunt contradictorii și insuficiente pentru o direcție clară în următoarele 5 zile. |
-| grok | HOLD | 0.42 | Datele sunt mixte: revenirea de o zi nu anulează poziția sub SMA20 și SMA50, iar RSI 42 nu indică un impuls clar. Volatilitatea ridicată și contextul de risk-off fac direcția pe 5 zile imposibil de decis doar din aceste prețuri. |
-| deepseek | HOLD | 0.40 | Indicatori tehnici contradictorii (RSI neutru, preț sub SMA20 dar semnal de cumpărare de la regula SMA) și corelația cu piețele globale în scădere creează incertitudine. Volatilitatea ridicată și lipsa unui catalizator clar fac direcția pe 5 zile imprevizibilă. |
+| gpt | HOLD | 0.83 | Prețul sub SMA20 și SMA50 și scăderea de 7,4% pe 20 de zile sugerează slăbiciune, dar RSI de 48, revenirea de 1% pe 5 zile și poziția peste SMA200 oferă semnale mixte. Volatilitatea ridicată și scăderile altor piețe sporesc incertitudinea, astfel că aceste date nu susțin o direcție clară pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.30 | Semnalele sunt mixte: prețul este sub SMA20 și SMA50, dar peste SMA200, RSI-ul de 48 este neutru, iar regula SMA 20/50 indică cumpărare. Volatilitatea este ridicată, iar slăbiciunea generală a piețelor de risc nu oferă o direcție clară pe 5 zile, așa că datele nu sunt suficiente pentru o decizie. |
+| gemini | HOLD | 0.65 | Prețul se află sub mediile mobile pe 20 și 50 de zile, dar ușor peste SMA200, iar RSI de 48 indică o zonă neutră, în timp ce volatilitatea este ridicată (47%). Deși regula simplă sugerează cumpărarea, scăderile generalizate din piețele globale pe ultimele 20 de zile și semnalele tehnice mixte nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.46 | Semnalele sunt mixte: prețul este sub SMA20 și SMA50, RSI este neutru, iar variația pe 5 zile este doar ușor pozitivă, în timp ce pe 20 de zile este negativă. Volatilitatea ridicată și lipsa de știri sau rezultate nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.30 | Prețul se află sub mediile mobile pe termen scurt, dar peste SMA200, iar RSI este neutru; contextul pieței globale este negativ, ceea ce face direcția incertă pe termen scurt. |
 
-## KONGSBERG: **NU TRANZACȚIONA** (fără înclinație)
-Preț 330.8000 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.80 | Semnalele sunt mixte: prețul este sub SMA20 și pierde 2,5% în ultimele 5 zile, dar rămâne peste SMA50 și SMA200, cu o creștere de 6,3% pe 20 de zile. RSI de 35 și volatilitatea ridicată nu confirmă o direcție pentru următoarele 5 ședințe, iar scăderile celorlalte piețe sporesc incertitudinea. |
-| claude | HOLD | 0.35 | Semnalele sunt mixte: prețul e sub SMA20 dar peste SMA50 și SMA200, RSI 35 sugerează o ușoară supravânzare, iar regula SMA 20/50 indică cumpărare, însă volatilitatea ridicată (64%) și scăderea puternică a piețelor de risc nu oferă un avantaj clar pe 5 zile. Fără știri sau date fundamentale, direcția pe termen scurt nu poate fi decisă cu încredere. |
-| gemini | HOLD | 0.65 | Deși acțiunea arată putere relativă pe termen mediu (+6.3% pe 20 de zile) față de scăderile masive din piețele globale și are un RSI aproape de supravândut (35), prețul a scăzut sub SMA20 (-3.5%), iar volatilitatea pe termen scurt este foarte ridicată (64%). Semnalele tehnice mixte și contextul macroeconomic puternic negativ nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Semnalele pe 5 zile sunt contradictorii: prețul e sub SMA20 și a scăzut 2,5% în ultima săptămână, dar rămâne peste SMA50/SMA200, iar RSI 35 nu indică un extrem clar. Volatilitatea ridicată și corecțiile din alte piețe fac direcția următoarelor 5 zile imposibil de decis doar din aceste date. |
-| deepseek | HOLD | 0.40 | RSI aproape de supravânzare și tendința pe termen lung este pozitivă, dar volatilitatea ridicată și contextul pieței globale negative fac incertă direcția pe termen scurt. |
-
-## LOCKHEED: **NU TRANZACȚIONA** (fără înclinație)
-Preț 586.6300 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.030 $.
+## KONGSBERG: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 330.6000 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.83 | Semnalele sunt mixte: prețul este peste SMA50 și SMA200, dar sub SMA20, cu o scădere de 5,8% în ultimele 20 de zile și RSI aproape neutru, la 47. Volatilitatea ridicată și slăbiciunea generală a piețelor nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.30 | Semnalele sunt mixte: prețul este peste SMA50 și SMA200, iar regula SMA 20/50 indică cumpărare, dar se află sub SMA20, cu RSI neutru (47) și volatilitate ridicată (47%). Piețele generale sunt în scădere puternică pe 20 de zile, așa că direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
-| gemini | HOLD | 0.65 | Deși trendul pe termen mediu și lung este pozitiv (prețul este peste SMA50 și SMA200), evoluția recentă pe 20 de zile (-5.8%, sub SMA20) și RSI-ul neutru (47) indică o consolidare, fără o direcție clară pe 5 zile. În plus, scăderile generalizate din celelalte piețe de risc și volatilitatea ridicată (47%) impun prudență. |
-| grok | HOLD | 0.42 | Semnalele pe 5 zile sunt mixte: revenirea de o zi și regula SMA 20/50 indică cumpărare, dar prețul e sub SMA20, pe 5 și 20 de zile e în scădere, iar RSI e neutru. Volatilitatea ridicată și lipsa de știri nu permit o direcție clară. |
-| deepseek | HOLD | 0.30 | Indicatorii tehnici sunt contradictorii (RSI neutru, preț sub SMA20 dar peste SMA50/200), iar prăbușirea generalizată a piețelor (crypto, acțiuni, mărfuri) creează un mediu de risc extrem, făcând direcția pe 5 zile imprevizibilă. |
+| gpt | HOLD | 0.84 | Semnalele sunt mixte: randamentele pe 20–120 de zile sunt pozitive și prețul depășește SMA50/SMA200, dar scăderea recentă, poziția sub SMA20 și RSI de 43 indică slăbiciune pe termen scurt. Volatilitatea ridicată și declinurile altor piețe sporesc incertitudinea, iar aceste date nu susțin suficient o direcție pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.35 | Semnalele sunt mixte: prețul este peste SMA50 și SMA200, iar regula SMA 20/50 indică cumpărare, dar se află sub SMA20, are un RSI neutru de 43 și o volatilitate ridicată de 64%, pe fondul unei aversiuni generale față de risc pe celelalte piețe. Datele nu oferă un avantaj clar pentru direcția prețului în următoarele 5 zile. |
+| gemini | HOLD | 0.65 | Deși trendul pe termen mediu și lung este pozitiv (prețul este peste SMA50 și SMA200), evoluția recentă pe 5 zile este negativă, iar prețul a scăzut sub SMA20 pe fondul unei volatilități ridicate (64%). Scăderile puternice de pe piețele globale sugerează o aversiune față de risc, ceea ce face direcția pe următoarele 5 zile incertă. |
+| grok | HOLD | 0.46 | Semnalele sunt mixte: pe 5 zile prețul a scăzut și este sub SMA20, cu RSI 43, dar rămâne ușor peste SMA50 și SMA200. Volatilitatea ridicată și lipsa de știri sau rezultate nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | BUY | 0.55 | Acțiunea a corectat pe termen scurt, dar se menține peste mediile mobile pe 50 și 200 de zile, iar regula SMA 20/50 indică cumpărare. Deși contextul pieței globale este negativ, KONGSBERG a demonstrat rezistență relativă, sugerând o posibilă revenire în următoarele 5 zile. |
 
-## NORTHROP: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 550.8400 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.028 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul peste SMA20 și SMA50 și rezistența relativă față de indicii bursieri susțin un scenariu pozitiv, dar poziția sub SMA200 și evoluția aproape stagnantă pe 5–20 de zile oferă semnale mixte. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.55 | Semnalele sunt mixte: prețul este peste SMA20 și SMA50, iar regula SMA 20/50 indică cumpărare, dar rămâne sub SMA200, la 28% sub maximul anual, cu RSI 66 aproape de supracumpărare și momentum aproape plat pe 5 și 20 de zile. Reziliența față de scăderile largi din alte piețe este pozitivă, dar insuficientă pentru o direcție clară pe 5 zile, având în vedere volatilitatea de circa 31%. |
-| gemini | HOLD | 0.65 | Deși NORTHROP dă dovadă de reziliență și se află peste mediile mobile pe 20 și 50 de zile, rămâne sub SMA200 și are un RSI(14) de 66 care se apropie de zona de supracumpărare. În plus, scăderile masive de pe piețele globale în ultimele 20 de zile creează un context macroeconomic incert, justificând o poziție neutră pe termen de 5 zile. |
-| grok | HOLD | 0.42 | Semnalele pe 5 zile sunt mixte: prețul e peste SMA20/SMA50 și RSI e 66, dar sub SMA200, iar variațiile recente sunt aproape plate. Contextul de risk-off și volatilitatea ridicată nu permit o direcție clară doar din aceste date. |
-| deepseek | BUY | 0.60 | Prețul se situează peste mediile mobile pe termen scurt (SMA20 și SMA50), iar regula botului indică cumpărare, în timp ce acțiunea a demonstrat rezistență în fața scăderilor ample ale altor piețe. |
-
-## RTX: **NU TRANZACȚIONA** (fără înclinație)
-Preț 195.3300 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.028 $.
+## LOCKHEED: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 599.2400 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Semnalele sunt mixte: RTX rezistă relativ bine scăderilor pieței și se află peste SMA50 și SMA200, dar este sub SMA20, cu RSI neutru și o scădere de 1% în ultimele 5 zile. Volatilitatea ridicată și lipsa altor date nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 ședințe. |
-| claude | HOLD | 0.56 | RTX se mișcă lateral (RSI 47, preț aproape de SMA20/50/200), iar semnalul de cumpărare SMA 20/50 este slab, deoarece prețul a coborât deja sub SMA20. Reziliența relativă față de scăderile largi ale piețelor (S&P 500 -6,6%, Nasdaq -11,5%) este pozitivă, dar volatilitatea ridicată și mediul de aversiune la risc nu oferă un avantaj clar pe 5 zile. |
-| gemini | HOLD | 0.65 | Indicatorii tehnici pentru RTX sunt neutri (RSI la 47 și prețul foarte aproape de mediile mobile SMA20, SMA50 și SMA200), oferind semnale mixte pe termen scurt. Deși acțiunea arată reziliență față de scăderile severe din piețele globale pe ultimele 20 de zile, volatilitatea în creștere și lipsa unui trend clar nu oferă suficiente dovezi pentru o direcție certă în următoarele 5 zile. |
-| grok | HOLD | 0.46 | Semnalele sunt mixte: prețul e ușor sub SMA20, dar peste SMA50 și SMA200, RSI este neutru, iar variația pe 5 zile este negativă. Corecția amplă din alte piețe nu oferă o direcție clară pentru următoarele 5 zile, deci datele sunt insuficiente. |
-| deepseek | HOLD | 0.20 | Datele sunt contradictorii: regula SMA 20/50 indică cumpărare, dar contextul pieței este puternic negativ (majoritatea activelor au scăderi de peste 10% în 20 de zile), iar RTX a început să scadă pe termen scurt. Incertitudinea este prea mare pentru a anticipa o direcție clară. |
+| gpt | HOLD | 0.80 | Revenirea recentă, prețul peste mediile mobile și RSI de 58 sugerează un impuls pozitiv, dar scăderea pe 20 de zile și volatilitatea ridicată fac semnalul neconcludent. Doar aceste date nu oferă suficiente dovezi pentru a decide direcția prețului în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Trendul pe termen mediu este pozitiv (preț peste SMA50/SMA200, RSI 58, semnal de cumpărare SMA 20/50), însă scăderea de -4,8% pe 20 de zile, volatilitatea ridicată (47%) și vânzările generalizate pe alte piețe fac direcția pe 5 zile incertă. Datele nu oferă un avantaj clar pentru un orizont atât de scurt. |
+| gemini | BUY | 0.65 | Prețul se menține peste mediile mobile pe 20, 50 și 200 de zile, având un impuls pozitiv pe termen scurt (+3.6% în 5 zile) și un RSI favorabil de 58. De asemenea, acțiunea demonstrează o reziliență remarcabilă față de scăderile masive de pe piețele globale din ultimele 20 de zile. |
+| grok | HOLD | 0.42 | Semnalele pe 5 zile sunt mixte: impulsul recent și poziția peste mediile mobile sunt ușor pozitive, dar scăderea pe 20 de zile, volatilitatea ridicată și aversiunea la risc din alte piețe nu confirmă direcția. Fără știri sau date fundamentale, nu se poate decide credibil mișcarea pe următoarele 5 zile. |
+| deepseek | BUY | 0.60 | Prețul a crescut recent și se menține peste mediile mobile, cu RSI neutru, iar regula SMA indică cumpărare, deși contextul pieței globale este negativ. |
 
-## GENERAL_DYNAMICS: **NU TRANZACȚIONA** (fără înclinație)
-Preț 351.5500 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.80 | Semnalele sunt mixte: prețul este sub SMA20 și aproape de SMA200, iar RSI de 39 indică un impuls slab, deși se află peste SMA50 și a rezistat relativ bine scăderilor pieței. Doar aceste date, în condiții de volatilitate ridicată, nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 ședințe. |
-| claude | HOLD | 0.30 | Semnalele sunt mixte: prețul e sub SMA20 dar peste SMA50 și aproape de SMA200, RSI 39 este neutru spre slab, iar acțiunea a rezistat relativ bine (-0.9% pe 20 de zile) față de scăderea generalizată a piețelor de risc (S&P 500 -6.6%, Nasdaq -11.5%). Fără știri sau catalizatori, aceste date nu oferă un avantaj clar pentru direcția pe 5 zile, iar semnalul de cumpărare al regulii SMA 20/50 nu se potrivește cu prețul aflat sub SMA20. |
-| gemini | HOLD | 0.65 | Indicatorii tehnici sunt mixti, cu prețul situat sub mediile SMA20 și SMA200, dar ușor peste SMA50, în timp ce volatilitatea recentă este ridicată (33%). Deși acțiunea arată reziliență față de scăderile severe din piața largă, direcția pentru următoarele 5 zile este incertă fără un trend clar. |
-| grok | HOLD | 0.42 | Semnalele sunt mixte: prețul e sub SMA20, RSI 39 și evoluția pe 5–60 de zile e negativă, deși regula SMA 20/50 indică cumpărare. Contextul de risk-off pe alte piețe nu permite o direcție clară pentru următoarele 5 zile. |
-| deepseek | HOLD | 0.40 | Prețul este aproape de media mobilă pe 200 de zile, iar RSI-ul neutru nu oferă un semnal clar. În contextul volatilității ridicate din alte piețe, direcția pe termen scurt este incertă. |
-
-## L3HARRIS: **NU TRANZACȚIONA** (fără înclinație)
-Preț 258.0800 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.027 $.
+## NORTHROP: **NU TRANZACȚIONA** (fără înclinație)
+Preț 555.7900 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.86 | Semnalele sunt mixte: prețul este peste SMA50, dar sub SMA20 și SMA200, iar RSI de 49 nu indică o direcție clară. Volatilitatea ridicată și slăbiciunea piețelor generale sporesc incertitudinea, astfel că aceste date nu susțin suficient o prognoză direcțională pentru următoarele 5 ședințe. |
-| claude | HOLD | 0.30 | Semnalele sunt mixte: prețul este sub SMA20 și SMA200, dar peste SMA50, RSI neutru la 49, iar regula SMA 20/50 indică cumpărare. Volatilitatea ridicată (53%) și scăderea generală a piețelor (S&P 500 -6.6%) fac direcția pe 5 zile imposibil de estimat din aceste date. |
-| gemini | HOLD | 0.65 | Deși acțiunea arată o reziliență relativă pe termen scurt față de scăderile masive din piețele globale, prețul se află între mediile mobile SMA20 și SMA50, cu un RSI perfect neutru la 49 și o volatilitate ridicată de 53%. Aceste semnale tehnice mixte și contextul macroeconomic avers față de risc nu oferă o direcție clară pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Semnalele sunt mixte: prețul e sub SMA20 și SMA200, dar peste SMA50, RSI e neutru, iar regula SMA 20/50 indică cumpărare. Volatilitatea ridicată și scăderile largi ale piețelor nu permit o direcție clară pe 5 zile doar din aceste date. |
-| deepseek | HOLD | 0.30 | Datele tehnice sunt mixte: RSI neutru, preț sub SMA20 dar peste SMA50, iar contextul macro arată aversiune la risc, deși acțiunea a demonstrat rezistență relativă. Nu există suficiente indicii pentru o direcție clară pe termen scurt. |
+| gpt | HOLD | 0.78 | Prețul peste SMA20 și SMA50 și rezistența relativă față de piața largă susțin impulsul pozitiv, dar poziția sub SMA200 și RSI de 69 temperează acest semnal. Volatilitatea ridicată și indiciile mixte nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | Prețul este peste SMA20 și SMA50, iar regula botului spune cumpără, ceea ce arată o relativă reziliență față de scăderea largă a pieței (S&P 500 -7,2%, Nasdaq -12,6%); totuși RSI 69 indică o zonă aproape de supracumpărare, prețul rămâne sub SMA200 și la -27,5% față de maxim, deci semnalele sunt mixte. Pentru un orizont de 5 zile, cu volatilitate de ~31%, datele nu permit o direcție clară. |
+| gemini | HOLD | 0.65 | Deși NORTHROP dă dovadă de reziliență și se află peste mediile mobile de 20 și 50 de zile într-o piață generală în scădere severă, valoarea RSI de 69 indică o zonă aproape de supracumpărare, iar prețul rămâne sub SMA200 (-3.4%). Semnalele tehnice pe termen scurt și lung sunt contradictorii, făcând direcția pentru următoarele 5 zile prea incertă. |
+| grok | HOLD | 0.42 | Semnalele pe termen scurt sunt mixte: prețul este peste SMA20 și SMA50, cu RSI aproape de 70, dar rămâne sub SMA200, iar piețele riscante au scăzut puternic. Din aceste date nu se poate decide clar direcția pe următoarele 5 zile. |
+| deepseek | HOLD | 0.50 | Indicatorii tehnici sunt mixți: RSI aproape de 70 sugerează o posibilă corecție, iar prețul sub SMA200 indică o tendință descendentă pe termen lung, în ciuda semnalului de cumpărare al mediilor mobile pe termen scurt. |
 
-## ITA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 68.1200 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.028 $.
+## RTX: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 196.1900 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul sub mediile mobile și scăderile recente sugerează presiune descendentă, dar RSI de 42 și semnalul de cumpărare al regulii SMA20/50 nu confirmă o direcție clară. Volatilitatea ridicată și lipsa altor informații fac insuficiente aceste date pentru anticiparea direcției în următoarele cinci ședințe. |
-| claude | HOLD | 0.30 | Prețul este sub toate mediile mobile, iar RSI-ul de 42 și trendul pe 60/120 de zile sunt negative, ceea ce contrazice semnalul de cumpărare al regulii SMA 20/50. Cu volatilitate ridicată și o vânzare generalizată pe celelalte piețe, datele nu oferă un avantaj clar pentru următoarele 5 zile. |
-| gemini | HOLD | 0.60 | Prețul ITA se află sub toate mediile mobile principale și prezintă o volatilitate ridicată într-un context de scădere generalizată a piețelor, contrazicând semnalul de cumpărare al botului. Cu un RSI neutru de 42 și semnale tehnice mixte, datele sunt insuficiente pentru a prezice o direcție clară pe următoarele 5 zile. |
-| grok | HOLD | 0.42 | Prețul este sub mediile SMA20, SMA50 și SMA200, aproape de minimul anual, cu impuls negativ și RSI neutru-slab. Semnalul de cumpărare al mediilor este slab și contradictoriu față de contextul de risk-off, deci direcția pe 5 zile nu poate fi decisă din aceste date. |
-| deepseek | SELL | 0.40 | Prețul se află sub mediile mobile pe termen scurt și mediu, iar tendința pe 5 zile este negativă, în contextul unui sentiment general de aversiune la risc. Deși sectorul de apărare a demonstrat rezistență relativă, momentumul descendent pe termen scurt sugerează o continuare a scăderii. |
+| gpt | HOLD | 0.80 | Prețul peste SMA50 și SMA200, RSI de 57 și rezistența relativă față de piața largă sugerează un avantaj pozitiv modest, dar stagnarea recentă și poziția ușor sub SMA20 nu confirmă direcția. Volatilitatea ridicată și lipsa altor informații fac insuficiente aceste date pentru a anticipa sensul mișcării în următoarele 5 ședințe. |
+| claude | HOLD | 0.55 | RTX este practic plat pe termen scurt (preț aproape de SMA20, RSI 57) și a rezistat bine scăderii largi a piețelor, iar semnalul SMA 20/50 de cumpărare este slab și contrazis de scăderea de -4% pe 60 de zile. Volatilitatea ridicată și mediul general de aversiune la risc nu oferă o direcție clară pentru următoarele 5 zile. |
+| gemini | HOLD | 0.60 | RTX arată o mișcare laterală pe termen scurt (-0.3% pe 5 zile, la -0.1% față de SMA20) și un RSI neutru de 57. Deși dă dovadă de rezistență față de scăderile generale ale piețelor, volatilitatea crescută și lipsa unei direcții clare pe termen scurt nu oferă suficiente dovezi pentru o mișcare decisivă în următoarele 5 zile. |
+| grok | HOLD | 0.42 | Semnalele pe 5 zile sunt mixte: prețul e aproape de SMA20, RSI neutru și variația recentă e aproape plată, în timp ce piețele riscante au scăzut puternic. Din aceste date nu se poate decide direcția pe următoarele 5 zile de tranzacționare. |
+| deepseek | BUY | 0.60 | RTX a demonstrat rezistență în fața scăderilor ample ale piețelor, menținându-se peste mediile mobile pe 50 și 200 de zile, iar RSI neutru și regula SMA sugerează o continuare a tendinței ascendente pe termen scurt. |
+
+## GENERAL_DYNAMICS: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 360.2700 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.029 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.78 | Creșterea recentă și prețul peste SMA50 și SMA200 sugerează un impuls pozitiv, dar RSI de 53 și poziționarea la SMA20 nu confirmă o direcție clară. Volatilitatea ridicată și scăderile piețelor largi fac insuficiente aceste date pentru estimarea direcției în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | GD arată o forță relativă clară față de piața largă (S&P 500 -7.2%, Nasdaq -12.6% în 20 de zile), iar prețul este peste SMA50 și SMA200, cu RSI neutru la 53 și semnal de cumpărare SMA 20/50. Totuși, prețul stă exact pe SMA20, volatilitatea pe 20 de zile a crescut la 34%, iar mediul general este de aversiune la risc, așa că semnalul pe 5 zile este prea slab pentru o direcție clară. |
+| gemini | HOLD | 0.60 | Deși acțiunea arată o forță relativă pozitivă și se menține peste mediile mobile de 50 și 200 de zile, indicatorul RSI la 53 și poziția exact pe SMA20 indică un moment neutru pe termen scurt. În plus, scăderile masive din piețele globale și creșterea volatilității la 34% creează un mediu prea incert pentru o direcție clară în următoarele 5 zile. |
+| grok | HOLD | 0.48 | Semnalele tehnice pe termen scurt sunt ușor pozitive, dar piețele riscante au scăzut puternic și volatilitatea este ridicată, fără știri care să clarifice direcția. Din aceste date nu pot decide credibil mișcarea pe următoarele 5 zile. |
+| deepseek | BUY | 0.60 | Prețul se menține peste mediile mobile pe 50 și 200 de zile, iar RSI neutru indică potențial de creștere, în ciuda corecțiilor din alte piețe. |
+
+## L3HARRIS: **NU TRANZACȚIONA** (înclină spre cumpărare)
+Preț 261.8900 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.85 | Semnalele sunt mixte: avansul recent și prețul peste SMA50 contrastează cu poziționarea sub SMA20 și SMA200, iar RSI de 53 nu indică o direcție clară. Reziliența față de piețele în scădere nu este suficientă pentru a anticipa următoarele 5 ședințe, mai ales la volatilitatea ridicată raportată. |
+| claude | HOLD | 0.55 | Semnalele sunt mixte: SMA20/50 dă cumpărare și L3Harris a rezistat relativ bine în timp ce piețele largi au scăzut puternic, dar prețul rămâne sub SMA200 și sub SMA20, cu volatilitate ridicată (53%) și RSI neutru. Datele nu indică o direcție clară pentru următoarele 5 zile. |
+| gemini | HOLD | 0.65 | Deși acțiunea arată reziliență pe termen scurt față de scăderile generale ale pieței, se află într-un trend descendent pe termen lung (sub SMA200) și prezintă o volatilitate ridicată de 53%. Semnalele tehnice sunt mixte, cu un RSI neutru de 53 și prețul situat între SMA20 și SMA50, fiind insuficiente pentru o direcție clară în următoarele 5 zile. |
+| grok | HOLD | 0.46 | Datele sunt mixte: impulsul pe 1 și 5 zile este ușor pozitiv și regula SMA 20/50 indică cumpărare, dar prețul este sub SMA20, mult sub SMA200, iar volatilitatea este ridicată. În contextul scăderilor ample din alte piețe, direcția pe următoarele 5 zile nu poate fi decisă din aceste informații. |
+| deepseek | BUY | 0.60 | Prețul a crescut pe termen scurt, iar media mobilă pe 20 de zile a depășit-o pe cea de 50 de zile, semnalând cumpărare. Deși piața generală este în scădere, acțiunea de apărare arată rezistență relativă. |
+
+## ITA: **NU TRANZACȚIONA** (fără înclinație)
+Preț 68.7700 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.029 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.80 | Prețul sub SMA20, SMA50 și SMA200 și scăderile pe 60–120 de zile indică slăbiciune, dar RSI de 52 și rezistența relativă față de piețele largi nu confirmă o direcție clară. Semnalul de cumpărare al regulii simple este insuficient pentru anticiparea următoarelor 5 ședințe, mai ales în condițiile volatilității ridicate. |
+| claude | HOLD | 0.35 | Semnalele sunt mixte: prețul e sub SMA20, SMA50 și SMA200, cu trend negativ pe 60/120 de zile, dar ITA a rezistat relativ bine (-0.7% pe 20 de zile) față de scăderile ample ale altor piețe, iar RSI 52 este neutru. Regula SMA 20/50 indică cumpărare, însă contrazice poziția prețului sub ambele medii, iar volatilitatea ridicată pe 20 de zile face ca direcția pe 5 zile să nu poată fi determinată din aceste date. |
+| gemini | HOLD | 0.60 | Prețul ITA se află sub toate mediile mobile principale (SMA20, SMA50, SMA200), într-un context macro negativ, dar arată reziliență relativă cu o scădere de doar -0.7% pe 20 de zile și un RSI neutru de 52. Aceste semnale mixte și volatilitatea crescută la 42% nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Semnalele sunt mixte: prețul este sub mediile mobile și aproape de minimul anual, dar RSI este neutru și regula SMA 20/50 indică cumpărare. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | HOLD | 0.40 | Prețul se menține sub mediile mobile cheie (SMA20, SMA50, SMA200), reflectând un trend descendent pe termen lung, iar RSI neutru și volatilitatea ridicată nu oferă un semnal direcțional clar. Deși sectorul de apărare a demonstrat rezistență relativă față de prăbușirea altor active, incertitudinea macroeconomică și lipsa unui catalizator imediat justifică o poziție de așteptare. |
 
 ## AAPL: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 354.0700 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.027 $.
+Preț 355.5800 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.030 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul peste mediile mobile și reziliența față de Nasdaq susțin tendința ascendentă, dar RSI de 55 nu oferă un semnal puternic pentru următoarele 5 ședințe. Volatilitatea ridicată și scăderile ample ale celorlalte piețe fac ca aceste date să fie insuficiente pentru o estimare direcțională convingătoare. |
-| claude | HOLD | 0.40 | AAPL are un trend pozitiv (peste SMA20/50/200, RSI 55 neutru, aproape de maximul anual), dar contextul de piață este puternic negativ (Nasdaq 100 -11.5%, S&P 500 -6.6%, cripto și metale în scădere abruptă), iar volatilitatea pe 20 de zile a crescut la 35%. Această divergență face direcția pe 5 zile incertă, așa că datele nu sunt suficiente pentru o decizie clară. |
-| gemini | HOLD | 0.65 | Deși AAPL arată un trend ascendent solid, situându-se peste mediile mobile și aproape de maximul anual, scăderile severe din piața generală (Nasdaq 100 -11.5%, S&P 500 -6.6% pe 20 de zile) indică un mediu macroeconomic de aversiune la risc. Această divergență puternică și volatilitatea în creștere pe termen scurt (35%) fac ca direcția prețului pentru următoarele 5 zile să fie incertă. |
-| grok | HOLD | 0.42 | Semnalele tehnice ale AAPL sunt ușor pozitive (preț peste mediile mobile, RSI neutru, regula SMA 20/50 indică cumpărare), dar piețele conexe au scăzut puternic în 20 de zile. Direcția pe următoarele 5 zile nu poate fi decisă doar din aceste date. |
-| deepseek | BUY | 0.65 | Prețul AAPL se situează peste mediile mobile principale, iar RSI-ul neutru de 55 și regula SMA 20/50 indică cumpărare. Deși alte piețe au scăzut, AAPL a demonstrat rezistență, sugerând o posibilă continuare a trendului ascendent pe termen scurt. |
+| gpt | HOLD | 0.78 | Tendința AAPL este pozitivă, cu prețul peste mediile mobile și RSI de 62, dar scăderile ample ale indicilor bursieri și volatilitatea ridicată limitează convingerea pentru următoarele 5 ședințe. Doar aceste date nu oferă suficiente dovezi pentru a decide direcția pe un orizont atât de scurt. |
+| claude | HOLD | 0.40 | AAPL are un trend ascendent solid (peste SMA20/50/200, aproape de maxim, RSI 62, regula SMA spune cumpără), dar a urcat în timp ce Nasdaq 100 a scăzut cu 12,6% și S&P 500 cu 7,2% în 20 de zile, deci un mediu de aversiune la risc care poate trage și acțiunea în jos. Fără știri, semnalele contradictorii nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Deși AAPL arată un trend ascendent puternic și se menține peste mediile mobile, scăderile severe din piața generală (Nasdaq 100 -12.6%, S&P 500 -7.2%) și volatilitatea în creștere creează un risc ridicat de corecție. Semnalele contradictorii dintre forța relativă a acțiunii și slăbiciunea extremă a pieței nu permit o decizie clară pentru următoarele 5 zile. |
+| grok | HOLD | 0.42 | Trendul propriu al AAPL este pozitiv, cu prețul peste mediile mobile și RSI la 62, dar piețele corelate au scăzut puternic în ultimele 20 de zile. Fără știri sau date suplimentare, direcția pe următoarele 5 zile nu poate fi decisă. |
+| deepseek | BUY | 0.65 | Prețul AAPL se menține peste mediile mobile, cu RSI neutru și tendință pozitivă pe termen scurt, iar regula SMA indică cumpărare. Deși piețele externe sunt slabe, acțiunea a demonstrat rezistență, sugerând o posibilă continuare a creșterii pe 5 zile. |
 
-## MSFT: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 496.1300 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
+## MSFT: **NU TRANZACȚIONA** (fără înclinație)
+Preț 489.9300 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul sub SMA20 și SMA50, scăderea recentă și slăbiciunea generală a piețelor indică presiune descendentă, dar RSI de 26 sugerează supravânzare și posibilitatea unei reveniri tehnice. Semnalele mixte și volatilitatea ridicată nu permit stabilirea unei direcții suficient de clare pentru următoarele 5 zile doar din aceste date. |
-| claude | HOLD | 0.55 | MSFT este într-o corecție pe termen scurt (sub SMA20/SMA50, semnal de vânzare SMA 20/50, aversiune la risc pe piețe, Nasdaq -11.5%), dar RSI 26 indică supravânzare, iar trendul pe termen lung rămâne pozitiv (+12% peste SMA200), deci un rebound este la fel de plauzibil ca o continuare a scăderii. Cu volatilitate ridicată (46%) și fără știri, semnalele contradictorii nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI-ul de 26 și trendul pozitiv pe termen lung (+12.0% peste SMA200) sugerează o posibilă revenire tehnică din zona de supravânzare, prețul se află sub mediile pe termen scurt și mediu (SMA20 și SMA50), iar piețele globale prezintă scăderi severe. Având în vedere volatilitatea ridicată de 46% și semnalele contradictorii dintre indicatorii tehnici și contextul macroeconomic avers față de risc, direcția pentru următoarele 5 zile este prea incertă pentru o decizie clară. |
-| grok | HOLD | 0.42 | MSFT este sub SMA20 și SMA50, cu randamente negative pe 5–60 de zile și un context de risk-off, dar RSI 26 indică supravânzare și prețul rămâne peste SMA200. Semnalele pe 5 zile sunt contradictorii, deci direcția nu poate fi decisă din aceste date. |
-| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile pe 20 și 50 de zile, iar regula SMA indică vânzare; deși RSI este supravândut, contextul general al pieței este puternic negativ, sugerând continuarea scăderii. |
+| gpt | HOLD | 0.80 | Scăderile recente și prețul sub SMA20 și SMA50 indică presiune descendentă, dar RSI de 29 sugerează supravânzare și posibilitatea unei reveniri. Volatilitatea ridicată și semnalele contradictorii nu permit stabilirea suficient de clară a direcției în următoarele 5 ședințe doar din aceste date. |
+| claude | HOLD | 0.35 | Trendul pe termen scurt este negativ (preț sub SMA20/SMA50, semnal de vânzare SMA, piață largă în scădere, Nasdaq -12,6%), dar RSI de 29 indică supravânzare și prețul rămâne peste SMA200, deci un rebound este la fel de plauzibil ca o continuare a scăderii. Cu volatilitate ridicată (46%) și fără știri, direcția pe 5 zile nu poate fi stabilită cu încredere. |
+| gemini | HOLD | 0.65 | Deși RSI(14) la 29 și poziția peste SMA200 (+10.5%) sugerează o posibilă revenire pe termen scurt din zona de supravânzare, scăderea generalizată a piețelor de risc (Nasdaq 100 -12.6% în 20 de zile) și evoluția sub mediile mobile pe 20 și 50 de zile indică o presiune negativă puternică. Din cauza acestor semnale tehnice contradictorii și a volatilității ridicate (46% pe 20 de zile), direcția pentru următoarele 5 zile este incertă. |
+| grok | HOLD | 0.42 | Datele arată o scădere pe termen scurt, preț sub SMA20/SMA50 și RSI 29, dar și o poziție încă peste SMA200, fără știri sau catalizatori. Semnalele sunt contradictorii, deci direcția pe următoarele 5 zile nu poate fi decisă. |
+| deepseek | HOLD | 0.40 | RSI indică supravânzare, dar tendința descendentă și semnalul de vânzare al mediilor mobile sugerează incertitudine pe termen scurt. |
 
 ## NVDA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 155.3800 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.028 $.
+Preț 149.3000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Prețul sub mediile mobile și scăderile ample indică un trend negativ, dar volatilitatea extremă și evoluția aproape plată pe ultimele 5 zile nu permit o prognoză direcțională suficient de solidă pentru următoarele 5 ședințe. Doar aceste date nu disting convingător între continuarea scăderii și o revenire temporară. |
-| claude | HOLD | 0.35 | Trendul este puternic descendent (-28.7% pe 20 de zile, sub toate mediile mobile, iar regula SMA 20/50 indică vânzare), însă RSI 34 apropiat de supravânzare, stabilizarea pe 5 zile și volatilitatea extremă de 153% fac direcția pe 5 zile imprevizibilă. Slăbiciunea generalizată a piețelor de risc confirmă presiunea, dar fără știri datele nu justifică un pariu direcțional. |
-| gemini | HOLD | 0.60 | Deși trendul general este puternic negativ (prețul se află sub SMA20, SMA50 și SMA200 într-un context macro de scădere), indicatorul RSI la 34 și stagnarea pe ultimele 5 zile (-0.1%) indică o posibilă epuizare a vânzărilor pe termen scurt. Volatilitatea extremă de 153% face direcția pe următoarele 5 zile prea incertă pentru o decizie clară. |
-| grok | SELL | 0.58 | Tendința rămâne descendentă: prețul este sub SMA20, SMA50 și SMA200, iar scăderile pe 20–120 de zile coincid cu un context de risk-off. RSI de 34 nu indică încă o revenire clară, deci direcția probabilă pe 5 zile este în continuare în jos, deși volatilitatea ridicată limitează certitudinea. |
-| deepseek | SELL | 0.75 | Prețul se află într-un trend descendent accentuat, sub toate mediile mobile, cu un RSI de 34 și un context general de piață negativ (scăderi pe Nasdaq, S&P 500 și criptomonede). Este probabil ca presiunea de vânzare să continue în următoarele 5 zile. |
+| gpt | HOLD | 0.80 | Tendința este descendentă, cu prețul sub mediile mobile și o scădere pe 20 de zile mai accentuată decât a Nasdaq 100, dar acestea nu stabilesc direcția următoarelor 5 ședințe. Volatilitatea foarte ridicată permite atât continuarea scăderii, cât și un recul ascendent, iar datele disponibile sunt insuficiente pentru o alegere direcțională convingătoare. |
+| claude | HOLD | 0.55 | Trendul este clar negativ (preț mult sub SMA20/50/200, -30.7% în 20 de zile, piețe de risc în scădere largă), dar RSI 38 și volatilitatea extremă de 153% fac direcția pe 5 zile imprevizibilă, cu risc ridicat de revenire tehnică. Fără știri sau date fundamentale, semnalul nu este suficient de clar pentru BUY sau SELL. |
+| gemini | HOLD | 0.65 | Deși trendul general este puternic descendent, cu prețul mult sub mediile mobile și o scădere amplă în toate piețele de risc, volatilitatea extremă de 153% și nivelul RSI de 38 fac direcția pe următoarele 5 zile imprevizibilă. Datele disponibile sunt insuficiente pentru a decide dacă urmează o continuare a scăderii sau un reviriment tehnic pe termen scurt. |
+| grok | SELL | 0.62 | Tendința pe 20–120 de zile este clar descendentă, prețul stă sub SMA20/50/200, iar regula SMA 20/50 indică vânzare. RSI 38 nu arată încă o supravânzare extremă, iar contextul de risk-off susține continuarea scăderii pe termen scurt, deși volatilitatea ridicată limitează certitudinea. |
+| deepseek | SELL | 0.75 | Prețul se află într-un trend descendent puternic, sub mediile mobile, iar contextul pieței este negativ, ceea ce sugerează continuarea scăderii. |
 
-## GOOGL: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 279.0500 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.029 $.
+## GOOGL: **VINDE** (înclină spre vânzare)
+Preț 273.1000 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.76 | Prețul sub mediile mobile și scăderile pe termen mediu indică o tendință negativă, dar nu stabilesc suficient de clar direcția următoarelor 5 ședințe. Volatilitatea ridicată, RSI de 44 și variația de numai -0,4% din ultimele 5 zile lasă deschise atât continuarea scăderii, cât și o revenire temporară. |
-| claude | HOLD | 0.55 | Trendul este clar descendent (sub SMA50/SMA200, -13% pe 20 de zile, semnal de vânzare SMA 20/50, aversiune generală la risc), dar RSI 44, stabilizarea din ultimele 5 zile și apropierea de minimul anual sugerează o posibilă consolidare sau un rebound. Cu o volatilitate de 73%, direcția pe 5 zile nu poate fi stabilită fiabil din aceste date. |
-| gemini | HOLD | 0.60 | Deși trendul general este negativ și prețul se află sub mediile mobile principale, scăderea s-a stabilizat în ultimele 5 zile (-0.4%) iar RSI-ul de 44 este neutru. În condițiile unei volatilități foarte ridicate (73%) și în lipsa unor date fundamentale, direcția pe termen scurt (5 zile) este prea incertă pentru o decizie clară. |
-| grok | SELL | 0.56 | Prețul este sub SMA20, SMA50 și SMA200, iar scăderile pe 20–120 de zile și contextul risk-off susțin continuarea presiunii descendente. Totuși, orizontul de 5 zile rămâne incert, iar RSI 44 nu indică un extrem. |
-| deepseek | SELL | 0.65 | Prețul se află într-un trend descendent puternic, sub mediile mobile principale, iar contextul pieței globale este negativ, cu scăderi generalizate. Indicatorii tehnici și regula botului sugerează continuarea scăderii pe termen scurt. |
+| gpt | HOLD | 0.76 | Prețul sub mediile mobile și scăderile pe toate intervalele indică o tendință descendentă, pe fondul slăbiciunii generale a pieței. Totuși, volatilitatea ridicată și apropierea de minimul anual nu permit distingerea suficient de clară între continuarea scăderii și o revenire în următoarele 5 ședințe. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (sub toate mediile mobile, semnal de vânzare SMA 20/50, piață largă în scădere), dar prețul e aproape de minimul anual, RSI 44 nu indică extreme, iar volatilitatea de 73% face direcția pe 5 zile imprevizibilă. Datele nu oferă un avantaj suficient pentru BUY sau SELL. |
+| gemini | SELL | 0.65 | Prețul GOOGL se află într-un trend descendent clar pe toate orizonturile de timp, tranzacționându-se sub mediile mobile de 20, 50 și 200 de zile, în contextul unei scăderi generalizate a activelor de risc și a indicelui Nasdaq 100. Având în vedere volatilitatea ridicată și un RSI de 44 care nu indică încă supravânzare extremă, presiunea de vânzare este probabil să continue în următoarele 5 zile. |
+| grok | SELL | 0.58 | Tendința pe 5–120 de zile este clar descendentă, prețul stă sub SMA20/50/200 și aproape de minimul anual, iar regula SMA 20/50 indică vânzare. Piețele corelate sunt și ele în scădere, deci pentru următoarele 5 zile biasul rămâne negativ, deși orizontul scurt și lipsa de știri limitează certitudinea. |
+| deepseek | SELL | 0.75 | Toți indicatorii tehnici (SMA, RSI) și regula botului indică vânzare, iar contextul pieței globale este puternic negativ, sugerând continuarea scăderii. |
 
 ## AMZN: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 252.2900 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.028 $.
+Preț 244.4300 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul sub SMA20 și SMA50, RSI de 41 și scăderile recente sugerează slăbiciune, dar menținerea peste SMA200 și rezistența relativă față de indicii bursieri oferă semnale contradictorii. Volatilitatea ridicată și lipsa altor informații nu permit o estimare suficient de solidă a direcției în următoarele cinci ședințe. |
-| claude | HOLD | 0.35 | AMZN este relativ rezilient (-0.3% pe 20 de zile față de -11.5% Nasdaq 100), dar se află sub SMA20 și SMA50, are RSI neutru (41) și volatilitate ridicată, iar regula SMA 20/50 indică cumpărare, deci semnalele sunt contradictorii. Pe fondul aversiunii generale față de risc și fără știri, datele nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși AMZN a rezistat remarcabil (-0.3% pe 20 de zile) față de scăderea severă din Nasdaq 100 (-11.5%) și se menține peste SMA200 (+2.7%), prețul se află sub mediile scurte SMA20 și SMA50 cu un RSI neutru-slab de 41. Având în vedere volatilitatea ridicată (55%) și contextul macroeconomic puternic negativ pe piețele globale, semnalele sunt mixte și insuficiente pentru o direcție clară pe 5 zile. |
-| grok | HOLD | 0.42 | Semnalele sunt mixte: prețul este sub SMA20 și SMA50, cu scăderi recente și RSI 41, iar piețele riscante sunt în corecție, deși regula SMA 20/50 indică cumpărare și prețul rămâne peste SMA200. Volatilitatea ridicată și lipsa de știri fac direcția pe următoarele 5 zile imposibil de decis din aceste date. |
-| deepseek | SELL | 0.60 | Prețul se află sub mediile mobile pe termen scurt (SMA20, SMA50), iar contextul pieței globale este puternic negativ, cu scăderi semnificative pe indici și criptomonede, sugerând o continuare a presiunii de vânzare. RSI-ul neutru (41) și volatilitatea ridicată indică un risc crescut de scădere pe termen scurt. |
+| gpt | HOLD | 0.80 | Scăderile recente și prețul sub mediile mobile sugerează presiune descendentă, dar semnalul de cumpărare al regulii SMA20/50 și rezistența relativă față de Nasdaq oferă indicii contradictorii. Volatilitatea ridicată și lipsa altor informații nu permit stabilirea suficient de sigură a direcției pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.30 | Prețul este sub SMA20 și SMA50, cu RSI 40 și o volatilitate ridicată (56%), pe fondul unei slăbiciuni generale a piețelor (Nasdaq 100 -12,6% în 20 de zile), însă AMZN a rezistat relativ mai bine, iar semnalul de cumpărare al regulii SMA 20/50 contrazice tendința pe termen scurt. Semnalele sunt contradictorii și insuficiente pentru o prognoză fiabilă pe 5 zile. |
+| gemini | HOLD | 0.65 | Prețul AMZN se află chiar în zona mediei mobile pe 200 de zile (-0.5%) cu un RSI neutru de 40, oferind semnale contradictorii între suportul tehnic pe termen lung și impulsul descendent recent (-8.7% pe 5 zile). În contextul unei volatilități ridicate (56%) și a scăderilor generalizate pe piețele de risc (Nasdaq -12.6%), datele sunt insuficiente pentru a prezice clar direcția pe următoarele 5 zile. |
+| grok | HOLD | 0.42 | Datele arată o tendință negativă pe termen scurt și mediu, cu prețul sub mediile mobile și piețe riscante în scădere, dar RSI nu este extrem și semnalul SMA 20/50 indică cumpărare. Pentru următoarele 5 zile dovezile sunt contradictorii și insuficiente pentru o direcție clară. |
+| deepseek | SELL | 0.60 | Prețul AMZN a scăzut cu 8.7% în ultimele 5 zile, iar contextul general al pieței este puternic negativ, cu scăderi semnificative pe indici și active de risc. RSI la 40 nu indică o zonă de supravânzare, sugerând că tendința descendentă ar putea continua. |
 
 ## WMT: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 132.3100 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.026 $.
+Preț 131.9400 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.76 | Impulsul pozitiv și prețul peste mediile mobile favorizează continuarea creșterii, dar apropierea de maximul anual și scăderile pieței largi fac incertă direcția următoarelor 5 ședințe. Doar aceste date de preț nu oferă suficiente dovezi pentru a decide între creștere și scădere. |
-| claude | HOLD | 0.55 | WMT are un trend puternic (peste toate mediile mobile, +10.9% în 20 de zile, aproape de maxim, RSI 60) și arată forță defensivă relativă față de o piață largă în scădere, dar extensia mare față de SMA50 și volatilitatea ridicată fac direcția pe 5 zile incertă. Fără știri sau date fundamentale, semnalul de momentum nu este suficient de clar pentru un vot direcțional. |
-| gemini | BUY | 0.72 | WMT demonstrează o forță relativă remarcabilă și un rol defensiv, fiind într-un trend ascendent puternic peste toate mediile mobile, în timp ce piețele generale scad. Indicatorul RSI la 60 arată un momentum pozitiv fără a fi supracumpărat, susținând continuarea creșterii pe termen scurt. |
-| grok | HOLD | 0.46 | WMT este peste mediile mobile, cu RSI 60 și aproape de maximul anual, dar piețele riscante au scăzut puternic în 20 de zile. Datele nu arată clar dacă impulsul propriu sau presiunea externă va domina în următoarele 5 zile. |
-| deepseek | BUY | 0.65 | Prețul se află într-un trend ascendent clar, deasupra mediilor mobile pe 20, 50 și 200 de zile, iar RSI-ul de 60 indică un impuls pozitiv fără a fi supra-cumpărat. Regula SMA 20/50 confirmă semnalul de cumpărare, sugerând continuarea creșterii pe termen scurt. |
+| gpt | HOLD | 0.77 | WMT are un trend ascendent și forță relativă față de indicii bursieri, dar apropierea de maximul anual și volatilitatea ridicată lasă deschis riscul unei corecții. Datele de preț disponibile nu oferă suficiente dovezi pentru a decide direcția în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | WMT are un trend puternic ascendent (peste toate mediile mobile, +11% în 20 de zile, aproape de maxim) și o forță relativă defensivă clară într-o piață în scădere, dar RSI de 65, extensia de ~12% peste SMA50 și volatilitatea ridicată fac direcția pe 5 zile incertă. Semnalul pozitiv al regulii SMA nu este suficient pentru o prognoză pe termen atât de scurt. |
+| gemini | HOLD | 0.55 | Deși WMT prezintă un trend ascendent puternic și acționează ca un activ defensiv în fața scăderilor severe de pe S&P 500 și Nasdaq, nivelul RSI de 65 și apropierea de maximul anual limitează potențialul pe termen foarte scurt. Având în vedere aversiunea ridicată față de risc din piețele globale, datele sunt insuficiente pentru a prezice cu încredere direcția următoarelor 5 zile. |
+| grok | HOLD | 0.42 | WMT este peste mediile mobile și aproape de maximul anual, dar piețele riscante au scăzut puternic în ultimele 20 de zile. Din aceste date nu se poate decide direcția pe următoarele 5 zile. |
+| deepseek | BUY | 0.65 | Prețul se menține peste mediile mobile principale, RSI 65 arată un impuls pozitiv fără a fi supra-cumpărat, iar regula simplă a botului indică cumpărare. Deși contextul general al pieței este negativ, caracterul defensiv al WMT ar putea susține o continuare a tendinței ascendente pe termen scurt. |
 
 ## KO: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 97.6200 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.027 $.
+Preț 97.5900 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Prețul peste mediile mobile și performanța relativă bună sugerează un trend pozitiv, dar scăderea de 1,2% pe ultimele 5 zile contrastează cu acest semnal. Datele de preț disponibile nu sunt suficiente pentru a stabili direcția următoarelor 5 ședințe. |
-| claude | HOLD | 0.40 | KO are un trend ascendent clar (peste SMA20/50/200, +7.1% pe 20 de zile, RSI 58) și arată putere defensivă într-o piață largă în scădere puternică, dar este aproape de maximul anual, iar slăbiciunea de pe 5 zile și riscul de vânzări generalizate fac direcția pe 5 zile incertă. Semnalul de cumpărare al regulii SMA nu este suficient pentru o predicție fiabilă pe un orizont atât de scurt. |
-| gemini | BUY | 0.68 | KO demonstrează o forță relativă impresionantă (+7.1% pe 20 de zile) ca activ defensiv în timp ce piața generală și activele de risc scad puternic. Trendul rămâne solid peste toate mediile mobile majore, iar RSI-ul de 58 indică loc de creștere fără a fi supracumpărat. |
-| grok | HOLD | 0.42 | Tendința pe termen mediu rămâne pozitivă (preț peste SMA20/50/200, RSI 58), dar ultimele 5 zile sunt ușor negative, iar piețele riscante au scăzut puternic. Din aceste date nu se poate decide direcția pe următoarele 5 ședințe. |
-| deepseek | BUY | 0.60 | Prețul se menține peste mediile mobile, RSI neutru, iar regula SMA 20/50 indică cumpărare; acțiunile defensive precum KO pot continua să atragă capital în contextul scăderilor din alte piețe. |
+| gpt | HOLD | 0.78 | Tendința ascendentă și rezistența relativă față de piața largă favorizează KO, dar scăderea de 0,5% din ultimele 5 zile indică o pierdere recentă de impuls. Doar aceste date de preț nu oferă dovezi suficiente pentru a anticipa direcția următoarelor 5 ședințe. |
+| claude | HOLD | 0.55 | KO are un trend puternic ascendent (peste toate mediile mobile, +6.4% pe 20 de zile în timp ce S&P 500 a scăzut 7.2%) și RSI 58 neutru, dar ultimele 5 zile arată stagnare aproape de maximul anual. Fără știri, direcția pe 5 zile este incertă, mai ales că o rotație defensivă se poate inversa rapid. |
+| gemini | HOLD | 0.60 | Deși KO se află într-un trend ascendent puternic peste toate mediile mobile și arată o reziliență defensivă remarcabilă față de scăderile masive din piețele globale, dinamica recentă pe 5 zile a încetinit (-0.5%). Din cauza divergenței extreme dintre stabilitatea acțiunii și prăbușirea activelor de risc pe ultimele 20 de zile, direcția pentru următoarele 5 zile este prea incertă. |
+| grok | HOLD | 0.42 | Tendința pe 20–120 de zile și poziția peste mediile mobile sunt pozitive, dar ultimele 5 zile sunt ușor negative, iar prețul este aproape de maximul anual. Fără știri sau date fundamentale, direcția pe următoarele 5 ședințe nu poate fi decisă din aceste informații. |
+| deepseek | BUY | 0.65 | Acțiunea KO a crescut cu 6.4% în ultimele 20 de zile, depășind mediile mobile pe termen scurt, iar RSI de 58 indică potențial de creștere fără a fi supra-cumpărată. Deși alte piețe au scăzut, KO a demonstrat reziliență, sugerând continuarea tendinței pozitive pe termen scurt. |
 
 ## PG: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 172.4700 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.027 $.
+Preț 173.2300 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.76 | Trendul ascendent și performanța relativă bună susțin continuarea creșterii, dar apropierea de maximul anual și avansul de numai 0,4% în ultimele 5 zile lasă deschisă și posibilitatea unei consolidări. Datele de preț nu oferă suficiente dovezi pentru a decide direcția următoarelor 5 ședințe. |
-| claude | HOLD | 0.55 | PG are un trend puternic ascendent (peste toate mediile mobile, aproape de maximul anual, rotație defensivă în timp ce piața scade), dar RSI 62 și extinderea de +9.6% față de SMA50 sugerează risc de consolidare pe termen scurt. Fără știri, direcția pe 5 zile nu poate fi stabilită cu încredere suficientă. |
-| gemini | BUY | 0.65 | PG arată o forță relativă remarcabilă ca activ defensiv, menținând un trend ascendent puternic peste toate mediile mobile în timp ce restul pieței (S&P 500, Nasdaq, mărfuri) scade sever. Cu un RSI de 62 care nu indică încă supracumpărare extremă și prețul aproape de maximul anual, impulsul pe termen scurt rămâne pozitiv. |
-| grok | HOLD | 0.42 | PG este peste mediile mobile, cu RSI 62 și aproape de maximul anual, dar avansul pe 5 zile este slab (+0,4%). Corecțiile ample din alte piețe fac direcția pe următoarele 5 zile neclară doar din aceste prețuri. |
-| deepseek | BUY | 0.70 | Prețul se menține peste mediile mobile cheie, iar RSI(14) la 62 arată un trend ascendent sănătos. Acțiunea a crescut cu 8.3% în ultimele 20 de zile în ciuda corecțiilor puternice de pe alte piețe, sugerând o cerere defensivă solidă. |
+| gpt | HOLD | 0.78 | Tendința ascendentă și rezistența relativă față de piață favorizează continuarea creșterii, dar apropierea de maximul anual și avansul recent lasă loc unei corecții. Doar aceste date de preț nu oferă suficiente dovezi pentru a decide direcția în următoarele cinci zile de tranzacționare. |
+| claude | HOLD | 0.55 | PG are un trend puternic ascendent (peste toate mediile mobile, aproape de maxim, cu forță relativă defensivă în timp ce S&P 500 a scăzut 7,2%), dar RSI de 64, distanța de +16,5% față de SMA200 și volatilitatea ridicată pentru un titlu defensiv fac direcția pe 5 zile incertă. Fără știri sau date fundamentale, semnalul nu este suficient de clar pentru a paria pe o creștere sau o scădere. |
+| gemini | BUY | 0.65 | PG manifestă o putere relativă remarcabilă ca activ defensiv, urcând cu 9.5% în ultimele 20 de zile, în timp ce S&P 500 și activele de risc au suferit scăderi semnificative. Trendul ascendent este puternic susținut de poziționarea peste mediile mobile și de un RSI de 64 care mai permite spațiu de creștere pe termen scurt. |
+| grok | HOLD | 0.42 | PG este în trend ascendent și aproape de maximul anual, cu RSI 64 și preț peste mediile mobile, dar orizontul de 5 zile este prea scurt pentru o direcție clară. Piețele riscante sunt în scădere, iar fără știri sau rezultate nu se poate decide dacă urmează continuarea sau o corecție. |
+| deepseek | BUY | 0.65 | Acțiunea PG prezintă un momentum pozitiv, tranzacționându-se peste mediile mobile, iar contextul de piață advers favorizează sectoarele defensive. Regula SMA 20/50 indică cumpărare, iar RSI nu este încă în supracumpărare. |
 
 ## JNJ: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 276.4600 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
+Preț 273.9400 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul peste mediile mobile și rezistența relativă față de indicii bursieri susțin o tendință pozitivă, dar RSI de 51 și variația de -0,3% pe ultimele 5 zile nu confirmă o direcție clară pe termen scurt. Volatilitatea ridicată și lipsa altor informații fac insuficiente aceste date pentru a anticipa direcția următoarelor 5 ședințe. |
-| claude | HOLD | 0.55 | JNJ are un trend pozitiv (peste SMA20/50/200, +22% pe 120 de zile) și rezistă relativ bine într-o piață largă în scădere puternică, dar RSI neutru (51), volatilitatea ridicată (~32%) și randamentul de -0.3% pe 5 zile nu oferă un semnal clar pentru următoarele 5 zile. Contextul de aversiune la risc poate susține un sector defensiv, însă poate aduce și vânzări generalizate, deci datele sunt insuficiente pentru o direcție. |
-| gemini | HOLD | 0.60 | Deși JNJ arată reziliență și se află într-un trend ascendent peste mediile mobile, RSI-ul neutru (51) și stagnarea pe ultimele 5 zile (-0.3%) nu oferă un semnal clar pe termen foarte scurt. În plus, scăderile masive din piețele globale indică un mediu de aversiune la risc imprevizibil, făcând dificilă estimarea direcției pentru următoarele 5 zile. |
-| grok | HOLD | 0.48 | JNJ este peste mediile mobile, cu RSI neutru și un semnal SMA 20/50 de cumpărare, dar variația pe 5 zile este ușor negativă. Corecția amplă din alte piețe și volatilitatea ridicată fac direcția pe următoarele 5 zile neclară. |
-| deepseek | BUY | 0.60 | Prețul a crescut puternic într-o singură zi, iar media mobilă pe 20 de zile a depășit-o pe cea de 50 de zile, semnalând tendință ascendentă pe termen scurt. RSI neutru și performanța relativă bună față de piață sugerează continuarea creșterii. |
+| gpt | HOLD | 0.80 | JNJ arată reziliență față de piața largă și se menține peste SMA50 și SMA200, dar prețul ușor sub SMA20 și RSI de 53 nu indică o direcție clară pe termen scurt. Volatilitatea ridicată și semnalele mixte fac insuficiente aceste date pentru a anticipa sensul mișcării în următoarele 5 ședințe. |
+| claude | HOLD | 0.55 | JNJ arată reziliență defensivă (+1,6% pe 20 de zile, în timp ce S&P 500 a scăzut cu 7,2%), cu prețul peste SMA50 și SMA200, iar regula SMA 20/50 semnalează cumpărare. Totuși, prețul este practic pe SMA20, RSI este neutru la 53, volatilitatea de 32% este ridicată pentru acest titlu, iar piața largă e în declin, deci direcția pe 5 zile nu poate fi stabilită cu încredere din aceste date. |
+| gemini | HOLD | 0.65 | Deși JNJ arată o reziliență remarcabilă și un trend ascendent pe termen lung în mijlocul unei scăderi severe a pieței generale, indicatorii pe termen scurt (RSI la 53 și prețul situat exact pe SMA20) indică o consolidare neutră. În plus, volatilitatea ridicată de 32% și aversiunea globală față de risc oferă semnale mixte, fiind insuficient de clare pentru a prezice direcția pe următoarele 5 zile. |
+| grok | HOLD | 0.42 | Semnalele sunt mixte: prețul e ușor sub SMA20, dar peste SMA50 și SMA200, RSI-ul e neutru, iar regula SMA 20/50 indică cumpărare. Scăderile puternice de pe alte piețe pot presa și un titlu defensiv, deci direcția pe 5 zile nu se poate stabili din aceste date. |
+| deepseek | BUY | 0.60 | JNJ a demonstrat rezistență în fața scăderilor generale ale pieței, iar media mobilă pe 20 de zile se menține peste cea pe 50 de zile, semnalând un trend ascendent pe termen scurt, deși RSI neutru și volatilitatea ridicată impun prudență. |
 
-## UNH: **NU TRANZACȚIONA** (înclină spre cumpărare)
-Preț 341.8800 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.030 $.
-
-| Agent | Vot | Încredere | Motiv |
-|---|---|---:|---|
-| gpt | HOLD | 0.87 | Scăderile recente, prețul sub mediile mobile și slăbiciunea pieței indică presiune descendentă, dar RSI de 26 și revenirea ultimei zile permit și un recul ascendent. Volatilitatea ridicată și semnalele contradictorii nu oferă dovezi suficiente pentru a stabili direcția următoarelor 5 ședințe. |
-| claude | HOLD | 0.30 | UNH este în trend descendent clar (sub SMA20, SMA50 și SMA200, -12,3% în 5 zile), pe fondul unei scăderi generale a piețelor, dar RSI de 26 indică o stare de supravânzare care poate aduce un rebound pe termen scurt. Semnalele sunt contradictorii, iar semnalul de cumpărare al regulii SMA 20/50 nu se potrivește cu prețul aflat mult sub ambele medii, deci datele nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși RSI-ul de 26 și creșterea de 1.7% din ultima zi sugerează o posibilă revenire din supravânzare, trendul general este puternic descendent, cu prețul situat sub toate mediile mobile importante. Volatilitatea ridicată de 62% și scăderile masive de pe piețele globale indică un risc prea mare pentru a confirma o direcție clară în următoarele 5 zile. |
-| grok | HOLD | 0.46 | Datele arată un trend descendent clar (preț sub SMA20/50/200, scăderi pe 5–120 zile) și RSI 26, dar semnalul SMA 20/50 de cumpărare și revenirea de o zi nu sunt suficiente pentru direcția următoarelor 5 zile. Volatilitatea ridicată și slăbiciunea piețelor largi fac predicția incertă. |
-| deepseek | BUY | 0.35 | RSI la 26 indică o stare de supravânzare, iar regula botului bazată pe SMA20/50 semnalează cumpărare, sugerând o posibilă revenire pe termen scurt, deși tendința generală rămâne negativă. |
-
-## XOM: **NU TRANZACȚIONA** (fără înclinație)
-Preț 158.2300 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
+## UNH: **NU TRANZACȚIONA** (înclină spre vânzare)
+Preț 346.1900 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.028 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Scăderile recente, prețul sub SMA20 și SMA50 și slăbiciunea petrolului indică presiune descendentă, dar RSI de 33 și menținerea peste SMA200 lasă posibilitatea unei reveniri. Doar aceste date nu oferă dovezi suficiente pentru a stabili direcția în următoarele 5 ședințe. |
-| claude | HOLD | 0.35 | Prețul este sub SMA20 și SMA50, într-un context de risk-off generalizat și cu petrolul în scădere de 17,4% pe 20 de zile, deși RSI 33 aproape de supravânzare și poziția peste SMA200 sugerează un posibil rebound. Semnalul de cumpărare al regulii SMA 20/50 pare contrazis de prețul aflat sub ambele medii, așa că datele sunt contradictorii și insuficiente pentru o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși XOM este aproape de zona de supravânzare (RSI 33) și se menține peste media mobilă de 200 de zile (+2.1%), tendința pe termen scurt este puternic negativă, prețul fiind cu 5.8% sub mediile SMA20 și SMA50. Scăderea severă a petrolului (-17.4% în 20 de zile) și corecția generală a piețelor creează semnale contradictorii față de potențialul de revenire tehnică, făcând direcția pe următoarele 5 zile incertă. |
-| grok | HOLD | 0.48 | XOM este sub SMA20 și SMA50, cu scădere de 11,5% pe 20 de zile și petrolul în scădere accentuată, deși RSI 33 sugerează o posibilă revenire. Semnalele sunt contradictorii, iar datele nu permit o direcție clară pe următoarele 5 zile. |
-| deepseek | HOLD | 0.30 | Datele oferă semnale contradictorii: RSI aproape de supravânzare și semnalul botului de cumpărare sugerează o posibilă revenire, dar trendul descendent pe termen scurt și contextul general de piață negativ indică continuarea scăderilor, făcând incertă direcția pe 5 zile. |
+| gpt | HOLD | 0.80 | Tendința descendentă și prețul sub mediile mobile sugerează presiune la vânzare, dar RSI de 31 și volatilitatea ridicată lasă deschisă posibilitatea unei reveniri pe termen scurt. Doar aceste date nu oferă dovezi suficiente pentru a decide direcția în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.35 | Trendul este clar negativ (preț sub SMA20/50/200, -15% în 20 de zile, regula SMA dă semnal de vânzare, piața largă în scădere), dar RSI de 31 indică o zonă aproape de supravânzare, cu posibil rebound pe termen scurt. Cu volatilitate de 63% și fără știri, direcția pe 5 zile nu se poate stabili cu încredere din aceste date. |
+| gemini | HOLD | 0.60 | Deși trendul pe termen scurt și mediu este negativ, cu prețul sub mediile mobile și o volatilitate ridicată pe fondul scăderilor generale din piețe, valoarea RSI de 31 indică o stare apropiată de supravânzare. Acești factori tehnici contradictorii nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | SELL | 0.58 | Prețul este sub SMA20, SMA50 și SMA200, iar scăderile pe 20–120 de zile rămân clare, în linie cu slăbiciunea piețelor riscante. RSI de 31 sugerează o posibilă stabilizare, dar datele disponibile nu anulează semnalul tehnic de scădere pe termen scurt. |
+| deepseek | SELL | 0.60 | Prețul se situează sub mediile mobile, iar scăderile sincronizate pe alte piețe sugerează un context bearish, în ciuda RSI aproape de supravânzare. |
 
-## CVX: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 208.7300 (închidere 2026-11-24); regula simplă a botului: cumpără; cost 0.029 $.
+## XOM: **VINDE** (înclină spre vânzare)
+Preț 158.0800 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Scăderea pe 5 și 20 de zile, prețul sub SMA20/SMA50 și slăbiciunea petrolului sugerează presiune negativă, dar revenirea zilnică și poziționarea peste SMA200 oferă semnale mixte. Doar aceste date nu susțin suficient o direcție pentru următoarele 5 ședințe, iar semnalul de cumpărare al regulii simple nu este decisiv. |
-| claude | HOLD | 0.55 | Prețul este sub SMA20 și SMA50, cu RSI neutru-slab (41) și petrolul în scădere puternică (-17.4% pe 20 de zile) pe fondul unei piețe largi în aversiune la risc, ceea ce contrazice semnalul de cumpărare SMA 20/50 al botului. Trendul pe termen lung rămâne pozitiv (peste SMA200), deci semnalele sunt mixte și insuficiente pentru o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.65 | Deși trendul pe termen lung rămâne pozitiv (prețul fiind cu 7,8% peste SMA200), evoluția pe termen scurt este negativă, cu prețul sub mediile mobile de 20 și 50 de zile și o scădere puternică a petrolului (-17,4%) și a pieței generale în ultimele 20 de zile. Având în vedere aceste semnale contradictorii și un RSI neutru la 41, datele sunt insuficiente pentru a prezice clar direcția pentru următoarele 5 zile. |
-| grok | HOLD | 0.42 | Pe 5 zile semnalul este mixt: prețul e sub SMA20 și SMA50, cu scăderi pe 5 și 20 de zile și presiune pe petrol, deși rămâne peste SMA200 și RSI nu e extrem. Volatilitatea ridicată și lipsa de știri fac direcția pe termen scurt nedecisă. |
-| deepseek | SELL | 0.60 | Prețul CVX este sub mediile mobile pe 20 și 50 de zile, iar prăbușirea petrolului (-17.4% în 20 de zile) și corecțiile ample din piețele de risc indică o continuare a presiunii de vânzare pe termen scurt. |
+| gpt | SELL | 0.59 | Scăderea de 12,6% în 20 de zile, prețul sub SMA20 și SMA50 și slăbiciunea petrolului sugerează continuarea presiunii descendente în următoarele 5 ședințe. Totuși, poziționarea peste SMA200 și volatilitatea ridicată reduc încrederea în această estimare bazată exclusiv pe prețuri. |
+| claude | HOLD | 0.55 | Trendul pe termen scurt este negativ (sub SMA20/SMA50, -12.6% în 20 de zile, petrolul -16%, piața largă în scădere), dar prețul rămâne peste SMA200, iar RSI de 38 se apropie de zona de supravânzare, deci semnalele sunt contradictorii. Fără știri și cu o volatilitate ridicată, direcția pe 5 zile nu poate fi stabilită cu încredere. |
+| gemini | HOLD | 0.65 | Deși trendul pe termen scurt este negativ și corelat cu scăderea de 16% a petrolului, prețul XOM se află în continuare cu 2% peste media mobilă de 200 de zile și are un RSI de 38 care se apropie de zona de supravânzare. Aceste semnale tehnice mixte nu oferă o direcție clară pentru următoarele 5 zile. |
+| grok | SELL | 0.56 | XOM este sub SMA20 și SMA50, cu scăderi pe 5 și 20 de zile și RSI 38, iar regula SMA 20/50 indică vânzare. Presiunea din petrol și din piețele riscante susține continuarea slăbiciunii pe termen scurt, deși direcția pe 5 zile rămâne incertă. |
+| deepseek | SELL | 0.70 | Prețul a scăzut puternic în ultimele 20 de zile, iar media mobilă pe 20 de zile a trecut sub cea pe 50 de zile, semnalând vânzare. În plus, scăderile ample de pe alte piețe (petrol, crypto, acțiuni) confirmă un context de piață negativ, sugerând continuarea scăderii pe termen scurt. |
+
+## CVX: **NU TRANZACȚIONA** (fără înclinație)
+Preț 210.9500 (închidere 2026-11-25); regula simplă a botului: cumpără; cost 0.030 $.
+
+| Agent | Vot | Încredere | Motiv |
+|---|---|---:|---|
+| gpt | HOLD | 0.82 | Semnalele sunt mixte: revenirea de 2,5% în ultimele 5 zile și poziția peste SMA200 contrastează cu scăderea de 7,2% pe 20 de zile și prețul sub SMA20 și SMA50. RSI de 50 este neutru, iar volatilitatea ridicată și slăbiciunea petrolului nu permit o estimare direcțională suficient de solidă pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.30 | Semnalele sunt mixte: prețul este puțin sub SMA20 și SMA50, dar peste SMA200, cu RSI neutru la 50 și o revenire slabă pe 5 zile, în timp ce petrolul (-16%) și piața largă (-7,2%) au scăzut puternic pe 20 de zile. Regula SMA 20/50 indică cumpărare, însă nu este confirmată de preț, iar cu o volatilitate de 34% direcția pe 5 zile nu se poate stabili din aceste date. |
+| gemini | HOLD | 0.65 | Deși acțiunea arată o revenire pe termen foarte scurt (+2.5% în 5 zile) și un trend ascendent peste SMA200, indicatorul RSI este complet neutru la 50, iar prețul se află ușor sub mediile mobile de 20 și 50 de zile. Scăderea semnificativă a prețului petrolului (-16.0%) și a pieței generale în ultimele 20 de zile creează semnale contradictorii, făcând direcția pentru următoarele 5 zile incertă. |
+| grok | HOLD | 0.42 | Semnalele sunt contradictorii: revenirea pe 5 zile și regula SMA 20/50 indică cumpărare, dar prețul rămâne sub SMA20 și SMA50, iar petrolul și piețele riscante au scăzut puternic pe 20 de zile. RSI neutru și lipsa altor date nu permit o direcție clară pentru următoarele 5 zile. |
+| deepseek | HOLD | 0.50 | Deși prețul a crescut pe termen scurt și regula botului indică cumpărare, scăderea accentuată a petrolului și contextul negativ al pieței creează incertitudine pentru următoarele 5 zile. |
 
 ## JPM: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 317.1000 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 316.7400 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Prețul sub mediile mobile și scăderile recente indică presiune descendentă, dar RSI de 26 semnalează supravânzare și posibilitatea unei reveniri pe termen scurt. În condițiile volatilității ridicate, aceste prețuri nu oferă suficiente dovezi pentru a decide direcția următoarelor 5 ședințe. |
-| claude | HOLD | 0.30 | Trendul pe termen scurt și mediu este negativ (sub SMA20/SMA50, semnal de vânzare, piețe largi în scădere și risk-off), dar RSI de 26 indică o stare de supravânzare care poate aduce un rebound pe termen scurt. Semnalele contradictorii și volatilitatea ridicată nu permit o direcție clară pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși RSI-ul de 26 indică o supravânzare puternică ce ar putea favoriza un reviriment pe termen scurt, prețul se află sub toate mediile mobile majore (SMA 20, 50, 200) într-un context de scădere severă pe întreaga piață și volatilitate ridicată (39%). Semnalele tehnice sunt contradictorii, făcând direcția pe următoarele 5 zile incertă. |
-| grok | HOLD | 0.42 | Datele arată un trend descendent (sub SMA20/50/200, botul SMA spune vinde) dar RSI 14 la 26 indică supravânzare, deci semnalele se contrazic. Fără știri sau rezultate, direcția pe următoarele 5 zile nu poate fi decisă din aceste prețuri. |
-| deepseek | SELL | 0.70 | Prețul se află sub mediile mobile, RSI indică supravânzare dar tendința generală este negativă, iar regula SMA 20/50 sugerează vânzare. Piețele globale sunt în scădere, ceea ce confirmă presiunea de vânzare pe termen scurt. |
+| gpt | HOLD | 0.80 | Tendința descendentă și prețul sub SMA20, SMA50 și SMA200 sugerează presiune de vânzare, dar RSI de 32 și volatilitatea ridicată lasă deschisă posibilitatea unei reveniri pe termen scurt. Doar aceste date de preț nu oferă dovezi suficiente pentru a decide direcția în următoarele 5 zile de tranzacționare. |
+| claude | HOLD | 0.55 | JPM este în tendință descendentă (sub SMA20/50/200, regula SMA dă semnal de vânzare, piețele largi sunt în risk-off), dar RSI de 32 indică o zonă aproape de supravânzare, unde un rebound pe termen scurt este plauzibil. Semnalele sunt contradictorii, iar volatilitatea este ridicată, așa că datele nu permit o direcție clară pe 5 zile. |
+| gemini | HOLD | 0.60 | Prețul JPM este în scădere sub toate mediile mobile principale pe fondul unei corecții generale a piețelor, însă valoarea RSI(14) de 32 indică o apropiere de zona de supravânzare. Din cauza semnalelor tehnice mixte și a volatilității crescute pe termen scurt, direcția pentru următoarele 5 zile este incertă. |
+| grok | SELL | 0.58 | Prețul este sub SMA20, SMA50 și SMA200, cu randamente negative pe 5, 20 și 60 de zile, iar regula SMA 20/50 indică vânzare într-un context de risk-off. RSI de 32 sugerează o posibilă revenire, dar datele disponibile nu o confirmă pentru următoarele 5 zile. |
+| deepseek | SELL | 0.70 | Prețul se situează sub mediile mobile cheie, cu RSI aproape de supravânzare, iar corelația cu scăderile ample din alte piețe indică o continuare a presiunii de vânzare pe termen scurt. |
 
-## GS: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 806.0200 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+## GS: **VINDE** (înclină spre vânzare)
+Preț 801.0300 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.027 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.80 | Tendința descendentă și slăbiciunea pieței sugerează presiune la vânzare, dar RSI de 31 și volatilitatea ridicată lasă deschisă posibilitatea unei reveniri pe termen scurt. Doar aceste date de preț nu oferă suficiente dovezi pentru a decide direcția în următoarele 5 zile de tranzacționare. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (preț sub toate mediile mobile, semnal SMA de vânzare, risk-off generalizat pe piețe), dar RSI de 31 și volatilitatea ridicată de 59% sugerează o zonă apropiată de supravânzare, unde un rebound pe termen scurt este la fel de plauzibil ca o continuare a scăderii. Fără știri sau date fundamentale, direcția pe 5 zile nu poate fi stabilită cu încredere. |
-| gemini | HOLD | 0.65 | Deși trendul general este puternic descendent, iar prețul se află semnificativ sub mediile mobile (SMA20, SMA50, SMA200) într-un context de scădere a piețelor globale, valoarea RSI(14) de 31 indică o apropiere de zona de supravânzare. Volatilitatea ridicată de 59% pe 20 de zile și semnalele tehnice mixte fac imposibilă o predicție clară pe 5 zile fără riscuri majore. |
-| grok | SELL | 0.62 | GS este sub SMA20, SMA50 și SMA200, cu scăderi pe 5–120 de zile și semnal de vânzare SMA 20/50, într-un context de risk-off. RSI 31 sugerează o posibilă revenire scurtă, dar tendința pe 5 zile rămâne descendentă. |
-| deepseek | SELL | 0.70 | Trendul descendent puternic, prețul sub mediile mobile și corelația cu scăderile de pe alte piețe indică continuarea presiunii de vânzare. RSI de 31, deși aproape de supravânzare, nu oferă un semnal clar de inversare pe termen scurt. |
+| gpt | SELL | 0.60 | Tendința descendentă pe toate intervalele, prețul sub mediile mobile și slăbiciunea generalizată a piețelor înclină balanța spre continuarea scăderii în următoarele 5 ședințe. Totuși, volatilitatea ridicată și apropierea de minimul anual permit o revenire temporară, astfel că semnalul are convingere limitată. |
+| claude | HOLD | 0.55 | GS este într-un trend descendent clar (sub toate mediile mobile, semnal de vânzare SMA 20/50, aversiune la risc pe mai multe piețe), dar RSI 37 aproape de supravânzare, proximitatea de minimul anual și volatilitatea ridicată de 58% fac direcția pe 5 zile incertă, cu risc de revenire tehnică. Fără știri sau date fundamentale, semnalele contradictorii nu justifică un vot direcțional. |
+| gemini | SELL | 0.65 | GS se află într-un trend descendent clar, tranzacționându-se sub toate mediile mobile principale (SMA20, SMA50, SMA200), într-un context general de piață puternic negativ și cu volatilitate ridicată. Deși RSI la 37 se apropie de zona de supravânzare, inerția negativă pe termen scurt și mediu indică o probabilitate mai mare de continuare a scăderii în următoarele 5 zile. |
+| grok | SELL | 0.62 | GS este într-un trend descendent clar, sub SMA20/50/200, cu scăderi pe 5–120 de zile și semnal SMA 20/50 de vânzare, în context de risk-off pe piețe. RSI 37 și apropierea de minimul anual lasă loc de revenire, dar datele disponibile nu susțin o creștere în următoarele 5 zile. |
+| deepseek | SELL | 0.70 | Prețul se află sub mediile mobile, RSI sub 50, iar tendința pe termen scurt este negativă, ceea ce sugerează o continuare a scăderii. |
 
 ## CAT: **VINDE** (înclină spre vânzare)
-Preț 540.6300 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.026 $.
+Preț 543.6900 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | SELL | 0.60 | Scăderile pe toate intervalele și prețul sub mediile mobile susțin o probabilitate moderat mai mare de continuare a declinului în următoarele 5 ședințe, pe fondul slăbiciunii pieței largi. Volatilitatea ridicată și apropierea de minimul anual permit însă un recul ascendent puternic, limitând încrederea în estimare. |
-| claude | HOLD | 0.55 | Trendul este puternic descendent (sub toate mediile mobile, -24% pe 20 de zile, regula SMA spune vinde), dar RSI 40, proximitatea de minimul anual și volatilitatea foarte mare de 80% fac direcția pe 5 zile imprevizibilă, cu risc de revenire. Fără știri sau date fundamentale, semnalele contradictorii nu justifică o decizie direcțională. |
-| gemini | SELL | 0.68 | Acțiunea CAT se află într-un trend descendent puternic pe toate intervalele de timp analizate, tranzacționându-se semnificativ sub mediile mobile de 20, 50 și 200 de zile. În plus, scăderile generalizate din piețele de acțiuni și mărfuri, cuplate cu o volatilitate ridicată de 80%, indică o continuare a presiunii de vânzare în următoarele 5 zile. |
-| grok | SELL | 0.58 | CAT este într-un trend descendent clar, sub mediile SMA20, SMA50 și SMA200, iar regula SMA 20/50 indică vânzare. Scăderile recente și volatilitatea ridicată susțin o continuare a slăbiciunii pe 5 zile, deși un rebound scurt nu poate fi exclus. |
-| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub toate mediile mobile, cu RSI sub 50 și un context macro de risk-off, ceea ce sugerează continuarea scăderii. |
+| gpt | HOLD | 0.76 | Scăderile ample și prețul sub mediile mobile indică o tendință descendentă, dar RSI de 48 și volatilitatea ridicată nu oferă un semnal clar pentru următoarele 5 ședințe. Doar aceste date nu permit diferențierea suficient de sigură între continuarea scăderii și o revenire temporară. |
+| claude | HOLD | 0.35 | Trendul este puternic descendent (sub toate mediile mobile, -23.8% pe 20 de zile, regula SMA 20/50 indică vânzare), dar RSI neutru (48), apropierea de minimul anual și stabilizarea din ultimele zile sugerează un posibil rebound, iar volatilitatea de 80% face direcția pe 5 zile imprevizibilă. Fără știri sau date fundamentale, semnalele sunt contradictorii și insuficiente pentru o decizie. |
+| gemini | SELL | 0.65 | Prețul se află într-un trend descendent pronunțat, tranzacționându-se semnificativ sub mediile mobile de 20, 50 și 200 de zile, pe fondul unor scăderi generalizate pe majoritatea piețelor. Cu un RSI neutru la 48 și o volatilitate ridicată de 80%, nu există semne de supravânzare care să oprească presiunea de vânzare în următoarele 5 zile. |
+| grok | SELL | 0.58 | Tendința pe 5–120 de zile este clar descendentă, prețul stă sub SMA20/50/200, iar regula SMA 20/50 indică vânzare, în context de risc-off pe piețe. RSI neutru și apropierea de minimul anual limitează certitudinea pe doar cinci zile. |
+| deepseek | SELL | 0.70 | Prețul se află într-un trend descendent puternic, sub mediile mobile principale, iar volatilitatea ridicată și sentimentul negativ al pieței sugerează continuarea scăderii pe termen scurt. |
 
 ## BA: **NU TRANZACȚIONA** (înclină spre vânzare)
-Preț 163.5900 (închidere 2026-11-24); regula simplă a botului: vinde; cost 0.027 $.
+Preț 164.5300 (închidere 2026-11-25); regula simplă a botului: vinde; cost 0.026 $.
 
 | Agent | Vot | Încredere | Motiv |
 |---|---|---:|---|
-| gpt | HOLD | 0.78 | Prețul sub mediile mobile și scăderile pe termen mediu indică o tendință negativă, dar RSI de 31 și stabilizarea relativă din ultimele 5 zile lasă deschisă posibilitatea unei reveniri. Doar aceste date nu oferă suficiente dovezi pentru a decide direcția în următoarele 5 ședințe, mai ales la volatilitatea indicată. |
-| claude | HOLD | 0.35 | Trendul este clar descendent (sub SMA20/50/200, -21% pe 60 de zile, semnal de vânzare SMA 20/50, piețe largi în risk-off), dar RSI de 31 indică o zonă aproape de supravânzare, iar prețul s-a stabilizat în ultimele 5 zile. Semnalele contradictorii nu permit o predicție fiabilă pe 5 zile. |
-| gemini | HOLD | 0.60 | Deși trendul pe termen mediu și lung este clar descendent, cu prețul sub toate mediile mobile majore și o piață globală în scădere, acțiunea arată semne de stabilizare pe termen scurt (-0.2% în 5 zile) aproape de zona de supravânzare (RSI 31). Această divergență între presiunea macroeconomică negativă și suportul tehnic local face direcția pentru următoarele 5 zile incertă. |
-| grok | SELL | 0.58 | BA este sub SMA20, SMA50 și SMA200, cu tendință negativă pe 20–120 de zile și semnal SMA 20/50 de vânzare, iar piețele riscante sunt și ele slabe. RSI de 31 lasă loc unui rebound scurt, dar datele disponibile nu arată o inversare clară pe următoarele 5 zile. |
-| deepseek | SELL | 0.65 | Prețul BA se află într-un trend descendent accentuat, confirmat de media mobilă SMA20 sub SMA50 și de scăderile pe 60 și 120 de zile, iar RSI aproape de 30 nu garantează o revenire imediată în contextul pieței globale negative. |
+| gpt | HOLD | 0.80 | Prețul sub SMA20/50/200 și scăderile pe 60–120 de zile indică un trend descendent, dar creșterile recente și performanța relativ mai bună decât indicii pe 20 de zile oferă semnale mixte. Doar aceste date, în condiții de volatilitate ridicată și fără știri sau rezultate, nu susțin suficient o direcție pentru următoarele 5 ședințe. |
+| claude | HOLD | 0.55 | Trendul este clar descendent (sub SMA20/50/200, -20% pe 60 de zile, regula SMA dă vânzare, piețe largi în risk-off), dar RSI 37, stabilizarea pe ultimele 5 zile și relativa reziliență față de S&P 500 pe 20 de zile sugerează o posibilă consolidare lângă minim. Semnalele contradictorii și volatilitatea ridicată nu permit o predicție fiabilă pe 5 zile. |
+| gemini | HOLD | 0.40 | Acțiunea BA se află într-un trend descendent pe termen mediu și lung, sub toate mediile mobile, într-un context de piață nefavorabil, dar dă semne de stabilizare pe termen scurt (+1.0% în 5 zile) și un RSI scăzut (37). Aceste semnale tehnice mixte nu oferă o direcție clară pentru următoarele 5 zile de tranzacționare. |
+| grok | SELL | 0.58 | BA este sub SMA20, SMA50 și SMA200, cu scăderi de 20% și 23,6% pe 60 și 120 de zile, iar regula SMA 20/50 indică vânzare. RSI 37 și revenirea slabă pe 5 zile nu compensează trendul descendent și contextul de risk-off, deci pe termen scurt biasul rămâne negativ. |
+| deepseek | SELL | 0.65 | Prețul se situează sub mediile mobile cheie (SMA20, SMA50, SMA200), iar RSI la 37 indică o slăbiciune fără a fi la supravânzare. Corecțiile puternice pe piețele majore (Nasdaq -12.6%, petrol -16%) confirmă un context negativ care poate persista. |
 
-Cost total azi: **2.375 $**.
+Cost total azi: **2.373 $**.
 
 ## Cine a ghicit mai des (decizii încheiate)
 
 | | Apeluri | Au ieșit bine | Câștig mediu pe apel |
 |---|---:|---:|---:|
-| Consiliul AI (majoritate clară) | 392 | 93% | +9.04% |
-| Înclinația consiliului (fără voturile HOLD) | 1141 | 79% | +6.38% |
-| Regula simplă a botului | 1490 | 75% | +5.66% |
-| Doar cumpără | 1490 | 19% | -6.72% |
+| Consiliul AI (majoritate clară) | 411 | 93% | +8.89% |
+| Înclinația consiliului (fără voturile HOLD) | 1214 | 79% | +6.25% |
+| Regula simplă a botului | 1577 | 75% | +5.57% |
+| Doar cumpără | 1577 | 19% | -6.57% |
 
 _Câștigul mediu e mișcarea prețului în direcția aleasă, fără costuri. Cu puține decizii, diferențele pot fi noroc._
 
@@ -977,8 +977,8 @@ _Câștigul mediu e mișcarea prețului în direcția aleasă, fără costuri. C
 
 | Agent | Păreri | Au ieșit bine | Eroare medie (Brier) |
 |---|---:|---:|---:|
-| gpt | 535 | 93% | 0.17 |
-| claude | 68 | 91% | 0.22 |
-| gemini | 385 | 82% | 0.18 |
-| grok | 426 | 92% | 0.19 |
-| deepseek | 1082 | 77% | 0.18 |
+| gpt | 566 | 93% | 0.17 |
+| claude | 71 | 92% | 0.22 |
+| gemini | 396 | 82% | 0.17 |
+| grok | 449 | 92% | 0.19 |
+| deepseek | 1151 | 77% | 0.18 |
