@@ -1,162 +1,162 @@
 {
- "decizii": 2101,
- "incheiate": 1492,
+ "decizii": 2188,
+ "incheiate": 1579,
  "hold_pct": {
-  "gpt": 63.6,
-  "grok": 73.4,
-  "claude": 96.3,
-  "gemini": 78.1,
-  "deepseek": 26.7
+  "gpt": 64.7,
+  "grok": 73.6,
+  "claude": 96.5,
+  "gemini": 78.5,
+  "deepseek": 26.8
  },
  "perechi": {
   "gpt-grok": {
-   "acord": 0.768,
+   "acord": 0.771,
    "kappa": 0.469,
-   "corelatie": 0.487
+   "corelatie": 0.484
   },
   "gpt-claude": {
-   "acord": 0.663,
-   "kappa": 0.102,
+   "acord": 0.673,
+   "kappa": 0.103,
    "corelatie": 0.234
   },
   "gpt-gemini": {
-   "acord": 0.652,
-   "kappa": 0.212,
-   "corelatie": 0.338
+   "acord": 0.661,
+   "kappa": 0.219,
+   "corelatie": 0.341
   },
   "gpt-deepseek": {
-   "acord": 0.535,
-   "kappa": 0.25,
-   "corelatie": 0.411
+   "acord": 0.528,
+   "kappa": 0.243,
+   "corelatie": 0.406
   },
   "grok-claude": {
-   "acord": 0.752,
-   "kappa": 0.13,
-   "corelatie": 0.238
+   "acord": 0.754,
+   "kappa": 0.126,
+   "corelatie": 0.235
   },
   "grok-gemini": {
-   "acord": 0.775,
-   "kappa": 0.411,
-   "corelatie": 0.489
+   "acord": 0.776,
+   "kappa": 0.407,
+   "corelatie": 0.486
   },
   "grok-deepseek": {
-   "acord": 0.505,
-   "kappa": 0.24,
-   "corelatie": 0.414
+   "acord": 0.504,
+   "kappa": 0.239,
+   "corelatie": 0.415
   },
   "claude-gemini": {
-   "acord": 0.796,
-   "kappa": 0.156,
-   "corelatie": 0.259
+   "acord": 0.799,
+   "kappa": 0.153,
+   "corelatie": 0.257
   },
   "claude-deepseek": {
    "acord": 0.303,
-   "kappa": 0.036,
-   "corelatie": 0.169
+   "kappa": 0.035,
+   "corelatie": 0.167
   },
   "gemini-deepseek": {
-   "acord": 0.466,
-   "kappa": 0.221,
-   "corelatie": 0.452
+   "acord": 0.464,
+   "kappa": 0.218,
+   "corelatie": 0.45
   }
  },
  "ai_independente_efectiv": 2.09,
  "contributie": {
   "toti_5": {
-   "semnale": 1143,
+   "semnale": 1216,
    "corecte_pct": 78.5,
-   "medie_pct": 6.364
+   "medie_pct": 6.236
   },
   "fara_gpt": {
-   "semnale": 1108,
+   "semnale": 1179,
    "corecte_pct": 76.9,
-   "medie_pct": 6.031,
-   "directie_schimbata_pct": 4.5
+   "medie_pct": 5.9,
+   "directie_schimbata_pct": 4.3
   },
   "fara_grok": {
-   "semnale": 1139,
+   "semnale": 1210,
    "corecte_pct": 78.4,
-   "medie_pct": 6.337,
+   "medie_pct": 6.214,
    "directie_schimbata_pct": 0.7
   },
   "fara_claude": {
-   "semnale": 1143,
+   "semnale": 1216,
    "corecte_pct": 78.5,
-   "medie_pct": 6.364,
+   "medie_pct": 6.236,
    "directie_schimbata_pct": 0.0
   },
   "fara_gemini": {
-   "semnale": 1136,
+   "semnale": 1210,
    "corecte_pct": 79.0,
-   "medie_pct": 6.483,
+   "medie_pct": 6.342,
    "directie_schimbata_pct": 1.0
   },
   "fara_deepseek": {
-   "semnale": 766,
-   "corecte_pct": 85.4,
-   "medie_pct": 7.463,
-   "directie_schimbata_pct": 29.4
+   "semnale": 807,
+   "corecte_pct": 85.7,
+   "medie_pct": 7.416,
+   "directie_schimbata_pct": 30.0
   }
  },
  "alfa_negativ": {
-  "taiere": "2026-11-12",
+  "taiere": "2026-11-14",
   "agenti": {
    "gpt": {
     "prima": {
-     "voturi": 322,
-     "medie_pct": 8.753
+     "voturi": 360,
+     "medie_pct": 9.238
     },
     "a_doua": {
-     "voturi": 214,
-     "medie_pct": 10.049
+     "voturi": 207,
+     "medie_pct": 8.982
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
    },
    "grok": {
     "prima": {
-     "voturi": 271,
-     "medie_pct": 8.599
+     "voturi": 298,
+     "medie_pct": 8.895
     },
     "a_doua": {
-     "voturi": 156,
-     "medie_pct": 8.935
+     "voturi": 152,
+     "medie_pct": 8.014
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
    },
    "claude": {
     "prima": {
-     "voturi": 46,
-     "medie_pct": 10.138
+     "voturi": 53,
+     "medie_pct": 10.305
     },
     "a_doua": {
-     "voturi": 22,
-     "medie_pct": 6.744
+     "voturi": 18,
+     "medie_pct": 4.433
     },
     "candidat_inversare": false,
     "motiv": "prea puține voturi"
    },
    "gemini": {
     "prima": {
-     "voturi": 270,
-     "medie_pct": 6.624
+     "voturi": 295,
+     "medie_pct": 6.681
     },
     "a_doua": {
-     "voturi": 115,
-     "medie_pct": 5.858
+     "voturi": 101,
+     "medie_pct": 5.434
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"
    },
    "deepseek": {
     "prima": {
-     "voturi": 697,
-     "medie_pct": 6.086
+     "voturi": 759,
+     "medie_pct": 6.179
     },
     "a_doua": {
-     "voturi": 387,
-     "medie_pct": 5.985
+     "voturi": 394,
+     "medie_pct": 5.4
     },
     "candidat_inversare": false,
     "motiv": "nu e negativ constant"

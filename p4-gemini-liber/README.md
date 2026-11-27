@@ -1,51 +1,50 @@
 # BND paper trading (virtual money)
 
-- Run: 2026-11-25T23:58:59.973296+00:00 | strategy `ai_council`
-- Equity: 11,571.49 USD (start 11,183.00, +3.47%)
-- Gross leverage: 0.74x | candles processed: 100
+- Run: 2026-11-26T23:59:43.643759+00:00 | strategy `ai_council`
+- Equity: 11,496.73 USD (start 11,183.00, +2.81%)
+- Gross leverage: 0.88x | candles processed: 100
 - Kill switch: off
 
 ## Positions
 
 | Market | Quantity | Avg price | Last | Value | Weight | P&L | Stop |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| ICP | -64.7898 | 2.2988 | 1.9990 | -129.51 | -1.1% | +19.43 | 2.9145 |
-| LOCKHEED | 2.1353 | 566.3099 | 586.6300 | 1,252.64 | +10.8% | +43.39 | 512.3491 |
-| US10Y_NOTE | 30.9650 | 90.5218 | 91.6400 | 2,837.63 | +24.5% | +34.63 | 88.9903 |
-| VET | -60263.4013 | 0.0046 | 0.0047 | -282.76 | -2.4% | -4.00 | 0.0058 |
-| WMT | 14.1667 | 129.9790 | 132.3100 | 1,874.39 | +16.2% | +33.02 | 120.6237 |
-| XLM | -5326.2539 | 0.1300 | 0.1243 | -662.05 | -5.7% | +30.55 | 0.1570 |
-| XOM | 9.5478 | 157.4672 | 158.2300 | 1,510.75 | +13.1% | +7.28 | 144.5078 |
+| ATOM | -219.9276 | 1.2484 | 1.2370 | -272.05 | -2.4% | +2.50 | 1.5150 |
+| CAT | -0.8614 | 518.8343 | 543.6900 | -468.33 | -4.1% | -21.41 | 629.2652 |
+| JUP | -1002.9242 | 0.2214 | 0.2262 | -226.86 | -2.0% | -4.82 | 0.2910 |
+| KO | 12.7899 | 98.1394 | 97.5900 | 1,248.16 | +10.9% | -7.03 | 91.9553 |
+| NASDAQ100 | -1.1057 | 617.0383 | 633.9300 | -700.96 | -6.1% | -18.68 | 700.6869 |
+| PG | 6.0257 | 173.3120 | 173.2300 | 1,043.82 | +9.1% | -0.49 | 162.7770 |
+| SP500 | -1.5261 | 703.1297 | 716.7000 | -1,093.75 | -9.5% | -20.71 | 763.7108 |
+| TAO | -1.6516 | 181.1094 | 181.9000 | -300.43 | -2.6% | -1.31 | 228.6072 |
+| TRX | -2086.5727 | 0.3081 | 0.3041 | -634.53 | -5.5% | +8.44 | 0.3262 |
+| US10Y_NOTE | 30.9650 | 90.5218 | 92.0600 | 2,850.64 | +24.8% | +47.63 | 88.9903 |
+| VET | -60263.4013 | 0.0046 | 0.0048 | -291.86 | -2.5% | -13.10 | 0.0058 |
+| WMT | 7.3207 | 129.9790 | 131.9400 | 965.89 | +8.4% | +14.36 | 120.6237 |
 
 ## Orders for the next open
 
 | Market | Side | Weight now -> target | Status | Note |
 |---|---|---|---|---|
-| SP500 | SELL | +0.0% -> -9.5% | PENDING |  |
-| NASDAQ100 | SELL | +0.0% -> -6.1% | PENDING |  |
-| WMT | SELL | +16.2% -> +8.4% | PENDING |  |
-| KO | BUY | +0.0% -> +10.8% | PENDING |  |
-| PG | BUY | +0.0% -> +9.0% | PENDING |  |
-| XOM | SELL | +13.1% -> +0.0% | PENDING |  |
-| CAT | SELL | +0.0% -> -4.0% | PENDING |  |
-| LOCKHEED | SELL | +10.8% -> +0.0% | PENDING |  |
-| TRX | SELL | +0.0% -> -5.6% | PENDING |  |
-| XLM | BUY | -5.7% -> +0.0% | PENDING |  |
-| ICP | BUY | -1.1% -> +0.0% | PENDING |  |
-| ATOM | SELL | +0.0% -> -2.4% | PENDING |  |
-| TAO | SELL | +0.0% -> -2.6% | PENDING |  |
-| JUP | SELL | +0.0% -> -1.9% | PENDING |  |
+| GOOGL | SELL | +0.0% -> -5.3% | PENDING |  |
+| WMT | SELL | +8.4% -> +0.0% | PENDING |  |
+| KO | SELL | +10.9% -> +0.0% | PENDING |  |
+| GS | SELL | +0.0% -> -6.2% | PENDING |  |
+| LOCKHEED | BUY | +0.0% -> +6.3% | PENDING |  |
+| TRX | BUY | -5.5% -> +0.0% | PENDING |  |
+| VET | BUY | -2.5% -> +0.0% | PENDING |  |
+| TAO | BUY | -2.6% -> +0.0% | PENDING |  |
 
 ## Stress scenarios (instant shock to current positions)
 
 | Scenario | Equity change | Biggest loser | Kill switch |
 |---|---:|---|---|
-| Global financial crisis, Sep-Nov 2008 | -9.6% | WMT | no |
-| Inflation and rate hikes, Jan-Oct 2022 | -8.4% | WMT | no |
-| Covid crash, Feb-Mar 2020 | -8.2% | WMT | no |
-| One-day crash like October 1987 | -5.3% | WMT | no |
-| Sharp dollar rally | -1.5% | WMT | no |
-| Crypto collapse within a week | +3.0% | WMT | no |
+| Sharp dollar rally | +0.8% | KO | no |
+| One-day crash like October 1987 | +3.0% | KO | no |
+| Inflation and rate hikes, Jan-Oct 2022 | +4.5% | US10Y_NOTE | no |
+| Covid crash, Feb-Mar 2020 | +5.1% | KO | no |
+| Crypto collapse within a week | +7.0% | KO | no |
+| Global financial crisis, Sep-Nov 2008 | +7.8% | KO | no |
 
 ## Equity, last runs
 
@@ -75,5 +74,6 @@
 | 2026-11-23 | 11,749.76 |
 | 2026-11-24 | 11,435.34 |
 | 2026-11-25 | 11,571.49 |
+| 2026-11-26 | 11,496.73 |
 
 _Virtual money only. Backtests found no proven edge; this record is the forward test, not proof of profit._
