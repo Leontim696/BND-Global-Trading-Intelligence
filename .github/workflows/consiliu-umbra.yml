@@ -41,6 +41,8 @@ jobs:
     outputs:
       run: ${{ steps.mode.outputs.run }}
       live: ${{ steps.mode.outputs.live }}
+      daily: ${{ steps.mode.outputs.daily }}
+      day: ${{ steps.mode.outputs.day }}
     env:
       EVENT: ${{ github.event_name }}
       MODE_INPUT: ${{ inputs.mode }}
@@ -56,13 +58,14 @@ jobs:
         id: mode
         run: |
           mkdir -p state data
-          run=true; live=false
+          run=true; live=false; daily=false
           if [ "$EVENT" = schedule ] && [ "$(date -u +%H)" -lt 20 ]; then
             # 16.11.2026: GitHub pornea programul de la 21:40 abia a doua zi pe la 01:20 UTC. Acum rularea zilnică o pornește
             # bucla de prețuri (mode=daily); un program care vine atât de târziu nu mai votează pe date vechi.
             run=false
             echo "Programul a pornit cu ore de întârziere (după miezul nopții UTC): sărit, rularea zilnică o pornește bucla de prețuri." >> "$GITHUB_STEP_SUMMARY"
           elif [ "$EVENT" = schedule ] || [ "$MODE_INPUT" = daily ]; then
+            daily=true
             # The test was extended to 30 days (owner, 2.11): it ends on 2026-11-30; a forgotten switch must not keep spending.
             if [ "$(date -u +%Y-%m-%d)" \> "2026-11-30" ]; then
               run=false
@@ -73,7 +76,7 @@ jobs:
             if grep -q '^confirmed=true' gate.txt; then live=true; else run=false; fi
           fi
           {
-            echo "run=$run"; echo "live=$live"
+            echo "run=$run"; echo "live=$live"; echo "daily=$daily"; echo "day=$(date -u +%Y-%m-%d)"
           } >> "$GITHUB_OUTPUT"
           if [ "$run" = false ]; then
             echo "Nu s-a rulat nimic și nu s-a cheltuit nimic: pentru live scrie exact RUN-PAID-TEST, iar rularea zilnică cere variabila BND_COUNCIL_DAILY = on." >> "$GITHUB_STEP_SUMMARY"
@@ -238,3 +241,28 @@ jobs:
           if [ -f state/raport-scurt.md ]; then source=state/raport-scurt.md; fi
           head -c 60000 "$source" > state/comentariu.md
           gh api -X POST "repos/$REPO/issues/$number/comments" -F body=@state/comentariu.md > /dev/null
+
+  # 28.11.2026: bucla de prețuri pornea conturile abia la ciclul următor (~23:58 UTC), iar pașii ajungeau după miezul
+  # nopții (formațiile au căutat voturile zilei următoare). Acum consiliul zilnic pornește conturile imediat după ce și-a
+  # salvat voturile; bucla rămâne plasă de siguranță (nu pornește a doua oară un cont care are deja o rulare azi).
+  conturi:
+    needs: [council, publish]
+    if: needs.council.outputs.live == 'true' && needs.council.outputs.daily == 'true' && needs.publish.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      DAY: ${{ needs.council.outputs.day }}
+    steps:
+      - name: Start the accounts with today's votes
+        run: |
+          for wf in cont-unic.yml cont-control.yml; do
+            gh api -X POST "repos/$REPO/actions/workflows/$wf/dispatches" -f ref=main \
+              || echo "::warning::$wf nu a pornit acum; îl pornește bucla de prețuri"
+          done
+          gh api -X POST "repos/$REPO/actions/workflows/formatii-ai.yml/dispatches" -f ref=main -f "inputs[day]=$DAY" \
+            || echo "::warning::formatii-ai.yml nu a pornit acum; îl pornește bucla de prețuri"
+          echo "Conturile au fost pornite după consiliu, cu voturile din $DAY." >> "$GITHUB_STEP_SUMMARY"

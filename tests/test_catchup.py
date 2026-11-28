@@ -85,3 +85,24 @@ def test_late_account_schedules_are_skipped():
         text = Path(".github/workflows/" + name).read_text(encoding="utf-8")
         assert '[ "$EVENT" = schedule ] && [ "$(date -u +%H)" -lt 20 ]' in text, name
         assert "needs: gate" in text and "if: needs.gate.outputs.run == 'true'" in text, name
+
+
+def test_formations_get_the_votes_day_explicitly():
+    # 28.11.2026: pornite la 23:58, formațiile au rulat după miezul nopții și au căutat voturile zilei următoare.
+    ok = dict(EMPTY, **{"consiliu-umbra.yml": [run("2026-11-27T22:58:00Z")]})
+    out = dict(cu.plan(ok, at("2026-11-27T23:58:00")))
+    assert out["formatii-ai.yml"] == {"day": "2026-11-27"}
+    assert out["cont-unic.yml"] == {}
+
+
+def test_daily_council_starts_the_accounts_right_after_its_votes():
+    council = Path(".github/workflows/consiliu-umbra.yml").read_text(encoding="utf-8")
+    job = council.split("\n  conturi:\n", 1)[1]
+    assert "needs: [council, publish]" in job
+    assert "needs.council.outputs.live == 'true' && needs.council.outputs.daily == 'true'" in job
+    assert "needs.publish.result == 'success'" in job
+    assert "actions: write" in job and "contents: write" not in job
+    assert "for wf in cont-unic.yml cont-control.yml; do" in job and 'workflows/$wf/dispatches' in job
+    assert "workflows/formatii-ai.yml/dispatches" in job
+    assert '-f "inputs[day]=$DAY"' in job
+    assert 'echo "daily=$daily"; echo "day=$(date -u +%Y-%m-%d)"' in council
