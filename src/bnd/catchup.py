@@ -64,6 +64,10 @@ def plan(runs: dict, now: datetime) -> list:
             if not any(_time(r["createdAt"]) >= dep_due and r.get("status") == "completed"
                        and r.get("conclusion") == "success" for r in runs.get(dep, [])):
                 continue                                   # fără consiliu reușit azi, contul așteaptă
+        if name == "formatii-ai.yml":
+            # 28.11.2026: formațiile citesc voturile „de azi”; pornite la 23:58, au ajuns să ruleze după miezul nopții
+            # UTC și au căutat voturile zilei următoare. Ziua voturilor se dă explicit.
+            fields = {**fields, "day": now.date().isoformat()}
         out.append((name, fields))
     status = runs.get("status.yml")
     if status is not None and not any(now - _time(r["createdAt"]) < STATUS_EVERY for r in status):
